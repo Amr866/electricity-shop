@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { calculateTieredUnitPrice } from "@/lib/utils";
+
+// Server-enforced shipping method rates
+const SHIPPING_RATES: Record<string, number> = {
+  isfahan_express: 45000,
+  tipax: 65000,
+  in_person_pickup: 0,
+  najafabad_local: 35000,
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +28,6 @@ export async function POST(req: NextRequest) {
       economicCode,
       nationalCode,
       shippingMethod,
-      shippingCost,
       paymentMethod,
       receiptImage,
       notes,
@@ -38,7 +46,7 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || null;
 
-    // 1. Server-Side Price & Inventory Verification
+    // 1. Validate items and quantities
     let serverSubtotal = 0;
     const validatedItems: Array<{
       productId: string;
@@ -52,6 +60,14 @@ export async function POST(req: NextRequest) {
     for (const item of items) {
       if (!item.id) continue;
 
+      const qty = parseInt(item.quantity, 10);
+      if (!Number.isInteger(qty) || qty <= 0 || qty > 1000) {
+        return NextResponse.json(
+          { message: `تعداد سفارش برای کالای «${item.name}» نامعتبر است.` },
+          { status: 400 }
+        );
+      }
+
       const dbProduct = await prisma.product.findUnique({
         where: { id: item.id },
         include: { images: true },
@@ -64,7 +80,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if (dbProduct.stock < item.quantity) {
+      if (dbProduct.stock < qty) {
         return NextResponse.json(
           { message: `موجودی کالای «${dbProduct.name}» کافی نمی‌باشد (موجودی فعلی: ${dbProduct.stock} عدد).` },
           { status: 400 }
@@ -72,26 +88,28 @@ export async function POST(req: NextRequest) {
       }
 
       // Quantity tiered discount calculation
-      let unitPrice = dbProduct.price;
-      if (item.quantity >= 50) {
-        unitPrice = Math.round(dbProduct.price * 0.9); // 10% wholesale tier
-      } else if (item.quantity >= 10) {
-        unitPrice = Math.round(dbProduct.price * 0.95); // 5% pack tier
-      }
-
-      const itemTotal = unitPrice * item.quantity;
+      const unitPrice = calculateTieredUnitPrice(dbProduct.price, qty);
+      const itemTotal = unitPrice * qty;
       serverSubtotal += itemTotal;
 
-      const primaryImg = dbProduct.images.find((img) => img.isPrimary)?.url || dbProduct.images[0]?.url || item.image || null;
+      const primaryImg =
+        dbProduct.images.find((img) => img.isPrimary)?.url ||
+        dbProduct.images[0]?.url ||
+        item.image ||
+        null;
 
       validatedItems.push({
         productId: dbProduct.id,
         productName: dbProduct.name,
         productImage: primaryImg,
         price: unitPrice,
-        quantity: item.quantity,
+        quantity: qty,
         total: itemTotal,
       });
+    }
+
+    if (validatedItems.length === 0) {
+      return NextResponse.json({ message: "سبد خرید خالی است." }, { status: 400 });
     }
 
     // 2. Server-Side Coupon Verification
@@ -109,18 +127,24 @@ export async function POST(req: NextRequest) {
           if (coupon.discountPercent) {
             serverDiscount = Math.round((serverSubtotal * coupon.discountPercent) / 100);
           } else if (coupon.discountAmount) {
-            serverDiscount = coupon.discountAmount;
+            serverDiscount = Math.min(coupon.discountAmount, serverSubtotal);
           }
         }
       }
     }
 
-    const validShippingCost = typeof shippingCost === "number" ? shippingCost : 0;
-    const finalTotalAmount = Math.max(0, serverSubtotal - serverDiscount + validShippingCost);
+    // 3. Server-Calculated Shipping Rate
+    const selectedMethodKey = shippingMethod || "isfahan_express";
+    let serverShippingCost = SHIPPING_RATES[selectedMethodKey] ?? 45000;
+    if (serverSubtotal >= 2000000 && selectedMethodKey !== "in_person_pickup") {
+      serverShippingCost = 0; // Free shipping over 2M Tomans
+    }
 
-    // 3. Generate unique order number: SH-YYMMDD-XXXX
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const finalTotalAmount = Math.max(0, serverSubtotal - serverDiscount + serverShippingCost);
+
+    // 4. Generate unique alphanumeric order number: SH-YYMMDD-XXXX
     const datePrefix = new Date().toISOString().slice(2, 10).replace(/-/g, "");
+    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
     const orderNumber = `SH-${datePrefix}-${randomSuffix}`;
 
     let paymentStatus = "PENDING";
@@ -131,21 +155,28 @@ export async function POST(req: NextRequest) {
       orderStatus = "PROCESSING";
     }
 
-    // 4. Create Order & Decrement Stock in Atomic Transaction
+    // 5. Create Order & Conditionally Decrement Stock in Atomic Transaction
     const order = await prisma.$transaction(async (tx) => {
-      // Decrement stock for each item
+      // Conditionally decrement stock ensuring stock >= quantity
       for (const item of validatedItems) {
-        await tx.product.update({
-          where: { id: item.productId },
+        const updateResult = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stock: { gte: item.quantity },
+          },
           data: {
             stock: {
               decrement: item.quantity,
             },
           },
         });
+
+        if (updateResult.count === 0) {
+          throw new Error(`موجودی کالای «${item.productName}» هم‌اکنون به اتمام رسیده است.`);
+        }
       }
 
-      // Create Order
+      // Create Order in DB
       return await tx.order.create({
         data: {
           orderNumber,
@@ -161,8 +192,8 @@ export async function POST(req: NextRequest) {
           companyName: companyName ? companyName.trim() : null,
           economicCode: economicCode ? economicCode.trim() : null,
           nationalCode: nationalCode ? nationalCode.trim() : null,
-          shippingMethod: shippingMethod || "isfahan_express",
-          shippingCost: validShippingCost,
+          shippingMethod: selectedMethodKey,
+          shippingCost: serverShippingCost,
           paymentMethod: paymentMethod || "zarinpal",
           paymentStatus,
           orderStatus,
@@ -190,11 +221,11 @@ export async function POST(req: NextRequest) {
       orderId: order.id,
       redirectUrl,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Checkout creation error:", error);
     return NextResponse.json(
-      { message: "خطایی در ثبت سفارش رخ داد. لطفاً دوباره تلاش کنید." },
-      { status: 500 }
+      { message: error.message || "خطایی در ثبت سفارش رخ داد. لطفاً دوباره تلاش کنید." },
+      { status: 400 }
     );
   }
 }

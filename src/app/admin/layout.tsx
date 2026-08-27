@@ -1,15 +1,23 @@
 import React from "react";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { formatJalaliDate } from "@/lib/utils";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user || session.user.role !== "ADMIN") {
+    redirect("/auth/login?callbackUrl=/admin");
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans">
-      
       {/* Dynamic Admin Sidebar */}
       <AdminSidebar />
 
@@ -35,7 +43,6 @@ export default function AdminLayout({
         {/* Main Body */}
         <main className="p-6 flex-1 overflow-y-auto">{children}</main>
       </div>
-
     </div>
   );
 }

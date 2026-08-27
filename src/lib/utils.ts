@@ -32,6 +32,16 @@ export function calculateDiscount(originalPrice: number, discountedPrice: number
   return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
 }
 
+// Unified tiered quantity discount pricing calculation
+export function calculateTieredUnitPrice(basePrice: number, quantity: number): number {
+  if (quantity >= 50) {
+    return Math.round(basePrice * 0.9); // 10% wholesale discount
+  } else if (quantity >= 10) {
+    return Math.round(basePrice * 0.95); // 5% pack discount
+  }
+  return basePrice;
+}
+
 // Format Shamsi date
 export function formatJalaliDate(dateInput?: Date | string | number): string {
   const date = dateInput ? new Date(dateInput) : new Date();

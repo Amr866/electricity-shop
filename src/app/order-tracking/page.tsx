@@ -77,10 +77,10 @@ export default function OrderLookupPage() {
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span>سفارش نمونه تستی:</span>
             <Link
-              href="/order-tracking/NJ-140306-089"
+              href="/order-tracking/SH-140306-089"
               className="text-amber-600 font-bold hover:underline font-mono"
             >
-              NJ-140306-089
+              SH-140306-089
             </Link>
           </div>
         </div>

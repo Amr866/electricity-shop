@@ -87,10 +87,10 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
-  // Bulk Tier Pricing (RoboEQ style)
+  // Bulk Tier Pricing (RoboEQ & Shiasi style)
   const tier1Price = product.price;
   const tier2Price = Math.round(product.price * 0.95);
-  const tier3Price = Math.round(product.price * 0.88);
+  const tier3Price = Math.round(product.price * 0.9);
 
   const effectiveUnitPrice =
     quantity >= 50 ? tier3Price : quantity >= 10 ? tier2Price : tier1Price;

@@ -17,22 +17,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "سفارش یافت نشد." }, { status: 404 });
     }
 
-    if (status === "SUCCESS") {
-      await prisma.order.update({
-        where: { orderNumber },
-        data: {
-          paymentStatus: "PAID",
-          orderStatus: "PROCESSING",
-          paymentRefId: refId || `ZP-${Date.now()}`,
-        },
-      });
-    } else {
-      await prisma.order.update({
-        where: { orderNumber },
-        data: {
-          paymentStatus: "FAILED",
-        },
-      });
+    // Only update if currently pending
+    if (order.paymentStatus === "PENDING") {
+      if (status === "SUCCESS") {
+        await prisma.order.update({
+          where: { orderNumber },
+          data: {
+            paymentStatus: "PAID",
+            orderStatus: "PROCESSING",
+            paymentRefId: refId || `ZP-${Date.now()}`,
+          },
+        });
+      } else {
+        await prisma.order.update({
+          where: { orderNumber },
+          data: {
+            paymentStatus: "FAILED",
+          },
+        });
+      }
     }
 
     return NextResponse.json({ success: true });

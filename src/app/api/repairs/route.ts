@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// GET: Search repair requests by phone, tracking code, or list for admin
+// GET: Search repair requests by exact phone or tracking code
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
         OR: [
           { customerPhone: cleanQuery },
           { trackingCode: cleanQuery },
-          { trackingCode: { contains: cleanQuery, mode: "insensitive" } },
         ],
       };
     }

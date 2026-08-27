@@ -64,18 +64,22 @@ export function Header() {
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-300">
-            <span className="hidden sm:flex items-center gap-1">
-              <Clock className="w-3 h-3 text-amber-400" />
-              <span>ساعات کاری: ۸:۳۰ الی ۲۱:۰۰</span>
-            </span>
+          <div className="flex items-center gap-3 sm:gap-4 text-slate-300">
+            <Link href="/contact" className="hover:text-amber-400 font-medium transition-colors">
+              تماس و نشانی
+            </Link>
+            <span className="text-slate-600">•</span>
+            <Link href="/about" className="hover:text-amber-400 font-medium transition-colors">
+              درباره ما
+            </Link>
             <span className="hidden sm:inline-block text-slate-600">•</span>
             <a
-              href={`tel:${brand.phone.replace(/\D/g, "")}`}
-              className="flex items-center gap-1 text-amber-400 hover:text-amber-300 font-semibold"
+              href="tel:03142624567"
+              dir="ltr"
+              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold font-mono text-left"
             >
-              <Phone className="w-3 h-3" />
-              <span className="font-mono">{brand.phone}</span>
+              <Phone className="w-3 h-3 shrink-0" />
+              <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
             </a>
           </div>
         </div>
@@ -86,16 +90,16 @@ export function Header() {
         <div className="flex items-center justify-between gap-4">
           
           {/* Dynamic Logo & Store Title */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform">
               <Zap className="w-6 h-6" style={{ fill: '#020617', color: '#020617' }} />
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight">
                   {brand.nameFa}
                 </span>
-                <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700">
+                <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-300 dark:border-amber-700 whitespace-nowrap">
                   {brand.badge}
                 </span>
               </div>

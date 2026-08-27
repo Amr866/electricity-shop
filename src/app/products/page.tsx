@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/product/ProductCard";
+import { MobileSearchFilterBar } from "@/components/product/MobileSearchFilterBar";
 import {
   SlidersHorizontal,
   Search,
@@ -74,7 +75,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     where.isBestSeller = true;
   }
 
-  // Build orderBy
+  // Build orderBy (Default: newest)
   let orderBy: any = { createdAt: "desc" };
   if (sortBy === "cheapest") orderBy = { price: "asc" };
   else if (sortBy === "expensive") orderBy = { price: "desc" };
@@ -99,56 +100,62 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     }),
     prisma.product.findMany({
       select: { brand: true },
+      where: { brand: { not: null } },
       distinct: ["brand"],
     }),
   ]);
 
-  const brands = allProductsForBrands
+  const uniqueBrands = allProductsForBrands
     .map((p) => p.brand)
-    .filter((b): b is string => Boolean(b));
+    .filter(Boolean) as string[];
 
   const currentCategory = categories.find((c) => c.slug === categorySlug);
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-8 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-4 sm:py-8 transition-colors duration-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-4 sm:space-y-6">
         
-        {/* Breadcrumb & Top Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-              <Link href="/" className="hover:text-amber-600 dark:hover:text-amber-400">
-                صفحه اصلی
-              </Link>
-              <span>/</span>
-              <span className="text-slate-900 dark:text-white font-semibold">
-                {currentCategory ? currentCategory.name : "کاتالوگ کلیه محصولات"}
-              </span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>{currentCategory ? currentCategory.name : "کلیه تجهیزات و قطعات برقی"}</span>
-              <span className="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-0.5 rounded-full font-bold">
+        {/* 1. Mobile Search & Filter Action Bar (Digikala style) */}
+        <MobileSearchFilterBar
+          categories={categories as any}
+          brands={uniqueBrands}
+          totalProductsCount={products.length}
+        />
+
+        {/* 2. Desktop Header Bar (Breadcrumb & Sorting Tabs) */}
+        <div className="hidden lg:flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                {currentCategory ? currentCategory.name : "کاتالوگ جامع تجهیزات و قطعات برقی"}
+              </h1>
+              <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-700">
                 {toPersianDigits(products.length)} کالا
               </span>
-            </h1>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {currentCategory
+                ? currentCategory.description || "تجهیزات و قطعات اصلی با ضمانت فروشگاه شیاسی"
+                : "تجهیزات روشنایی، سیم و کابل استاندارد، لوازم سرمایش و گرمایش، و بردهای الکترونیک"}
+            </p>
           </div>
 
-          {/* Sort Controls */}
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-xs">
-            <span className="text-slate-400 dark:text-slate-500 flex items-center gap-1 font-medium">
+          {/* Desktop Sort Selector */}
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-slate-400 font-bold flex items-center gap-1">
               <ArrowUpDown className="w-3.5 h-3.5" />
-              مرتب‌سازی:
+              مرتب‌سازی بر اساس:
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
               <Link
                 href={{
                   pathname: "/products",
                   query: { ...params, sort: "newest" },
                 }}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-colors ${
                   sortBy === "newest"
-                    ? "bg-amber-500 text-slate-950"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-amber-500 text-slate-950 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 جدیدترین
@@ -156,12 +163,25 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <Link
                 href={{
                   pathname: "/products",
+                  query: { ...params, sort: "bestseller" },
+                }}
+                className={`px-3 py-1.5 rounded-lg font-bold transition-colors ${
+                  sortBy === "bestseller"
+                    ? "bg-amber-500 text-slate-950 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                }`}
+              >
+                پرفروش‌ترین
+              </Link>
+              <Link
+                href={{
+                  pathname: "/products",
                   query: { ...params, sort: "cheapest" },
                 }}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-colors ${
                   sortBy === "cheapest"
-                    ? "bg-amber-500 text-slate-950"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-amber-500 text-slate-950 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 ارزان‌ترین
@@ -171,38 +191,25 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   pathname: "/products",
                   query: { ...params, sort: "expensive" },
                 }}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-colors ${
                   sortBy === "expensive"
-                    ? "bg-amber-500 text-slate-950"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    ? "bg-amber-500 text-slate-950 shadow-sm"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 گران‌ترین
-              </Link>
-              <Link
-                href={{
-                  pathname: "/products",
-                  query: { ...params, sort: "bestseller" },
-                }}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                  sortBy === "bestseller"
-                    ? "bg-amber-500 text-slate-950"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                }`}
-              >
-                پرفروش‌ترین
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Main Layout: Sidebar Filters + Products Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* 3. Main Layout: Sidebar Filters + Products Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
-          {/* Sidebar Filters */}
-          <aside className="lg:col-span-3 space-y-5">
+          {/* Desktop Sidebar Filters (Hidden on Mobile) */}
+          <aside className="hidden lg:block lg:col-span-3 space-y-5">
             
-            {/* 1. Active Filters & Reset */}
+            {/* Active Filters & Reset */}
             {(categorySlug || searchQuery || inStockOnly || fastDeliveryOnly || brandFilter) && (
               <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 space-y-3">
                 <div className="flex items-center justify-between text-xs font-bold text-amber-900 dark:text-amber-300">
@@ -245,7 +252,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             )}
 
-            {/* 2. Categories Widget */}
+            {/* Categories Widget */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
               <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
                 <span>دسته‌بندی‌ها</span>
@@ -289,7 +296,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             </div>
 
-            {/* 3. Fast Delivery & In-Stock Toggles */}
+            {/* Fast Delivery & In-Stock Toggles */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
               <h3 className="font-bold text-sm text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
                 وضعیت ارسال و موجودی
@@ -327,14 +334,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   }}
                   className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
                     inStockOnly
-                      ? "bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-300 font-bold"
+                      ? "bg-blue-50 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-300 font-bold"
                       : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                   }`}
                 >
-                  <span>فقط کالاهای موجود در انبار</span>
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <span>فقط کالاهای موجود در انبار</span>
+                  </div>
                   <div
                     className={`w-4 h-4 rounded flex items-center justify-center ${
-                      inStockOnly ? "bg-amber-500 text-slate-950" : "border border-slate-300 dark:border-slate-600"
+                      inStockOnly ? "bg-blue-600 text-white" : "border border-slate-300 dark:border-slate-600"
                     }`}
                   >
                     {inStockOnly && <Check className="w-3 h-3" />}
@@ -343,76 +353,62 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             </div>
 
-            {/* 4. Brand Filter */}
-            {brands.length > 0 && (
+            {/* Brand Filter */}
+            {uniqueBrands.length > 0 && (
               <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
                   برندهای معتبر
                 </h3>
 
-                <div className="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1">
-                  {brands.map((b) => (
+                <div className="flex flex-wrap gap-1.5 text-xs">
+                  {uniqueBrands.map((b) => (
                     <Link
                       key={b}
                       href={{
                         pathname: "/products",
-                        query: { ...params, brand: brandFilter === b ? undefined : b },
+                        query: {
+                          ...params,
+                          brand: brandFilter === b ? undefined : b,
+                        },
                       }}
-                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-colors ${
+                      className={`px-3 py-1.5 rounded-xl border transition-all ${
                         brandFilter === b
-                          ? "bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 font-bold"
-                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                          ? "bg-amber-500 border-amber-500 text-slate-950 font-bold"
+                          : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                       }`}
                     >
-                      <span>{b}</span>
-                      {brandFilter === b && <Check className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />}
+                      {b}
                     </Link>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Help & Fast Order Phone Box */}
-            <div className="bg-slate-900 dark:bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 space-y-2">
-              <span className="text-amber-400 font-bold text-xs flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                سفارش عمده و استعلام سریع
-              </span>
-              <p className="text-[11px] text-slate-300 leading-snug">
-                برای استعلام قیمت تعداد بالا، کابل‌های صنعتی یا پروژه‌های انبوه‌سازی تماس بگیرید.
-              </p>
-              <a
-                href="tel:03142624567"
-                className="block text-center bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2 rounded-xl transition-colors"
-              >
-                تماس: ۰۳۱-۴۲۶۲۴۵۶۷
-              </a>
-            </div>
-
           </aside>
 
-          {/* Products Grid */}
-          <main className="lg:col-span-9">
+          {/* Products Grid (2 columns on mobile, 3 on desktop) */}
+          <main className="lg:col-span-9 space-y-4">
             {products.length === 0 ? (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-white">
-                <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 flex items-center justify-center mx-auto">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
                   <Search className="w-8 h-8" />
                 </div>
-                <h3 className="font-extrabold text-lg">
-                  کالایی با مشخصات انتخابی یافت نشد!
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-                  فیلترهای اعمال شده را تغییر دهید یا نام کالا را به شکل دیگری جستجو کنید (مانند: پنکه، موتور کولر، بخاری برقی، آنتن، سیم، آردوینو).
+                <h2 className="font-extrabold text-lg text-slate-900 dark:text-white">
+                  کالایی با این مشخصات یافت نشد
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                  فیلترهای انتخابی را تغییر داده یا کلمه کلیدی دیگری را جستجو نمایید.
                 </p>
                 <Link
                   href="/products"
-                  className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition-colors active:scale-95"
+                  className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all"
                 >
-                  مشاهده همه محصولات
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>مشاهده همه کالاها</span>
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

@@ -3,20 +3,31 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, FileText, Package, Truck, ArrowLeft, AlertCircle, ShieldCheck } from "lucide-react";
+import { Search, FileText, Package, Truck, ArrowLeft, AlertCircle, Wrench } from "lucide-react";
 
 export default function OrderLookupPage() {
   const router = useRouter();
   const [orderNumber, setOrderNumber] = useState("");
   const [error, setError] = useState("");
+  const [isRepairCode, setIsRepairCode] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanId = orderNumber.trim().toUpperCase();
+    setIsRepairCode(false);
+
     if (!cleanId) {
       setError("لطفاً شماره سفارش خود را وارد نمایید.");
       return;
     }
+
+    // Smart Validation: Detect if user entered a Repair Tracking Code instead of an Order Code
+    if (cleanId.startsWith("REP-") || cleanId.startsWith("REP") || cleanId.includes("REPAIR")) {
+      setIsRepairCode(true);
+      setError("این یک کد رهگیری تعمیرات است، نه شماره سفارش کالا!");
+      return;
+    }
+
     router.push(`/order-tracking/${cleanId}`);
   };
 
@@ -33,7 +44,7 @@ export default function OrderLookupPage() {
             پیگیری وضعیت سفارش و مشاهده فاکتور
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            شماره سفارش درج شده در پیامک یا پیش‌فاکتور خود را وارد نمایید
+            شماره سفارش درج شده در پیامک یا پیش‌فاکتور خود را وارد نمایید (مانند SH-140306-089)
           </p>
         </div>
 
@@ -42,7 +53,7 @@ export default function OrderLookupPage() {
           <form onSubmit={handleSearch} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                شماره سفارش (مانند SH-140306-089)
+                شماره سفارش کالا (مانند SH-140306-089)
               </label>
               <div className="relative">
                 <input
@@ -51,17 +62,33 @@ export default function OrderLookupPage() {
                   onChange={(e) => {
                     setOrderNumber(e.target.value);
                     setError("");
+                    setIsRepairCode(false);
                   }}
                   placeholder="SH-..."
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono uppercase rounded-xl pr-10 pl-4 py-3 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <FileText className="w-5 h-5 text-slate-400 absolute right-3 top-3.5" />
               </div>
+              
+              {/* Error Box with Smart Repair Redirect */}
               {error && (
-                <p className="text-rose-600 dark:text-rose-400 text-xs mt-1.5 flex items-center gap-1">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  {error}
-                </p>
+                <div className="mt-3 p-3.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl space-y-2">
+                  <p className="text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{error}</span>
+                  </p>
+                  {isRepairCode && (
+                    <div className="pt-1">
+                      <Link
+                        href={`/repair-service?code=${encodeURIComponent(orderNumber.trim().toUpperCase())}`}
+                        className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold px-3 py-1.5 rounded-xl transition-all shadow-sm"
+                      >
+                        <Wrench className="w-3.5 h-3.5" />
+                        <span>انتقال به بخش پیگیری تعمیرات ↗</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 

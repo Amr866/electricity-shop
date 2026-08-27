@@ -23,6 +23,7 @@ import {
   Sparkles,
   Layers,
   Plug,
+  AlertCircle,
 } from "lucide-react";
 
 export default function RepairServicePage() {
@@ -87,9 +88,19 @@ export default function RepairServicePage() {
     }
   };
 
+  const [isOrderCode, setIsOrderCode] = useState(false);
+
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trackCode.trim()) return;
+    const clean = trackCode.trim().toUpperCase();
+    if (!clean) return;
+
+    setIsOrderCode(false);
+    if (clean.startsWith("SH-") || clean.startsWith("ORD-")) {
+      setIsOrderCode(true);
+      setTrackError("این یک شماره سفارش کالا است، نه کد پذیرش تعمیرات!");
+      return;
+    }
 
     setTrackingLoading(true);
     setTrackError("");
@@ -416,7 +427,20 @@ export default function RepairServicePage() {
                 </div>
 
                 {trackError && (
-                  <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">{trackError}</p>
+                  <div className="p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-xl space-y-2">
+                    <p className="text-[11px] text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{trackError}</span>
+                    </p>
+                    {isOrderCode && (
+                      <Link
+                        href={`/order-tracking/${encodeURIComponent(trackCode.trim().toUpperCase())}`}
+                        className="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-lg transition-all shadow-sm"
+                      >
+                        <span>انتقال به بخش پیگیری سفارشات کالا ↗</span>
+                      </Link>
+                    )}
+                  </div>
                 )}
               </form>
 

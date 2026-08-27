@@ -13,6 +13,7 @@ import {
   Clock,
   MapPin,
   PhoneCall,
+  Plug,
 } from "lucide-react";
 
 export function RepairWorkshopSection() {
@@ -25,7 +26,7 @@ export function RepairWorkshopSection() {
       color: "bg-blue-50 text-blue-600 border-blue-100",
     },
     {
-      title: "سرویس و تعمیر موتور کولر آبی",
+      title: "سرویس و موتور کولر آبی",
       desc: "تعویض پلاتین و کلاچ، تعویض بوش برنجی، تراشکاری شفت، خازن و پمپ آب",
       icon: Sun,
       badge: "موتوژن، الکتروژن، کیا",
@@ -40,10 +41,17 @@ export function RepairWorkshopSection() {
     },
     {
       title: "تعمیر آنتن و بردهای الکترونیک",
-      desc: "تعمیر بوستر آنتن، منبع تغذیه، بردهای تغذیه سوئیچینگ و چای‌ساز",
+      desc: "تعمیر بوستر آنتن، منبع تغذیه، بردهای تغذیه سوئیچینگ و دیجیتال",
       icon: Tv,
       badge: "هانی، سیماران، فراز",
       color: "bg-purple-50 text-purple-600 border-purple-100",
+    },
+    {
+      title: "تعمیر سایر وسایل برقی (غیره)",
+      desc: "عیب‌یابی چای‌ساز، جاروبرقی، اتو، محافظ برق، سشوار، دریل و لوازم خانگی",
+      icon: Plug,
+      badge: "خانگی، کارگاهی و متفرقه",
+      color: "bg-emerald-50 text-emerald-600 border-emerald-100",
     },
   ];
 
@@ -60,10 +68,10 @@ export function RepairWorkshopSection() {
             <span>مرکز تخصصی تعمیرات و خدمات فنی شیاسی (نجف‌آباد)</span>
           </span>
           <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
-            تعمیرات تخصصی انواع پنکه، موتور کولر، بخاری برقی و آنتن
+            تعمیرات تخصصی انواع پنکه، موتور کولر، بخاری برقی، آنتن و سایر وسایل برقی
           </h2>
           <p className="text-xs text-slate-300 leading-relaxed">
-            علاوه بر خرید کالا، کارگاه فنی فروشگاه شیاسی در نجف‌آباد مجهز به ابزار دقیق عیب‌یابی و قطعات یدکی اصلی جهت تعمیر و سرویس مطمئن لوازم برقی شماست.
+            علاوه بر خرید کالا، کارگاه فنی فروشگاه شیاسی در نجف‌آباد مجهز به ابزار دقیق عیب‌یابی و قطعات یدکی اصلی جهت تعمیر و سرویس مطمئن انواع لوازم برقی خانگی و کارگاهی شماست.
           </p>
         </div>
 
@@ -78,21 +86,21 @@ export function RepairWorkshopSection() {
         </div>
       </div>
 
-      {/* 4 Repair Service Cards */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 5 Repair Service Cards */}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {services.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.title}
-              className="bg-slate-800/80 rounded-2xl p-5 border border-slate-700/80 hover:border-amber-400/60 transition-all flex flex-col justify-between space-y-3"
+              className="bg-slate-800/80 rounded-2xl p-4 sm:p-5 border border-slate-700/80 hover:border-amber-400/60 transition-all flex flex-col justify-between space-y-3"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className={`w-11 h-11 rounded-2xl ${item.color} flex items-center justify-center`}>
-                    <Icon className="w-6 h-6 stroke-[2]" />
+                  <div className={`w-10 h-10 rounded-2xl ${item.color} flex items-center justify-center`}>
+                    <Icon className="w-5 h-5 stroke-[2]" />
                   </div>
-                  <span className="text-[10px] bg-slate-700 text-slate-300 font-semibold px-2 py-0.5 rounded">
+                  <span className="text-[10px] bg-slate-700 text-slate-300 font-semibold px-2 py-0.5 rounded truncate max-w-[110px]">
                     {item.badge}
                   </span>
                 </div>
@@ -102,7 +110,7 @@ export function RepairWorkshopSection() {
               </div>
 
               <div className="pt-3 border-t border-slate-700/60 flex items-center justify-between text-[11px] text-amber-400 font-bold">
-                <span>تست کارکرد در کارگاه</span>
+                <span>تست در کارگاه</span>
                 <span className="text-slate-400 text-[10px]">نجف‌آباد</span>
               </div>
             </div>

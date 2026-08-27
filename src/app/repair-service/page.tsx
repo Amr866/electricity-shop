@@ -21,6 +21,8 @@ import {
   Tv,
   Cpu,
   Sparkles,
+  Layers,
+  Plug,
 } from "lucide-react";
 
 export default function RepairServicePage() {
@@ -30,6 +32,7 @@ export default function RepairServicePage() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [applianceType, setApplianceType] = useState("پنکه");
+  const [customApplianceName, setCustomApplianceName] = useState("");
   const [brandModel, setBrandModel] = useState("");
   const [issueDesc, setIssueDesc] = useState("");
   const [deliveryType, setDeliveryType] = useState("in_person");
@@ -46,6 +49,11 @@ export default function RepairServicePage() {
     e.preventDefault();
     if (!customerName || !customerPhone || !issueDesc) return;
 
+    const finalApplianceType =
+      applianceType === "سایر وسایل برقی (غیره)" && customApplianceName.trim()
+        ? `سایر: ${customApplianceName.trim()}`
+        : applianceType;
+
     setSubmitting(true);
     try {
       const res = await fetch("/api/repairs", {
@@ -54,7 +62,7 @@ export default function RepairServicePage() {
         body: JSON.stringify({
           customerName,
           customerPhone,
-          applianceType,
+          applianceType: finalApplianceType,
           brandModel,
           issueDesc,
           deliveryType,
@@ -66,6 +74,7 @@ export default function RepairServicePage() {
         setTicketResult(data.repair);
         setCustomerName("");
         setCustomerPhone("");
+        setCustomApplianceName("");
         setBrandModel("");
         setIssueDesc("");
       } else {
@@ -106,7 +115,8 @@ export default function RepairServicePage() {
     { label: "موتور یا پمپ کولر آبی", value: "کولر آبی", icon: Sun },
     { label: "بخاری برقی و هیتر تابشی", value: "بخاری برقی", icon: Flame },
     { label: "آنتن تلویزیون، بوستر و دیجیتال", value: "آنتن و دیجیتال", icon: Tv },
-    { label: "برد الکترونیکی و لوازم خانگی", value: "برد الکترونیکی", icon: Cpu },
+    { label: "برد الکترونیکی و تغذیه", value: "برد الکترونیکی", icon: Cpu },
+    { label: "سایر وسایل برقی و صنعتی (غیره)", value: "سایر وسایل برقی (غیره)", icon: Plug },
   ];
 
   return (
@@ -123,7 +133,7 @@ export default function RepairServicePage() {
             خدمات و کارگاه تعمیرات تخصصی لوازم برقی
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
-            تعمیر و عیب‌یابی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، چای‌ساز و بردهای الکترونیکی در نجف‌آباد اصفهان با ضمانت کارکرد
+            تعمیر و عیب‌یابی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، چای‌ساز، اتو، جاروبرقی، محافظ و سایر وسایل برقی در نجف‌آباد اصفهان با ضمانت کارکرد
           </p>
         </div>
 
@@ -246,13 +256,30 @@ export default function RepairServicePage() {
                                 : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
                             }`}
                           >
-                            <Icon className={`w-4 h-4 ${applianceType === opt.value ? "text-amber-600" : "text-slate-400"}`} />
-                            <span className="truncate">{opt.value}</span>
+                            <Icon className={`w-4 h-4 shrink-0 ${applianceType === opt.value ? "text-amber-600" : "text-slate-400"}`} />
+                            <span className="truncate">{opt.label}</span>
                           </button>
                         );
                       })}
                     </div>
                   </div>
+
+                  {/* Conditional input when 'سایر وسایل برقی (غیره)' is selected */}
+                  {applianceType === "سایر وسایل برقی (غیره)" && (
+                    <div className="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200 animate-in fade-in space-y-1">
+                      <label className="block font-bold text-slate-800 mb-1">
+                        نام یا نوع وسیله برقی خود را مشخص کنید: <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={customApplianceName}
+                        onChange={(e) => setCustomApplianceName(e.target.value)}
+                        placeholder="مثلا: چای‌ساز، جاروبرقی، اتو بخار، محافظ برق، سشوار، دریل برقی، آبمیوه‌گیری..."
+                        className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
@@ -292,7 +319,7 @@ export default function RepairServicePage() {
                       type="text"
                       value={brandModel}
                       onChange={(e) => setBrandModel(e.target.value)}
-                      placeholder="مثلا: پنکه پارس خزر، موتور موتوژن ۱/۲، بخاری اخوان"
+                      placeholder="مثلا: پارس خزر، فیلیپس، تفال، موتوژن، اخوان..."
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
@@ -306,7 +333,7 @@ export default function RepairServicePage() {
                       rows={3}
                       value={issueDesc}
                       onChange={(e) => setIssueDesc(e.target.value)}
-                      placeholder="مثلا: پنکه روشن نمی‌شود، بوی سوختگی می‌دهد، موتور کولر داغ می‌کند و گیرپاژ کرده، المنت بخاری شکسته..."
+                      placeholder="مثلا: روشن نمی‌شود، بوی سوختگی می‌دهد، داغ می‌کند، کلید قطع است، قطع و وصل می‌شود..."
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500 leading-relaxed"
                     />
                   </div>
@@ -436,7 +463,7 @@ export default function RepairServicePage() {
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed">
-                نجف‌آباد اصفهان، پذیرش انواع لوازم خانگی برقی، سیم‌پیچی موتور کولر و پنکه، تعویض المنت بخاری، تعمیر برد و آنتن.
+                نجف‌آباد اصفهان، پذیرش انواع لوازم خانگی برقی، پنکه، موتور کولر، بخاری، آنتن، چای‌ساز، اتو، جاروبرقی، محافظ و بردهای الکترونیک.
               </p>
 
               <div className="space-y-2 text-xs text-slate-200 pt-1">

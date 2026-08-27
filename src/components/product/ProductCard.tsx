@@ -128,7 +128,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="truncate">{product.category?.name || "تجهیزات برق"}</span>
             {product.brand && (
               <span className="font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200/60 dark:border-amber-800/60 shrink-0">
-                {product.brand}
+                {product.brand.replace(/\s*\(.*?\)/g, "")}
               </span>
             )}
           </div>

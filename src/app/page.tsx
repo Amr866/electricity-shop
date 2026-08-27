@@ -11,8 +11,7 @@ import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Zap, ArrowLeft, Star, Sparkles, TrendingUp, Wrench } from "lucide-react";
-import { toPersianDigits } from "@/lib/utils";
+import { ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
 
 // Server Component: Fetch Data directly from PostgreSQL
 async function getHomeData() {
@@ -49,7 +48,7 @@ async function getHomeData() {
             category: true,
             images: true,
           },
-          take: 5,
+          take: 6,
         }),
         prisma.review.findMany({
           take: 3,
@@ -91,29 +90,26 @@ export default async function HomePage() {
   } = await getHomeData();
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 sm:space-y-8 pb-12">
       {/* 1. Hero Section for Shiasi Store Najafabad (Sales & Repair Workshop) */}
       <HeroBanner />
 
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
-        {/* 2. Core Categories Grid (Cooling/Heating Appliances, Wiring, Lighting, Electronics) */}
-        <CategoryGrid categories={categories} />
-
-        {/* 3. Dedicated Repair Workshop Showcase (Fans, Coolers, Heaters, Antennas) */}
-        <RepairWorkshopSection />
-
-        {/* 4. Amazing Offers & Special Discounts Banner */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
+        {/* 2. Amazing Offers & Special Discounts Banner (Placed high for conversion) */}
         <AmazingOffersBanner products={discountedProducts} />
 
-        {/* 5. Best Selling Products Section (پرفروش‌ترین کالاها) */}
-        <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+        {/* 3. Core Categories Grid with Real Photos (Cooling/Heating Appliances, Wiring, Lighting, Electronics) */}
+        <CategoryGrid categories={categories} />
+
+        {/* 4. Best Selling Products Section (پرفروش‌ترین کالاها) */}
+        <section className="py-6 sm:py-8 bg-white rounded-3xl p-4 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                   <TrendingUp className="w-5 h-5" />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900">
                   پرفروش‌ترین کالاها و تجهیزات برقی
                 </h2>
               </div>
@@ -131,33 +127,36 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             {bestSellers.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
 
+        {/* 5. Dedicated Repair Workshop Showcase (Fans, Coolers, Heaters, Antennas, Other Appliances) */}
+        <RepairWorkshopSection />
+
         {/* 6. Smart Lighting & Power Selection Wizard */}
         <LightingWizard />
 
-        {/* 7. Specialist Technical Consultation & Multi-line Support */}
+        {/* 7. Local Fast Delivery in Najafabad & Google Maps Location */}
+        <IsfahanBanner />
+
+        {/* 8. Specialist Technical Consultation & Multi-line Support */}
         <ConsultationBanner />
 
-        {/* 8. Brand Logos Row */}
+        {/* 9. Brand Logos Row */}
         <BrandLogosRow />
 
-        {/* 9. Lighting & Electronics Knowledge Base */}
+        {/* 10. Lighting & Electronics Knowledge Base */}
         <KnowledgeBaseSection />
-
-        {/* 10. Local Fast Delivery in Najafabad & Google Maps Location */}
-        <IsfahanBanner />
 
         {/* 11. Customer Reviews & Feedback */}
         {reviews.length > 0 && (
-          <section className="py-6">
-            <div className="text-center max-w-xl mx-auto mb-8">
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
+          <section className="py-4 sm:py-6">
+            <div className="text-center max-w-xl mx-auto mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
                 <span>نظرات مشتریان و خریداران</span>
                 <Sparkles className="w-5 h-5 text-amber-500" />
               </h2>
@@ -166,7 +165,7 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               {reviews.map((rev) => (
                 <div
                   key={rev.id}

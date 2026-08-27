@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import {
   formatToman,
@@ -27,18 +28,25 @@ import {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const { items, itemCount, subtotal, discount, total, clearCart } = useCart();
 
   // Form states
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerName, setCustomerName] = useState(session?.user?.name || "");
+  const [customerPhone, setCustomerPhone] = useState((session?.user as any)?.phone || "");
   const [customerEmail, setCustomerEmail] = useState("");
   const [province, setProvince] = useState("اصفهان");
-  const [city, setCity] = useState("اصفهان");
-  const [district, setDistrict] = useState(ISFAHAN_DISTRICTS[2]); // Default: منطقه ۳ (فردوسی)
+  const [city, setCity] = useState("نجف‌آباد");
+  const [district, setDistrict] = useState("نجف‌آباد - مرکز");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Corporate Invoice States
+  const [isCorporate, setIsCorporate] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [nationalCode, setNationalCode] = useState("");
+  const [economicCode, setEconomicCode] = useState("");
 
   const [selectedShipping, setSelectedShipping] = useState("isfahan_express");
   const [selectedPayment, setSelectedPayment] = useState("zarinpal");
@@ -82,12 +90,15 @@ export default function CheckoutPage() {
       return;
     }
 
+    // 4. Corporate fields validation
+    if (isCorporate && (!companyName.trim() || !nationalCode.trim())) {
+      setErrorMsg("برای صدور فاکتور رسمی حقوقی، وارد کردن نام شرکت و شناسه ملی الزامی است.");
+      return;
+    }
+
     setSubmitting(true);
 
-    const fullAddress =
-      province === "اصفهان"
-        ? `${province}، ${city} (${district}) - ${address}`
-        : `${province}، ${city} - ${address}`;
+    const fullAddress = `${province}، ${city} - ${address}`;
 
     try {
       const res = await fetch("/api/checkout", {
@@ -97,10 +108,15 @@ export default function CheckoutPage() {
           customerName,
           customerPhone: cleanPhone,
           customerEmail,
+          userId: (session?.user as any)?.id || null,
           province,
           city,
           postalCode: cleanPostal || null,
           address: fullAddress,
+          isCorporate,
+          companyName: isCorporate ? companyName : null,
+          nationalCode: isCorporate ? nationalCode : null,
+          economicCode: isCorporate ? economicCode : null,
           shippingMethod: selectedShipping,
           shippingCost,
           paymentMethod: selectedPayment,
@@ -155,10 +171,10 @@ export default function CheckoutPage() {
         <div className="mb-6">
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-emerald-600" />
-            <span>ثبت نهایی سفارش و اطلاعات ارسال</span>
+            <span>ثبت نهایی سفارش و اطلاعات ارسال (فروشگاه شیاسی)</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            تحویل اختصاصی در اصفهان (اسنپ‌باکس)، تحویل حضوری در خیابان فردوسی، یا تیپاکس سراسر ایران
+            تحویل اختصاصی در نجف‌آباد، ویلاشهر، گلدشت و اصفهان (اسنپ‌باکس)، یا تیپاکس سراسر ایران
           </p>
         </div>
 
@@ -185,7 +201,7 @@ export default function CheckoutPage() {
                       required
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      placeholder="مثال: مهندس محمد رضایی"
+                      placeholder="مثال: علیرضا شیاسی"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
                     />
                   </div>
@@ -217,45 +233,25 @@ export default function CheckoutPage() {
                       <option value="اصفهان">اصفهان</option>
                       <option value="تهران">تهران</option>
                       <option value="فارس">فارس</option>
-                      <option value="خراسان رضوی">خراسان رضوی</option>
-                      <option value="یزد">یزد</option>
                       <option value="چهارمحال و بختیاری">چهارمحال و بختیاری</option>
+                      <option value="یزد">یزد</option>
                       <option value="سایر استان‌ها">سایر استان‌ها</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                      شهر <span className="text-rose-500">*</span>
+                      شهر / منطقه <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      placeholder="مثال: اصفهان"
+                      placeholder="مثال: نجف‌آباد"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
                     />
                   </div>
-
-                  {province === "اصفهان" && (
-                    <div className="sm:col-span-2">
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                        منطقه / محله در شهر اصفهان <span className="text-rose-500">*</span>
-                      </label>
-                      <select
-                        value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
-                      >
-                        {ISFAHAN_DISTRICTS.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
                 </div>
 
                 <div>
@@ -267,7 +263,7 @@ export default function CheckoutPage() {
                     rows={2}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="مثال: خیابان بزرگمهر، خیابان ۲۲ بهمن، مجتمع نگین، طبقه ۲، واحد ۴"
+                    placeholder="مثال: نجف‌آباد، خیابان امام شرقی، کوچه بهار، پلاک ۲۴"
                     className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white leading-relaxed"
                   />
                 </div>
@@ -300,10 +296,66 @@ export default function CheckoutPage() {
                       type="text"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="مثال: لطفاً فاکتور رسمی بگذارید"
+                      placeholder="مثال: تحویل عصر"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
                     />
                   </div>
+                </div>
+
+                {/* Corporate / Official Invoice Checkbox */}
+                <div className="pt-2 border-t border-slate-100 space-y-3">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800">
+                    <input
+                      type="checkbox"
+                      checked={isCorporate}
+                      onChange={(e) => setIsCorporate(e.target.checked)}
+                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500"
+                    />
+                    <span>درخواست صدور فاکتور رسمی / حقوقی (دارای شناسه ملی و کد اقتصادی)</span>
+                  </label>
+
+                  {isCorporate && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-amber-50/50 p-3.5 rounded-2xl border border-amber-200 animate-in fade-in">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          نام رسمی شرکت / ارگان: <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required={isCorporate}
+                          value={companyName}
+                          onChange={(e) => setCompanyName(e.target.value)}
+                          placeholder="نام شرکت"
+                          className="w-full bg-white border border-slate-200 text-xs rounded-xl p-2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          شناسه / کد ملی: <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required={isCorporate}
+                          value={nationalCode}
+                          onChange={(e) => setNationalCode(e.target.value)}
+                          placeholder="شناسه ملی ۱۱ رقمی"
+                          className="w-full bg-white border border-slate-200 text-xs rounded-xl p-2 font-mono text-left"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          کد اقتصادی ۱۲ رقمی:
+                        </label>
+                        <input
+                          type="text"
+                          value={economicCode}
+                          onChange={(e) => setEconomicCode(e.target.value)}
+                          placeholder="کد اقتصادی"
+                          className="w-full bg-white border border-slate-200 text-xs rounded-xl p-2 font-mono text-left"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -403,9 +455,9 @@ export default function CheckoutPage() {
                 {/* Conditional Card-to-Card Info Box */}
                 {selectedPayment === "card_to_card" && (
                   <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-2 text-xs text-blue-950">
-                    <span className="font-bold block">اطلاعات حساب فروشگاه نقش جهان:</span>
+                    <span className="font-bold block">اطلاعات حساب فروشگاه شیاسی (نجف‌آباد):</span>
                     <p>شماره کارت بانک ملی: <strong className="font-mono text-blue-900">۶۰۳۷-۹۹۷۵-۱۲۳۴-۵۶۷۸</strong></p>
-                    <p>به نام: <strong>فروشگاه الکتریک نقش جهان (رضایی)</strong></p>
+                    <p>به نام: <strong>فروشگاه شیاسی</strong></p>
                     <div className="pt-2">
                       <label className="block text-[11px] font-bold text-slate-700 mb-1">
                         شماره پیگیری واریز یا ۴ رقم آخر کارت شما:
@@ -414,7 +466,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={cardReceiptProof}
                         onChange={(e) => setCardReceiptProof(e.target.value)}
-                        placeholder="مثال: پیگیری ۹۸۲۳۴۱ یا بانک سامان ۴۵۶۷"
+                        placeholder="مثال: پیگیری ۹۸۲۳۴۱"
                         className="w-full bg-white border border-blue-300 text-xs rounded-xl px-3 py-2 text-slate-900"
                       />
                     </div>
@@ -512,7 +564,7 @@ export default function CheckoutPage() {
                 <div className="pt-1 text-center">
                   <p className="text-[11px] text-slate-400 flex items-center justify-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    پرداخت امن و تضمین تحویل توسط فروشگاه نقش جهان
+                    پرداخت امن و تضمین تحویل توسط فروشگاه شیاسی
                   </p>
                 </div>
               </div>

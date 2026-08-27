@@ -8,10 +8,15 @@ export async function POST(req: NextRequest) {
       customerName,
       customerPhone,
       customerEmail,
+      userId,
       province,
       city,
       postalCode,
       address,
+      isCorporate,
+      companyName,
+      economicCode,
+      nationalCode,
       shippingMethod,
       shippingCost,
       paymentMethod,
@@ -30,16 +35,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate unique Persian order number: NJ-YYMMDD-XXX
+    // Generate unique order number: SH-YYMMDD-XXX
     const randomSuffix = Math.floor(100 + Math.random() * 900);
-    const orderNumber = `NJ-${Date.now().toString().slice(-6)}-${randomSuffix}`;
+    const orderNumber = `SH-${Date.now().toString().slice(-6)}-${randomSuffix}`;
 
     // Determine initial status
     let paymentStatus = "PENDING";
     let orderStatus = "PENDING";
 
     if (paymentMethod === "cod_isfahan") {
-      paymentStatus = "PENDING"; // Paid upon delivery in Isfahan
+      paymentStatus = "PENDING";
       orderStatus = "PROCESSING";
     }
 
@@ -49,10 +54,15 @@ export async function POST(req: NextRequest) {
         customerName,
         customerPhone,
         customerEmail: customerEmail || null,
+        userId: userId || null,
         province: province || "اصفهان",
-        city: city || "اصفهان",
+        city: city || "نجف‌آباد",
         postalCode: postalCode || null,
         address,
+        isCorporate: Boolean(isCorporate),
+        companyName: companyName || null,
+        economicCode: economicCode || null,
+        nationalCode: nationalCode || null,
         shippingMethod: shippingMethod || "isfahan_express",
         shippingCost: shippingCost || 0,
         paymentMethod: paymentMethod || "zarinpal",

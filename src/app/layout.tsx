@@ -8,6 +8,7 @@ import { BrandDemoFloatingPill } from "@/components/brand/BrandDemoFloatingPill"
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -22,19 +23,19 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "فروشگاه تخصصی شیاسی | مرجع کالای برق، روشنایی، اتوماسیون و الکترونیک",
+  title: "فروشگاه تخصصی شیاسی | خرید و تعمیرات لوازم برقی، پنکه، کولر، بخاری، آنتن و روشنایی در نجف‌آباد",
   description:
-    "مرکز پخش و فروش عمده و خرد انواع سیم و کابل استاندارد ساختمانی، پنل‌های روشنایی LED، پروژکتورهای خورشیدی، تجهیزات برق صنعتی و قطعات الکترونیک و آردوینو.",
+    "مرکز پخش، خرید آنلاین و کارگاه تعمیرات تخصصی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل استاندارد تمام مس، پنل‌های روشنایی LED و قطعات الکترونیک در نجف‌آباد و اصفهان.",
   keywords: [
     "فروشگاه شیاسی",
-    "شیاسی استور",
+    "تعمیر پنکه نجف آباد",
+    "موتور کولر نجف آباد",
+    "تعمیر بخاری برقی نجف آباد",
     "کالای برق شیاسی",
-    "الکتریکی اصفهان",
-    "ادیسون کالا",
+    "الکتریکی نجف آباد",
+    "تعمیرات لوازم برقی نجف آباد",
     "خرید سیم و کابل",
-    "قطعات الکترونیک و آردوینو",
-    "پروژکتور خورشیدی",
-    "کلید و پریز"
+    "آنتن تلویزیون هانی"
   ],
   authors: [{ name: "فروشگاه تخصصی شیاسی" }],
 };
@@ -55,17 +56,19 @@ export default function RootLayout({
         className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans pb-16 md:pb-0`}
         suppressHydrationWarning
       >
-        <BrandProvider>
-          <WishlistProvider>
-            <CartProvider>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <MobileBottomNav />
-              <BrandDemoFloatingPill />
-            </CartProvider>
-          </WishlistProvider>
-        </BrandProvider>
+        <AuthProvider>
+          <BrandProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <MobileBottomNav />
+                <BrandDemoFloatingPill />
+              </CartProvider>
+            </WishlistProvider>
+          </BrandProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -7,6 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  phone         String          @unique // Mobile number (e.g. 09131112233)
+  email         String?         @unique
+  password      String?
+  role          String          @default("CUSTOMER") // CUSTOMER, ADMIN
+  address       String?
+  city          String?         @default("نجف‌آباد")
+  postalCode    String?
+  nationalCode  String?         // For legal/corporate invoice
+  companyName   String?         // For legal invoice
+  economicCode  String?         // For legal invoice
+  isVerified    Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  orders        Order[]
+  repairs       RepairRequest[]
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String   // 5-digit OTP code (e.g. 84219)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([phone, code])
+}
+
 model Category {
   id          String    @id @default(cuid())
   name        String
@@ -40,6 +70,9 @@ model Product {
   madeIn          String?        @default("ایران")
   rating          Float          @default(4.8)
   reviewCount     Int            @default(0)
+  datasheetUrl    String?        // PDF Datasheet download link
+  mpn             String?        // Manufacturer Part Number (e.g. ESP32-WROOM-32D, NE555)
+  moq             Int            @default(1) // Minimum Order Quantity
   categoryId      String
   category        Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   images          ProductImage[]
@@ -85,10 +118,16 @@ model Order {
   customerName   String
   customerPhone  String
   customerEmail  String?
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   province       String      @default("اصفهان")
   city           String      @default("نجف‌آباد")
   postalCode     String?
   address        String
+  isCorporate    Boolean     @default(false) // فاکتور رسمی / حقوقی
+  companyName    String?
+  economicCode   String?
+  nationalCode   String?
   shippingMethod String      // isfahan_express, najafabad_pickup, tipax, post_pishtaz
   shippingCost   Int         @default(0)
   paymentMethod  String      // zarinpal, cod_isfahan, card_to_card
@@ -124,6 +163,8 @@ model RepairRequest {
   trackingCode  String   @unique // e.g. REP-1403-082
   customerName  String
   customerPhone String
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   applianceType String   // پنکه، کولر آبی، بخاری برقی، آنتن، چای‌ساز، برد الکترونیکی، سایر
   brandModel    String?  // مثلا: پارس خزر، موتوژن، اخوان، هانی
   issueDesc     String   // شرح خرابی

@@ -6,7 +6,6 @@ import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { RepairWorkshopSection } from "@/components/home/RepairWorkshopSection";
 import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
 import { LightingWizard } from "@/components/home/LightingWizard";
-import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
 import { ConsultationBanner } from "@/components/home/ConsultationBanner";
 import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
@@ -18,7 +17,7 @@ import { toPersianDigits } from "@/lib/utils";
 // Server Component: Fetch Data directly from PostgreSQL
 async function getHomeData() {
   try {
-    const [categories, allProducts, featuredProducts, bestSellers, discountedProducts, reviews] =
+    const [categories, featuredProducts, bestSellers, discountedProducts, reviews] =
       await Promise.all([
         prisma.category.findMany({
           orderBy: { sortOrder: "asc" },
@@ -26,13 +25,6 @@ async function getHomeData() {
             _count: {
               select: { products: true },
             },
-          },
-        }),
-        prisma.product.findMany({
-          orderBy: { createdAt: "desc" },
-          include: {
-            category: true,
-            images: true,
           },
         }),
         prisma.product.findMany({
@@ -72,7 +64,6 @@ async function getHomeData() {
 
     return {
       categories,
-      allProducts,
       featuredProducts,
       bestSellers,
       discountedProducts,
@@ -82,7 +73,6 @@ async function getHomeData() {
     console.error("Error fetching home data:", error);
     return {
       categories: [],
-      allProducts: [],
       featuredProducts: [],
       bestSellers: [],
       discountedProducts: [],
@@ -94,7 +84,6 @@ async function getHomeData() {
 export default async function HomePage() {
   const {
     categories,
-    allProducts,
     featuredProducts,
     bestSellers,
     discountedProducts,
@@ -107,7 +96,7 @@ export default async function HomePage() {
       <HeroBanner />
 
       <div className="max-w-7xl mx-auto px-4 space-y-8">
-        {/* 2. Core Categories Grid (Including Cooling/Heating Appliances, Wiring, Lighting, Electronics) */}
+        {/* 2. Core Categories Grid (Cooling/Heating Appliances, Wiring, Lighting, Electronics) */}
         <CategoryGrid categories={categories} />
 
         {/* 3. Dedicated Repair Workshop Showcase (Fans, Coolers, Heaters, Antennas) */}
@@ -116,16 +105,7 @@ export default async function HomePage() {
         {/* 4. Amazing Offers & Special Discounts Banner */}
         <AmazingOffersBanner products={discountedProducts} />
 
-        {/* 5. Smart Lighting & Power Selection Wizard */}
-        <LightingWizard />
-
-        {/* 6. Direct All Items Catalog with Live Tabs */}
-        <InteractiveHomeCatalog products={allProducts} categories={categories} />
-
-        {/* 7. Specialist Technical Consultation & Multi-line Support */}
-        <ConsultationBanner />
-
-        {/* 8. Best Selling Products Section */}
+        {/* 5. Best Selling Products Section (پرفروش‌ترین کالاها) */}
         <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
@@ -134,11 +114,11 @@ export default async function HomePage() {
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                  پرفروش‌ترین کالاها و لوازم برقی
+                  پرفروش‌ترین کالاها و تجهیزات برقی
                 </h2>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                پنکه، موتور کولر، بخاری برقی، سیم و کابل و اقلام پرمصرف مشتریان نجف‌آباد و اصفهان
+                اقلام پرمصرف و پرفروش مشتریان در نجف‌آباد و سراسر کشور
               </p>
             </div>
 
@@ -158,16 +138,22 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 9. Brand Logos Row */}
+        {/* 6. Smart Lighting & Power Selection Wizard */}
+        <LightingWizard />
+
+        {/* 7. Specialist Technical Consultation & Multi-line Support */}
+        <ConsultationBanner />
+
+        {/* 8. Brand Logos Row */}
         <BrandLogosRow />
 
-        {/* 10. Lighting & Electronics Knowledge Base */}
+        {/* 9. Lighting & Electronics Knowledge Base */}
         <KnowledgeBaseSection />
 
-        {/* 11. Local Fast Delivery in Najafabad & Google Maps Location */}
+        {/* 10. Local Fast Delivery in Najafabad & Google Maps Location */}
         <IsfahanBanner />
 
-        {/* 12. Customer Reviews & Feedback */}
+        {/* 11. Customer Reviews & Feedback */}
         {reviews.length > 0 && (
           <section className="py-6">
             <div className="text-center max-w-xl mx-auto mb-8">

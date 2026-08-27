@@ -7,12 +7,10 @@ import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
   Zap,
-  Flame,
   ArrowLeft,
   Heart,
   ShoppingCart,
   Star,
-  Check,
 } from "lucide-react";
 
 interface AmazingOffersBannerProps {
@@ -88,43 +86,41 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
   ];
 
   return (
-    <section className="bg-gradient-to-l from-rose-600 via-rose-500 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-2xl space-y-6 relative overflow-hidden">
+    <section className="bg-gradient-to-l from-rose-600 via-rose-500 to-amber-500 rounded-3xl p-4 sm:p-7 text-white shadow-xl space-y-4 sm:space-y-6 relative overflow-hidden">
       
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between gap-4">
-        
+      <div className="flex items-center justify-between gap-3">
         {/* Left: View All Button */}
         <Link
           href="/products?bestseller=true"
-          className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm px-5 py-2.5 rounded-2xl transition-all shadow-md flex items-center gap-1.5 active:scale-95"
+          className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all shadow-md flex items-center gap-1 active:scale-95 shrink-0"
         >
           <span>مشاهده همه</span>
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
         </Link>
 
         {/* Right: Amazing Offers Title */}
-        <div className="flex items-center gap-3 text-right">
+        <div className="flex items-center gap-2.5 sm:gap-3 text-right">
           <div>
-            <span className="inline-block bg-white/20 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full backdrop-blur-md mb-1">
+            <span className="inline-block bg-white/20 text-white text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full backdrop-blur-md mb-0.5 sm:mb-1">
               • فروش ویژه امروز
             </span>
-            <h3 className="font-black text-xl sm:text-2xl text-white">
+            <h3 className="font-black text-base sm:text-2xl text-white">
               پیشنهادهای شگفت‌انگیز
             </h3>
-            <p className="text-[11px] text-white/90 font-medium">
+            <p className="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-1">
               تخفیف‌های محدود امروز را از دست ندهید
             </p>
           </div>
 
-          <div className="w-12 h-12 rounded-2xl bg-white text-rose-600 flex items-center justify-center shadow-lg shrink-0">
-            <Zap className="w-7 h-7 fill-rose-600" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white text-rose-600 flex items-center justify-center shadow-lg shrink-0">
+            <Zap className="w-5 h-5 sm:w-7 sm:h-7 fill-rose-600" />
           </div>
         </div>
-
       </div>
 
-      {/* Horizontal Carousel Cards Grid */}
-      <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 pb-2 sm:pb-0 scrollbar-thin">
+      {/* Horizontal Carousel Cards Grid (Compact & Sleek on Mobile) */}
+      <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4 pb-2 sm:pb-0 scrollbar-thin">
         {deals.map((deal: any) => {
           const isFav = isInWishlist(deal.id);
           const primaryImg =
@@ -135,31 +131,31 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
           return (
             <div
               key={deal.id}
-              className="group bg-white rounded-3xl p-4 text-slate-900 border border-white/40 shadow-lg flex flex-col justify-between space-y-3 hover:-translate-y-1 transition-all duration-300 min-w-[230px] sm:min-w-0 shrink-0 sm:shrink"
+              className="group bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 text-slate-900 border border-white/40 shadow-md flex flex-col justify-between space-y-2 hover:-translate-y-1 transition-all duration-300 min-w-[150px] max-w-[165px] sm:min-w-0 sm:max-w-none shrink-0 sm:shrink"
             >
               <div>
                 {/* Top Badges: Discount pill + Heart */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="bg-rose-500 text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-sm">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="bg-rose-500 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full shadow-sm">
                     {toPersianDigits(deal.discountPercent || 15)}٪
                   </span>
 
                   <button
                     onClick={() => toggleWishlist(deal)}
-                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+                    className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-colors ${
                       isFav
                         ? "text-rose-500 bg-rose-50"
                         : "text-slate-400 hover:text-rose-500 hover:bg-slate-100"
                     }`}
                   >
-                    <Heart className={`w-4 h-4 ${isFav ? "fill-rose-500" : ""}`} />
+                    <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-rose-500" : ""}`} />
                   </button>
                 </div>
 
                 {/* Image */}
                 <Link
                   href={`/products/${deal.slug}`}
-                  className="aspect-square w-full rounded-2xl bg-slate-50 p-3 flex items-center justify-center overflow-hidden block mb-2"
+                  className="aspect-square w-full rounded-xl sm:rounded-2xl bg-slate-50 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5"
                 >
                   <img
                     src={primaryImg}
@@ -169,47 +165,47 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                 </Link>
 
                 {/* Brand & Name */}
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-400 font-semibold block">
+                <div className="space-y-0.5 sm:space-y-1">
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 font-semibold block truncate">
                     {deal.brand || deal.category?.name || "روشنایی"}
                   </span>
                   <Link
                     href={`/products/${deal.slug}`}
-                    className="font-extrabold text-xs text-slate-900 group-hover:text-rose-600 transition-colors line-clamp-2 leading-snug h-8"
+                    className="font-bold text-[11px] sm:text-xs text-slate-900 group-hover:text-rose-600 transition-colors line-clamp-2 leading-snug h-7 sm:h-8"
                   >
                     {deal.name}
                   </Link>
                 </div>
 
-                {/* Category tag pill */}
-                <div className="pt-1.5 flex items-center justify-between">
-                  <span className="bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                {/* Rating */}
+                <div className="pt-1 flex items-center justify-between text-[9px] sm:text-[10px]">
+                  <span className="text-slate-500 truncate max-w-[80px]">
                     {deal.categoryName || deal.category?.name || "کالای برق"}
                   </span>
-                  <div className="flex items-center gap-0.5 text-amber-500 text-[10px] font-bold">
-                    <Star className="w-3 h-3 fill-amber-400" />
+                  <div className="flex items-center gap-0.5 text-amber-500 font-bold">
+                    <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
                     <span>{toPersianDigits(deal.rating || 4.9)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Bottom: Cart button & Price in Toman */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-1">
                 <button
                   onClick={() => addToCart(deal, 1)}
-                  className="w-8 h-8 rounded-xl bg-amber-100 hover:bg-amber-500 text-amber-800 hover:text-slate-950 flex items-center justify-center transition-all shadow-sm"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-amber-100 hover:bg-amber-500 text-amber-900 hover:text-slate-950 flex items-center justify-center transition-all shadow-sm shrink-0"
                   title="افزودن به سبد"
                 >
-                  <ShoppingCart className="w-4 h-4" />
+                  <ShoppingCart className="w-3.5 h-3.5" />
                 </button>
 
-                <div className="text-left">
+                <div className="text-left leading-tight">
                   {deal.originalPrice && deal.originalPrice > deal.price && (
-                    <span className="text-[10px] text-slate-400 line-through block">
+                    <span className="text-[9px] sm:text-[10px] text-slate-400 line-through block">
                       {formatToman(deal.originalPrice)}
                     </span>
                   )}
-                  <span className="font-black text-xs sm:text-sm text-slate-950 block">
+                  <span className="font-extrabold text-[10px] sm:text-xs text-slate-950 block">
                     {formatToman(deal.price)}
                   </span>
                 </div>

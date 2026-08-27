@@ -66,8 +66,8 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
         </Link>
       </div>
 
-      {/* Categories Grid with Photos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Categories Grid (2x2 on mobile, 4 in a row on desktop) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {categories.map((cat) => {
           const bgImage =
             cat.image ||

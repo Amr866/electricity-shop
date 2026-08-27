@@ -123,10 +123,11 @@ a, button, .interactive-card {
 
 /* Print styles for Invoice */
 @media print {
-  body * {
+  body:has(#printable-invoice) * {
     visibility: hidden;
   }
-  #printable-invoice, #printable-invoice * {
+  body:has(#printable-invoice) #printable-invoice,
+  body:has(#printable-invoice) #printable-invoice * {
     visibility: visible;
   }
   #printable-invoice {

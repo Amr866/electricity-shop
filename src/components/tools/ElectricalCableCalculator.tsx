@@ -23,7 +23,7 @@ export function ElectricalCableCalculator() {
   const [phaseType, setPhaseType] = useState<"single" | "three">("single"); // 220V vs 380V
   const [loadPowerWatts, setLoadPowerWatts] = useState<number>(3500); // in Watts
   const [distanceMeters, setDistanceMeters] = useState<number>(25); // in Meters
-  const [appliancePreset, setAppliancePreset] = useState<string>("cooler_motor");
+  const [appliancePreset, setAppliancePreset] = useState<string>("split_ac");
   const [addedToCart, setAddedToCart] = useState(false);
 
   // Presets
@@ -100,7 +100,9 @@ export function ElectricalCableCalculator() {
       ? 16500
       : recommendedGauge === 4.0
       ? 28000
-      : 42000;
+      : recommendedGauge === 6.0
+      ? 42000
+      : 68000;
 
   const totalCableCost = cableMeterPrice * distanceMeters;
   const fuseCost = 145000;
@@ -178,7 +180,7 @@ export function ElectricalCableCalculator() {
       {/* Form Controls */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
         {/* Input 1: Phase Type */}
-        <div className="p-4 bg-slate-850/80 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
+        <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
           <label className="text-xs font-bold text-slate-300 block">
             نوع برق ورودی:
           </label>

@@ -11,7 +11,7 @@ import {
   Layers,
   ArrowLeft,
 } from "lucide-react";
-import { toPersianDigits } from "@/lib/utils";
+import { toPersianDigits, toAsciiDigits } from "@/lib/utils";
 
 interface ProductExcelImportModalProps {
   isOpen: boolean;
@@ -69,11 +69,14 @@ export function ProductExcelImportModal({
           : line.split(",");
 
         if (parts.length >= 3) {
+          const rawPrice = toAsciiDigits(parts[2] || "").replace(/\D/g, "");
+          const rawStock = toAsciiDigits(parts[3] || "").replace(/\D/g, "");
+
           products.push({
             name: parts[0]?.trim(),
             sku: parts[1]?.trim() || undefined,
-            price: Number(parts[2]?.replace(/\D/g, "")),
-            stock: parts[3] ? Number(parts[3].replace(/\D/g, "")) : 10,
+            price: rawPrice ? Number(rawPrice) : 0,
+            stock: rawStock ? Number(rawStock) : 10,
             brand: parts[4]?.trim() || "متفرقه",
             categoryName: parts[5]?.trim() || "پنکه، کولر و بخاری برقی",
             categorySlug: parts[6]?.trim() || "home-appliances-cooling-heating",

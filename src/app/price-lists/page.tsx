@@ -185,11 +185,18 @@ export default function PriceListsPage() {
 
       {/* Price Lists Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredLists.map((item) => (
-          <div
-            key={item.id}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-md transition-all flex flex-col justify-between space-y-4"
-          >
+        {filteredLists.length === 0 ? (
+          <div className="col-span-full py-12 text-center text-slate-500 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-2">
+            <p className="font-bold text-sm text-slate-700 dark:text-slate-300">هیچ لیست قیمتی مطابق با جستجوی شما یافت نشد.</p>
+            <p className="text-xs text-slate-400">می‌توانید کلمه جستجو یا دسته‌بندی انتخابی را تغییر دهید.</p>
+          </div>
+        ) : (
+          filteredLists.map((item) => (
+            <div
+              key={item.id}
+              id={item.id.replace("-1403", "")}
+              className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-md transition-all flex flex-col justify-between space-y-4 scroll-mt-24"
+            >
             <div className="space-y-3">
               {/* Brand and Category Badges */}
               <div className="flex items-center justify-between">
@@ -238,7 +245,7 @@ export default function PriceListsPage() {
               </button>
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       {/* Bottom Contractor Callout Banner */}

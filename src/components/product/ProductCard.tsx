@@ -116,7 +116,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Product Image Container */}
         <Link
           href={`/products/${product.slug}`}
-          className="block relative aspect-square w-full overflow-hidden bg-slate-50 p-6"
+          className="block relative aspect-square w-full overflow-hidden bg-slate-50 p-4"
         >
           <img
             src={primaryImage}

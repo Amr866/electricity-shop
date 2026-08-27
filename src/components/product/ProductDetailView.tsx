@@ -147,11 +147,11 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Col (on desktop): Images & Gallery */}
-        <div className="lg:col-span-5 space-y-4">
-          {/* Main Large Image */}
-          <div className="relative aspect-square rounded-2xl bg-slate-50 border border-slate-100 p-6 flex items-center justify-center overflow-hidden">
+        <div className="lg:col-span-4 space-y-3">
+          {/* Main Image Container */}
+          <div className="relative aspect-square max-h-[320px] mx-auto rounded-2xl bg-slate-50 border border-slate-100 p-4 flex items-center justify-center overflow-hidden">
             {product.discountPercent && product.discountPercent > 0 ? (
-              <span className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-extrabold px-2.5 py-1 rounded-full shadow-md z-10">
+              <span className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-md z-10">
                 {toPersianDigits(product.discountPercent)}٪ تخفیف
               </span>
             ) : null}
@@ -159,13 +159,13 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
             {/* Wishlist Heart Button */}
             <button
               onClick={() => toggleWishlist(product)}
-              className={`absolute top-4 left-4 w-9 h-9 rounded-full flex items-center justify-center z-10 transition-all shadow-md ${
+              className={`absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all shadow-md ${
                 isFavorited
                   ? "bg-rose-50 text-rose-500 border border-rose-200"
                   : "bg-white/90 text-slate-400 hover:text-rose-500 border border-slate-200"
               }`}
             >
-              <Heart className={`w-4 h-4 ${isFavorited ? "fill-rose-500" : ""}`} />
+              <Heart className={`w-3.5 h-3.5 ${isFavorited ? "fill-rose-500" : ""}`} />
             </button>
 
             <img
@@ -175,17 +175,17 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
             />
           </div>
 
-          {/* Thumbnails list */}
+          {/* Compact Thumbnails list menu */}
           {product.images && product.images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-1">
+            <div className="flex items-center justify-center gap-2 overflow-x-auto pb-1">
               {product.images.map((img) => (
                 <button
                   key={img.id}
                   onClick={() => setSelectedImage(img.url)}
-                  className={`w-18 h-18 aspect-square rounded-xl p-1 bg-slate-50 border-2 transition-all shrink-0 ${
+                  className={`w-12 h-12 aspect-square rounded-lg p-0.5 bg-slate-50 border-2 transition-all shrink-0 overflow-hidden ${
                     selectedImage === img.url
-                      ? "border-amber-500 ring-2 ring-amber-500/20"
-                      : "border-slate-200 hover:border-slate-300"
+                      ? "border-amber-500 ring-2 ring-amber-500/20 scale-105"
+                      : "border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100"
                   }`}
                 >
                   <img
@@ -212,7 +212,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
         </div>
 
         {/* Right Col: Product Info & Purchasing Actions */}
-        <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-8 flex flex-col justify-between space-y-6">
           
           {/* Top Attributes */}
           <div className="space-y-3">

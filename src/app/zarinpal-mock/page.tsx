@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
@@ -14,7 +14,7 @@ import {
   Zap,
 } from "lucide-react";
 
-export default function ZarinpalMockPage() {
+function ZarinpalMockContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -217,5 +217,13 @@ export default function ZarinpalMockPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function ZarinpalMockPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center text-xs">در حال بارگذاری درگاه پرداخت شاپرک...</div>}>
+      <ZarinpalMockContent />
+    </Suspense>
   );
 }

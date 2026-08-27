@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/context/CartContext";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "الکتریک نقش جهان اصفهان | فروشگاه تخصصی کالای برق، روشنایی و الکترونیک",
@@ -19,7 +24,6 @@ export const metadata: Metadata = {
     "الکتریک خیابان فردوسی اصفهان"
   ],
   authors: [{ name: "فروشگاه الکتریک نقش جهان" }],
-  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({

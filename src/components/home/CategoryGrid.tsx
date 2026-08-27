@@ -16,13 +16,13 @@ interface CategoryGridProps {
 
 const CATEGORY_IMAGES: Record<string, string> = {
   "home-appliances-cooling-heating":
-    "https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=600&q=80",
+    "/images/products/wal_172619-fans-7995865_1920.jpg",
   "wiring-building":
-    "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=600&q=80",
+    "/images/products/skdunning-wire-962753_1920.jpg",
   "lighting-fixtures":
-    "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=600&q=80",
+    "/images/products/inspiredimages-light-bulb-1138047_1920.jpg",
   "maker-diy-electronics":
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
+    "/images/products/close-up-circuit-reparing-tool.jpg",
 };
 
 export function CategoryGrid({ categories }: CategoryGridProps) {

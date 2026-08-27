@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding for Shiasi Store (Najafabad, Isfahan)...');
+  console.log('🌱 Starting database seeding with local high-res product photos for Shiasi Store...');
 
   // Clean existing data
   await prisma.repairRequest.deleteMany();
@@ -18,11 +18,11 @@ async function main() {
 
   // 1. Seed Store Settings (Najafabad, Isfahan)
   const settings = [
-    { key: 'store_name', value: 'فروشگاه تخصصی شیاسی (نجف‌آباد اصفهان)' },
+    { key: 'store_name', value: 'فروشگاه شیاسی' },
     { key: 'store_slogan', value: 'مرکز خرید و تعمیرات تخصصی لوازم برقی خانگی، پنکه، کولر، بخاری، آنتن، روشنایی و قطعات الکترونیک' },
     { key: 'store_city', value: 'نجف‌آباد' },
     { key: 'store_province', value: 'اصفهان' },
-    { key: 'store_address', value: 'اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه تخصصی شیاسی)' },
+    { key: 'store_address', value: 'اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)' },
     { key: 'store_maps_url', value: 'https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6' },
     { key: 'store_phone', value: '031-42624567' },
     { key: 'store_mobile', value: '0913-111-2233' },
@@ -50,14 +50,14 @@ async function main() {
     await prisma.coupon.create({ data: c });
   }
 
-  // 3. Seed 5 Major Product Categories with High-Res Photos
+  // 3. Seed 4 Core Product Categories with Local Crisp Images
   const catAppliances = await prisma.category.create({
     data: {
       name: 'پنکه، کولر و بخاری برقی',
       slug: 'home-appliances-cooling-heating',
-      description: 'انواع پنکه ایستاده، رومیزی و دیواری، موتور و پمپ کولر آبی، بخاری و هیترهای تابشی با گارانتی کارکرد',
+      description: 'انواع پنکه ایستاده، دیواری و رومیزی، موتور و پمپ کولر آبی موتوژن، بخاری تابشی و ادوات سرمایش و گرمایش',
       icon: 'Fan',
-      image: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80',
+      image: '/images/products/wal_172619-fans-7995865_1920.jpg',
       sortOrder: 1,
     }
   });
@@ -66,9 +66,9 @@ async function main() {
     data: {
       name: 'سیم، کابل و آنتن تلویزیون',
       slug: 'wiring-building',
-      description: 'سیم و کابل افشان و مفتولی تمام مس استاندارد، کابل کواکسیال، آنتن گردان برقی و بوستر تقویت سیگنال',
+      description: 'سیم و کابل تمام مس استاندارد البرز، کابل کواکسیال، آنتن‌های دیجیتال گردان هانی و کلید پریز ساختمانی',
       icon: 'Zap',
-      image: 'https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=800&q=80',
+      image: '/images/products/skdunning-wire-962753_1920.jpg',
       sortOrder: 2,
     }
   });
@@ -77,27 +77,27 @@ async function main() {
     data: {
       name: 'روشنایی، پنل LED و پروژکتور خورشیدی',
       slug: 'lighting-fixtures',
-      description: 'پنل‌های ال‌ای‌دی سقفی، پروژکتورهای خورشیدی سولار، لامپ‌های کم‌مصرف استاندارد و چراغ‌های سنسوردار',
+      description: 'پنل‌های ال‌ای‌دی سقفی، پروژکتورهای خورشیدی سولار ویمکس، چراغ‌های سنسوردار و لامپ‌های کم‌مصرف استاندارد',
       icon: 'SunMedium',
-      image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80',
+      image: '/images/products/inspiredimages-light-bulb-1138047_1920.jpg',
       sortOrder: 3,
     }
   });
 
   const catMaker = await prisma.category.create({
     data: {
-      name: 'بردهای آردوینو، ماژول و قطعات الکترونیک',
+      name: 'بردهای آردوینو، ماژول و ابزار الکترونیک',
       slug: 'maker-diy-electronics',
-      description: 'هویه، مولتی‌متر، المنت بخاری، بردهای آردوینو، ماژول‌های الکترونیکی و تجهیزات کارگاهی تعمیرات',
+      description: 'مولتی‌متر دیجیتال، هویه و تجهیزات لحیم‌کاری، بردهای آردوینو Uno، ماژول‌های الکترونیکی و باتری شارژی',
       icon: 'Cpu',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+      image: '/images/products/close-up-circuit-reparing-tool.jpg',
       sortOrder: 4,
     }
   });
 
-  // 4. Products Data with Authentic Iranian Product Galleries
+  // 4. Products Data with Authentic Iranian Product Galleries using local images
   const products = [
-    // --- 1. Pars Khazar Standing Fan ---
+    // --- 1. Standing Fan Pars Khazar ---
     {
       categoryId: catAppliances.id,
       name: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA پرقدرت و کم‌صدا',
@@ -119,8 +119,7 @@ async function main() {
       rating: 5.0,
       reviewCount: 34,
       images: [
-        { url: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنکه ایستاده ریموت دار پارس خزر' },
-        { url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'پره ها و موتور پنکه' },
+        { url: '/images/products/wal_172619-fans-7995865_1920.jpg', isPrimary: true, alt: 'پنکه ایستاده ریموت دار پارس خزر' },
       ],
       specs: [
         { label: 'توان مصرفی', value: '۶۰ وات' },
@@ -133,38 +132,7 @@ async function main() {
       ]
     },
 
-    // --- 2. Sunny Wall Fan ---
-    {
-      categoryId: catAppliances.id,
-      name: 'پنکه دیواری کنترلی سانی مدل DWS-3300 مجهز به موتور قدرتمند و ریموت',
-      slug: 'sunny-wall-fan-dws3300',
-      sku: 'APP-FAN-SUNNY33',
-      shortDesc: 'نصب آسان روی دیوار، مناسب مغازه‌ها، منازل، مساجد و کارگاه‌های نجف‌آباد.',
-      description: 'پنکه دیواری سانی با پرتاب باد قوی تا ۸ متر، موتور پرقدرت مسی با محافظ حرارتی Thermal Fuse و ۳ سرعت کاری متفاوت. بدون اشغال فضای زمین و با ایمنی بسیار بالا.',
-      price: 2980000,
-      originalPrice: 3250000,
-      discountPercent: 8,
-      stock: 12,
-      isFeatured: true,
-      isBestSeller: false,
-      isNewArrival: true,
-      isIsfahanFast: true,
-      brand: 'سانی (Sunny)',
-      warranty: '۲۵ ماه گارانتی رسمی سانی',
-      madeIn: 'ایران',
-      rating: 4.8,
-      reviewCount: 19,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنکه دیواری سانی' },
-      ],
-      specs: [
-        { label: 'توان', value: '۵۵ وات' },
-        { label: 'نصب', value: 'دیواری با پایه فولادی مستحکم' },
-        { label: 'قطر پره', value: '۴۰ سانتی‌متر (۱۶ اینچ)' },
-      ]
-    },
-
-    // --- 3. Motogen Cooler Motor 1/2 HP ---
+    // --- 2. Motogen Cooler Motor 1/2 HP ---
     {
       categoryId: catAppliances.id,
       name: 'موتور کولر آبی ۱/۲ اسب بخار موتوژن تبریز اصل (سیم‌پیچی مس خازن‌دار)',
@@ -186,7 +154,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 52,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
+        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
+        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: false, alt: 'الکتروموتور سیم‌پیچی مس' },
       ],
       specs: [
         { label: 'قدرت موتور', value: '۱/۲ اسب بخار (1/2 HP)' },
@@ -195,7 +164,7 @@ async function main() {
       ]
     },
 
-    // --- 4. Motogen Cooler Motor 3/4 HP ---
+    // --- 3. Motogen Cooler Motor 3/4 HP ---
     {
       categoryId: catAppliances.id,
       name: 'موتور کولر آبی ۳/۴ اسب بخار موتوژن تبریز (مناسب کولر ۶۰۰۰ تا ۷۰۰۰)',
@@ -217,7 +186,7 @@ async function main() {
       rating: 5.0,
       reviewCount: 40,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'موتور کولر ۳/۴ موتوژن' },
+        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: true, alt: 'موتور کولر ۳/۴ موتوژن' },
       ],
       specs: [
         { label: 'توان', value: '۳/۴ اسب بخار' },
@@ -226,7 +195,7 @@ async function main() {
       ]
     },
 
-    // --- 5. Electrogen Cooler Pump ---
+    // --- 4. Electrogen Cooler Pump ---
     {
       categoryId: catAppliances.id,
       name: 'پمپ آب کولر آبی الکتروژن مدل البرز ضدآب با فیلتر محافظ رسوب',
@@ -248,7 +217,7 @@ async function main() {
       rating: 4.8,
       reviewCount: 22,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پمپ آب کولر الکتروژن' },
+        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: true, alt: 'پمپ آب کولر الکتروژن' },
       ],
       specs: [
         { label: 'جنس بدنه', value: 'پلیمر فشرده ضدخوردگی' },
@@ -256,68 +225,7 @@ async function main() {
       ]
     },
 
-    // --- 6. Akhavan Quartz Electric Heater ---
-    {
-      categoryId: catAppliances.id,
-      name: 'بخاری برقی تابشی ۴ المان شیشه‌ای کوارتز اخوان ۲۰۰۰ وات با ترموستات و فن',
-      slug: 'akhavan-electric-heater-quartz-2000w-fan',
-      sku: 'APP-HTR-AKH20',
-      shortDesc: 'گرمایش مطبوع تابشی با ۴ المنت سرامیکی شیشه‌ای، فن پرتاب گرما و سنسور واژگونی ایمن.',
-      description: 'هیتر و بخاری برقی اخوان ۲۰۰۰ وات دارای ۴ کلید مجزا برای کنترل المنت‌ها، فن توربو جهت گردش سریع گرما در محیط و سیستم ایمنی قطع خودکار در صورت واژگونی. تامین المنت و تعمیرات در کارگاه شیاسی نجف‌آباد.',
-      price: 1350000,
-      originalPrice: 1550000,
-      discountPercent: 13,
-      stock: 25,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: true,
-      isIsfahanFast: true,
-      brand: 'اخوان (Akhavan)',
-      warranty: '۱۲ ماه ضمانت شرکتی + تامین قطعات شیاسی',
-      madeIn: 'ایران',
-      rating: 4.8,
-      reviewCount: 29,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1545259742-b43a38f38692?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'بخاری برقی فن دار تابشی اخوان' },
-      ],
-      specs: [
-        { label: 'توان حرارتی', value: '۲۰۰۰ وات (قابل تنظیم ۵۰۰ تا ۲۰۰۰ وات)' },
-        { label: 'نوع المنت', value: 'کوارتز شیشه‌ای ضدجرقه' },
-      ]
-    },
-
-    // --- 7. Hani Motorized 4K TV Antenna ---
-    {
-      categoryId: catWiring.id,
-      name: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل ۲۰۱ معطوف با بوستر تقویت سیگنال',
-      slug: 'hani-rotating-digital-tv-antenna-booster-201',
-      sku: 'APP-ANT-HANI201',
-      shortDesc: 'گیرندگی فوق‌العاده قوی شبکه‌های HD و 4K حتی در نقاط کور نجف‌آباد و باغات اطراف.',
-      description: 'آنتن تلویزیون گردان هانی مجهز به موتور برقی جهت چرخش ۳۶۰ درجه از داخل منزل با کنترل منبع تغذیه، تقویت‌کننده کم‌نویز UHF/VHF و پشتیبانی کامل از سیگنال‌های دیجیتال DVB-T2.',
-      price: 495000,
-      originalPrice: 560000,
-      discountPercent: 11,
-      stock: 30,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      isIsfahanFast: true,
-      brand: 'هانی (Hani)',
-      warranty: '۲ سال گارانتی تعویض برد بوستر هانی',
-      madeIn: 'ایران',
-      rating: 4.9,
-      reviewCount: 41,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'آنتن هوایی گردان دیجیتال هانی' },
-      ],
-      specs: [
-        { label: 'باند دریافت', value: 'UHF, VHF, FM' },
-        { label: 'تقویت‌کننده', value: 'دارای بوستر نویز پایین (Low Noise Booster)' },
-        { label: 'چرخش', value: 'موتور برقی ۳۶۰ درجه با کلید دوطرفه' },
-      ]
-    },
-
-    // --- 8. Copper Electrical Wire 1.5mm Alborz ---
+    // --- 5. Copper Electrical Wire 1.5mm Alborz ---
     {
       categoryId: catWiring.id,
       name: 'سیم برق افشان سایز ۱.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
@@ -339,7 +247,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 68,
       images: [
-        { url: 'https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم برق افشان مس البرز الکتریک' },
+        { url: '/images/products/skdunning-wire-962753_1920.jpg', isPrimary: true, alt: 'سیم برق افشان مس البرز الکتریک' },
+        { url: '/images/products/republica-wire-732209_1920.jpg', isPrimary: false, alt: 'رشته های مس افشان' },
       ],
       specs: [
         { label: 'طول کلاف', value: '۱۰۰ متر بسته‌بندی کارخانه‌ای' },
@@ -348,13 +257,13 @@ async function main() {
       ]
     },
 
-    // --- 9. Copper Electrical Wire 2.5mm Alborz ---
+    // --- 6. Copper Electrical Wire 2.5mm Alborz ---
     {
       categoryId: catWiring.id,
       name: 'سیم برق افشان سایز ۲.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
       slug: 'copper-wire-25-alborz-electric',
       sku: 'WIR-ALB-25',
-      shortDesc: 'مناسب سیم‌کشی پریزهای برق، کولر آبی و گازی و مصارف صنعتی خانگی.',
+      shortDesc: 'مناسب سیم‌کشی پریزهای برق، کولر آبی و گازی و مصارف ساختمانی با دوام بالا.',
       description: 'سیم افشان ۲.۵ میلی‌متر مربع با قابلیت تحمل جریان تا ۲۵ آمپر، عایق مستحکم در برابر حرارت و خلوص مس ۹۹.۹٪ جهت جلوگیری از افت ولتاژ و آتش‌سوزی.',
       price: 1580000,
       originalPrice: 1780000,
@@ -370,7 +279,8 @@ async function main() {
       rating: 5.0,
       reviewCount: 55,
       images: [
-        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم افشان ۲.۵ البرز' },
+        { url: '/images/products/republica-wire-732209_1920.jpg', isPrimary: true, alt: 'سیم افشان ۲.۵ البرز' },
+        { url: '/images/products/ds_30-cable-4875319_1920.jpg', isPrimary: false, alt: 'کلاف سیم و کابل' },
       ],
       specs: [
         { label: 'سطح مقطع', value: '۲.۵ میلی‌متر مربع' },
@@ -378,43 +288,77 @@ async function main() {
       ]
     },
 
-    // --- 10. Deland Switch & Socket Asa Model ---
+    // --- 7. Digital Multimeter DT9205A ---
+    {
+      categoryId: catMaker.id,
+      name: 'مولتی‌متر دیجیتال اتورنج حرفه‌ای مدل DT-9205A همراه با پراب تست و باتری',
+      slug: 'digital-multimeter-dt9205a-autoranging',
+      sku: 'ELC-TOOL-MULTI92',
+      shortDesc: 'ابزار دقیق تست ولتاژ AC/DC، جریان، خازن‌سنج، تست بوق اتصال کوتاه و دیود.',
+      description: 'مولتی‌متر دیجیتال DT-9205A یکی از دقیق‌ترین و اقتصادی‌ترین ابزارهای تعمیرکاران الکترونیک و برق‌کاران ساختمان. دارای پایه رومیزی، محافظ ضدضربه سیلیکونی و خاموشی خودکار.',
+      price: 495000,
+      originalPrice: 580000,
+      discountPercent: 14,
+      stock: 24,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: true,
+      isIsfahanFast: true,
+      brand: 'ویکتور (Victor Series)',
+      warranty: 'مهلت تست سلامت فیزیکی و کالیبراسیون',
+      madeIn: 'وارداتی درجه ۱',
+      rating: 4.9,
+      reviewCount: 38,
+      images: [
+        { url: '/images/products/old-digital-multimeter-isolated-white-background.jpg', isPrimary: true, alt: 'مولتی متر دیجیتال' },
+        { url: '/images/products/ds_30-measurement-4850058_1920.jpg', isPrimary: false, alt: 'تست با مولتی متر' },
+      ],
+      specs: [
+        { label: 'سنجش ولتاژ', value: 'تا ۱۰۰۰ ولت DC و ۷۵۰ ولت AC' },
+        { label: 'تست بوق بازر', value: 'کمتر از ۵۰ اهم' },
+        { label: 'اقلام همراه', value: 'پراب تست نسوز، باتری ۹ ولت کتابی' },
+      ]
+    },
+
+    // --- 8. Miniature Circuit Breaker Schneider ---
     {
       categoryId: catWiring.id,
-      name: 'کلید و پریز دلند الکتریک مدل آسا سفید رنگ توکار با مکانیزم مستحکم',
-      slug: 'deland-electric-asa-white-socket-switch',
-      sku: 'WIR-DEL-ASA',
-      shortDesc: 'طراحی مینیمال و شیک، کنتاکت‌های برنجی قوی با فنریت بالا و ضدجرقه.',
-      description: 'کلید و پریز دلند مدل آسا یکی از پرفروش‌ترین و محبوب‌ترین مدل‌های ساختمانی در نجف‌آباد با بدنه ABS نشکن و نصب آسان در قوطی کلیدهای استاندارد.',
-      price: 48000,
-      originalPrice: 58000,
-      discountPercent: 17,
-      stock: 120,
+      name: 'فیوز مینیاتوری تک پل ۱۶ آمپر اشنایدر الکتریک مدل Acti9 تیپ C (تیپ موتوری)',
+      slug: 'miniature-circuit-breaker-16a-schneider',
+      sku: 'WIR-MCB-SCH16',
+      shortDesc: 'حفاظت مطمئن از مدارات روشنایی و پریز در برابر اتصال کوتاه و اضافه بار.',
+      description: 'کلید مینیاتوری تکفاز ۱۶ آمپر اشنایدر اصل با قدرت قطع ۶ کیلوآمپر، بدنه نسوز و ترمینال‌های ضدلرزش. انتخابی بی‌رقیب برای تابلو برق منازل و کارگاه‌های نجف‌آباد.',
+      price: 185000,
+      originalPrice: 220000,
+      discountPercent: 15,
+      stock: 50,
       isFeatured: false,
       isBestSeller: true,
       isNewArrival: false,
       isIsfahanFast: true,
-      brand: 'دلند الکتریک (Deland)',
-      warranty: '۵ سال ضمانت تعویض کارخانه دلند',
-      madeIn: 'ایران',
-      rating: 4.8,
-      reviewCount: 31,
+      brand: 'اشنایدر الکتریک (Schneider)',
+      warranty: 'ضمانت ۱۰۰٪ اصالت اشنایدر',
+      madeIn: 'تحت لیسانس فرانسه',
+      rating: 4.9,
+      reviewCount: 29,
       images: [
-        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کلید و پریز دلند مدل آسا' },
+        { url: '/images/products/paulbr75-electricity-3038497_1920.jpg', isPrimary: true, alt: 'فیوز مینیاتوری اشنایدر' },
+        { url: '/images/products/richard_ssmid-equipment-3111880_1920.jpg', isPrimary: false, alt: 'تابلو برق و مینیاتوری' },
       ],
       specs: [
-        { label: 'جنس بدنه', value: 'پلی‌کربنات مقاوم در برابر تغییر رنگ و ضربه' },
-        { label: 'نوع نصب', value: 'توکار با چنگکی‌های محکم' },
+        { label: 'جریان نامی', value: '۱۶ آمپر' },
+        { label: 'قدرت قطع', value: '۶ کیلو آمپر (6kA)' },
+        { label: 'تیپ منحنی', value: 'C (موتوری و عمومی)' },
       ]
     },
 
-    // --- 11. Vimax 200W Solar Street Light ---
+    // --- 9. Vimax 200W Solar Street Light ---
     {
       categoryId: catLighting.id,
       name: 'پروژکتور خورشیدی سرلوله ۲۰۰ وات ویمکس سنسوردار با پنل خورشیدی و ریموت',
       slug: 'solar-street-light-200w-vimax',
       sku: 'LGT-SLR-200W',
-      shortDesc: 'روشنایی رایگان بدون نیاز به برق شهری، مناسب باغ‌ها، ویلاها، معابر و کارگاه‌های نجف‌آباد.',
+      shortDesc: 'روشنایی رایگان بدون نیاز به سیم‌کشی برق، مناسب باغات، معابر و کارگاه‌های نجف‌آباد.',
       description: 'پروژکتور خورشیدی خیابانی ۲۰۰ وات برند معتبر ویمکس با باتری لیتیومی باکیفیت LiFePO4، روشنایی خودکار از غروب تا طلوع آفتاب و سنسور حرکتی هوشمند رادار.',
       price: 4250000,
       originalPrice: 4780000,
@@ -430,7 +374,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 38,
       images: [
-        { url: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پروژکتور خورشیدی خیابانی ۲۰۰ وات' },
+        { url: '/images/products/hans-westbeek-7Oqc89s3VI8-unsplash.jpg', isPrimary: true, alt: 'پروژکتور خورشیدی خیابانی ۲۰۰ وات' },
+        { url: '/images/products/6653167-flashlight-6786569_1920.jpg', isPrimary: false, alt: 'چراغ پروژکتور پرقدرت' },
       ],
       specs: [
         { label: 'توان', value: '۲۰۰ وات LED فوق کم‌مصرف' },
@@ -439,7 +384,7 @@ async function main() {
       ]
     },
 
-    // --- 12. Shahcheraq 24W LED Sensor Panel ---
+    // --- 10. Shahcheraq 24W LED Sensor Panel ---
     {
       categoryId: catLighting.id,
       name: 'پنل سنسوردار هوشمند ۲۴ وات شاهچراغ مدل روژان روکار با ۲ سال ضمانت',
@@ -461,7 +406,8 @@ async function main() {
       rating: 4.7,
       reviewCount: 26,
       images: [
-        { url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنل سقفی سنسوردار ۲۴ وات' },
+        { url: '/images/products/inspiredimages-light-bulb-1138047_1920.jpg', isPrimary: true, alt: 'پنل سقفی سنسوردار ۲۴ وات' },
+        { url: '/images/products/pexels-light-1283795_1920.jpg', isPrimary: false, alt: 'نورپردازی ال ای دی' },
       ],
       specs: [
         { label: 'توان', value: '۲۴ وات LED SMD' },
@@ -469,7 +415,7 @@ async function main() {
       ]
     },
 
-    // --- 13. Arduino Uno R3 DIP ---
+    // --- 11. Arduino Uno R3 DIP ---
     {
       categoryId: catMaker.id,
       name: 'برد توسعه آردوینو اونو مدل Arduino Uno R3 چیپ DIP با کابل اتصال USB',
@@ -491,7 +437,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 45,
       images: [
-        { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد آردوینو Uno R3' },
+        { url: '/images/products/maxis_pictures-the-main-processor-3334336_1920.jpg', isPrimary: true, alt: 'برد آردوینو Uno R3' },
+        { url: '/images/products/kouji-tsuru-wQuGKXfAcGQ-unsplash.jpg', isPrimary: false, alt: 'چیپست پردازنده' },
       ],
       specs: [
         { label: 'میکروکنترلر', value: 'ATmega328P با بوت‌لودر فابریک' },
@@ -499,7 +446,7 @@ async function main() {
       ]
     },
 
-    // --- 14. Soldering Station 60W Adjustable ---
+    // --- 12. Soldering Station 60W Adjustable ---
     {
       categoryId: catMaker.id,
       name: 'هویه لحیم‌کاری ۶۰ وات دیمردار با قابلیت تنظیم دما همراه با نوک نسوز',
@@ -521,11 +468,43 @@ async function main() {
       rating: 4.8,
       reviewCount: 28,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'هویه ۶۰ وات دیمردار' },
+        { url: '/images/products/close-up-circuit-reparing-tool.jpg', isPrimary: true, alt: 'هویه ۶۰ وات دیمردار' },
+        { url: '/images/products/gosiak1980-technique-4909953_1920.jpg', isPrimary: false, alt: 'لحیم کاری برد' },
       ],
       specs: [
         { label: 'توان', value: '۶۰ وات' },
         { label: 'محدوده دما', value: '۲۰۰ الی ۴۵۰ درجه سانتی‌گراد' },
+      ]
+    },
+
+    // --- 13. Rechargeable Battery Pack 18650 ---
+    {
+      categoryId: catMaker.id,
+      name: 'باتری لیتیومی شارژی ۱۸۶۵۰ ظرفیت ۲۶۰۰mAh سرتخت صنعتی ۳.۷ ولت',
+      slug: 'rechargeable-battery-18650-2600mah',
+      sku: 'ELC-BAT-18650',
+      shortDesc: 'مناسب چراغ قوه، دریل شارژی، پروژکتورهای خورشیدی و بردهای آردوینو.',
+      description: 'باتری لیتیوم یون با تخلیه جریان مداوم بالا، عمر چرخه‌ای بیش از ۱۰۰۰ بار شارژ و دشارژ و بدون اثر حافظه.',
+      price: 145000,
+      originalPrice: 175000,
+      discountPercent: 17,
+      stock: 70,
+      isFeatured: false,
+      isBestSeller: true,
+      isNewArrival: true,
+      isIsfahanFast: true,
+      brand: 'سامسونگ سل (Samsung Grade)',
+      warranty: 'ضمانت ظرفیت واقعی و سلامت',
+      madeIn: 'وارداتی',
+      rating: 4.8,
+      reviewCount: 35,
+      images: [
+        { url: '/images/products/jeanvdmeulen-battery-4628419_1920.jpg', isPrimary: true, alt: 'باتری شارژی لیتیومی' },
+        { url: '/images/products/publicdomainpictures-battery-19983_1920.jpg', isPrimary: false, alt: 'پک باتری های صنعتی' },
+      ],
+      specs: [
+        { label: 'ولتاژ نامی', value: '۳.۷ ولت (ماکزیمم ۴.۲ ولت)' },
+        { label: 'ظرفیت واقعی', value: '۲۶۰۰ میلی‌آمپر ساعت' },
       ]
     }
   ];
@@ -552,7 +531,7 @@ async function main() {
     console.log(`  ✓ Created product: ${createdProd.name}`);
   }
 
-  // 5. Seed a Sample Order for Testing Tracking and Invoicing
+  // 5. Seed Sample Order
   const sampleOrder = await prisma.order.create({
     data: {
       orderNumber: 'SH-140306-089',
@@ -584,21 +563,14 @@ async function main() {
             price: 3450000,
             quantity: 1,
             total: 3450000,
-            productImage: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80'
+            productImage: '/images/products/wal_172619-fans-7995865_1920.jpg'
           },
           {
             productName: 'سیم برق افشان سایز ۱.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
             price: 980000,
             quantity: 1,
             total: 980000,
-            productImage: 'https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=800&q=80'
-          },
-          {
-            productName: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل ۲۰۱ با بوستر',
-            price: 495000,
-            quantity: 1,
-            total: 495000,
-            productImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
+            productImage: '/images/products/skdunning-wire-962753_1920.jpg'
           }
         ]
       }
@@ -629,17 +601,6 @@ async function main() {
       status: 'REPAIRING',
       estimatedCost: 450000,
       adminNotes: 'سیم‌پیچی کمکی در حال بررسی و تعویض کلاچ گریز از مرکز.',
-    },
-    {
-      trackingCode: 'REP-1403-9934',
-      customerName: 'حسین احمدی',
-      customerPhone: '09132223344',
-      applianceType: 'بخاری برقی اخوان',
-      brandModel: 'اخوان ۲۰۰۰ وات',
-      issueDesc: 'المنت‌های شیشه‌ای شکسته و فن کار نمی‌کند.',
-      status: 'COMPLETED',
-      estimatedCost: 350000,
-      adminNotes: 'المنت‌های کوارتز تعویض گردید.',
     }
   ];
 

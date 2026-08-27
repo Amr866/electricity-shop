@@ -48,7 +48,7 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors duration-200">
+    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm transition-colors duration-200">
       {/* 1. Top Announcement Bar */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white text-xs py-2 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
@@ -200,7 +200,7 @@ export function Header() {
       </div>
 
       {/* 3. Category & Navigation Menu Bar with Hover Mega Menu Preview */}
-      <nav className="border-t border-slate-100 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 relative hidden md:block transition-colors duration-200">
+      <nav className="border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/90 dark:bg-slate-950/70 backdrop-blur-md relative hidden md:block transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
           <div className="flex items-center gap-1">
             {/* Mega Menu Trigger button */}

@@ -88,7 +88,7 @@ export default async function HomePage() {
   } = await getHomeData();
 
   return (
-    <div className="space-y-5 sm:space-y-8 pb-12">
+    <div className="space-y-5 sm:space-y-8 pb-12 transition-colors duration-200">
       {/* 1. Hero Section for Shiasi Store Najafabad (Sales & Repair Workshop) */}
       <HeroBanner />
 
@@ -100,25 +100,25 @@ export default async function HomePage() {
         <CategoryGrid categories={categories} />
 
         {/* 4. Best Selling Products Section (Horizontal touch-scrollable carousel on mobile) */}
-        <section className="py-5 sm:py-8 bg-white rounded-3xl p-4 sm:p-8 border border-slate-200/80 shadow-sm space-y-4 sm:space-y-6">
+        <section className="py-5 sm:py-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 transition-colors duration-200">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <h2 className="text-base sm:text-2xl font-extrabold text-slate-900">
+                <h2 className="text-base sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                   پرفروش‌ترین کالاها و تجهیزات برقی
                 </h2>
               </div>
-              <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
+              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 اقلام پرمصرف و پرفروش مشتریان در نجف‌آباد و سراسر کشور
               </p>
             </div>
 
             <Link
               href="/products?bestseller=true"
-              className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 group"
+              className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 group"
             >
               <span>مشاهده همه پرفروش‌ها</span>
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
@@ -154,11 +154,11 @@ export default async function HomePage() {
         {reviews.length > 0 && (
           <section className="py-4 sm:py-6">
             <div className="text-center max-w-xl mx-auto mb-5 sm:mb-8">
-              <h2 className="text-base sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
+              <h2 className="text-base sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-2">
                 <span>نظرات مشتریان و خریداران</span>
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
               </h2>
-              <p className="text-[11px] sm:text-xs text-slate-500 mt-1">
+              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">
                 تجربه خرید و استفاده از خدمات فنی و تعمیرات فروشگاه شیاسی
               </p>
             </div>
@@ -167,7 +167,7 @@ export default async function HomePage() {
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between"
+                  className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -176,7 +176,7 @@ export default async function HomePage() {
                           {rev.authorName.slice(0, 1)}
                         </div>
                         <div>
-                          <h4 className="font-bold text-xs text-slate-900">
+                          <h4 className="font-bold text-xs text-slate-900 dark:text-white">
                             {rev.authorName}
                           </h4>
                           <span className="text-[10px] text-slate-400">
@@ -192,17 +192,17 @@ export default async function HomePage() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-600 leading-relaxed text-justify">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed text-justify">
                       «{rev.comment}»
                     </p>
                   </div>
 
                   {rev.product && (
-                    <div className="pt-2.5 mt-2.5 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+                    <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                       <span className="truncate max-w-[180px]">
                         کالا: {rev.product.name}
                       </span>
-                      <span className="text-emerald-600 font-semibold text-[10px]">
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold text-[10px]">
                         خرید تایید شده
                       </span>
                     </div>

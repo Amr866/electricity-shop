@@ -17,8 +17,8 @@ export function IsfahanBanner() {
   const { brand } = useBrand();
 
   return (
-    <section className="py-4 sm:py-8 bg-white rounded-3xl p-4 sm:p-8 border border-slate-200/80 shadow-sm">
-      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl sm:rounded-3xl p-4 sm:p-8 text-white relative overflow-hidden shadow-xl border border-slate-800">
+    <section className="py-2 sm:py-4">
+      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-3xl p-5 sm:p-8 text-white relative overflow-hidden shadow-xl border border-slate-800">
         
         {/* Background Decorative Pattern */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />

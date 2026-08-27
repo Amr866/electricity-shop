@@ -42,24 +42,24 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
   };
 
   return (
-    <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+    <section className="py-5 sm:py-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 transition-colors duration-200">
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+          <h2 className="text-base sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
             <span>دسته‌بندی‌های تخصصی کالا</span>
-            <span className="text-xs bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full font-bold border border-amber-300">
+            <span className="text-[10px] sm:text-xs bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 px-2.5 py-0.5 rounded-full font-bold border border-amber-300 dark:border-amber-700">
               ۴ رسته اصلی
             </span>
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             لوازم سرمایش و گرمایش، سیم و کابل استاندارد، روشنایی مدرن و قطعات الکترونیک
           </p>
         </div>
 
         <Link
           href="/products"
-          className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 group"
+          className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 group"
         >
           <span>مشاهده کاتالوگ جامع</span>
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
@@ -78,7 +78,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 hover:border-amber-400 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-4"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-4"
             >
               {/* Background Photo */}
               <img
@@ -91,7 +91,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
 
               {/* Top: Icon + Count */}
               <div className="relative z-10 flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-white/90 text-slate-950 flex items-center justify-center shadow-md backdrop-blur-sm">
+                <div className="w-9 h-9 rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-950 dark:text-amber-400 flex items-center justify-center shadow-md backdrop-blur-sm">
                   {getIcon(cat.slug)}
                 </div>
                 {cat._count && (

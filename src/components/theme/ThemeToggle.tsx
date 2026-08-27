@@ -31,7 +31,7 @@ export function ThemeToggle() {
     }
   };
 
-  if (!mounted) return <div className="w-8 h-8" />;
+  if (!mounted) return <div className="w-9 h-9 rounded-xl" />;
 
   return (
     <button

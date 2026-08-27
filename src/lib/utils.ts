@@ -94,25 +94,34 @@ export const ISFAHAN_DISTRICTS = [
   "شهر نجف‌آباد",
 ];
 
-// Isfahan Shipping Methods & Pricing
+// Isfahan & Najafabad Shipping Methods & Pricing
 export const SHIPPING_METHODS = [
   {
     id: "isfahan_express",
-    title: "پیک فوری و اختصاصی اصفهان (اسنپ‌باکس)",
-    description: "تحویل در همان روز در کلیه مناطق شهری اصفهان، سپاهان‌شهر و بهارستان",
+    title: "پیک فوری و اختصاصی نجف‌آباد و اصفهان (اسنپ‌باکس)",
+    description: "تحویل در همان روز در کلیه مناطق نجف‌آباد، ویلاشهر، گلدشت و اصفهان",
     cost: 45000,
     estimatedDays: "تحویل ۲ الی ۴ ساعته",
-    badge: "ویژه اصفهان",
+    badge: "ویژه نجف‌آباد و اصفهان",
     isLocal: true,
   },
   {
     id: "isfahan_pickup",
-    title: "تحویل حضوری در فروشگاه اصفهان",
-    description: "خیابان فردوسی، نرسیده به چهارراه فلسطین - ساعات کاری ۹ الی ۲۱",
+    title: "تحویل حضوری در فروشگاه شیاسی (نجف‌آباد)",
+    description: "نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی) - ساعات کاری ۸:۳۰ الی ۲۱",
     cost: 0,
-    estimatedDays: "آماده تحویل در ۲ ساعت",
+    estimatedDays: "آماده تحویل فوری",
     badge: "رایگان",
     isLocal: true,
+  },
+  {
+    id: "post_pishtaz",
+    title: "پست پیشتاز سراسری",
+    description: "تحویل درب منزل با بسته‌بندی ایمن و کد رهگیری مرسوله پستی",
+    cost: 55000,
+    estimatedDays: "۲ الی ۴ روز کاری",
+    badge: "سراسر ایران",
+    isLocal: false,
   },
   {
     id: "tipax",
@@ -120,16 +129,7 @@ export const SHIPPING_METHODS = [
     description: "ارسال به سراسر کشور با بیمه مرسولات شکستنی و حساس برقی",
     cost: 75000,
     estimatedDays: "۱ الی ۲ روز کاری",
-    badge: "سراسر کشور",
-    isLocal: false,
-  },
-  {
-    id: "post_pishtaz",
-    title: "پست پیشتاز جمهوری اسلامی",
-    description: "تحویل درب منزل با کد رهگیری ۲۴ رقمی پستی (نیازمند کد پستی ۱۰ رقمی)",
-    cost: 55000,
-    estimatedDays: "۲ الی ۴ روز کاری",
-    badge: "اقتصادی",
+    badge: "سریع و بیمه‌شده",
     isLocal: false,
   },
 ];

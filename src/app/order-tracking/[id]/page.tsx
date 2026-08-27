@@ -48,7 +48,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
     },
     {
       id: "PROCESSING",
-      label: "تایید مالی و آماده‌سازی در انبار اصفهان",
+      label: "تایید مالی و آماده‌سازی در انبار نجف‌آباد",
       desc: "کالاها در حال بررسی، تست و بسته‌بندی می‌باشند",
       completed: order.paymentStatus === "PAID" || order.orderStatus === "PROCESSING" || order.orderStatus === "SHIPPED" || order.orderStatus === "DELIVERED",
       current: order.orderStatus === "PROCESSING",
@@ -78,12 +78,12 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           <div className="bg-emerald-500 text-white rounded-3xl p-6 shadow-lg shadow-emerald-500/20 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-7 h-7" />
+                <CheckCircle2 className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h2 className="font-extrabold text-base">پرداخت با موفقیت انجام شد!</h2>
-                <p className="text-xs text-emerald-100 mt-0.5">
-                  کد پیگیری درگاه: <strong className="font-mono text-white">{refId || order.paymentRefId}</strong>
+                <h2 className="font-extrabold text-base">پرداخت آنلاین با موفقیت انجام شد!</h2>
+                <p className="text-xs text-emerald-100 mt-0.5 font-mono">
+                  کد رهگیری تراکنش شاپرک (RefID): {refId || "TRX-OK-1403"}
                 </p>
               </div>
             </div>
@@ -99,25 +99,25 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
             <div>
               <h2 className="font-extrabold text-base">پرداخت آنلاین ناموفق بود یا لغو گردید.</h2>
               <p className="text-xs text-rose-100 mt-0.5">
-                می‌توانید مجدداً جهت پرداخت اقدام نموده یا با واحد فروش اصفهان تماس حاصل فرمایید.
+                می‌توانید مجدداً جهت پرداخت اقدام نموده یا با واحد فروش شیاسی تماس حاصل فرمایید.
               </p>
             </div>
           </div>
         )}
 
         {/* 1. Live Order Tracker Timeline Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-slate-900 dark:text-white transition-colors duration-200">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-extrabold text-base sm:text-lg text-slate-900">
-                  وضعیت سفارش: <span className="text-amber-600 font-mono">{order.orderNumber}</span>
+                <h1 className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">
+                  وضعیت سفارش: <span className="text-amber-600 dark:text-amber-400 font-mono">{order.orderNumber}</span>
                 </h1>
-                <span className="bg-amber-100 text-amber-900 text-[11px] font-bold px-2 py-0.5 rounded-md">
+                <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-md border border-amber-300 dark:border-amber-700">
                   {order.paymentStatus === "PAID" ? "پرداخت شده" : "در انتظار تسویه"}
                 </span>
               </div>
-              <span className="text-xs text-slate-400 mt-1 block">
+              <span className="text-xs text-slate-400 dark:text-slate-500 mt-1 block">
                 زمان ثبت: {formatJalaliDateTime(order.createdAt)}
               </span>
             </div>
@@ -136,10 +136,10 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                 key={step.id}
                 className={`p-4 rounded-2xl border transition-all ${
                   step.current
-                    ? "bg-amber-50 border-amber-300 ring-2 ring-amber-500/20"
+                    ? "bg-amber-50 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700 ring-2 ring-amber-500/20"
                     : step.completed
-                    ? "bg-emerald-50/50 border-emerald-200"
-                    : "bg-slate-50 border-slate-200 opacity-60"
+                    ? "bg-emerald-50/50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800"
+                    : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 opacity-60"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-2">
@@ -147,37 +147,37 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                     className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                       step.completed
                         ? "bg-emerald-600 text-white"
-                        : "bg-slate-300 text-slate-700"
+                        : "bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     {step.completed ? <CheckCircle2 className="w-4 h-4" /> : toPersianDigits(idx + 1)}
                   </div>
-                  <strong className="text-xs text-slate-900">{step.label}</strong>
+                  <strong className="text-xs text-slate-900 dark:text-white">{step.label}</strong>
                 </div>
-                <p className="text-[11px] text-slate-500 leading-snug">{step.desc}</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">{step.desc}</p>
               </div>
             ))}
           </div>
 
           {/* Customer & Delivery Summary Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 text-xs">
             <div className="space-y-1.5">
-              <span className="text-slate-400 font-medium block">مشخصات تحویل‌گیرنده:</span>
-              <p className="font-bold text-slate-900">{order.customerName}</p>
-              <p className="text-slate-600 font-mono">{toPersianDigits(order.customerPhone)}</p>
-              <p className="text-slate-600 leading-relaxed">{order.address}</p>
+              <span className="text-slate-400 dark:text-slate-500 font-medium block">مشخصات تحویل‌گیرنده:</span>
+              <p className="font-bold text-slate-900 dark:text-white">{order.customerName}</p>
+              <p className="text-slate-600 dark:text-slate-300 font-mono">{toPersianDigits(order.customerPhone)}</p>
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{order.address}</p>
             </div>
 
             <div className="space-y-1.5">
-              <span className="text-slate-400 font-medium block">نحوه ارسال و پرداخت:</span>
-              <p className="text-slate-900">
-                شیوه ارسال: <strong>{order.shippingMethod === "isfahan_express" ? "پیک فوری اصفهان" : order.shippingMethod}</strong>
+              <span className="text-slate-400 dark:text-slate-500 font-medium block">نحوه ارسال و پرداخت:</span>
+              <p className="text-slate-900 dark:text-white">
+                شیوه ارسال: <strong>{order.shippingMethod === "isfahan_express" ? "پیک فوری نجف‌آباد/اصفهان" : order.shippingMethod === "isfahan_pickup" ? "تحویل حضوری در فروشگاه" : order.shippingMethod}</strong>
               </p>
-              <p className="text-slate-900">
-                شیوه پرداخت: <strong>{order.paymentMethod === "zarinpal" ? "درگاه آنلاین بانکی" : order.paymentMethod === "cod_isfahan" ? "پرداخت در محل در اصفهان" : "کارت به کارت"}</strong>
+              <p className="text-slate-900 dark:text-white">
+                شیوه پرداخت: <strong>{order.paymentMethod === "zarinpal" ? "درگاه آنلاین بانکی" : order.paymentMethod === "cod_isfahan" ? "پرداخت در محل با کارتخوان" : "کارت به کارت"}</strong>
               </p>
               {order.notes && (
-                <p className="text-slate-500 italic">یادداشت: {order.notes}</p>
+                <p className="text-slate-500 dark:text-slate-400 italic">یادداشت: {order.notes}</p>
               )}
             </div>
           </div>
@@ -186,101 +186,123 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
         {/* 2. Official Printable Iranian Proforma Invoice Component */}
         <div
           id="printable-invoice"
-          className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6 text-slate-900"
+          className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-slate-900 dark:text-white transition-colors duration-200"
         >
           {/* Invoice Header */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-slate-900 pb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-slate-900 dark:border-slate-700 pb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black">
                 <Zap className="w-7 h-7 fill-slate-950" />
               </div>
               <div>
-                <h2 className="text-lg font-black text-slate-950">فروشگاه تخصصی شیاسی</h2>
-                <span className="text-xs text-slate-600">شعبه نجف‌آباد اصفهان | تلفن: ۰۳۱-۴۲۶۲۴۵۶۷ | واحد تعمیرات: ۰۹۱۶۲۶۶۵۸۸۴</span>
+                <h2 className="text-lg font-black text-slate-950 dark:text-white">فروشگاه تخصصی شیاسی</h2>
+                <span className="text-xs text-slate-600 dark:text-slate-400">شعبه نجف‌آباد اصفهان | تلفن: ۰۳۱-۴۲۶۲۴۵۶۷ | واحد تعمیرات: ۰۹۱۶۲۶۶۵۸۸۴</span>
               </div>
             </div>
 
             <div className="text-left space-y-1 text-xs">
-              <div className="bg-slate-100 px-3 py-1 rounded-md">
+              <div className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-md">
                 <span>شماره فاکتور: </span>
-                <strong className="font-mono text-slate-950">{order.orderNumber}</strong>
+                <strong className="font-mono text-slate-950 dark:text-amber-400">{order.orderNumber}</strong>
               </div>
-              <p className="text-slate-500">تاریخ: {formatJalaliDateTime(order.createdAt)}</p>
+              <p className="text-slate-500 dark:text-slate-400">تاریخ: {formatJalaliDateTime(order.createdAt)}</p>
             </div>
           </div>
 
           {/* Buyer Information Box */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <span className="text-slate-500">خریدار: </span>
-              <strong className="text-slate-900">{order.customerName}</strong>
+              <span className="text-slate-500 dark:text-slate-400">خریدار: </span>
+              <strong className="text-slate-900 dark:text-white">{order.customerName}</strong>
             </div>
             <div>
-              <span className="text-slate-500">شماره تماس: </span>
-              <strong className="text-slate-900 font-mono">{toPersianDigits(order.customerPhone)}</strong>
+              <span className="text-slate-500 dark:text-slate-400">شماره تماس: </span>
+              <strong className="text-slate-900 dark:text-white font-mono">{toPersianDigits(order.customerPhone)}</strong>
             </div>
+            {order.companyName && (
+              <div>
+                <span className="text-slate-500 dark:text-slate-400">شرکت / ارگان: </span>
+                <strong className="text-slate-900 dark:text-white">{order.companyName}</strong>
+              </div>
+            )}
+            {order.nationalCode && (
+              <div>
+                <span className="text-slate-500 dark:text-slate-400">شناسه ملی: </span>
+                <strong className="text-slate-900 dark:text-white font-mono">{order.nationalCode}</strong>
+              </div>
+            )}
             <div className="sm:col-span-2">
-              <span className="text-slate-500">نشانی تحویل: </span>
-              <span className="text-slate-800">{order.address}</span>
+              <span className="text-slate-500 dark:text-slate-400">نشانی تحویل: </span>
+              <span className="text-slate-800 dark:text-slate-200">{order.address}</span>
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-right border border-slate-200">
-              <thead className="bg-slate-900 text-white font-bold">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <table className="w-full text-right text-xs">
+              <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700">
                 <tr>
-                  <th className="p-2.5 border border-slate-700 text-center w-10">ردیف</th>
-                  <th className="p-2.5 border border-slate-700">شرح کالا / خدمات</th>
-                  <th className="p-2.5 border border-slate-700 text-center w-16">تعداد</th>
-                  <th className="p-2.5 border border-slate-700 text-left w-28">قیمت واحد</th>
-                  <th className="p-2.5 border border-slate-700 text-left w-32">مبلغ کل</th>
+                  <th className="p-3 text-center w-12">ردیف</th>
+                  <th className="p-3">شرح کالا / قطعه الکتریکی</th>
+                  <th className="p-3 text-center w-20">تعداد</th>
+                  <th className="p-3 text-left w-32">قیمت واحد</th>
+                  <th className="p-3 text-left w-36">مبلغ کل</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {order.items.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-slate-50">
-                    <td className="p-2.5 border border-slate-200 text-center">{toPersianDigits(idx + 1)}</td>
-                    <td className="p-2.5 border border-slate-200">{item.productName}</td>
-                    <td className="p-2.5 border border-slate-200 text-center font-bold">{toPersianDigits(item.quantity)}</td>
-                    <td className="p-2.5 border border-slate-200 text-left">{formatToman(item.price)}</td>
-                    <td className="p-2.5 border border-slate-200 text-left font-bold">{formatToman(item.total)}</td>
+                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                    <td className="p-3 text-center text-slate-400">{toPersianDigits(idx + 1)}</td>
+                    <td className="p-3 font-semibold text-slate-900 dark:text-white">{item.productName}</td>
+                    <td className="p-3 text-center font-bold">{toPersianDigits(item.quantity)}</td>
+                    <td className="p-3 text-left font-mono">{formatToman(item.price)}</td>
+                    <td className="p-3 text-left font-bold font-mono">{formatToman(item.total)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* Total Calculation & Signatures */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end pt-2">
-            <div className="border border-dashed border-slate-300 rounded-xl p-4 text-center space-y-6">
-              <span className="text-[11px] text-slate-500 font-bold block">مهر و امضای فروشگاه تخصصی شیاسی (نجف‌آباد)</span>
-              <div className="w-20 h-20 border-2 border-emerald-600/60 rounded-full mx-auto flex items-center justify-center text-emerald-800 text-[10px] font-black rotate-[-12deg]">
-                فروشگاه شیاسی
-                <br />
-                تایید شد
-              </div>
+          {/* Invoice Totals Summary */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-xs">
+            <div className="space-y-1 text-slate-500 dark:text-slate-400">
+              <p className="flex items-center gap-1">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>این فاکتور رسمی دارای ضمانت اصالت ۱۰۰٪ مس و مهلت تست معتبر فروشگاه شیاسی می‌باشد.</span>
+              </p>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
+            <div className="w-full sm:w-64 space-y-2 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
                 <span>جمع اقلام:</span>
-                <span className="font-bold">{formatToman(order.subtotal)}</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{formatToman(order.subtotal)}</span>
               </div>
               {order.discount > 0 && (
-                <div className="flex items-center justify-between text-rose-600 font-bold">
+                <div className="flex items-center justify-between text-rose-600">
                   <span>تخفیف:</span>
-                  <span>- {formatToman(order.discount)}</span>
+                  <span className="font-mono font-bold">-{formatToman(order.discount)}</span>
                 </div>
               )}
-              <div className="flex items-center justify-between">
-                <span>هزینه حمل و نقل:</span>
-                <span className="font-bold">{order.shippingCost === 0 ? "رایگان" : formatToman(order.shippingCost)}</span>
+              <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+                <span>هزینه ارسال ({order.shippingMethod}):</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{order.shippingCost === 0 ? "رایگان" : formatToman(order.shippingCost)}</span>
               </div>
-              <div className="border-t border-slate-300 pt-2 flex items-baseline justify-between font-black text-sm text-slate-950">
-                <span>مبلغ کل فاکتور:</span>
-                <span className="text-base text-emerald-700">{formatToman(order.totalAmount)}</span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700 font-extrabold text-slate-950 dark:text-amber-400 text-sm">
+                <span>مبلغ نهایی پرداختی:</span>
+                <span className="font-mono">{formatToman(order.totalAmount)}</span>
               </div>
+            </div>
+          </div>
+
+          {/* Official Stamp & Signature Area */}
+          <div className="pt-6 border-t border-dashed border-slate-300 dark:border-slate-700 grid grid-cols-2 text-center text-xs text-slate-400">
+            <div className="space-y-8">
+              <span>امضاء و تایید خریدار / متقاضی</span>
+              <div className="h-10" />
+            </div>
+            <div className="space-y-8">
+              <span>مهر و امضاء مدیریت فروشگاه شیاسی (نجف‌آباد)</span>
+              <div className="h-10" />
             </div>
           </div>
         </div>

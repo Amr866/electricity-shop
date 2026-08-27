@@ -7,8 +7,10 @@ import { calculateTieredUnitPrice } from "@/lib/utils";
 // Server-enforced shipping method rates
 const SHIPPING_RATES: Record<string, number> = {
   isfahan_express: 45000,
-  tipax: 65000,
+  isfahan_pickup: 0,
   in_person_pickup: 0,
+  post_pishtaz: 55000,
+  tipax: 75000,
   najafabad_local: 35000,
 };
 

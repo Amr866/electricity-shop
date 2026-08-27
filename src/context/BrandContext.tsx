@@ -11,6 +11,7 @@ export interface BrandConfig {
   badge: string;
   tagline: string;
   address: string;
+  googleMapsUrl: string;
   phone: string;
   mobile: string;
   city: string;
@@ -25,8 +26,9 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     nameEn: "Shiasi Store",
     badge: "فروشگاه تخصصی",
     tagline: "مرجع تخصصی کالای برق، گجت و قطعات الکترونیک",
-    address: "اصفهان، خیابان فردوسی، نرسیده به چهارراه فلسطین",
-    phone: "۰۳۱-۳۲۲۰۴۵۶۷",
+    address: "اصفهان، خیابان آتشگاه، خیابان قدس، فروشگاه شیاسی",
+    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
+    phone: "۰۳۱-۳۷۷۲۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
     city: "اصفهان",
     logoIcon: "zap",
@@ -39,6 +41,7 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     badge: "شعبه اصفهان",
     tagline: "تامین‌کننده تخصصی صنعت برق، روشنایی و ساختمان در نصف جهان",
     address: "اصفهان، خیابان فردوسی، پلاک ۱۲۸",
+    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
     phone: "۰۳۱-۳۲۲۰۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
     city: "اصفهان",
@@ -51,8 +54,9 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     nameEn: "Shiasi Electric & Electronics",
     badge: "جامع‌ترین مرکز",
     tagline: "مرکز جامع تجهیزات برق ساختمانی، اتوماسیون صنعتی و قطعات DIY",
-    address: "اصفهان، خیابان پروین، خیابان معراج، مجتمع شیاسی",
-    phone: "۰۳۱-۳۵۵۶۴۲۳۵",
+    address: "اصفهان، موقعیت فروشگاه شیاسی (ثبت رسمی در گوگل‌مپ)",
+    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
+    phone: "۰۳۱-۳۷۷۲۴۵۶۷",
     mobile: "۰۹۱۶۲۶۶۵۸۸۴",
     city: "اصفهان",
     logoIcon: "zap",

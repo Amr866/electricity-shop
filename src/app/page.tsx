@@ -2,11 +2,11 @@ import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { EdisonHeroBanner } from "@/components/home/EdisonHeroBanner";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { EdisonCategoryGrid } from "@/components/home/EdisonCategoryGrid";
+import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
 import { LightingWizard } from "@/components/home/LightingWizard";
 import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
 import { ConsultationBanner } from "@/components/home/ConsultationBanner";
-import { SpecialOffers } from "@/components/home/SpecialOffers";
 import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
@@ -56,7 +56,7 @@ async function getHomeData() {
             category: true,
             images: true,
           },
-          take: 4,
+          take: 5,
         }),
         prisma.review.findMany({
           take: 3,
@@ -107,20 +107,20 @@ export default async function HomePage() {
         {/* 1. Edisonkala-Style 3-Piece Hero Banner & 5 Trust Badges */}
         <EdisonHeroBanner />
 
-        {/* 2. Core Categories Grid */}
-        <CategoryGrid categories={categories} />
+        {/* 2. Edisonkala-Style 12-Card Category Grid with Pastel Icons */}
+        <EdisonCategoryGrid />
 
-        {/* 3. Edisonkala-Style Smart Lighting Selection Wizard */}
+        {/* 3. Edisonkala-Style Curved Red/Orange Amazing Offers Banner */}
+        <AmazingOffersBanner products={discountedProducts} />
+
+        {/* 4. Edisonkala-Style Smart Lighting Selection Wizard */}
         <LightingWizard />
 
-        {/* 4. Instant Live Tab Filtered All Items Catalog */}
+        {/* 5. Instant Live Tab Filtered All Items Catalog */}
         <InteractiveHomeCatalog products={allProducts} categories={categories} />
 
-        {/* 5. Specialist Technical Consultation & Multi-line Support */}
+        {/* 6. Specialist Technical Consultation & Multi-line Support */}
         <ConsultationBanner />
-
-        {/* 6. Special Offers & Discounts Section */}
-        <SpecialOffers products={discountedProducts} />
 
         {/* 7. Bestselling Products Section */}
         <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
@@ -161,7 +161,7 @@ export default async function HomePage() {
         {/* 9. Lighting & Electronics Knowledge Base / Blog */}
         <KnowledgeBaseSection />
 
-        {/* 10. Local Fast Delivery & Nationwide Shipping Banner */}
+        {/* 10. Local Fast Delivery & Nationwide Shipping Banner with Google Maps Location */}
         <IsfahanBanner />
 
         {/* 11. Customer Reviews & Ratings */}

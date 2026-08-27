@@ -5,6 +5,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Convert Persian and Arabic digits to ASCII English digits
+export function toAsciiDigits(str: string | undefined | null): string {
+  if (!str) return "";
+  const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+  let res = str.toString();
+  for (let i = 0; i < 10; i++) {
+    res = res.replaceAll(persianDigits[i], i.toString()).replaceAll(arabicDigits[i], i.toString());
+  }
+  return res;
+}
+
+// Clean phone number for tel: or wa.me: links
+export function cleanPhoneNumber(phone: string | undefined | null): string {
+  if (!phone) return "";
+  return toAsciiDigits(phone).replace(/\D/g, "");
+}
+
 // Convert English digits to Persian digits
 export function toPersianDigits(n: number | string | undefined | null): string {
   if (n === undefined || n === null) return "";

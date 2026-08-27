@@ -15,6 +15,9 @@ export interface BrandConfig {
   phone: string;
   mobile: string;
   repairPhone: string;
+  rawPhone: string;
+  rawMobile: string;
+  rawRepairPhone: string;
   city: string;
   province: string;
   logoIcon: "zap" | "circuit" | "sun";
@@ -33,6 +36,9 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
     repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    rawPhone: "03142624567",
+    rawMobile: "09131112233",
+    rawRepairPhone: "09162665884",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",
@@ -49,6 +55,9 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
     repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    rawPhone: "03142624567",
+    rawMobile: "09131112233",
+    rawRepairPhone: "09162665884",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",
@@ -62,9 +71,12 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     tagline: "مرکز عیب‌یابی و تعمیر انواع پنکه، موتور کولر آبی، بخاری برقی و آنتن",
     address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی",
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۴۲6۲۴۵۶۷",
+    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۶۲۶۶۵۸۸۴",
     repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    rawPhone: "03142624567",
+    rawMobile: "09162665884",
+    rawRepairPhone: "09162665884",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",

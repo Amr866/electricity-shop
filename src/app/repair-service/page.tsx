@@ -515,7 +515,7 @@ export default function RepairServicePage() {
                   ۰۹۱۶-۲۶۶-۵۸۸۴
                 </a>
                 <a
-                  href={`tel:${brand.phone.replace(/\D/g, "")}`}
+                  href={`tel:${brand.rawPhone || "03142624567"}`}
                   className="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2.5 rounded-xl border border-slate-700 block font-bold"
                 >
                   {brand.phone}

@@ -98,7 +98,7 @@ export function IsfahanBanner() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="bg-slate-950 p-2 rounded-xl border border-slate-800 text-center">
                     <span className="text-slate-400 block text-[9px]">تلفن فروشگاه:</span>
-                    <a href={`tel:${brand.phone.replace(/\D/g, "")}`} className="font-bold text-amber-400 text-xs font-mono">
+                    <a href={`tel:${brand.rawPhone || "03142624567"}`} className="font-bold text-amber-400 text-xs font-mono">
                       {brand.phone}
                     </a>
                   </div>
@@ -127,7 +127,7 @@ export function IsfahanBanner() {
                   <span>مسیریابی در نقشه</span>
                 </a>
                 <a
-                  href={`https://wa.me/98${brand.mobile.replace(/^0/, "")}`}
+                  href={`https://wa.me/98${brand.rawMobile?.replace(/^0/, "") || "9131112233"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded-xl text-center transition-colors flex items-center justify-center gap-1"

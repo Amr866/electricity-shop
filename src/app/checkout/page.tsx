@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import {
   formatToman,
   toPersianDigits,
+  toAsciiDigits,
   SHIPPING_METHODS,
   PAYMENT_METHODS,
   ISFAHAN_DISTRICTS,
@@ -80,14 +81,14 @@ export default function CheckoutPage() {
     }
 
     // 2. Phone validation (Iranian 11 digits: 09xxxxxxxxx)
-    const cleanPhone = customerPhone.replace(/\D/g, "");
+    const cleanPhone = toAsciiDigits(customerPhone).replace(/\D/g, "");
     if (cleanPhone.length !== 11 || !cleanPhone.startsWith("09")) {
       setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۱۱۱۲۲۳۳).");
       return;
     }
 
     // 3. Postal Code validation (Strictly required for Post/Tipax and 10 digits)
-    const cleanPostal = postalCode.replace(/\D/g, "");
+    const cleanPostal = toAsciiDigits(postalCode).replace(/\D/g, "");
     if (selectedShipping === "post_pishtaz" || selectedShipping === "tipax") {
       if (!cleanPostal || cleanPostal.length !== 10) {
         setErrorMsg("برای ارسال با پست پیشتاز یا تیپاکس، وارد کردن کد پستی ۱۰ رقمی الزامی است.");

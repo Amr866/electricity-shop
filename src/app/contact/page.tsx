@@ -76,7 +76,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-slate-50 dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-100 dark:border-slate-700">
                     <span className="text-slate-400 font-bold block mb-1">تلفن فروشگاه:</span>
-                    <a href={`tel:${brand.phone.replace(/\D/g, "")}`} className="font-bold text-slate-900 dark:text-amber-400 text-sm persian-numbers hover:text-amber-600">
+                    <a href={`tel:${brand.rawPhone || "03142624567"}`} className="font-bold text-slate-900 dark:text-amber-400 text-sm persian-numbers hover:text-amber-600">
                       {brand.phone}
                     </a>
                   </div>
@@ -113,7 +113,7 @@ export default function ContactPage() {
                 </a>
 
                 <a
-                  href={`https://wa.me/98${brand.mobile.replace(/^0/, "")}`}
+                  href={`https://wa.me/98${brand.rawMobile?.replace(/^0/, "") || "9131112233"}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors"

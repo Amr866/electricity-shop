@@ -57,7 +57,7 @@ interface ProductDetailProps {
     description?: string | null;
     category?: { name: string; slug: string };
     images?: { id?: string; url: string; isPrimary?: boolean; alt?: string | null }[];
-    specs?: { id?: string; key: string; value: string; group?: string | null }[];
+    specs?: { id?: string; label?: string; key?: string; value: string; group?: string | null }[];
     reviews?: { id?: string; authorName: string; rating: number; comment: string; city?: string | null; createdAt: Date }[];
   };
 }
@@ -522,7 +522,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                       }`}
                     >
                       <span className="font-bold text-slate-600 dark:text-slate-400 col-span-1">
-                        {spec.key}
+                        {spec.label || spec.key || "مشخصه"}
                       </span>
                       <span className="font-medium text-slate-900 dark:text-slate-100 col-span-2 sm:col-span-3">
                         {spec.value}

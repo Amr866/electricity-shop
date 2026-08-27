@@ -5,7 +5,6 @@ import { HeroBanner } from "@/components/home/HeroBanner";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { RepairWorkshopSection } from "@/components/home/RepairWorkshopSection";
 import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
-import { ConsultationBanner } from "@/components/home/ConsultationBanner";
 import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
@@ -145,10 +144,7 @@ export default async function HomePage() {
         {/* 6. Local Fast Delivery in Najafabad & Google Maps Location (Restructured for Mobile) */}
         <IsfahanBanner />
 
-        {/* 7. Specialist Technical Consultation & Multi-line Support */}
-        <ConsultationBanner />
-
-        {/* 8. Brand Logos Row */}
+        {/* 7. Brand Logos Row */}
         <BrandLogosRow />
 
         {/* 9. Lighting & Electronics Knowledge Base */}

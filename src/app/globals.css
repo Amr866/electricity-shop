@@ -43,65 +43,6 @@ code, kbd, samp, pre, .font-mono {
   font-family: 'Vazirmatn FD', 'Vazirmatn', sans-serif !important;
 }
 
-/* Comprehensive Dark Mode Global Overrides */
-.dark body {
-  background-color: #090d16;
-  color: #f1f5f9;
-}
-
-.dark .bg-white {
-  background-color: #0f172a !important;
-  color: #f1f5f9 !important;
-}
-
-.dark .bg-slate-50 {
-  background-color: #090d16 !important;
-}
-
-.dark .bg-slate-100 {
-  background-color: #1e293b !important;
-  color: #f1f5f9 !important;
-}
-
-.dark .border-slate-100,
-.dark .border-slate-200,
-.dark .border-slate-200\/80,
-.dark .border-slate-200\/90,
-.dark .border-slate-200\/60 {
-  border-color: #1e293b !important;
-}
-
-.dark .text-slate-900,
-.dark .text-slate-950 {
-  color: #f8fafc !important;
-}
-
-.dark .text-slate-800 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-slate-700 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-slate-600,
-.dark .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-.dark input:not([type="checkbox"]):not([type="radio"]),
-.dark textarea,
-.dark select {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-  border-color: #334155 !important;
-}
-
-.dark input::placeholder,
-.dark textarea::placeholder {
-  color: #64748b !important;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

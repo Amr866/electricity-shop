@@ -15,6 +15,7 @@ import {
   Sparkles,
   Navigation,
 } from "lucide-react";
+import { ConsultationBanner } from "@/components/home/ConsultationBanner";
 
 export default function ContactPage() {
   const { brand } = useBrand();
@@ -251,8 +252,10 @@ export default function ContactPage() {
             </div>
 
           </div>
-
         </div>
+
+        {/* Dedicated Technical Consultation Banner */}
+        <ConsultationBanner />
 
       </div>
     </div>

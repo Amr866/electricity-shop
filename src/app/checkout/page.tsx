@@ -155,10 +155,10 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-slate-50 min-h-screen py-16">
+      <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-16 transition-colors duration-200">
         <div className="max-w-md mx-auto px-4 text-center">
-          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
-            <h2 className="font-extrabold text-base text-slate-900">سبد خرید شما خالی است!</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h2 className="font-extrabold text-base text-slate-900 dark:text-white">سبد خرید شما خالی است!</h2>
             <Link
               href="/products"
               className="inline-block bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition-all"
@@ -172,16 +172,16 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-8 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-emerald-600" />
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <ShieldCheck className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             <span>ثبت نهایی سفارش و اطلاعات ارسال (فروشگاه شیاسی)</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             تحویل اختصاصی در نجف‌آباد، ویلاشهر، گلدشت و اصفهان (اسنپ‌باکس)، یا تیپاکس سراسر ایران
           </p>
         </div>

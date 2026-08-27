@@ -68,7 +68,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const isOutOfStock = product.stock <= 0;
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-slate-200/80 hover:border-amber-400/60 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between overflow-hidden">
+    <div className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 hover:border-amber-400/60 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between overflow-hidden">
       
       {/* Top Section: Badges, Wishlist & Image */}
       <div>
@@ -96,14 +96,14 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
 
-            {/* Wishlist Heart Button (Edisonkala style) */}
+            {/* Wishlist Heart Button */}
             <button
               onClick={handleToggleFav}
               aria-label="ذخیره در علاقه‌مندی‌ها"
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
                 isFavorited
-                  ? "bg-rose-50 text-rose-500 border border-rose-200 scale-105"
-                  : "bg-white/90 text-slate-400 hover:text-rose-500 hover:bg-white border border-slate-200"
+                  ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 scale-105"
+                  : "bg-white/90 dark:bg-slate-800 text-slate-400 dark:text-slate-300 hover:text-rose-500 hover:bg-white dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
               }`}
             >
               <Heart
@@ -116,7 +116,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Product Image Container */}
         <Link
           href={`/products/${product.slug}`}
-          className="block relative aspect-square w-full overflow-hidden bg-slate-50 p-4"
+          className="block relative aspect-square w-full overflow-hidden bg-slate-50 dark:bg-slate-800/60 p-4"
         >
           <img
             src={primaryImage}
@@ -137,10 +137,10 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Content Details */}
         <div className="p-4 space-y-2.5">
           {/* Category & Brand */}
-          <div className="flex items-center justify-between text-[11px] text-slate-500">
+          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
             <span>{product.category?.name || "تجهیزات برق"}</span>
             {product.brand && (
-              <span className="font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+              <span className="font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
                 {product.brand}
               </span>
             )}
@@ -148,25 +148,25 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Product Title */}
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="font-bold text-sm text-slate-900 line-clamp-2 leading-snug group-hover:text-amber-600 transition-colors h-10">
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-10">
               {product.name}
             </h3>
           </Link>
 
           {/* Rating & Warranty Info */}
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
             <div className="flex items-center gap-1 text-amber-500">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span className="font-bold text-slate-700 text-[11px]">
+              <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px]">
                 {toPersianDigits(product.rating || 4.9)}
               </span>
-              <span className="text-[10px] text-slate-400">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">
                 ({toPersianDigits(product.reviewCount || 0)})
               </span>
             </div>
 
             {product.warranty && (
-              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 truncate max-w-[120px]">
+              <span className="text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800 truncate max-w-[120px]">
                 {product.warranty}
               </span>
             )}
@@ -175,7 +175,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Bottom Section: Price & Add to Cart Button */}
-      <div className="p-4 pt-0 border-t border-slate-100 mt-2">
+      <div className="p-4 pt-0 border-t border-slate-100 dark:border-slate-800 mt-2">
         <div className="flex items-end justify-between gap-2 pt-3">
           {/* Price Container */}
           <div className="flex flex-col">
@@ -184,7 +184,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 {formatToman(product.originalPrice)}
               </span>
             )}
-            <span className="font-extrabold text-base text-slate-950">
+            <span className="font-extrabold text-base text-slate-950 dark:text-amber-400">
               {formatToman(product.price)}
             </span>
           </div>
@@ -195,10 +195,10 @@ export function ProductCard({ product }: ProductCardProps) {
             disabled={isOutOfStock}
             className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
               isOutOfStock
-                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
                 : added
                 ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/30"
-                : "bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-md shadow-amber-500/20 active:scale-95"
+                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20 active:scale-95"
             }`}
             title="افزودن به سبد خرید"
           >

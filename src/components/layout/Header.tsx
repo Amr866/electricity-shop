@@ -87,8 +87,8 @@ export function Header() {
           
           {/* Dynamic Logo & Store Title */}
           <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform">
-              <Zap className="w-6 h-6 fill-slate-950" />
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform">
+              <Zap className="w-6 h-6" style={{ fill: '#020617', color: '#020617' }} />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
@@ -162,22 +162,22 @@ export function Header() {
               )}
             </Link>
 
-            {/* Shopping Cart Button */}
+            {/* Shopping Cart Button (Original dark in light mode, bright amber in dark mode) */}
             <Link
               href="/cart"
-              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 px-3.5 py-2.5 rounded-xl transition-all shadow-sm group"
+              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-amber-500 dark:hover:bg-amber-400 dark:text-slate-950 px-3.5 py-2.5 rounded-xl transition-all shadow-md group border border-slate-800 dark:border-amber-400"
             >
               <div className="relative">
                 <ShoppingCart className="w-5 h-5 text-amber-400 dark:text-slate-950 group-hover:scale-110 transition-transform" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-amber-500 dark:bg-slate-950 text-slate-950 dark:text-amber-400 font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-slate-900 dark:border-white">
+                  <span className="absolute -top-2 -right-2 bg-amber-500 text-slate-950 dark:bg-slate-950 dark:text-amber-400 font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-slate-900 dark:border-white">
                     {toPersianDigits(itemCount)}
                   </span>
                 )}
               </div>
               <div className="hidden sm:flex flex-col text-right">
-                <span className="text-[10px] text-slate-300 dark:text-slate-900">سبد خرید</span>
-                <span className="text-xs font-bold text-amber-400 dark:text-slate-950">
+                <span className="text-[10px] text-slate-300 dark:text-slate-900 font-bold">سبد خرید</span>
+                <span className="text-xs font-black text-amber-400 dark:text-slate-950">
                   {itemCount > 0 ? formatToman(subtotal) : "خالی"}
                 </span>
               </div>

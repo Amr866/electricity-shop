@@ -120,62 +120,62 @@ export default function RepairServicePage() {
   ];
 
   return (
-    <div className="bg-slate-50 min-h-screen py-10">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-10 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 space-y-10">
         
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full border border-amber-300">
+          <div className="inline-flex items-center gap-1.5 bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-300 dark:border-amber-700">
             <Wrench className="w-3.5 h-3.5" />
             <span>کارگاه فنی شیاسی در نجف‌آباد</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
             خدمات و کارگاه تعمیرات تخصصی لوازم برقی
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             تعمیر و عیب‌یابی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، چای‌ساز، اتو، جاروبرقی، محافظ و سایر وسایل برقی در نجف‌آباد اصفهان با ضمانت کارکرد
           </p>
         </div>
 
         {/* 4 Feature Badges */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <Wrench className="w-5 h-5" />
             </div>
             <div>
-              <strong className="text-xs font-bold text-slate-900 block">قطعات یدکی اورجینال</strong>
-              <span className="text-[11px] text-slate-400">سیم‌پیچی مس و قطعات اصلی</span>
+              <strong className="text-xs font-bold text-slate-900 dark:text-white block">قطعات یدکی اورجینال</strong>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">سیم‌پیچی مس و قطعات اصلی</span>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <strong className="text-xs font-bold text-slate-900 block">تحویل فوری ۲۴ تا ۴۸ ساعته</strong>
-              <span className="text-[11px] text-slate-400">تست نهایی در کارگاه</span>
+              <strong className="text-xs font-bold text-slate-900 dark:text-white block">تحویل فوری ۲۴ تا ۴۸ ساعته</strong>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">تست نهایی در کارگاه</span>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <strong className="text-xs font-bold text-slate-900 block">پیک دریافت و ارسال</strong>
-              <span className="text-[11px] text-slate-400">در سراسر نجف‌آباد و حومه</span>
+              <strong className="text-xs font-bold text-slate-900 dark:text-white block">پیک دریافت و ارسال</strong>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">در سراسر نجف‌آباد و حومه</span>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <strong className="text-xs font-bold text-slate-900 block">مهلت تست پس از تعمیر</strong>
-              <span className="text-[11px] text-slate-400">تضمین کیفیت تعمیرات</span>
+              <strong className="text-xs font-bold text-slate-900 dark:text-white block">مهلت تست پس از تعمیر</strong>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">تضمین کیفیت تعمیرات</span>
             </div>
           </div>
         </div>
@@ -185,105 +185,47 @@ export default function RepairServicePage() {
           
           {/* Left Col: Request Form */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h2 className="font-extrabold text-base text-slate-900 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h2 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
                   <Wrench className="w-4 h-4 text-amber-500" />
                   <span>ثبت آنلاین درخواست عیب‌یابی و تعمیر کالا</span>
                 </h2>
-                <span className="text-[11px] text-slate-400">شعبه نجف‌آباد</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500">شعبه نجف‌آباد</span>
               </div>
 
               {ticketResult ? (
-                <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 text-center space-y-4 text-emerald-950 animate-in fade-in">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-3xl p-6 text-center space-y-4 text-emerald-950 dark:text-emerald-300 animate-in fade-in">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto" />
                   <div className="space-y-1">
-                    <h3 className="font-black text-lg text-emerald-900">
-                      درخواست تعمیر شما با موفقیت ثبت شد!
-                    </h3>
-                    <p className="text-xs text-emerald-700">
-                      کد رهگیری پذیرش کارگاه شما:
+                    <h3 className="font-black text-lg">درخواست شما با موفقیت ثبت شد!</h3>
+                    <p className="text-xs text-emerald-800 dark:text-emerald-400">
+                      کارشناسان کارگاه شیاسی جهت هماهنگی دریافت کالا به زودی با شما تماس می‌گیرند.
                     </p>
-                    <div className="inline-block bg-white text-slate-900 font-mono font-black text-xl px-5 py-2 rounded-2xl border border-emerald-300 shadow-sm my-2">
-                      {ticketResult.trackingCode}
-                    </div>
                   </div>
 
-                  <p className="text-xs text-emerald-800 leading-relaxed max-w-md mx-auto">
-                    می‌توانید دستگاه خود را به آدرس فروشگاه شیاسی در نجف‌آباد تحویل دهید یا جهت هماهنگی پیک با شماره ۰۹۱۶۲۶۶۵۸۸۴ تماس حاصل فرمایید.
-                  </p>
+                  <div className="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 inline-block text-center space-y-1">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">کد رهگیری پذیرش تعمیرات شما:</span>
+                    <strong className="text-xl font-mono font-black text-emerald-700 dark:text-amber-400 block">
+                      {ticketResult.trackingCode}
+                    </strong>
+                  </div>
 
-                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                    <a
-                      href={`https://wa.me/989131112233?text=${encodeURIComponent(
-                        `سلام، درخواست تعمیر با کد رهگیری ${ticketResult.trackingCode} برای دستگاه ${ticketResult.applianceType} ثبت کردم.`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all flex items-center gap-1.5 shadow-md"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>ارسال در واتساپ جهت بررسی سریع</span>
-                    </a>
-
+                  <div className="pt-2">
                     <button
                       onClick={() => setTicketResult(null)}
-                      className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-xs px-4 py-2.5 rounded-xl"
+                      className="text-xs font-bold text-emerald-800 dark:text-amber-400 hover:underline"
                     >
-                      ثبت درخواست جدید
+                      ثبت یک درخواست تعمیر دیگر +
                     </button>
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-                  
-                  {/* Select Appliance Type Chips */}
-                  <div>
-                    <label className="block font-bold text-slate-700 mb-2">
-                      نوع دستگاه تعمیری را انتخاب کنید: <span className="text-rose-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                      {applianceOptions.map((opt) => {
-                        const Icon = opt.icon;
-                        return (
-                          <button
-                            key={opt.value}
-                            type="button"
-                            onClick={() => setApplianceType(opt.value)}
-                            className={`p-3 rounded-2xl border text-right transition-all flex items-center gap-2 ${
-                              applianceType === opt.value
-                                ? "bg-amber-50 border-amber-500 text-slate-950 font-bold ring-2 ring-amber-500/20"
-                                : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 shrink-0 ${applianceType === opt.value ? "text-amber-600" : "text-slate-400"}`} />
-                            <span className="truncate">{opt.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Conditional input when 'سایر وسایل برقی (غیره)' is selected */}
-                  {applianceType === "سایر وسایل برقی (غیره)" && (
-                    <div className="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200 animate-in fade-in space-y-1">
-                      <label className="block font-bold text-slate-800 mb-1">
-                        نام یا نوع وسیله برقی خود را مشخص کنید: <span className="text-rose-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={customApplianceName}
-                        onChange={(e) => setCustomApplianceName(e.target.value)}
-                        placeholder="مثلا: چای‌ساز، جاروبرقی، اتو بخار، محافظ برق، سشوار، دریل برقی، آبمیوه‌گیری..."
-                        className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-amber-500"
-                      />
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Customer Info */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         نام و نام خانوادگی <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -291,14 +233,14 @@ export default function RepairServicePage() {
                         required
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
-                        placeholder="مثال: علیرضا شیاسی"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500"
+                        placeholder="مثال: علیرضا محمدی"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-bold text-slate-700 mb-1.5">
-                        شماره همراه مشتری <span className="text-rose-500">*</span>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                        شماره تماس همراه <span className="text-rose-500">*</span>
                       </label>
                       <input
                         type="tel"
@@ -306,148 +248,221 @@ export default function RepairServicePage() {
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         placeholder="۰۹۱۳..."
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500 text-left font-mono"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
                       />
                     </div>
                   </div>
 
+                  {/* Appliance Type Selection */}
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1.5">
-                      برند و مدل دستگاه (در صورت مشخص بودن)
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                      نوع دستگاه یا وسیله برقی <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {applianceOptions.map((opt) => {
+                        const Icon = opt.icon;
+                        const isSelected = applianceType === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setApplianceType(opt.value)}
+                            className={`p-3 rounded-xl border text-right transition-all flex items-center gap-2 ${
+                              isSelected
+                                ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-900 dark:text-amber-300 font-bold shadow-sm"
+                                : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300"
+                            }`}
+                          >
+                            <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-amber-600 dark:text-amber-400" : "text-slate-400"}`} />
+                            <span className="text-[11px] leading-tight truncate">{opt.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Custom Appliance Name Field (If 'Other' selected) */}
+                  {applianceType === "سایر وسایل برقی (غیره)" && (
+                    <div className="bg-amber-50/50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-800 animate-in fade-in">
+                      <label className="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
+                        نام وسیله برقی خود را بنویسید <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={customApplianceName}
+                        onChange={(e) => setCustomApplianceName(e.target.value)}
+                        placeholder="مثال: اتو بخار، جاروبرقی، پلوپز، چای‌ساز، محافظ برق..."
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                  )}
+
+                  {/* Brand & Model */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      برند و مدل دستگاه (اختیاری)
                     </label>
                     <input
                       type="text"
                       value={brandModel}
                       onChange={(e) => setBrandModel(e.target.value)}
-                      placeholder="مثلا: پارس خزر، فیلیپس، تفال، موتوژن، اخوان..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500"
+                      placeholder="مثال: پارس خزر مدل سانی / موتوژن تبریز ۳/۴ / هانی 4K"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
 
+                  {/* Issue Description */}
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1.5">
-                      شرح خرابی یا مشکل دستگاه <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      شرح ایراد و مشکل فنی دستگاه <span className="text-rose-500">*</span>
                     </label>
                     <textarea
                       required
                       rows={3}
                       value={issueDesc}
                       onChange={(e) => setIssueDesc(e.target.value)}
-                      placeholder="مثلا: روشن نمی‌شود، بوی سوختگی می‌دهد، داغ می‌کند، کلید قطع است، قطع و وصل می‌شود..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500 leading-relaxed"
+                      placeholder="مثال: پنکه روشن نمی‌شود و بوی سوختگی می‌دهد / دور کند موتور کولر کار نمی‌کند / المنت بخاری قطع است..."
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed"
                     />
                   </div>
 
+                  {/* Delivery / Dropoff Method */}
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1.5">
-                      نحوه تحویل به کارگاه
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                      روش تحویل کالا به کارگاه
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      <label className={`p-3 rounded-xl border flex items-center gap-2 cursor-pointer ${deliveryType === "in_person" ? "bg-amber-50 border-amber-500 text-amber-950 font-bold" : "bg-slate-50 border-slate-200"}`}>
-                        <input
-                          type="radio"
-                          name="delType"
-                          value="in_person"
-                          checked={deliveryType === "in_person"}
-                          onChange={() => setDeliveryType("in_person")}
-                        />
-                        <span>تحویل حضوری در نجف‌آباد</span>
-                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryType("in_person")}
+                        className={`p-3 rounded-xl border text-right transition-all flex items-center gap-2 ${
+                          deliveryType === "in_person"
+                            ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-900 dark:text-amber-300 font-bold"
+                            : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        <div>
+                          <strong className="text-xs block">تحویل حضوری در شعبه</strong>
+                          <span className="text-[10px] text-slate-400">آدرس: نجف‌آباد، خیابان قدس</span>
+                        </div>
+                      </button>
 
-                      <label className={`p-3 rounded-xl border flex items-center gap-2 cursor-pointer ${deliveryType === "courier" ? "bg-amber-50 border-amber-500 text-amber-950 font-bold" : "bg-slate-50 border-slate-200"}`}>
-                        <input
-                          type="radio"
-                          name="delType"
-                          value="courier"
-                          checked={deliveryType === "courier"}
-                          onChange={() => setDeliveryType("courier")}
-                        />
-                        <span>ارسال با پیک در نجف‌آباد</span>
-                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryType("courier")}
+                        className={`p-3 rounded-xl border text-right transition-all flex items-center gap-2 ${
+                          deliveryType === "courier"
+                            ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-900 dark:text-amber-300 font-bold"
+                            : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        }`}
+                      >
+                        <Truck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        <div>
+                          <strong className="text-xs block">ارسال با پیک / اسنپ</strong>
+                          <span className="text-[10px] text-slate-400">هماهنگی تحویل درب منزل</span>
+                        </div>
+                      </button>
                     </div>
                   </div>
 
+                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-extrabold text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-98"
+                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
                   >
-                    <Wrench className="w-4 h-4" />
-                    <span>{submitting ? "در حال ثبت..." : "ثبت درخواست تعمیر و دریافت کد پذیرش"}</span>
+                    <Send className="w-4 h-4" />
+                    <span>{submitting ? "در حال ثبت درخواست..." : "ثبت نهایی درخواست و دریافت کد رهگیری"}</span>
                   </button>
-
                 </form>
               )}
             </div>
           </div>
 
-          {/* Right Col: Track Repair Status + Workshop Contacts */}
+          {/* Right Col: Track Repair Status & Contact Box */}
           <div className="lg:col-span-5 space-y-6">
-            
             {/* Tracking Card */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                 <Search className="w-4 h-4 text-amber-500" />
-                <span>پیگیری وضعیت تعمیر دستگاه پذیرش شده</span>
-              </h3>
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                  استعلام و پیگیری وضعیت تعمیرات
+                </h3>
+              </div>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                شماره موبایل ثبت‌شده هنگام پذیرش یا کد رهگیری تعمیرات خود را وارد نمایید:
+              </p>
 
               <form onSubmit={handleTrack} className="space-y-3">
-                <div>
-                  <label className="block text-xs text-slate-500 mb-1">
-                    شماره همراه ثبت شده هنگام پذیرش:
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      required
-                      value={trackCode}
-                      onChange={(e) => setTrackCode(e.target.value)}
-                      placeholder="۰۹۱۳..."
-                      className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-left font-mono"
-                    />
-                    <button
-                      type="submit"
-                      disabled={trackingLoading}
-                      className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors shrink-0"
-                    >
-                      {trackingLoading ? "..." : "استعلام"}
-                    </button>
-                  </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    required
+                    value={trackCode}
+                    onChange={(e) => setTrackCode(e.target.value)}
+                    placeholder="مثال: 0913... یا REP-1403..."
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
+                  />
+                  <button
+                    type="submit"
+                    disabled={trackingLoading}
+                    className="bg-slate-900 hover:bg-slate-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shrink-0 transition-colors disabled:opacity-50"
+                  >
+                    {trackingLoading ? "..." : "استعلام"}
+                  </button>
                 </div>
+
+                {trackError && (
+                  <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">{trackError}</p>
+                )}
               </form>
 
-              {trackError && (
-                <p className="text-xs text-rose-600 bg-rose-50 p-2.5 rounded-xl border border-rose-200">
-                  {trackError}
-                </p>
-              )}
-
+              {/* Tracking Result View */}
               {trackResult && (
-                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2.5 text-xs animate-in fade-in">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <span className="font-bold text-slate-900">{trackResult.applianceType}</span>
-                    <span className="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded text-[10px]">
-                      {trackResult.status === "SUBMITTED"
-                        ? "ثبت شده / در انتظار نوبت"
-                        : trackResult.status === "IN_PROGRESS"
-                        ? "در حال تعمیر در کارگاه"
-                        : trackResult.status === "READY"
-                        ? "آماده تحویل"
-                        : "تحویل داده شده"}
+                <div className="mt-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">
+                      {trackResult.applianceType} {trackResult.brandModel ? `(${trackResult.brandModel})` : ""}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                      {trackResult.trackingCode}
                     </span>
                   </div>
 
-                  <div className="text-slate-600">
-                    <div>کد پذیرش: <strong className="font-mono text-slate-900">{trackResult.trackingCode}</strong></div>
-                    <div>شرح مشکل: {trackResult.issueDesc}</div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 dark:text-slate-400">وضعیت فعلی:</span>
+                      <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
+                        trackResult.status === "COMPLETED"
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                          : trackResult.status === "REPAIRING"
+                          ? "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300"
+                          : "bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300"
+                      }`}>
+                        {trackResult.status === "RECEIVED" && "در نوبت عیب‌یابی"}
+                        {trackResult.status === "INSPECTING" && "در حال بررسی فنی"}
+                        {trackResult.status === "REPAIRING" && "در حال تعمیر و تعویض قطعه"}
+                        {trackResult.status === "COMPLETED" && "تعمیر تکمیل شد - آماده تحویل"}
+                        {trackResult.status === "DELIVERED" && "تحویل به مشتری گردید"}
+                      </span>
+                    </div>
+
                     {trackResult.estimatedCost && (
-                      <div className="text-emerald-700 font-bold mt-1">
-                        برآورد هزینه: {formatToman(trackResult.estimatedCost)}
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">برآورد هزینه:</span>
+                        <span className="font-bold text-slate-900 dark:text-amber-400">
+                          {formatToman(trackResult.estimatedCost)}
+                        </span>
                       </div>
                     )}
-                    {trackResult.adminNotes && (
-                      <div className="bg-amber-50/70 p-2 rounded-lg border border-amber-200 text-amber-950 mt-2">
-                        یادداشت کارشناس: {trackResult.adminNotes}
+
+                    {trackResult.technicianNotes && (
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300">
+                        <strong className="block text-slate-900 dark:text-white mb-0.5">گزارش کارشناس تعمیرگاه:</strong>
+                        {trackResult.technicianNotes}
                       </div>
                     )}
                   </div>
@@ -455,39 +470,42 @@ export default function RepairServicePage() {
               )}
             </div>
 
-            {/* Workshop Address & Support Card */}
-            <div className="bg-slate-900 text-white rounded-3xl p-6 border border-slate-800 space-y-4 shadow-lg">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                <MapPin className="w-5 h-5" />
-                <span>موقعیت کارگاه تعمیرات شیاسی</span>
+            {/* Direct Workshop Phone & WhatsApp Card */}
+            <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 border border-slate-800 shadow-lg space-y-4">
+              <div className="space-y-1">
+                <span className="text-amber-400 font-bold text-xs flex items-center gap-1.5">
+                  <Phone className="w-4 h-4" />
+                  واحد پذیرش و هماهنگی تعمیرات:
+                </span>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  جهت هماهنگی ارسال با اسنپ یا مشاوره حضوری می‌توانید با شماره مستقیم کارگاه تماس بگیرید:
+                </p>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed">
-                نجف‌آباد اصفهان، پذیرش انواع لوازم خانگی برقی، پنکه، موتور کولر، بخاری، آنتن، چای‌ساز، اتو، جاروبرقی، محافظ و بردهای الکترونیک.
-              </p>
-
-              <div className="space-y-2 text-xs text-slate-200 pt-1">
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-emerald-400" />
-                  <span>تلفن کارگاه و پذیرش: <strong className="text-white persian-numbers">۰۹۱۶-۲۶۶-۵۸۸۴</strong></span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-amber-400" />
-                  <span>تلفن ثابت فروشگاه: <strong className="text-white persian-numbers">۰۳۱-۴۲۶۲۴۵۶۷</strong></span>
-                </div>
-              </div>
-
-              <div className="pt-2">
+              <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
                 <a
-                  href={brand.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 rounded-xl text-center flex items-center justify-center gap-2 transition-colors shadow-md"
+                  href="tel:09162665884"
+                  className="bg-slate-800 hover:bg-slate-700 text-amber-300 p-2.5 rounded-xl border border-slate-700 block font-bold"
                 >
-                  <MapPin className="w-4 h-4" />
-                  <span>مسیریابی در گوگل‌مپ (نجف‌آباد)</span>
+                  ۰۹۱۶-۲۶۶-۵۸۸۴
+                </a>
+                <a
+                  href={`tel:${brand.phone.replace(/\D/g, "")}`}
+                  className="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2.5 rounded-xl border border-slate-700 block font-bold"
+                >
+                  {brand.phone}
                 </a>
               </div>
+
+              <a
+                href={`https://wa.me/989162665884?text=${encodeURIComponent("سلام، برای تعمیر وسیله برقی در کارگاه شیاسی پیام می‌دهم.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-md"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>پیام در واتساپ واحد تعمیرات</span>
+              </a>
             </div>
 
           </div>

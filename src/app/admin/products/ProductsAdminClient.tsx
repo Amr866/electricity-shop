@@ -215,8 +215,65 @@ export function ProductsAdminClient({
         </select>
       </div>
 
-      {/* Products Table */}
-      <div className="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
+      {/* Products Display: Desktop Table + Mobile Cards */}
+      {/* 1. Mobile Cards (md:hidden) */}
+      <div className="md:hidden space-y-3">
+        {filteredProducts.map((prod) => (
+          <div
+            key={prod.id}
+            className="bg-slate-900 rounded-2xl p-3.5 border border-slate-800 space-y-2.5"
+          >
+            <div className="flex items-start gap-3">
+              <img
+                src={
+                  prod.images?.[0]?.url ||
+                  "/images/products/wal_172619-fans-7995865_1920.jpg"
+                }
+                alt={prod.name}
+                className="w-14 h-14 rounded-xl object-contain bg-slate-800 p-1 border border-slate-700 shrink-0"
+              />
+              <div className="flex-1 min-w-0 space-y-1">
+                <strong className="text-white text-xs block line-clamp-2 leading-snug">
+                  {prod.name}
+                </strong>
+                <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                  <span>برند: {prod.brand || "-"}</span>
+                  <span>•</span>
+                  <span className="font-mono">کد: {prod.sku || prod.slug}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-amber-400 font-mono">
+                  {formatToman(prod.price)}
+                </span>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    prod.stock <= 5
+                      ? "bg-rose-950 text-rose-400 border border-rose-800"
+                      : "bg-slate-800 text-slate-300"
+                  }`}
+                >
+                  {toPersianDigits(prod.stock)} عدد
+                </span>
+              </div>
+
+              <button
+                onClick={() => handleDelete(prod.id)}
+                className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-400 rounded-lg transition-colors flex items-center gap-1 text-[11px] font-bold"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>حذف</span>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 2. Desktop Table (hidden md:block) */}
+      <div className="hidden md:block bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-right text-slate-300">
             <thead className="bg-slate-800/80 text-slate-400 border-b border-slate-700">
@@ -237,7 +294,7 @@ export function ProductsAdminClient({
                     <img
                       src={
                         prod.images?.[0]?.url ||
-                        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80"
+                        "/images/products/wal_172619-fans-7995865_1920.jpg"
                       }
                       alt={prod.name}
                       className="w-10 h-10 rounded-lg object-contain bg-slate-800 p-0.5 border border-slate-700"

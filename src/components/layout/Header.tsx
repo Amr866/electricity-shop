@@ -28,6 +28,8 @@ import {
   SunMedium,
   ArrowLeft,
   ChevronDown,
+  Calculator,
+  FileSpreadsheet,
 } from "lucide-react";
 
 export function Header() {
@@ -427,14 +429,29 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Left Side: Order Tracking Link & Najafabad Fast Delivery */}
-          <div className="flex items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400">
+          {/* Left Side: BOM, Price-Lists, Tracking & Contact */}
+          <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400">
+            <Link
+              href="/bom-upload"
+              className="bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 transition-colors border border-blue-200/60 dark:border-blue-800/60"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>استعلام BOM</span>
+            </Link>
+
+            <Link
+              href="/price-lists"
+              className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 font-semibold transition-colors"
+            >
+              <FileText className="w-3.5 h-3.5 text-amber-500" />
+              <span>لیست قیمت</span>
+            </Link>
+
             <Link
               href="/order-tracking"
               className="hover:text-slate-900 dark:hover:text-white flex items-center gap-1 font-medium transition-colors"
             >
-              <FileText className="w-3.5 h-3.5 text-amber-500" />
-              <span>پیگیری سفارشات</span>
+              <span>پیگیری</span>
             </Link>
 
             <span className="text-slate-300 dark:text-slate-700">|</span>
@@ -463,6 +480,20 @@ export function Header() {
               className="block p-3 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-400 hover:bg-amber-500/20"
             >
               📦 همه دسته‌بندی‌های کالا
+            </Link>
+            <Link
+              href="/bom-upload"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+            >
+              📋 خرید عمده و استعلام لیست قطعات (BOM)
+            </Link>
+            <Link
+              href="/price-lists"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+            >
+              📄 دانلود لیست قیمت رسمی کارخانجات
             </Link>
             <Link
               href="/products?category=home-appliances-cooling-heating"
@@ -498,13 +529,6 @@ export function Header() {
               className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               🤖 بردهای آردوینو و قطعات الکترونیک
-            </Link>
-            <Link
-              href="/bom-upload"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
-            >
-              📋 خرید عمده و بارگذاری لیست قطعات (BOM)
             </Link>
             <Link
               href="/order-tracking"

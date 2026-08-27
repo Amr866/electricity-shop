@@ -30,6 +30,10 @@ import {
   ChevronDown,
   Calculator,
   FileSpreadsheet,
+  Layers,
+  Percent,
+  Search,
+  CheckCircle2,
 } from "lucide-react";
 
 export function Header() {
@@ -50,127 +54,138 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/90 dark:bg-slate-950/75 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/40 shadow-sm transition-all duration-300">
-      {/* 1. Top Announcement Bar */}
-      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white text-xs py-2 px-4 border-b border-slate-850/80">
+    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-950/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/60 shadow-sm transition-all duration-300">
+      
+      {/* 1. Super Top Utility Bar */}
+      <div className="bg-slate-950 text-slate-200 text-[11px] py-1.5 px-4 border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-amber-400 font-medium">
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-              <span>خرید و تعمیرات تخصصی لوازم برقی در نجف‌آباد و اصفهان + ارسال فوری</span>
+          
+          {/* Location & Quick Delivery Announcement */}
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 text-amber-400 font-bold">
+              <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-400" />
+              <span>فروشگاه و کارگاه تخصصی شیاسی (نجف‌آباد)</span>
             </span>
-            <span className="hidden md:inline-block text-slate-600">•</span>
-            <Link href="/contact#map" className="hidden md:flex items-center gap-1 text-slate-300 hover:text-amber-400 transition-colors">
+            <span className="hidden md:inline-block text-slate-700">|</span>
+            <Link
+              href="/contact#map"
+              className="hidden md:flex items-center gap-1 text-slate-400 hover:text-amber-300 transition-colors"
+            >
               <MapPin className="w-3 h-3 text-emerald-400" />
               <span>{brand.address}</span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-3 text-slate-300">
-            {/* Quick Conversion Action Buttons (Barghsan-style) */}
-            <div className="flex items-center gap-1.5">
-              <Link
-                href="/bom-upload"
-                className="bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 sm:px-3 py-1 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95 hover-glow"
-              >
-                <span>صدور پیش‌فاکتور</span>
-                <span className="font-mono text-[10px] font-bold">»</span>
-              </Link>
-              <Link
-                href="/price-lists"
-                className="bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-bold px-2.5 sm:px-3 py-1 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95"
-              >
-                <span>لیست قیمت</span>
-                <span className="font-mono text-[10px] font-bold">»</span>
-              </Link>
-            </div>
+          {/* Quick Action Badges & Direct Phone */}
+          <div className="flex items-center gap-2.5">
+            {/* Instant Quotation (BOM) */}
+            <Link
+              href="/bom-upload"
+              className="bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95 hover-glow"
+            >
+              <span>صدور پیش‌فاکتور</span>
+              <span className="font-mono text-[9px]">»</span>
+            </Link>
 
-            <span className="hidden sm:inline-block text-slate-600">•</span>
+            {/* Official Price Lists */}
+            <Link
+              href="/price-lists"
+              className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-400/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95"
+            >
+              <span>لیست قیمت رسمی</span>
+              <span className="font-mono text-[9px]">»</span>
+            </Link>
+
+            <span className="hidden sm:inline-block text-slate-700">|</span>
+
+            {/* Phone Call */}
             <a
               href="tel:03142624567"
               dir="ltr"
-              className="hidden sm:flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold font-mono text-left"
+              className="hidden sm:flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-bold font-mono text-left"
             >
               <Phone className="w-3 h-3 shrink-0" />
               <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
             </a>
           </div>
+
         </div>
       </div>
 
-      {/* 2. Main Navigation Header */}
-      <div className={`max-w-7xl mx-auto px-4 transition-all ${isScrolled ? "py-2" : "py-3"}`}>
-        <div className="flex items-center justify-between gap-4">
+      {/* 2. Main Middle Header: Brand + Search + Action Cluster */}
+      <div className={`max-w-7xl mx-auto px-4 transition-all duration-300 ${isScrolled ? "py-2" : "py-3"}`}>
+        <div className="flex items-center justify-between gap-3 lg:gap-6">
           
-          {/* Dynamic Logo & Store Title */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform">
-              <Zap className="w-6 h-6" style={{ fill: '#020617', color: '#020617' }} />
+          {/* Logo & Brand Identity */}
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 flex items-center justify-center shadow-md shadow-amber-500/25 group-hover:scale-105 transition-transform">
+              <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-slate-950 text-slate-950" />
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="font-black text-lg text-slate-900 dark:text-white tracking-tight">
+              <div className="flex items-center gap-1.5">
+                <span className="font-black text-base sm:text-lg text-slate-900 dark:text-white tracking-tight">
                   {brand.nameFa}
                 </span>
-                <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-md border border-amber-300 dark:border-amber-700 whitespace-nowrap">
+                <span className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[10px] font-black px-1.5 py-0.5 rounded-md border border-amber-300 dark:border-amber-700 whitespace-nowrap">
                   {brand.badge}
                 </span>
               </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
+              <span className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
                 {brand.tagline}
               </span>
             </div>
           </Link>
 
-          {/* Desktop Interactive Live Search with Real-time Dropdown */}
+          {/* Desktop Interactive Search Bar */}
           <div className="hidden md:flex flex-1 max-w-xl">
             <LiveSearchBar isMobile={false} />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            {/* User Account / Login Button */}
+          {/* Action Cluster (User, Repair, Theme, Wishlist, Cart) */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            
+            {/* Workshop Repair Service CTA */}
+            <Link
+              href="/repair-service"
+              className="hidden lg:flex items-center gap-1.5 bg-amber-500/10 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700/80 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm active:scale-95"
+              title="پذیرش تعمیرات پنکه، کولر و وسایل برقی"
+            >
+              <Wrench className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span>پذیرش تعمیرات</span>
+            </Link>
+
+            {/* User Account / Login */}
             {session?.user ? (
               <Link
                 href="/account"
-                className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/90 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
+                className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
                 title="حساب کاربری من"
               >
-                <User className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span className="hidden lg:inline">{session.user.name || "حساب من"}</span>
+                <User className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span className="hidden xl:inline">{session.user.name || "حساب من"}</span>
               </Link>
             ) : (
               <Link
                 href="/auth/login"
-                className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/90 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
+                className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
               >
-                <User className="w-4 h-4" />
+                <User className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">ورود / ثبت‌نام</span>
               </Link>
             )}
 
-            {/* Quick Repair Service Admission CTA Button */}
-            <Link
-              href="/repair-service"
-              className="hidden sm:flex items-center gap-1.5 bg-amber-500/15 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 border border-amber-300 dark:border-amber-700 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold px-3 py-2.5 rounded-xl transition-all shadow-sm"
-              title="پذیرش تعمیرات پنکه، کولر و وسایل برقی"
-            >
-              <Wrench className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              <span>پذیرش تعمیرات</span>
-            </Link>
-
-            {/* Theme Toggle (Sun/Moon for Dark Mode) */}
+            {/* Dark / Light Theme Toggle */}
             <ThemeToggle />
 
-            {/* Wishlist Icon with Dynamic Badge */}
+            {/* Wishlist Button with Counter */}
             <Link
               href="/wishlist"
-              className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center relative transition-colors border border-slate-200 dark:border-slate-700/80"
-              title="کالاهای ذخیره‌شده (علاقه‌مندی‌ها)"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center relative transition-colors border border-slate-200 dark:border-slate-700/80"
+              title="کالاهای ذخیره‌شده"
             >
               <Heart className={`w-4 h-4 ${wishlistCount > 0 ? "text-rose-500 fill-rose-500" : ""}`} />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-in zoom-in">
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md animate-in zoom-in">
                   {toPersianDigits(wishlistCount)}
                 </span>
               )}
@@ -179,19 +194,19 @@ export function Header() {
             {/* Cart Button */}
             <Link
               href="/cart"
-              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-black px-3.5 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
+              className="flex items-center gap-1.5 sm:gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-black px-3 sm:px-3.5 py-2 rounded-xl shadow-md transition-all active:scale-95 hover-glow"
             >
               <div className="relative">
                 <ShoppingCart className="w-4 h-4" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-amber-500 dark:bg-slate-950 text-slate-950 dark:text-amber-400 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-slate-900 dark:border-amber-400">
+                  <span className="absolute -top-2 -right-2 bg-amber-500 dark:bg-slate-950 text-slate-950 dark:text-amber-400 text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-slate-900 dark:border-amber-400">
                     {toPersianDigits(itemCount)}
                   </span>
                 )}
               </div>
               <div className="hidden lg:flex flex-col text-right leading-tight">
-                <span className="text-[10px] font-normal opacity-80">سبد خرید</span>
-                <span className="font-bold font-mono">
+                <span className="text-[9px] font-normal opacity-80">سبد خرید</span>
+                <span className="font-bold font-mono text-[11px]">
                   {subtotal > 0 ? formatToman(subtotal) : "۰ تومان"}
                 </span>
               </div>
@@ -200,8 +215,8 @@ export function Header() {
             {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200"
-              aria-label="منوی موبایل"
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95"
+              aria-label="منوی سایت"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -209,15 +224,68 @@ export function Header() {
 
         </div>
 
-        {/* Mobile Search Bar Row (Under Header Logo) */}
-        <div className="mt-3 md:hidden">
+        {/* Mobile Search Bar Row */}
+        <div className="mt-2.5 md:hidden">
           <LiveSearchBar isMobile={true} />
+        </div>
+
+        {/* Mobile Horizontal Quick Category Chips (1-Thumb Tap) */}
+        <div className="mt-2.5 md:hidden flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px] font-bold">
+          <Link
+            href="/products"
+            className="px-2.5 py-1 rounded-xl bg-amber-500 text-slate-950 whitespace-nowrap shadow-sm shrink-0 flex items-center gap-1"
+          >
+            <Layers className="w-3 h-3" />
+            <span>همه کالاها</span>
+          </Link>
+          <Link
+            href="/products?category=home-appliances-cooling-heating"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 whitespace-nowrap border border-slate-200 dark:border-slate-700 shrink-0"
+          >
+            🌀 موتور و پنکه
+          </Link>
+          <Link
+            href="/repair-service"
+            className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 whitespace-nowrap border border-amber-200 dark:border-amber-800 shrink-0 flex items-center gap-1"
+          >
+            <Wrench className="w-3 h-3" />
+            <span>تعمیرات</span>
+          </Link>
+          <Link
+            href="/products?category=wiring-building"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 whitespace-nowrap border border-slate-200 dark:border-slate-700 shrink-0"
+          >
+            🔌 سیم و کابل
+          </Link>
+          <Link
+            href="/#calculator"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 whitespace-nowrap border border-slate-200 dark:border-slate-700 shrink-0 flex items-center gap-1"
+          >
+            <Calculator className="w-3 h-3 text-amber-500" />
+            <span>محاسبه‌گر</span>
+          </Link>
+          <Link
+            href="/bom-upload"
+            className="px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 whitespace-nowrap border border-blue-200 dark:border-blue-800 shrink-0 flex items-center gap-1"
+          >
+            <FileSpreadsheet className="w-3 h-3" />
+            <span>استعلام BOM</span>
+          </Link>
+          <Link
+            href="/price-lists"
+            className="px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 whitespace-nowrap border border-emerald-200 dark:border-emerald-800 shrink-0 flex items-center gap-1"
+          >
+            <FileText className="w-3 h-3" />
+            <span>لیست قیمت</span>
+          </Link>
         </div>
       </div>
 
-      {/* 3. Category & Navigation Menu Bar with Hover Mega Menu Preview */}
-      <nav className="border-t border-slate-100 dark:border-slate-800/40 bg-slate-50/80 dark:bg-slate-950/50 backdrop-blur-xl relative hidden md:block transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+      {/* 3. Streamlined Desktop Category & Navigation Bar */}
+      <nav className="border-t border-slate-100 dark:border-slate-800/60 bg-slate-50/90 dark:bg-slate-950/60 backdrop-blur-xl relative hidden md:block transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+          
+          {/* Right: Mega-Menu Button + Core Categories */}
           <div className="flex items-center gap-1">
             {/* Mega Menu Trigger button */}
             <div
@@ -227,7 +295,7 @@ export function Header() {
             >
               <Link
                 href="/products"
-                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 font-bold transition-all rounded-r-2xl shadow-sm hover-glow"
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 font-black transition-all rounded-r-2xl shadow-sm hover-glow"
               >
                 <Menu className="w-4 h-4" />
                 <span>همه دسته‌بندی‌های کالا</span>
@@ -348,54 +416,48 @@ export function Header() {
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                         <span>تعویض المنت و کلید بخاری برقی و هیتر</span>
                       </div>
-                      <div className="flex items-center gap-2 text-[11px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                        <span>تعمیر بوستر آنتن و منابع تغذیه</span>
-                      </div>
                     </div>
 
                     <Link
                       href="/repair-service"
-                      className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-2 rounded-xl transition-all w-full justify-center shadow-sm"
+                      className="inline-flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 font-extrabold hover:gap-2 transition-all pt-2"
                     >
-                      <Wrench className="w-3.5 h-3.5" />
-                      <span>ثبت آنلاین درخواست تعمیر</span>
+                      <span>ثبت درخواست آنلاین تعمیرات</span>
+                      <ArrowLeft className="w-3.5 h-3.5" />
                     </Link>
                   </div>
 
-                  {/* Col 3: Quick Direct Links & Bestsellers (3 cols) */}
+                  {/* Col 3: Quick Tools (3 cols) */}
                   <div className="col-span-3 space-y-3">
-                    <span className="font-extrabold text-xs text-slate-900 dark:text-white block pb-2 border-b border-slate-100 dark:border-slate-800">
-                      لینک‌های سریع
-                    </span>
+                    <div className="font-extrabold text-xs text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+                      ابزارها و خدمات ویژه
+                    </div>
+
                     <div className="space-y-2 text-xs">
                       <Link
-                        href="/products?bestseller=true"
-                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-slate-700 dark:text-slate-300"
+                        href="/#calculator"
+                        className="block p-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 font-bold text-amber-800 dark:text-amber-300 transition-colors"
                       >
-                        ⚡ پرفروش‌ترین کالاها
+                        🧮 محاسبه‌گر کابل و فیوز
                       </Link>
-                      <Link
-                        href="/products?fast=true"
-                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-emerald-700 dark:text-emerald-400"
-                      >
-                        🛵 ارسال فوری در نجف‌آباد
-                      </Link>
+
                       <Link
                         href="/bom-upload"
-                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-blue-700 dark:text-blue-400"
+                        className="block p-2.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 font-bold text-blue-800 dark:text-blue-300 transition-colors"
                       >
-                        📋 بارگذاری لیست قطعات (BOM)
+                        📋 استعلام لیست قطعات (BOM)
                       </Link>
+
                       <Link
                         href="/price-lists"
-                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-amber-600 dark:text-amber-400"
+                        className="block p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 font-bold text-emerald-800 dark:text-emerald-300 transition-colors"
                       >
-                        📄 لیست قیمت رسمی کارخانجات
+                        📄 لیست قیمت کارخانجات
                       </Link>
+
                       <Link
                         href="/order-tracking"
-                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-slate-700 dark:text-slate-300"
+                        className="block p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-slate-700 dark:text-slate-300"
                       >
                         🔍 پیگیری وضعیت سفارش
                       </Link>
@@ -415,10 +477,10 @@ export function Header() {
 
             <Link
               href="/repair-service"
-              className="px-3 py-2.5 text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold transition-colors flex items-center gap-1"
+              className="px-3 py-2.5 text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-extrabold transition-colors flex items-center gap-1"
             >
               <Wrench className="w-3.5 h-3.5" />
-              <span>کارگاه تعمیرات لوازم برقی</span>
+              <span>کارگاه تعمیرات</span>
             </Link>
 
             <Link
@@ -432,40 +494,34 @@ export function Header() {
               href="/products?category=lighting-fixtures"
               className="px-3 py-2.5 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
             >
-              روشنایی و پروژکتور خورشیدی
+              روشنایی و LED
             </Link>
 
             <Link
-              href="/products?category=maker-diy-electronics"
-              className="px-3 py-2.5 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              href="/#calculator"
+              className="px-3 py-2.5 text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold transition-colors flex items-center gap-1"
             >
-              بردهای آردوینو و ابزار
+              <Calculator className="w-3.5 h-3.5" />
+              <span>محاسبه‌گر کابل</span>
             </Link>
-          </div>
 
-          {/* Left Side: BOM, Price-Lists, Tracking & Contact */}
-          <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400">
             <Link
               href="/bom-upload"
-              className="bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/60 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 transition-colors border border-blue-200/60 dark:border-blue-800/60"
+              className="px-3 py-2.5 text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-bold transition-colors flex items-center gap-1"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
               <span>استعلام BOM</span>
             </Link>
+          </div>
 
-            <Link
-              href="/price-lists"
-              className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 font-semibold transition-colors"
-            >
-              <FileText className="w-3.5 h-3.5 text-amber-500" />
-              <span>لیست قیمت</span>
-            </Link>
-
+          {/* Left: Tracking & Contact */}
+          <div className="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
             <Link
               href="/order-tracking"
               className="hover:text-slate-900 dark:hover:text-white flex items-center gap-1 font-medium transition-colors"
             >
-              <span>پیگیری</span>
+              <FileText className="w-3.5 h-3.5 text-amber-500" />
+              <span>پیگیری سفارشات</span>
             </Link>
 
             <span className="text-slate-300 dark:text-slate-700">|</span>
@@ -478,6 +534,7 @@ export function Header() {
               <span>ارتباط با ما</span>
             </Link>
           </div>
+
         </div>
       </nav>
 
@@ -486,81 +543,90 @@ export function Header() {
 
       {/* Mobile Drawer Menu (Slide-in) */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-4 animate-in slide-in-from-top duration-200 shadow-xl">
-          <div className="space-y-1 text-xs font-bold">
+        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 space-y-4 animate-in slide-in-from-top duration-200 shadow-xl max-h-[80vh] overflow-y-auto">
+          <div className="space-y-1.5 text-xs font-bold">
             <Link
               href="/products"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-400 hover:bg-amber-500/20"
+              className="block p-3 rounded-2xl bg-amber-500 text-slate-950 font-black shadow-sm"
             >
-              📦 همه دسته‌بندی‌های کالا
+              📦 مشاهده همه دسته‌بندی‌های کالا
             </Link>
             <Link
               href="/bom-upload"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+              className="block p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center justify-between"
             >
-              📋 خرید عمده و استعلام لیست قطعات (BOM)
+              <span>📋 خرید عمده و استعلام لیست قطعات (BOM)</span>
+              <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">تخفیف ویژه</span>
             </Link>
             <Link
               href="/price-lists"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+              className="block p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
             >
               📄 دانلود لیست قیمت رسمی کارخانجات
             </Link>
             <Link
-              href="/products?category=home-appliances-cooling-heating"
+              href="/#calculator"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
             >
-              🌀 پنکه، موتور کولر و بخاری برقی
+              🧮 محاسبه‌گر سایز کابل و فیوز ساختمان
             </Link>
             <Link
               href="/repair-service"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+              className="block p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
             >
               🛠️ کارگاه تعمیرات تخصصی نجف‌آباد
             </Link>
             <Link
+              href="/products?category=home-appliances-cooling-heating"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+            >
+              🌀 پنکه، موتور کولر و بخاری برقی
+            </Link>
+            <Link
               href="/products?category=wiring-building"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               🔌 سیم، کابل استاندارد و آنتن
             </Link>
             <Link
               href="/products?category=lighting-fixtures"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               💡 روشنایی و پروژکتور خورشیدی
             </Link>
             <Link
               href="/products?category=maker-diy-electronics"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               🤖 بردهای آردوینو و قطعات الکترونیک
             </Link>
             <Link
               href="/order-tracking"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               🔍 پیگیری سفارشات و مشاهده فاکتور
             </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+              className="block p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
             >
               📞 تماس با ما و نشانی شعبه نجف‌آباد
             </Link>
           </div>
         </div>
       )}
+
     </header>
   );
 }

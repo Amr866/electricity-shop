@@ -10,7 +10,6 @@ import {
   AlertTriangle,
   ShoppingCart,
   Check,
-  ShieldCheck,
   ChevronDown,
 } from "lucide-react";
 

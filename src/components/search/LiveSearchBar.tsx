@@ -105,11 +105,11 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
             className={`relative flex items-center transition-all duration-300 rounded-2xl ${
               isOpen
                 ? "bg-slate-900 text-white border-2 border-amber-400 shadow-2xl shadow-amber-500/20 ring-4 ring-amber-400/20"
-                : "bg-slate-100/90 border border-slate-200 text-slate-900 hover:border-slate-300 hover:bg-slate-100"
+                : "bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             {/* Search Icon / Animated Spinner */}
-            <div className={`pr-3.5 pl-2 flex items-center justify-center ${isOpen ? "text-amber-400" : "text-slate-400"}`}>
+            <div className={`pr-3.5 pl-2 flex items-center justify-center ${isOpen ? "text-amber-400" : "text-slate-400 dark:text-slate-400"}`}>
               {loading ? (
                 <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
               ) : isOpen ? (
@@ -134,8 +134,8 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                   ? "جستجوی کالا، برند یا قطعه..."
                   : "جستجوی پنکه، موتور کولر، بخاری برقی، آنتن، سیم و کابل، آردوینو..."
               }
-              className={`w-full bg-transparent text-xs sm:text-sm py-2.5 sm:py-3 pl-20 focus:outline-none placeholder:text-slate-400 font-medium ${
-                isOpen ? "text-white placeholder:text-slate-500" : "text-slate-900"
+              className={`w-full bg-transparent text-xs sm:text-sm py-2.5 sm:py-3 pl-20 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium ${
+                isOpen ? "text-white placeholder:text-slate-500" : "text-slate-900 dark:text-white"
               }`}
             />
 
@@ -151,26 +151,26 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                 className={`p-1.5 rounded-full ml-2 transition-colors ${
                   isOpen
                     ? "text-slate-400 hover:text-white hover:bg-slate-800"
-                    : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/60"
+                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700"
                 }`}
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
 
-            {/* Submit Action Button */}
+            {/* Submit Action Button with 'بیاب' */}
             <button
               type="submit"
               className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-4 py-1.5 sm:py-2 rounded-xl m-1 transition-all active:scale-95 shadow-sm shrink-0 flex items-center gap-1"
             >
-              <span>جستجو</span>
+              <span>بیاب</span>
             </button>
           </div>
         </form>
 
-        {/* Interactive Dropdown Search Results Popup */}
+        {/* Interactive Dropdown Search Results Popup with Dark Theme support */}
         {isOpen && (
-          <div className="absolute top-full right-0 left-0 mt-2 z-50 bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden divide-y divide-slate-100 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900">
+          <div className="absolute top-full right-0 left-0 mt-2 z-50 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-slate-100">
             
             {/* Case 1: Search Query is Active and Results Found */}
             {query.trim() && (results.products.length > 0 || results.categories.length > 0) && (
@@ -189,10 +189,10 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                           key={c.id}
                           href={`/products?category=${c.slug}`}
                           onClick={() => setIsOpen(false)}
-                          className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1"
+                          className="bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1"
                         >
                           <span>{c.name}</span>
-                          <ArrowLeft className="w-3 h-3 text-amber-600" />
+                          <ArrowLeft className="w-3 h-3 text-amber-600 dark:text-amber-400" />
                         </Link>
                       ))}
                     </div>
@@ -212,9 +212,9 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                           key={p.id}
                           href={`/products/${p.slug}`}
                           onClick={() => setIsOpen(false)}
-                          className="group flex items-center gap-3 p-2.5 rounded-2xl hover:bg-amber-50/60 border border-transparent hover:border-amber-200 transition-all"
+                          className="group flex items-center gap-3 p-2.5 rounded-2xl hover:bg-amber-50/60 dark:hover:bg-slate-800/80 border border-transparent hover:border-amber-200 dark:hover:border-slate-700 transition-all"
                         >
-                          <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 p-1 shrink-0 overflow-hidden flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-1 shrink-0 overflow-hidden flex items-center justify-center">
                             <img
                               src={p.image}
                               alt={p.name}
@@ -225,10 +225,10 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                             <span className="text-[10px] text-slate-400 font-semibold block">
                               {p.brand || p.categoryName}
                             </span>
-                            <h4 className="font-bold text-xs text-slate-900 group-hover:text-amber-600 truncate">
+                            <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 truncate">
                               {p.name}
                             </h4>
-                            <span className="font-extrabold text-xs text-slate-950 block mt-0.5">
+                            <span className="font-extrabold text-xs text-slate-950 dark:text-amber-400 block mt-0.5">
                               {formatToman(p.price)}
                             </span>
                           </div>
@@ -239,13 +239,13 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                 )}
 
                 {/* View All Search Results CTA */}
-                <div className="pt-2 border-t border-slate-100">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                   <button
                     onClick={handleSubmit}
-                    className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5"
                   >
                     <span>مشاهده همه نتایج جستجو برای «{query}»</span>
-                    <ArrowLeft className="w-3.5 h-3.5 text-amber-400" />
+                    <ArrowLeft className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
@@ -255,7 +255,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
             {/* Case 2: Search Query Active but No Results */}
             {query.trim() && !loading && results.products.length === 0 && results.categories.length === 0 && (
               <div className="p-6 text-center space-y-2">
-                <span className="text-xs font-bold text-slate-700 block">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-200 block">
                   کالایی با عنوان «{query}» یافت نشد.
                 </span>
                 <p className="text-[11px] text-slate-400">
@@ -264,11 +264,11 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
               </div>
             )}
 
-            {/* Case 3: Search Input Focused but Empty (Show Trending / Popular Searches) */}
+            {/* Case 3: Search Input Focused but Empty */}
             {!query.trim() && (
               <div className="p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
                     <TrendingUp className="w-4 h-4 text-amber-500" />
                     جستجوهای پرطرفدار فروشگاه شیاسی (نجف‌آباد):
                   </span>
@@ -279,7 +279,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                       key={term}
                       type="button"
                       onClick={() => handleSelectPopular(term)}
-                      className="bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-xs font-medium px-3 py-1.5 rounded-xl transition-colors border border-slate-200/80"
+                      className="bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/70 text-slate-700 dark:text-slate-300 hover:text-amber-900 dark:hover:text-amber-300 text-xs font-medium px-3 py-1.5 rounded-xl transition-colors border border-slate-200/80 dark:border-slate-700"
                     >
                       {term}
                     </button>

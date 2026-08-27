@@ -254,13 +254,15 @@ export function Header() {
             >
               شعبه نجف‌آباد
             </Link>
-            <Link
-              href="/admin"
-              className="flex items-center gap-1 text-slate-800 bg-slate-200/80 hover:bg-amber-400 px-2.5 py-1 rounded-md transition-colors font-bold"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>پنل مدیریت</span>
-            </Link>
+            {session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-1 text-slate-800 bg-slate-200/80 hover:bg-amber-400 px-2.5 py-1 rounded-md transition-colors font-bold"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                <span>پنل مدیریت</span>
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -335,13 +337,15 @@ export function Header() {
             >
               آدرس و نقشه شعبه نجف‌آباد
             </Link>
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded-xl bg-amber-50 text-amber-900 font-extrabold border border-amber-200"
-            >
-              ورود به پنل مدیریت فروشگاه
-            </Link>
+            {session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2.5 rounded-xl bg-amber-50 text-amber-900 font-extrabold border border-amber-200"
+              >
+                ورود به پنل مدیریت فروشگاه
+              </Link>
+            )}
           </div>
         </div>
       )}

@@ -124,7 +124,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
       </div>
 
       {/* Horizontal Carousel Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 pb-2 sm:pb-0 scrollbar-thin">
         {deals.map((deal: any) => {
           const isFav = isInWishlist(deal.id);
           const primaryImg =
@@ -135,7 +135,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
           return (
             <div
               key={deal.id}
-              className="group bg-white rounded-3xl p-4 text-slate-900 border border-white/40 shadow-lg flex flex-col justify-between space-y-3 hover:-translate-y-1 transition-all duration-300"
+              className="group bg-white rounded-3xl p-4 text-slate-900 border border-white/40 shadow-lg flex flex-col justify-between space-y-3 hover:-translate-y-1 transition-all duration-300 min-w-[230px] sm:min-w-0 shrink-0 sm:shrink"
             >
               <div>
                 {/* Top Badges: Discount pill + Heart */}

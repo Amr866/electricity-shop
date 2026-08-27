@@ -27,7 +27,7 @@ export function BrandDemoFloatingPill() {
   ];
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 left-4 z-40 no-print">
+    <div className="hidden md:block fixed bottom-6 left-4 z-40 no-print">
       {open ? (
         <div className="bg-slate-950 text-white border border-amber-500/40 rounded-3xl p-4 shadow-2xl w-80 sm:w-96 space-y-3 animate-in fade-in slide-in-from-bottom-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">

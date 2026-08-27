@@ -242,7 +242,7 @@ export default function RepairServicePage() {
                     <label className="block font-bold text-slate-700 mb-2">
                       نوع دستگاه تعمیری را انتخاب کنید: <span className="text-rose-500">*</span>
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {applianceOptions.map((opt) => {
                         const Icon = opt.icon;
                         return (

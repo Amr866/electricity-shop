@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { BookOpen, Clock, ArrowLeft, Lightbulb } from "lucide-react";
+import { Clock, ArrowLeft, Lightbulb } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
 export function KnowledgeBaseSection() {
@@ -69,7 +69,7 @@ export function KnowledgeBaseSection() {
         {articles.map((art) => (
           <div
             key={art.id}
-            className="group rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-750 overflow-hidden flex flex-col justify-between hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all hover:shadow-md"
+            className="group rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col justify-between hover:border-amber-400 dark:hover:border-amber-400 transition-all hover:shadow-md"
           >
             <div>
               <div className="aspect-video w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
@@ -91,9 +91,9 @@ export function KnowledgeBaseSection() {
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-400 border-t border-slate-100 dark:border-slate-750 mt-3 pt-3">
+            <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700 mt-3 pt-3">
               <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-slate-400 dark:text-slate-500" />
+                <Clock className="w-3 h-3 text-slate-400 dark:text-slate-400" />
                 {art.readTime}
               </span>
               <span className="font-mono text-[10px]">{toPersianDigits(art.date)}</span>

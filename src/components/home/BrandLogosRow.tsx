@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Award } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export function BrandLogosRow() {
   const brands = [
@@ -33,12 +33,12 @@ export function BrandLogosRow() {
           <Link
             key={b.slug}
             href={`/products?q=${encodeURIComponent(b.name.split(" ")[0])}`}
-            className="group p-3 rounded-2xl bg-slate-50 dark:bg-slate-850 hover:bg-amber-50/70 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-750 hover:border-amber-300 dark:hover:border-amber-500/50 transition-all text-center flex flex-col items-center justify-center min-h-[64px] shadow-sm hover:shadow-md"
+            className="group p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-400 transition-all text-center flex flex-col items-center justify-center min-h-[64px] shadow-sm hover:shadow-md"
           >
-            <span className="font-black text-xs sm:text-sm text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+            <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
               {b.name}
             </span>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-400 mt-0.5 font-medium">
+            <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-300 mt-0.5 font-medium">
               {b.tag}
             </span>
           </Link>

@@ -8,6 +8,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useBrand } from "@/context/BrandContext";
 import { toPersianDigits, formatToman } from "@/lib/utils";
 import { LiveSearchBar } from "@/components/search/LiveSearchBar";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import {
   Zap,
   ShoppingCart,
@@ -153,10 +154,13 @@ export function Header() {
               <span>پذیرش تعمیرات</span>
             </Link>
 
+            {/* Dark / Light Mode Toggle Button */}
+            <ThemeToggle />
+
             {/* Wishlist Heart Button with Counter */}
             <Link
               href="/wishlist"
-              className="relative p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 hover:bg-rose-50/50 transition-colors"
+              className="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-rose-600 hover:border-rose-300 hover:bg-rose-50/50 transition-colors"
               title="کالاهای ذخیره شده"
             >
               <Heart className={`w-5 h-5 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`} />

@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-export type BrandKey = "shiasi" | "shiasi_appliances" | "shiasi_workshop";
+export type BrandKey = "shiasi_appliances" | "shiasi" | "shiasi_workshop";
 
 export interface BrandConfig {
   key: BrandKey;
@@ -22,6 +22,22 @@ export interface BrandConfig {
 }
 
 export const BRANDS: Record<BrandKey, BrandConfig> = {
+  shiasi_appliances: {
+    key: "shiasi_appliances",
+    nameFa: "فروشگاه شیاسی (لوازم برقی و خانگی)",
+    nameEn: "Shiasi Electrical & Home Appliances",
+    badge: "نجف‌آباد اصفهان",
+    tagline: "فروش تخصصی پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل و روشنایی",
+    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)",
+    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
+    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
+    mobile: "۰۹۱۳۱۱۱۲۲۳۳",
+    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    city: "نجف‌آباد",
+    province: "اصفهان",
+    logoIcon: "zap",
+    primaryAccent: "#F59E0B",
+  },
   shiasi: {
     key: "shiasi",
     nameFa: "فروشگاه تخصصی شیاسی",
@@ -37,22 +53,6 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     province: "اصفهان",
     logoIcon: "zap",
     primaryAccent: "#F5A623",
-  },
-  shiasi_appliances: {
-    key: "shiasi_appliances",
-    nameFa: "فروشگاه تخصصی شیاسی (لوازم برقی و خانگی)",
-    nameEn: "Shiasi Home & Electrical Store",
-    badge: "شعبه نجف‌آباد",
-    tagline: "پخش و فروش پنکه ریموت‌دار، موتور کولر آبی، بخاری برقی، آنتن و سیم و کابل مس",
-    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی",
-    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
-    mobile: "۰۹۱۳۱۱۱۲۲۳۳",
-    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
-    city: "نجف‌آباد",
-    province: "اصفهان",
-    logoIcon: "circuit",
-    primaryAccent: "#F59E0B",
   },
   shiasi_workshop: {
     key: "shiasi_workshop",
@@ -81,7 +81,7 @@ interface BrandContextType {
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
 
 export function BrandProvider({ children }: { children: React.ReactNode }) {
-  const [brandKey, setBrandKey] = useState<BrandKey>("shiasi");
+  const [brandKey, setBrandKey] = useState<BrandKey>("shiasi_appliances");
 
   useEffect(() => {
     const saved = localStorage.getItem("shiasi_selected_brand") as BrandKey;

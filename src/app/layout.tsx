@@ -4,7 +4,6 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { BrandDemoFloatingPill } from "@/components/brand/BrandDemoFloatingPill";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
@@ -23,9 +22,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "فروشگاه تخصصی شیاسی | خرید و تعمیرات لوازم برقی، پنکه، کولر، بخاری، آنتن و روشنایی در نجف‌آباد",
+  title: "فروشگاه شیاسی (لوازم برقی و خانگی) | خرید و تعمیرات پنکه، کولر، بخاری، آنتن و روشنایی در نجف‌آباد",
   description:
-    "مرکز پخش، خرید آنلاین و کارگاه تعمیرات تخصصی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل استاندارد تمام مس، پنل‌های روشنایی LED و قطعات الکترونیک در نجف‌آباد و اصفهان.",
+    "مرکز پخش، خرید آنلاین و کارگاه تعمیرات تخصصی انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل استاندارد تمام مس و روشنایی در نجف‌آباد و اصفهان.",
   keywords: [
     "فروشگاه شیاسی",
     "تعمیر پنکه نجف آباد",
@@ -37,7 +36,7 @@ export const metadata: Metadata = {
     "خرید سیم و کابل",
     "آنتن تلویزیون هانی"
   ],
-  authors: [{ name: "فروشگاه تخصصی شیاسی" }],
+  authors: [{ name: "فروشگاه شیاسی (لوازم برقی و خانگی)" }],
 };
 
 export default function RootLayout({
@@ -53,7 +52,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans pb-16 md:pb-0`}
+        className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-16 md:pb-0 transition-colors duration-200`}
         suppressHydrationWarning
       >
         <AuthProvider>
@@ -64,7 +63,6 @@ export default function RootLayout({
                 <main className="flex-1">{children}</main>
                 <Footer />
                 <MobileBottomNav />
-                <BrandDemoFloatingPill />
               </CartProvider>
             </WishlistProvider>
           </BrandProvider>

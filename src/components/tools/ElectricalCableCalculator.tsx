@@ -161,7 +161,7 @@ export function ElectricalCableCalculator() {
         slug: "alborz-pure-copper-cable",
         price: wireInfo.pricePerMeter * distanceMeters,
         stock: 500,
-        category: { name: "سیم و کابل", slug: "wiring-building" },
+        category: { name: "سیم و کابل" },
       },
       1
     );
@@ -173,7 +173,7 @@ export function ElectricalCableCalculator() {
         slug: "dena-electric-miniature-circuit-breaker",
         price: fuseInfo.price,
         stock: 50,
-        category: { name: "تجهیزات حفاظتی", slug: "wiring-building" },
+        category: { name: "تجهیزات حفاظتی" },
       },
       1
     );

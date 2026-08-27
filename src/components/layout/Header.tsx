@@ -211,7 +211,7 @@ export function Header() {
             >
               <Link
                 href="/products"
-                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 font-bold transition-all"
+                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 font-bold transition-all rounded-r-2xl shadow-sm hover-glow"
               >
                 <Menu className="w-4 h-4" />
                 <span>همه دسته‌بندی‌های کالا</span>
@@ -435,7 +435,7 @@ export function Header() {
 
             <Link
               href="/contact"
-              className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1 transition-colors"
+              className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1 transition-colors px-3 py-1.5 rounded-l-2xl hover:bg-amber-50 dark:hover:bg-slate-800"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>ارتباط با ما</span>

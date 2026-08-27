@@ -156,7 +156,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
         {/* Left Col (on desktop): Images & Gallery */}
         <div className="lg:col-span-5 space-y-3">
           {/* Main Image Container */}
-          <div className="relative aspect-square max-h-[300px] mx-auto rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 p-4 flex items-center justify-center overflow-hidden">
+          <div className="relative aspect-square max-h-[300px] mx-auto rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700 p-4 flex items-center justify-center overflow-hidden">
             {product.discountPercent && product.discountPercent > 0 ? (
               <span className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-md z-10">
                 {toPersianDigits(product.discountPercent)}٪ تخفیف
@@ -203,11 +203,11 @@ export function ProductDetailView({ product }: ProductDetailProps) {
 
           {/* Guarantees Box */}
           <div className="grid grid-cols-2 gap-2 pt-1 text-[11px] text-slate-600 dark:text-slate-400">
-            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/60 p-2 rounded-xl border border-slate-100 dark:border-slate-700 ambient-glow">
+            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700 ambient-glow">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>ضمانت ۱۰۰٪ مس و اصالت</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/60 p-2 rounded-xl border border-slate-100 dark:border-slate-700 ambient-glow">
+            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700 ambient-glow">
               <RotateCcw className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
               <span>مهلت تست و کارکرد</span>
             </div>
@@ -255,13 +255,13 @@ export function ProductDetailView({ product }: ProductDetailProps) {
               </div>
 
               {product.brand && (
-                <span className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded text-[11px] font-semibold">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded text-[11px] font-semibold border border-slate-200/50 dark:border-slate-700">
                   برند: {product.brand}
                 </span>
               )}
 
               {product.madeIn && (
-                <span className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded text-[11px]">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-0.5 rounded text-[11px] border border-slate-200/50 dark:border-slate-700">
                   ساخت: {product.madeIn}
                 </span>
               )}
@@ -275,7 +275,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             )}
 
             {/* RoboEQ-style Bulk Tier Pricing Table */}
-            <div className="bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 rounded-2xl p-2.5 space-y-1.5">
+            <div className="bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/60 rounded-2xl p-2.5 space-y-1.5">
               <div className="flex items-center justify-between text-[11px] font-bold text-amber-950 dark:text-amber-300">
                 <span className="flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
@@ -286,8 +286,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                 <div
                   className={`p-1.5 rounded-xl border ${
                     quantity < 10
-                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold"
-                      : "bg-amber-100/40 dark:bg-slate-850 border-amber-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold text-slate-900 dark:text-white"
+                      : "bg-amber-100/40 dark:bg-slate-900/90 border-amber-200/60 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                   }`}
                 >
                   <span className="text-[10px] block text-slate-500 dark:text-slate-400">۱ تا ۹ عدد</span>
@@ -296,8 +296,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                 <div
                   className={`p-1.5 rounded-xl border ${
                     quantity >= 10 && quantity < 50
-                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold"
-                      : "bg-amber-100/40 dark:bg-slate-850 border-amber-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold text-slate-900 dark:text-white"
+                      : "bg-amber-100/40 dark:bg-slate-900/90 border-amber-200/60 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                   }`}
                 >
                   <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block">۱۰ تا ۴۹ عدد (۵٪)</span>
@@ -306,8 +306,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                 <div
                   className={`p-1.5 rounded-xl border ${
                     quantity >= 50
-                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold"
-                      : "bg-amber-100/40 dark:bg-slate-850 border-amber-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                      ? "bg-white dark:bg-slate-800 border-amber-400 shadow-sm font-bold text-slate-900 dark:text-white"
+                      : "bg-amber-100/40 dark:bg-slate-900/90 border-amber-200/60 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                   }`}
                 >
                   <span className="text-[10px] text-rose-700 dark:text-rose-400 block">۵۰+ عدد (۱۰٪)</span>
@@ -327,7 +327,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
           </div>
 
           {/* Pricing & Checkout Action Box */}
-          <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-750 space-y-3">
+          <div className="bg-slate-50 dark:bg-slate-900/90 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 space-y-3">
             
             {/* Price section */}
             <div className="flex items-baseline justify-between">
@@ -347,7 +347,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             {/* Quantity Selector, Add to Cart, and Contractor WhatsApp Inquiry Button */}
             <div className="flex items-center gap-2">
               {/* Quantity Counter */}
-              <div className="flex items-center bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-0.5 shrink-0 h-10">
+              <div className="flex items-center bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-0.5 shrink-0 h-10">
                 <button
                   onClick={() => setQuantity(Math.min(quantity + 1, product.stock))}
                   disabled={quantity >= product.stock || isOutOfStock}
@@ -408,7 +408,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             </div>
 
             {/* Quick Stock & Direct Call Row */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1">
                 <span className={`w-2 h-2 rounded-full ${product.stock > 5 ? "bg-emerald-500" : product.stock > 0 ? "bg-amber-500" : "bg-rose-500"}`} />
                 <span>
@@ -439,7 +439,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
       {/* 2. Tabs Section: Specs, Wiring & Datasheet, Description, Reviews, Delivery */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-200">
         {/* Tabs Bar */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 px-4 overflow-x-auto">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 px-4 overflow-x-auto">
           <button
             onClick={() => setActiveTab("specs")}
             className={`py-3.5 px-4 sm:px-5 font-bold text-xs sm:text-sm border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
@@ -452,7 +452,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             <span>مشخصات فنی قطعه</span>
           </button>
 
-          {/* New Wiring Diagram & Datasheet Tab */}
+          {/* Wiring Diagram & Datasheet Tab */}
           <button
             onClick={() => setActiveTab("wiring")}
             className={`py-3.5 px-4 sm:px-5 font-bold text-xs sm:text-sm border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
@@ -503,7 +503,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
         </div>
 
         {/* Tab Contents */}
-        <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-8 bg-white dark:bg-slate-900">
           
           {/* Tab 1: Technical Specs Table */}
           {activeTab === "specs" && (
@@ -570,14 +570,14 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                     <FileCode className="w-4 h-4" />
                     <span>شماتیک مداری استاندارد (Wiring Schematic)</span>
                   </span>
-                  <span className="text-[10px] bg-slate-850 text-slate-400 px-2 py-0.5 rounded border border-slate-700">
+                  <span className="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-700">
                     ولتاژ: ۲۲۰V / ۵۰Hz
                   </span>
                 </div>
 
                 {/* Visual Terminal Block */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                  <div className="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-white">
                       <span className="w-3 h-3 rounded-full bg-blue-500" />
                       <span>سیم آبی (نول / COM)</span>
@@ -585,7 +585,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                     <p className="text-[11px] text-slate-400">اتصال مستقیم به ترمینال نول اصلی</p>
                   </div>
 
-                  <div className="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-white">
                       <span className="w-3 h-3 rounded-full bg-amber-500" />
                       <span>سیم قهوه‌ای (دور کند / LO)</span>
@@ -593,7 +593,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                     <p className="text-[11px] text-slate-400">اتصال به پلاتین دور اول کلید</p>
                   </div>
 
-                  <div className="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-white">
                       <span className="w-3 h-3 rounded-full bg-rose-500" />
                       <span>سیم مشکی (دور تند / HI)</span>
@@ -601,7 +601,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                     <p className="text-[11px] text-slate-400">اتصال به پلاتین دور دوم کلید</p>
                   </div>
 
-                  <div className="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-1">
+                  <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex items-center gap-2 font-bold text-white">
                       <span className="w-3 h-3 rounded-full bg-emerald-500" />
                       <span>سیم زرد/سبز (ارت / GND)</span>
@@ -621,7 +621,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
 
               {/* Maintenance and Repair Tips */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-700 dark:text-slate-300">
-                <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
                   <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     <span>بررسی سلامت خازن راه‌انداز</span>
@@ -631,7 +631,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
                   <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                     <span>روغن‌کاری بوش‌ها و بلبرینگ‌ها</span>
@@ -766,7 +766,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   reviewsList.map((rev: any, idx: number) => (
                     <div
                       key={rev.id || idx}
-                      className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-2"
+                      className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 space-y-2"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -813,17 +813,17 @@ export function ProductDetailView({ product }: ProductDetailProps) {
               </div>
 
               <div className="space-y-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">
                   <strong className="text-slate-900 dark:text-white block mb-0.5">ارسال فوری با اسنپ‌باکس:</strong>
                   <span>سفارش‌های ثبت شده تا ساعت ۱۷:۰۰ در محدوده شهر نجف‌آباد و اصفهان در همان روز تحویل داده می‌شوند.</span>
                 </div>
 
-                <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">
                   <strong className="text-slate-900 dark:text-white block mb-0.5">امکان خرید و تحویل حضوری:</strong>
                   <span>مشتریان محترم می‌توانند با هماهنگی تلفنی به فروشگاه مرکزی شیاسی در نجف‌آباد (خیابان قدس) مراجعه نمایند.</span>
                 </div>
 
-                <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">
                   <strong className="text-slate-900 dark:text-white block mb-0.5">ارسال به سراسر کشور:</strong>
                   <span>از طریق تیپاکس، پست پیشتاز و باربری در بسته‌بندی استاندارد و ایمن.</span>
                 </div>

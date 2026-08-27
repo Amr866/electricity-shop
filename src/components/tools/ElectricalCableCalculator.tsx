@@ -333,7 +333,9 @@ export function ElectricalCableCalculator() {
                 <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
               )}
               <span className="text-slate-700 dark:text-slate-300 font-medium">
-                سیم محاسبه‌شده ۱۰۰٪ تمام مس آنیل شده با افت ولتاژ زیر ۳٪ در مسافت {toPersianDigits(distanceMeters)} متر است.
+                {isDropAcceptable
+                  ? `سیم محاسبه‌شده ۱۰۰٪ تمام مس با افت ولتاژ مجاز (${voltageDropPercent.toFixed(1)}٪) در مسافت ${toPersianDigits(distanceMeters)} متر است.`
+                  : `افت ولتاژ (${voltageDropPercent.toFixed(1)}٪) بیش از حد مجاز ۳٪ بود؛ سایز سیم جهت حفاظت مصرف‌کننده ارتقا یافت.`}
               </span>
             </div>
           </div>

@@ -194,15 +194,15 @@ export default function CheckoutPage() {
             <div className="lg:col-span-8 space-y-6">
               
               {/* 1. Customer Information & Address */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
-                <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors duration-200">
+                <h2 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
                   <MapPin className="w-4 h-4 text-amber-500" />
                   <span>اطلاعات تحویل‌گیرنده و نشانی دقیق</span>
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       نام و نام خانوادگی <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -211,12 +211,12 @@ export default function CheckoutPage() {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="مثال: علیرضا شیاسی"
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       شماره همراه (۱۱ رقم) <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -226,18 +226,18 @@ export default function CheckoutPage() {
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       placeholder="۰۹۱۳۱۱۱۲۲۳۳"
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white text-left font-mono"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 text-left font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       استان <span className="text-rose-500">*</span>
                     </label>
                     <select
                       value={province}
                       onChange={(e) => setProvince(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800"
                     >
                       <option value="اصفهان">اصفهان</option>
                       <option value="تهران">تهران</option>
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       شهر / منطقه <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -258,13 +258,13 @@ export default function CheckoutPage() {
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder="مثال: نجف‌آباد"
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     نشانی دقیق خیابان، کوچه، پلاک و واحد <span className="text-rose-500">*</span>
                   </label>
                   <textarea
@@ -273,13 +273,13 @@ export default function CheckoutPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="مثال: نجف‌آباد، خیابان امام شرقی، کوچه بهار، پلاک ۲۴"
-                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white leading-relaxed"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 leading-relaxed"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       کد پستی ۱۰ رقمی{" "}
                       {selectedShipping === "post_pishtaz" || selectedShipping === "tipax" ? (
                         <span className="text-rose-500 font-bold">(الزامی برای ارسال پستی)</span>
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
                       placeholder="کد پستی ۱۰ رقمی"
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white text-left font-mono"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 text-left font-mono"
                     />
                   </div>
 
@@ -369,9 +369,9 @@ export default function CheckoutPage() {
               </div>
 
               {/* 2. Shipping Method Selection */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <Truck className="w-4 h-4 text-emerald-600" />
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors duration-200">
+                <h2 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <Truck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>انتخاب شیوه ارسال مرسوله</span>
                 </h2>
 
@@ -382,31 +382,31 @@ export default function CheckoutPage() {
                       onClick={() => setSelectedShipping(method.id)}
                       className={`cursor-pointer rounded-2xl p-4 border transition-all flex flex-col justify-between ${
                         selectedShipping === method.id
-                          ? "border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/20"
-                          : "border-slate-200 hover:border-slate-300 bg-white"
+                          ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/20"
+                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                       }`}
                     >
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs text-slate-900">{method.title}</span>
+                          <span className="font-bold text-xs text-slate-900 dark:text-white">{method.title}</span>
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                               method.isLocal
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "bg-blue-100 text-blue-800"
+                                ? "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                                : "bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
                             }`}
                           >
                             {method.badge}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-500 leading-snug">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                           {method.description}
                         </p>
                       </div>
 
-                      <div className="pt-3 mt-2 border-t border-slate-100/80 flex items-center justify-between text-xs">
+                      <div className="pt-3 mt-2 border-t border-slate-100/80 dark:border-slate-800 flex items-center justify-between text-xs">
                         <span className="text-slate-400 text-[10px]">{method.estimatedDays}</span>
-                        <span className="font-extrabold text-slate-900">
+                        <span className="font-extrabold text-slate-900 dark:text-amber-400 font-mono">
                           {method.cost === 0 ? "رایگان" : formatToman(method.cost)}
                         </span>
                       </div>
@@ -416,9 +416,9 @@ export default function CheckoutPage() {
               </div>
 
               {/* 3. Payment Method Selection */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-                  <CreditCard className="w-4 h-4 text-blue-600" />
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 transition-colors duration-200">
+                <h2 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <CreditCard className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>انتخاب شیوه پرداخت</span>
                 </h2>
 
@@ -429,8 +429,8 @@ export default function CheckoutPage() {
                       onClick={() => setSelectedPayment(method.id)}
                       className={`cursor-pointer rounded-2xl p-4 border transition-all flex items-start justify-between gap-3 ${
                         selectedPayment === method.id
-                          ? "border-amber-500 bg-amber-50/50 ring-2 ring-amber-500/20"
-                          : "border-slate-200 hover:border-slate-300 bg-white"
+                          ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/20"
+                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -438,7 +438,7 @@ export default function CheckoutPage() {
                           className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center shrink-0 border ${
                             selectedPayment === method.id
                               ? "border-amber-600 bg-amber-500"
-                              : "border-slate-300"
+                              : "border-slate-300 dark:border-slate-700"
                           }`}
                         >
                           {selectedPayment === method.id && (
@@ -447,12 +447,12 @@ export default function CheckoutPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs text-slate-900">{method.title}</span>
-                            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-semibold">
+                            <span className="font-bold text-xs text-slate-900 dark:text-white">{method.title}</span>
+                            <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-semibold border border-slate-200 dark:border-slate-700">
                               {method.badge}
                             </span>
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-1">
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                             {method.description}
                           </p>
                         </div>
@@ -463,12 +463,12 @@ export default function CheckoutPage() {
 
                 {/* Conditional Card-to-Card Info Box */}
                 {selectedPayment === "card_to_card" && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-2 text-xs text-blue-950">
+                  <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 space-y-2 text-xs text-blue-950 dark:text-blue-200">
                     <span className="font-bold block">اطلاعات حساب فروشگاه شیاسی (نجف‌آباد):</span>
-                    <p>شماره کارت بانک ملی: <strong className="font-mono text-blue-900">۶۰۳۷-۹۹۷۵-۱۲۳۴-۵۶۷۸</strong></p>
+                    <p>شماره کارت بانک ملی: <strong className="font-mono text-blue-900 dark:text-blue-300">۶۰۳۷-۹۹۷۵-۱۲۳۴-۵۶۷۸</strong></p>
                     <p>به نام: <strong>فروشگاه شیاسی</strong></p>
                     <div className="pt-2">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                         شماره پیگیری واریز یا ۴ رقم آخر کارت شما:
                       </label>
                       <input
@@ -476,7 +476,7 @@ export default function CheckoutPage() {
                         value={cardReceiptProof}
                         onChange={(e) => setCardReceiptProof(e.target.value)}
                         placeholder="مثال: پیگیری ۹۸۲۳۴۱"
-                        className="w-full bg-white border border-blue-300 text-xs rounded-xl px-3 py-2 text-slate-900"
+                        className="w-full bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-700 text-xs rounded-xl px-3 py-2 text-slate-900 dark:text-white"
                       />
                     </div>
                   </div>
@@ -487,10 +487,10 @@ export default function CheckoutPage() {
 
             {/* Right Col: Order Summary & Pay Button */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 sticky top-24">
-                <h3 className="font-extrabold text-sm text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 sticky top-24 transition-colors duration-200">
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
                   <span>اقلام سفارش</span>
-                  <span className="text-xs text-slate-500">{toPersianDigits(itemCount)} کالا</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{toPersianDigits(itemCount)} کالا</span>
                 </h3>
 
                 {/* Items preview list */}
@@ -501,28 +501,28 @@ export default function CheckoutPage() {
                         <img
                           src={item.image}
                           alt={item.name}
-                          className="w-8 h-8 rounded-lg object-contain bg-slate-50 p-0.5 border border-slate-100 shrink-0"
+                          className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-slate-800 p-0.5 border border-slate-100 dark:border-slate-700 shrink-0"
                         />
-                        <span className="text-slate-700 truncate">{item.name}</span>
+                        <span className="text-slate-700 dark:text-slate-300 truncate font-medium">{item.name}</span>
                       </div>
-                      <span className="font-bold text-slate-900 shrink-0">
+                      <span className="font-bold text-slate-900 dark:text-amber-400 shrink-0 font-mono">
                         {toPersianDigits(item.quantity)} × {formatToman(item.price)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <hr className="border-slate-100" />
+                <hr className="border-slate-100 dark:border-slate-800" />
 
                 {/* Financial breakdown */}
-                <div className="space-y-2 text-xs text-slate-600">
+                <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-medium">
                   <div className="flex items-center justify-between">
                     <span>جمع اقلام:</span>
-                    <span className="font-bold text-slate-900">{formatToman(subtotal)}</span>
+                    <span className="font-bold text-slate-900 dark:text-white font-mono">{formatToman(subtotal)}</span>
                   </div>
 
                   {discount > 0 && (
-                    <div className="flex items-center justify-between text-rose-600 font-bold">
+                    <div className="flex items-center justify-between text-rose-600 dark:text-rose-400 font-bold">
                       <span>تخفیف:</span>
                       <span>- {formatToman(discount)}</span>
                     </div>
@@ -530,14 +530,14 @@ export default function CheckoutPage() {
 
                   <div className="flex items-center justify-between">
                     <span>هزینه ارسال ({shippingMethod.badge}):</span>
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-slate-900 dark:text-white font-mono">
                       {shippingCost === 0 ? "رایگان" : formatToman(shippingCost)}
                     </span>
                   </div>
 
-                  <div className="border-t border-slate-100 pt-3 flex items-baseline justify-between">
-                    <span className="font-black text-sm text-slate-900">مجموع نهایی:</span>
-                    <span className="font-black text-xl text-slate-950">
+                  <div className="border-t border-slate-100 dark:border-slate-800 pt-3 flex items-baseline justify-between">
+                    <span className="font-black text-sm text-slate-900 dark:text-white">مجموع نهایی:</span>
+                    <span className="font-black text-xl text-slate-950 dark:text-amber-400 font-mono">
                       {formatToman(grandTotal)}
                     </span>
                   </div>

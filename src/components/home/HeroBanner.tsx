@@ -21,10 +21,14 @@ export function HeroBanner() {
   const { brand } = useBrand();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-12 lg:py-16">
-      {/* Background Decorative Glows */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900/60 to-slate-950 text-white py-12 lg:py-16 transition-colors duration-300">
+      {/* Top & Bottom Smooth Gradient Fade Overlays */}
+      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950 via-slate-950/80 to-transparent pointer-events-none z-0" />
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent pointer-events-none z-0" />
+
+      {/* Radial Ambient Glows */}
+      <div className="absolute top-0 right-1/4 w-[32rem] h-[32rem] bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[32rem] h-[32rem] bg-blue-500/10 dark:bg-blue-600/15 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">

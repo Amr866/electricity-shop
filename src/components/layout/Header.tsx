@@ -66,16 +66,30 @@ export function Header() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-300">
-            <span className="hidden sm:flex items-center gap-1 text-slate-300">
-              <Clock className="w-3 h-3 text-amber-400" />
-              <span>ساعات کاری: ۸:۳۰ الی ۲۱:۰۰</span>
-            </span>
+          <div className="flex items-center gap-3 text-slate-300">
+            {/* Quick Conversion Action Buttons (Barghsan-style) */}
+            <div className="flex items-center gap-1.5">
+              <Link
+                href="/bom-upload"
+                className="bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 sm:px-3 py-1 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95 hover-glow"
+              >
+                <span>صدور پیش‌فاکتور</span>
+                <span className="font-mono text-[10px] font-bold">»</span>
+              </Link>
+              <Link
+                href="/price-lists"
+                className="bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-bold px-2.5 sm:px-3 py-1 rounded-full flex items-center gap-1 shadow-sm transition-all active:scale-95"
+              >
+                <span>لیست قیمت</span>
+                <span className="font-mono text-[10px] font-bold">»</span>
+              </Link>
+            </div>
+
             <span className="hidden sm:inline-block text-slate-600">•</span>
             <a
               href="tel:03142624567"
               dir="ltr"
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold font-mono text-left"
+              className="hidden sm:flex items-center gap-1.5 text-amber-400 hover:text-amber-300 font-semibold font-mono text-left"
             >
               <Phone className="w-3 h-3 shrink-0" />
               <span>۰۳۱-۴۲۶۲۴۵۶۷</span>

@@ -15,6 +15,9 @@ import {
   Flame,
   Tv,
   Wrench,
+  FileText,
+  Download,
+  ChevronLeft,
 } from "lucide-react";
 
 export function HeroBanner() {
@@ -88,97 +91,121 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* Right Column: 4 Appliance & Equipment Feature Cards with Local Images */}
+          {/* Right Column: 4 Price List & Product Showcase Mini-Cards (Barghsan-Style) */}
           <div className="lg:col-span-5 grid grid-cols-2 gap-2.5 sm:gap-3.5">
             
+            {/* Card 1: Motogen */}
             <Link
-              href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
-            >
-              <img
-                src="/images/products/wal_172619-fans-7995865_1920.jpg"
-                alt="پنکه و تهویه"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
-              <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  <Fan className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
-                  پنکه و تهویه خانگی
-                </h3>
-                <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
-                  پارس خزر، سانی و کارگاه تعمیرات
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              href="/price-lists#motogen"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-blue-500/15 h-40 sm:h-44 flex flex-col justify-between p-3.5 bg-slate-900"
             >
               <img
                 src="/images/products/موتور-کولر-موتوژن-3-4.jpg"
-                alt="موتور و پمپ کولر"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                alt="موتور کولر موتوژن تبریز"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
-              <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
-                  موتور و پمپ کولر آبی
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/30 group-hover:via-slate-950/65 transition-all duration-300" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full shadow-sm">
+                  لیست قیمت رسمی
+                </span>
+                <ChevronLeft className="w-4 h-4 text-blue-400 group-hover:-translate-x-1 transition-transform" />
+              </div>
+
+              <div className="relative z-10 space-y-0.5">
+                <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-blue-300 transition-colors">
+                  موتور کولر موتوژن تبریز
                 </h3>
-                <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
-                  موتوژن تبریز و سیم‌پیچی مس
+                <p className="text-[10px] text-slate-300 line-clamp-1">
+                  سیم‌پیچی مس با تخفیف همکار
                 </p>
               </div>
             </Link>
 
+            {/* Card 2: Pars Khazar */}
             <Link
-              href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              href="/price-lists#parskhazar"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-rose-400 dark:hover:border-rose-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-rose-500/15 h-40 sm:h-44 flex flex-col justify-between p-3.5 bg-slate-900"
             >
               <img
-                src="/images/products/Electric-heater-element.jpg"
-                alt="بخاری برقی"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                src="/images/products/wal_172619-fans-7995865_1920.jpg"
+                alt="پنکه پارس خزر"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
-              <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
-                  بخاری برقی و هیتر
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/30 group-hover:via-slate-950/65 transition-all duration-300" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-bold bg-rose-600 text-white px-2 py-0.5 rounded-full shadow-sm">
+                  کاتالوگ شرکتی
+                </span>
+                <ChevronLeft className="w-4 h-4 text-rose-400 group-hover:-translate-x-1 transition-transform" />
+              </div>
+
+              <div className="relative z-10 space-y-0.5">
+                <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-rose-300 transition-colors">
+                  پنکه و لوازم پارس خزر
                 </h3>
-                <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
-                  اخوان، المنت کوارتز و فن‌دار
+                <p className="text-[10px] text-slate-300 line-clamp-1">
+                  گارانتی ۲۴ ماهه معتبر
                 </p>
               </div>
             </Link>
 
+            {/* Card 3: Alborz Electric Wire */}
             <Link
-              href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              href="/price-lists#alborz-wire"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/15 h-40 sm:h-44 flex flex-col justify-between p-3.5 bg-slate-900"
             >
               <img
-                src="/images/products/maxis_pictures-the-main-processor-3334336_1920.jpg"
-                alt="آنتن تلویزیون"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                src="/images/products/skdunning-wire-962753_1920.jpg"
+                alt="سیم و کابل البرز الکتریک"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
-              <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                  <Tv className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
-                  آنتن تلویزیون و بوستر
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/30 group-hover:via-slate-950/65 transition-all duration-300" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-bold bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full shadow-sm font-black">
+                  قیمت روز مس
+                </span>
+                <ChevronLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-1 transition-transform" />
+              </div>
+
+              <div className="relative z-10 space-y-0.5">
+                <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
+                  سیم و کابل تمام مس البرز
                 </h3>
-                <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
-                  آنتن هوایی گردان هانی 4K
+                <p className="text-[10px] text-slate-300 line-clamp-1">
+                  کلاف ۱۰۰ متری و برش متری
+                </p>
+              </div>
+            </Link>
+
+            {/* Card 4: Shahcheragh LED */}
+            <Link
+              href="/price-lists#shahcheragh"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-emerald-500/15 h-40 sm:h-44 flex flex-col justify-between p-3.5 bg-slate-900"
+            >
+              <img
+                src="/images/products/inspiredimages-light-bulb-1138047_1920.jpg"
+                alt="روشنایی شاهچراغ"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out opacity-85"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/30 group-hover:via-slate-950/65 transition-all duration-300" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full shadow-sm">
+                  پنل‌های هوشمند
+                </span>
+                <ChevronLeft className="w-4 h-4 text-emerald-400 group-hover:-translate-x-1 transition-transform" />
+              </div>
+
+              <div className="relative z-10 space-y-0.5">
+                <h3 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-emerald-300 transition-colors">
+                  روشنایی و LED شاهچراغ
+                </h3>
+                <p className="text-[10px] text-slate-300 line-clamp-1">
+                  پروژکتور و پنل‌های سنسوردار
                 </p>
               </div>
             </Link>

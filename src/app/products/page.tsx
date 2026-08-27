@@ -38,7 +38,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const featuredOnly = params.featured === "true";
   const bestSellerOnly = params.bestseller === "true";
 
-  // Build Prisma where clause
+  // Build Prisma where clause with PostgreSQL case-insensitivity
   const where: any = {};
 
   if (categorySlug) {
@@ -47,10 +47,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   if (searchQuery) {
     where.OR = [
-      { name: { contains: searchQuery } },
-      { description: { contains: searchQuery } },
-      { shortDesc: { contains: searchQuery } },
-      { brand: { contains: searchQuery } },
+      { name: { contains: searchQuery, mode: "insensitive" } },
+      { description: { contains: searchQuery, mode: "insensitive" } },
+      { shortDesc: { contains: searchQuery, mode: "insensitive" } },
+      { brand: { contains: searchQuery, mode: "insensitive" } },
     ];
   }
 

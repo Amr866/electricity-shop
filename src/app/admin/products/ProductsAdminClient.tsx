@@ -11,6 +11,7 @@ import {
   AlertCircle,
   X,
   Zap,
+  UploadCloud,
 } from "lucide-react";
 
 interface ProductsAdminClientProps {
@@ -27,6 +28,7 @@ export function ProductsAdminClient({
   const [selectedCat, setSelectedCat] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState("");
 
   // New Product Form state
@@ -44,6 +46,34 @@ export function ProductsAdminClient({
   const [isIsfahanFast, setIsIsfahanFast] = useState(true);
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
+
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingImage(true);
+    const file = files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setImageUrl(data.url);
+      } else {
+        alert(data.message || "خطا در آپلود تصویر.");
+      }
+    } catch (e) {
+      alert("خطای سرور.");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
 
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,6 +114,7 @@ export function ProductsAdminClient({
         setSku("");
         setPrice("");
         setOriginalPrice("");
+        setImageUrl("");
         setDescription("");
       }
     } catch (e) {
@@ -355,14 +386,29 @@ export function ProductsAdminClient({
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 font-bold mb-1">آدرس اینترنتی تصویر (Image URL)</label>
-                  <input
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://..."
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-2.5 font-mono"
-                  />
+                  <label className="block text-slate-400 font-bold mb-1">
+                    تصویر کالا (آدرس یا انتخاب مستقیم فایل)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="/uploads/... یا آدرس وب"
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-2.5 font-mono text-xs"
+                    />
+                    <label className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2.5 rounded-xl cursor-pointer shrink-0 font-bold text-xs flex items-center gap-1">
+                      <UploadCloud className="w-4 h-4" />
+                      <span>{uploadingImage ? "..." : "فایل"}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingImage}
+                        onChange={handleImageFileUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
                 </div>
               </div>
 

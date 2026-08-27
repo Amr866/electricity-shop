@@ -3,13 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatToman, toPersianDigits, formatJalaliDateTime } from "@/lib/utils";
+import { OrderInvoiceActions } from "@/components/order/OrderInvoiceActions";
 import {
   CheckCircle2,
   Clock,
   Truck,
   PackageCheck,
-  Printer,
-  MessageCircle,
   Phone,
   MapPin,
   FileText,
@@ -70,10 +69,6 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
     },
   ];
 
-  const whatsappShareText = encodeURIComponent(
-    `سلام، سفارش من در الکتریک نقش جهان اصفهان با شماره فاکتور ${order.orderNumber} به مبلغ ${formatToman(order.totalAmount)} ثبت گردید.`
-  );
-
   return (
     <div className="bg-slate-50 min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 space-y-8">
@@ -127,28 +122,11 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
               </span>
             </div>
 
-            {/* Quick Print & Social Share Buttons */}
-            <div className="flex items-center gap-2">
-              <a
-                href={`https://wa.me/989131112233?text=${whatsappShareText}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-2 rounded-xl border border-emerald-200 flex items-center gap-1.5 transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>پیگیری در واتساپ</span>
-              </a>
-
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined") window.print();
-                }}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors"
-              >
-                <Printer className="w-3.5 h-3.5 text-amber-400" />
-                <span>چاپ فاکتور رسمی</span>
-              </button>
-            </div>
+            {/* Client-side Action Buttons */}
+            <OrderInvoiceActions
+              orderNumber={order.orderNumber}
+              totalAmount={order.totalAmount}
+            />
           </div>
 
           {/* Timeline Steps Component */}

@@ -20,6 +20,8 @@ import {
   Minus,
   MessageCircle,
   FileCheck,
+  Send,
+  CheckCircle2,
 } from "lucide-react";
 
 interface ProductDetailViewProps {
@@ -68,11 +70,53 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   const [addedToCart, setAddedToCart] = useState(false);
   const [activeTab, setActiveTab] = useState<"specs" | "desc" | "reviews">("specs");
 
+  // Review Form States
+  const [reviewsList, setReviewsList] = useState(product.reviews || []);
+  const [reviewerName, setReviewerName] = useState("");
+  const [reviewerCity, setReviewerCity] = useState("اصفهان");
+  const [reviewerRating, setReviewerRating] = useState(5);
+  const [reviewerComment, setReviewerComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+
   const handleAddToCart = () => {
     if (product.stock <= 0) return;
     addToCart(product, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewerName.trim() || !reviewerComment.trim()) return;
+
+    setSubmittingReview(true);
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          authorName: reviewerName,
+          city: reviewerCity,
+          rating: reviewerRating,
+          comment: reviewerComment,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setReviewsList([data.review, ...reviewsList]);
+        setReviewSuccess(true);
+        setReviewerName("");
+        setReviewerComment("");
+        setTimeout(() => setReviewSuccess(false), 3000);
+      }
+    } catch (e) {
+      alert("خطا در ارسال نظر.");
+    } finally {
+      setSubmittingReview(false);
+    }
   };
 
   const isOutOfStock = product.stock <= 0;
@@ -182,7 +226,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                   {toPersianDigits(product.rating || 4.9)}
                 </span>
                 <span className="text-slate-400">
-                  ({toPersianDigits(product.reviewCount || 0)} نظر مشتریان)
+                  ({toPersianDigits(reviewsList.length)} نظر مشتریان)
                 </span>
               </div>
 
@@ -346,7 +390,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                 : "text-slate-600 hover:bg-slate-100"
             }`}
           >
-            نظرات کاربران ({toPersianDigits(product.reviews?.length || 0)})
+            نظرات کاربران ({toPersianDigits(reviewsList.length)})
           </button>
         </div>
 
@@ -393,15 +437,19 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
         {/* Tab 3: Customer Reviews */}
         {activeTab === "reviews" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <h3 className="font-extrabold text-sm text-slate-900">
-                دیدگاه‌های خریداران در اصفهان
+                دیدگاه‌ها و نظرات خریداران در اصفهان
               </h3>
+              <span className="text-xs text-slate-500">
+                {toPersianDigits(reviewsList.length)} نظر ثبت شده
+              </span>
             </div>
 
-            {product.reviews && product.reviews.length > 0 ? (
+            {/* Reviews List */}
+            {reviewsList.length > 0 ? (
               <div className="space-y-4">
-                {product.reviews.map((rev) => (
+                {reviewsList.map((rev) => (
                   <div
                     key={rev.id}
                     className="bg-slate-50 p-4 rounded-2xl border border-slate-200/70 space-y-2"
@@ -431,10 +479,85 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-400">
-                هنوز نظری برای این کالا ثبت نشده است. اولین نفری باشید که تجربه خرید خود را به اشتراک می‌گذارد.
+              <p className="text-xs text-slate-400 py-4">
+                هنوز نظری برای این کالا ثبت نشده است. اولین نفری باشید که دیدگاه خود را ثبت می‌کند.
               </p>
             )}
+
+            {/* Write a review form */}
+            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 space-y-4 mt-6">
+              <h4 className="font-bold text-xs text-slate-900">
+                ثبت دیدگاه یا تجربه خرید درباره این محصول:
+              </h4>
+
+              {reviewSuccess && (
+                <div className="bg-emerald-100 text-emerald-800 text-xs p-3 rounded-xl flex items-center gap-2 font-bold">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>دیدگاه شما با موفقیت ثبت گردید.</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmitReview} className="space-y-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-slate-600 font-bold mb-1">نام شما *</label>
+                    <input
+                      type="text"
+                      required
+                      value={reviewerName}
+                      onChange={(e) => setReviewerName(e.target.value)}
+                      placeholder="مثال: علی رضایی"
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2.5"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-600 font-bold mb-1">شهر / محله</label>
+                    <input
+                      type="text"
+                      value={reviewerCity}
+                      onChange={(e) => setReviewerCity(e.target.value)}
+                      placeholder="اصفهان (مرداویج)"
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2.5"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-600 font-bold mb-1">امتیاز شما</label>
+                    <select
+                      value={reviewerRating}
+                      onChange={(e) => setReviewerRating(parseInt(e.target.value, 10))}
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2.5"
+                    >
+                      <option value="5">۵ ستاره (عالی)</option>
+                      <option value="4">۴ ستاره (خوب)</option>
+                      <option value="3">۳ ستاره (متوسط)</option>
+                      <option value="2">۲ ستاره (ضعیف)</option>
+                      <option value="1">۱ ستاره (بسیار ضعیف)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-600 font-bold mb-1">متن نظر یا تجربه کاری با کالا *</label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={reviewerComment}
+                    onChange={(e) => setReviewerComment(e.target.value)}
+                    placeholder="تجربه خود در مورد کیفیت مس، بسته‌بندی یا ارسال را بنویسید..."
+                    className="w-full bg-white border border-slate-200 rounded-xl p-2.5"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-colors flex items-center gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{submittingReview ? "در حال ثبت..." : "ارسال دیدگاه"}</span>
+                </button>
+              </form>
+            </div>
           </div>
         )}
       </div>

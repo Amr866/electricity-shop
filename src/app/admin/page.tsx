@@ -56,7 +56,7 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/products"
             className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-sm"
@@ -67,7 +67,7 @@ export default async function AdminDashboardPage() {
             href="/admin/orders"
             className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-colors"
           >
-            مشاهده سفارشات
+            مدیریت و چاپ فاکتورها
           </Link>
         </div>
       </div>
@@ -143,7 +143,7 @@ export default async function AdminDashboardPage() {
               href="/admin/orders"
               className="text-xs text-amber-400 hover:underline flex items-center gap-1"
             >
-              <span>مشاهده همه</span>
+              <span>مشاهده و مدیریت همه سفارشات</span>
               <ArrowLeft className="w-3 h-3" />
             </Link>
           </div>
@@ -166,8 +166,8 @@ export default async function AdminDashboardPage() {
                 <tbody className="divide-y divide-slate-800/60 font-medium text-slate-300">
                   {recentOrders.map((ord) => (
                     <tr key={ord.id} className="hover:bg-slate-800/40">
-                      <td className="py-3 font-mono text-amber-400">
-                        <Link href={`/order-tracking/${ord.orderNumber}`} className="hover:underline">
+                      <td className="py-3 font-mono text-amber-400 font-bold">
+                        <Link href="/admin/orders" className="hover:underline">
                           {ord.orderNumber}
                         </Link>
                       </td>

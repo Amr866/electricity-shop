@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { formatToman, toPersianDigits, SHIPPING_METHODS, PAYMENT_METHODS } from "@/lib/utils";
+import {
+  formatToman,
+  toPersianDigits,
+  SHIPPING_METHODS,
+  PAYMENT_METHODS,
+  ISFAHAN_DISTRICTS,
+} from "@/lib/utils";
 import {
   MapPin,
   Truck,
@@ -29,6 +35,7 @@ export default function CheckoutPage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [province, setProvince] = useState("اصفهان");
   const [city, setCity] = useState("اصفهان");
+  const [district, setDistrict] = useState(ISFAHAN_DISTRICTS[2]); // Default: منطقه ۳ (فردوسی)
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [notes, setNotes] = useState("");
@@ -41,19 +48,46 @@ export default function CheckoutPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   // Calculate final shipping cost and grand total
-  const shippingMethod = SHIPPING_METHODS.find((s) => s.id === selectedShipping) || SHIPPING_METHODS[0];
+  const shippingMethod =
+    SHIPPING_METHODS.find((s) => s.id === selectedShipping) || SHIPPING_METHODS[0];
   const shippingCost = shippingMethod.cost;
   const grandTotal = total + shippingCost;
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
+
+    // 1. Basic validation
     if (!customerName.trim() || !customerPhone.trim() || !address.trim()) {
-      setErrorMsg("لطفاً نام، شماره تماس و آدرس دقیق را وارد نمایید.");
+      setErrorMsg("لطفاً نام، شماره همراه و آدرس دقیق را وارد نمایید.");
+      return;
+    }
+
+    // 2. Phone validation (Iranian 11 digits: 09xxxxxxxxx)
+    const cleanPhone = customerPhone.replace(/\D/g, "");
+    if (cleanPhone.length !== 11 || !cleanPhone.startsWith("09")) {
+      setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۱۱۱۲۲۳۳).");
+      return;
+    }
+
+    // 3. Postal Code validation (Strictly required for Post/Tipax and 10 digits)
+    const cleanPostal = postalCode.replace(/\D/g, "");
+    if (selectedShipping === "post_pishtaz" || selectedShipping === "tipax") {
+      if (!cleanPostal || cleanPostal.length !== 10) {
+        setErrorMsg("برای ارسال با پست پیشتاز یا تیپاکس، وارد کردن کد پستی ۱۰ رقمی الزامی است.");
+        return;
+      }
+    } else if (cleanPostal && cleanPostal.length !== 10) {
+      setErrorMsg("کد پستی باید دقیقاً ۱۰ رقم باشد.");
       return;
     }
 
     setSubmitting(true);
-    setErrorMsg("");
+
+    const fullAddress =
+      province === "اصفهان"
+        ? `${province}، ${city} (${district}) - ${address}`
+        : `${province}، ${city} - ${address}`;
 
     try {
       const res = await fetch("/api/checkout", {
@@ -61,12 +95,12 @@ export default function CheckoutPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerName,
-          customerPhone,
+          customerPhone: cleanPhone,
           customerEmail,
           province,
           city,
-          postalCode,
-          address,
+          postalCode: cleanPostal || null,
+          address: fullAddress,
           shippingMethod: selectedShipping,
           shippingCost,
           paymentMethod: selectedPayment,
@@ -85,7 +119,6 @@ export default function CheckoutPage() {
         setErrorMsg(data.message || "خطا در ایجاد سفارش.");
         setSubmitting(false);
       } else {
-        // Clear client cart and navigate to redirect URL
         clearCart();
         router.push(data.redirectUrl);
       }
@@ -122,10 +155,10 @@ export default function CheckoutPage() {
         <div className="mb-6">
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-emerald-600" />
-            <span>ثبت نهایی سفارش و انتخاب شیوه ارسال</span>
+            <span>ثبت نهایی سفارش و اطلاعات ارسال</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            تحویل حضوری در اصفهان (خیابان فردوسی)، ارسال با پیک فوری یا تیپاکس سراسر ایران
+            تحویل اختصاصی در اصفهان (اسنپ‌باکس)، تحویل حضوری در خیابان فردوسی، یا تیپاکس سراسر ایران
           </p>
         </div>
 
@@ -139,7 +172,7 @@ export default function CheckoutPage() {
               <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
                 <h2 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
                   <MapPin className="w-4 h-4 text-amber-500" />
-                  <span>اطلاعات تحویل‌گیرنده و آدرس</span>
+                  <span>اطلاعات تحویل‌گیرنده و نشانی دقیق</span>
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -159,14 +192,15 @@ export default function CheckoutPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                      شماره موبایل جهت هماهنگی پیک <span className="text-rose-500">*</span>
+                      شماره همراه (۱۱ رقم) <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="tel"
                       required
+                      maxLength={11}
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="مثال: ۰۹۱۳۱۱۱۲۲۳۳"
+                      placeholder="۰۹۱۳۱۱۱۲۲۳۳"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white text-left font-mono"
                     />
                   </div>
@@ -192,29 +226,48 @@ export default function CheckoutPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                      شهر / منطقه <span className="text-rose-500">*</span>
+                      شهر <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      placeholder="مثال: اصفهان، شاهین‌شهر، نجف‌آباد، سپاهان‌شهر"
+                      placeholder="مثال: اصفهان"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
                     />
                   </div>
+
+                  {province === "اصفهان" && (
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        منطقه / محله در شهر اصفهان <span className="text-rose-500">*</span>
+                      </label>
+                      <select
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
+                      >
+                        {ISFAHAN_DISTRICTS.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    آدرس دقیق پستی و شماره پلاک/واحد <span className="text-rose-500">*</span>
+                    نشانی دقیق خیابان، کوچه، پلاک و واحد <span className="text-rose-500">*</span>
                   </label>
                   <textarea
                     required
                     rows={2}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="مثال: اصفهان، خیابان بزرگمهر، خیابان ۲۲ بهمن، مجتمع نگین، طبقه ۲، واحد ۴"
+                    placeholder="مثال: خیابان بزرگمهر، خیابان ۲۲ بهمن، مجتمع نگین، طبقه ۲، واحد ۴"
                     className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white leading-relaxed"
                   />
                 </div>
@@ -222,13 +275,19 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                      کد پستی (اختیاری)
+                      کد پستی ۱۰ رقمی{" "}
+                      {selectedShipping === "post_pishtaz" || selectedShipping === "tipax" ? (
+                        <span className="text-rose-500 font-bold">(الزامی برای ارسال پستی)</span>
+                      ) : (
+                        <span className="text-slate-400 font-normal">(اختیاری)</span>
+                      )}
                     </label>
                     <input
                       type="text"
+                      maxLength={10}
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
-                      placeholder="کد ۱۰ رقمی"
+                      placeholder="کد پستی ۱۰ رقمی"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white text-left font-mono"
                     />
                   </div>
@@ -241,7 +300,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="مثال: قبل از ارسال تماس بگیرید یا فاکتور رسمی بگذارید"
+                      placeholder="مثال: لطفاً فاکتور رسمی بگذارید"
                       className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
                     />
                   </div>

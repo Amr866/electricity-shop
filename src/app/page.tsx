@@ -3,63 +3,71 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HeroBanner } from "@/components/home/HeroBanner";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
 import { SpecialOffers } from "@/components/home/SpecialOffers";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Zap, ArrowLeft, Star, Sparkles, CheckCircle2, TrendingUp } from "lucide-react";
+import { Zap, ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
-// Server Component: Fetch Data directly from Prisma
+// Server Component: Fetch Data directly from PostgreSQL
 async function getHomeData() {
   try {
-    const categories = await prisma.category.findMany({
-      orderBy: { sortOrder: "asc" },
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-    });
-
-    const featuredProducts = await prisma.product.findMany({
-      where: { isFeatured: true },
-      include: {
-        category: true,
-        images: true,
-      },
-      take: 8,
-    });
-
-    const bestSellers = await prisma.product.findMany({
-      where: { isBestSeller: true },
-      include: {
-        category: true,
-        images: true,
-      },
-      take: 8,
-    });
-
-    const discountedProducts = await prisma.product.findMany({
-      where: { discountPercent: { gt: 0 } },
-      include: {
-        category: true,
-        images: true,
-      },
-      take: 4,
-    });
-
-    const reviews = await prisma.review.findMany({
-      take: 3,
-      orderBy: { createdAt: "desc" },
-      include: {
-        product: {
-          select: { name: true, slug: true },
-        },
-      },
-    });
+    const [categories, allProducts, featuredProducts, bestSellers, discountedProducts, reviews] =
+      await Promise.all([
+        prisma.category.findMany({
+          orderBy: { sortOrder: "asc" },
+          include: {
+            _count: {
+              select: { products: true },
+            },
+          },
+        }),
+        prisma.product.findMany({
+          orderBy: { createdAt: "desc" },
+          include: {
+            category: true,
+            images: true,
+          },
+        }),
+        prisma.product.findMany({
+          where: { isFeatured: true },
+          include: {
+            category: true,
+            images: true,
+          },
+          take: 8,
+        }),
+        prisma.product.findMany({
+          where: { isBestSeller: true },
+          include: {
+            category: true,
+            images: true,
+          },
+          take: 8,
+        }),
+        prisma.product.findMany({
+          where: { discountPercent: { gt: 0 } },
+          include: {
+            category: true,
+            images: true,
+          },
+          take: 4,
+        }),
+        prisma.review.findMany({
+          take: 3,
+          orderBy: { createdAt: "desc" },
+          include: {
+            product: {
+              select: { name: true, slug: true },
+            },
+          },
+        }),
+      ]);
 
     return {
       categories,
+      allProducts,
       featuredProducts,
       bestSellers,
       discountedProducts,
@@ -69,6 +77,7 @@ async function getHomeData() {
     console.error("Error fetching home data:", error);
     return {
       categories: [],
+      allProducts: [],
       featuredProducts: [],
       bestSellers: [],
       discountedProducts: [],
@@ -78,21 +87,30 @@ async function getHomeData() {
 }
 
 export default async function HomePage() {
-  const { categories, featuredProducts, bestSellers, discountedProducts, reviews } =
-    await getHomeData();
+  const {
+    categories,
+    allProducts,
+    featuredProducts,
+    bestSellers,
+    discountedProducts,
+    reviews,
+  } = await getHomeData();
 
   return (
     <div className="space-y-4 pb-12">
       {/* 1. Hero Section */}
       <HeroBanner />
 
-      {/* 2. 4 Core Product Categories */}
+      {/* 2. 4 Core Product Categories Grid */}
       <CategoryGrid categories={categories} />
 
-      {/* 3. Special Offers & Discounts */}
+      {/* 3. Direct All Items Catalog with Live Tabs */}
+      <InteractiveHomeCatalog products={allProducts} categories={categories} />
+
+      {/* 4. Special Offers & Discounts */}
       <SpecialOffers products={discountedProducts} />
 
-      {/* 4. Best Selling Products Section */}
+      {/* 5. Best Selling Products Section */}
       <section className="py-12 bg-white border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-8">
@@ -127,43 +145,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Isfahan Local Shop Highlight Banner */}
+      {/* 6. Isfahan Local Shop Highlight Banner */}
       <IsfahanBanner />
-
-      {/* 6. Featured Products Section */}
-      <section className="py-12 bg-slate-50 border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-8">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                  <Zap className="w-5 h-5" />
-                </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                  منتخب کالاهای الکتریک نقش جهان
-                </h2>
-              </div>
-              <p className="text-xs text-slate-500 mt-1">
-                کالاهای دارای ضمانت اصالت فیزیکی و آماده ارسال سریع
-              </p>
-            </div>
-
-            <Link
-              href="/products"
-              className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 group"
-            >
-              <span>مشاهده کل کاتالوگ</span>
-              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* 7. Isfahan Customer Reviews Section */}
       {reviews.length > 0 && (
@@ -218,8 +201,7 @@ export default async function HomePage() {
                       <span className="truncate max-w-[200px]">
                         کالا: {rev.product.name}
                       </span>
-                      <span className="text-emerald-600 font-semibold text-[10px] flex items-center gap-0.5">
-                        <CheckCircle2 className="w-3 h-3" />
+                      <span className="text-emerald-600 font-semibold text-[10px]">
                         خرید تایید شده
                       </span>
                     </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Zap, SunMedium, Layers, Cpu, ArrowLeft, Fan } from "lucide-react";
+import { Zap, SunMedium, Cpu, ArrowLeft, Fan } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
 interface CategoryGridProps {
@@ -52,7 +52,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
               ۴ رسته اصلی
             </span>
           </h2>
-          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
             لوازم سرمایش و گرمایش، سیم و کابل استاندارد، روشنایی مدرن و قطعات الکترونیک
           </p>
         </div>
@@ -78,24 +78,24 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-4"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-4 bg-slate-900"
             >
               {/* Background Photo */}
               <img
                 src={bgImage}
                 alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
               />
-              {/* Gradient Overlay for high text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/30" />
+              {/* Gradient Overlay for crisp text legibility in both themes */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
 
               {/* Top: Icon + Count */}
               <div className="relative z-10 flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-950 dark:text-amber-400 flex items-center justify-center shadow-md backdrop-blur-sm">
+                <div className="w-9 h-9 rounded-xl bg-white/95 dark:bg-slate-900/90 text-slate-950 dark:text-amber-400 flex items-center justify-center shadow-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/60">
                   {getIcon(cat.slug)}
                 </div>
                 {cat._count && (
-                  <span className="text-[11px] font-bold text-amber-300 bg-slate-900/80 border border-slate-700/80 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                  <span className="text-[11px] font-bold text-amber-400 bg-slate-950/80 border border-slate-700/80 px-2 py-0.5 rounded-full backdrop-blur-sm shadow-sm">
                     {toPersianDigits(cat._count.products)} کالا
                   </span>
                 )}
@@ -106,10 +106,10 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                 <h3 className="font-extrabold text-sm sm:text-base text-white group-hover:text-amber-400 transition-colors">
                   {cat.name}
                 </h3>
-                <p className="text-[11px] text-slate-300 line-clamp-1">
+                <p className="text-[11px] text-slate-300 line-clamp-1 font-medium">
                   {cat.description || "تجهیزات تخصصی و قطعات اصلی"}
                 </p>
-                <div className="pt-2 flex items-center justify-between text-xs font-bold text-amber-400 group-hover:underline">
+                <div className="pt-1.5 flex items-center justify-between text-xs font-bold text-amber-400 group-hover:underline">
                   <span>مشاهده محصولات</span>
                   <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
                 </div>

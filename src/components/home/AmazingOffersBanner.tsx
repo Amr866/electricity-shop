@@ -8,7 +8,6 @@ import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
   Zap,
   ArrowLeft,
-  ArrowRight,
   Heart,
   ShoppingCart,
   Star,
@@ -32,7 +31,6 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
     }
   };
 
-  // Seeded / Sample Amazing Deals matching real electrical shop products
   const deals = products.length > 0 ? products : [
     {
       id: "deal-1",
@@ -44,7 +42,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
       discountPercent: 10,
       rating: 4.9,
       slug: "pars-khazar-standing-fan-fsr",
-      image: "https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=600&q=80",
+      image: "/images/products/wal_172619-fans-7995865_1920.jpg",
     },
     {
       id: "deal-2",
@@ -56,7 +54,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
       discountPercent: 12,
       rating: 5.0,
       slug: "motogen-cooler-motor-34hp",
-      image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
+      image: "/images/products/موتور-کولر-موتوژن-3-4.jpg",
     },
     {
       id: "deal-3",
@@ -68,34 +66,10 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
       discountPercent: 15,
       rating: 4.8,
       slug: "akhavan-electric-heater-fan",
-      image: "https://images.unsplash.com/photo-1545259742-b43a38f38692?auto=format&fit=crop&w=600&q=80",
+      image: "/images/products/skdunning-wire-962753_1920.jpg",
     },
     {
       id: "deal-4",
-      name: "آنتن تلویزیون برقی گردان ۴K هانی مدل ۲۰۱ همراه با بوستر تقویت سیگنال قوی",
-      brand: "هانی (Hani)",
-      categoryName: "آنتن و بوستر",
-      price: 490000,
-      originalPrice: 580000,
-      discountPercent: 16,
-      rating: 4.7,
-      slug: "hani-motorized-antenna-201",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: "deal-5",
-      name: "پروژکتور خورشیدی سرلوله ۲۰۰ وات ویمکس سنسوردار با پنل مونوکریستال و ریموت",
-      brand: "ویمکس (Vimax)",
-      categoryName: "روشنایی خورشیدی",
-      price: 4250000,
-      originalPrice: 4780000,
-      discountPercent: 11,
-      rating: 4.9,
-      slug: "solar-street-light-200w",
-      image: "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      id: "deal-6",
       name: "سیم برق افشان سایز ۱.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری",
       brand: "البرز الکتریک نور",
       categoryName: "سیم و کابل مس",
@@ -104,7 +78,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
       discountPercent: 15,
       rating: 4.9,
       slug: "copper-wire-15-alborz",
-      image: "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=600&q=80",
+      image: "/images/products/skdunning-wire-962753_1920.jpg",
     },
   ];
 
@@ -123,7 +97,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
             <ArrowLeft className="w-3.5 h-3.5" />
           </Link>
 
-          {/* Slider Prev / Next Controls */}
+          {/* Slider Controls */}
           <div className="hidden sm:flex items-center gap-1">
             <button
               onClick={() => scroll("right")}
@@ -162,7 +136,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
         </div>
       </div>
 
-      {/* Horizontal Interactive Carousel Slider with Smooth Touch-Scroll */}
+      {/* Horizontal Interactive Carousel Slider */}
       <div
         ref={scrollContainerRef}
         className="flex overflow-x-auto gap-3 sm:gap-4 pb-2 scrollbar-none snap-x snap-mandatory scroll-smooth"
@@ -172,7 +146,9 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
           const primaryImg =
             deal.images?.[0]?.url ||
             deal.image ||
-            "https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=600&q=80";
+            "/images/products/wal_172619-fans-7995865_1920.jpg";
+
+          const cleanBrand = (deal.brand || deal.category?.name || "شیاسی").replace(/\s*\(.*?\)/g, "");
 
           return (
             <div
@@ -199,22 +175,22 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                   </button>
                 </div>
 
-                {/* Image */}
+                {/* Image Container with Dark Mode Integration */}
                 <Link
                   href={`/products/${deal.slug}`}
-                  className="aspect-square w-full rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/80 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5"
+                  className="aspect-square w-full rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5"
                 >
                   <img
                     src={primaryImg}
                     alt={deal.name}
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500"
                   />
                 </Link>
 
                 {/* Brand & Name */}
                 <div className="space-y-0.5 sm:space-y-1">
-                  <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-semibold block truncate">
-                    {deal.brand || deal.category?.name || "شیاسی"}
+                  <span className="text-[9px] sm:text-[10px] text-amber-700 dark:text-amber-400 font-bold block truncate">
+                    {cleanBrand}
                   </span>
                   <Link
                     href={`/products/${deal.slug}`}
@@ -252,17 +228,15 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                       {formatToman(deal.originalPrice)}
                     </span>
                   )}
-                  <span className="font-extrabold text-[10px] sm:text-xs text-slate-950 dark:text-amber-400 block">
+                  <span className="font-extrabold text-[10px] sm:text-xs text-slate-950 dark:text-amber-400 block font-mono">
                     {formatToman(deal.price)}
                   </span>
                 </div>
               </div>
-
             </div>
           );
         })}
       </div>
-
     </section>
   );
 }

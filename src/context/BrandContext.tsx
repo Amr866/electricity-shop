@@ -14,7 +14,9 @@ export interface BrandConfig {
   googleMapsUrl: string;
   phone: string;
   mobile: string;
+  repairPhone: string;
   city: string;
+  province: string;
   logoIcon: "zap" | "circuit" | "sun";
   primaryAccent: string; // Hex color
 }
@@ -24,13 +26,15 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     key: "shiasi",
     nameFa: "فروشگاه تخصصی شیاسی",
     nameEn: "Shiasi Store",
-    badge: "فروشگاه تخصصی",
-    tagline: "مرجع تخصصی کالای برق، گجت و قطعات الکترونیک",
-    address: "اصفهان، خیابان آتشگاه، خیابان قدس، فروشگاه شیاسی",
+    badge: "نجف‌آباد اصفهان",
+    tagline: "مرکز خرید و تعمیرات تخصصی پنکه، کولر، بخاری، آنتن، لوازم برقی و قطعات الکترونیک",
+    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی - ثبت رسمی گوگل‌مپ)",
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۳۷۷۲۴۵۶۷",
+    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
-    city: "اصفهان",
+    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    city: "نجف‌آباد",
+    province: "اصفهان",
     logoIcon: "zap",
     primaryAccent: "#F5A623",
   },
@@ -44,21 +48,25 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
     phone: "۰۳۱-۳۲۲۰۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
+    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
     city: "اصفهان",
+    province: "اصفهان",
     logoIcon: "circuit",
     primaryAccent: "#F59E0B",
   },
   shiasi_isfahan: {
     key: "shiasi_isfahan",
-    nameFa: "کالای برق و الکترونیک شیاسی اصفهان",
-    nameEn: "Shiasi Electric & Electronics",
-    badge: "جامع‌ترین مرکز",
-    tagline: "مرکز جامع تجهیزات برق ساختمانی، اتوماسیون صنعتی و قطعات DIY",
-    address: "اصفهان، موقعیت فروشگاه شیاسی (ثبت رسمی در گوگل‌مپ)",
+    nameFa: "کالای برق و الکترونیک شیاسی نجف‌آباد",
+    nameEn: "Shiasi Electric & Appliances",
+    badge: "خرید و تعمیرات",
+    tagline: "جامع‌ترین مرکز لوازم برقی خانگی، سیم‌پیچی موتور کولر، پنکه و قطعات الکترونیک",
+    address: "نجف‌آباد، موقعیت فروشگاه شیاسی (ثبت رسمی گوگل‌مپ)",
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۳۷۷۲۴۵۶۷",
+    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۶۲۶۶۵۸۸۴",
-    city: "اصفهان",
+    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
+    city: "نجف‌آباد",
+    province: "اصفهان",
     logoIcon: "zap",
     primaryAccent: "#F5A623",
   },

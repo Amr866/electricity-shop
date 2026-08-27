@@ -21,6 +21,7 @@ import {
   MessageCircle,
   Heart,
   Cpu,
+  Wrench,
 } from "lucide-react";
 
 export function Header() {
@@ -46,7 +47,7 @@ export function Header() {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-amber-400 font-medium">
               <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-              <span>ارسال فوری با اسنپ‌باکس در اصفهان + ارسال تیپاکس و پست به سراسر کشور</span>
+              <span>خرید و تعمیرات تخصصی لوازم برقی در نجف‌آباد و اصفهان + ارسال با اسنپ‌باکس و تیپاکس</span>
             </span>
             <span className="hidden md:inline-block text-slate-600">•</span>
             <span className="hidden md:flex items-center gap-1 text-slate-300">
@@ -105,18 +106,28 @@ export function Header() {
             <LiveSearchBar isMobile={false} />
           </div>
 
-          {/* Action Buttons: WhatsApp / Wishlist / Cart */}
+          {/* Action Buttons: Repairs / WhatsApp / Wishlist / Cart */}
           <div className="flex items-center gap-2">
+            {/* Repair Workshop CTA Button */}
+            <Link
+              href="/repair-service"
+              className="hidden lg:flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-black px-3.5 py-2.5 rounded-xl border border-amber-300 transition-colors shadow-sm"
+              title="پذیرش و پیگیری تعمیرات لوازم برقی در نجف‌آباد"
+            >
+              <Wrench className="w-4 h-4 text-amber-600" />
+              <span>پذیرش تعمیرات</span>
+            </Link>
+
             {/* Quick WhatsApp Inquiry */}
             <a
-              href={`https://wa.me/98${brand.mobile.replace(/^0/, "")}?text=سلام،%20برای%20استعلام%20قیمت%20و%20خرید%20از%20فروشگاه%20پیام%20می‌دهم`}
+              href={`https://wa.me/98${brand.mobile.replace(/^0/, "")}?text=سلام،%20برای%20استعلام%20قیمت%20یا%20تعمیرات%20لوازم%20برقی%20از%20فروشگاه%20شیاسی%20پیام%20می‌دهم`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden lg:flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-2.5 rounded-xl border border-emerald-200 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-2.5 rounded-xl border border-emerald-200 transition-colors"
               title="استعلام فوری در واتساپ"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>استعلام واتساپ</span>
+              <span>واتساپ</span>
             </a>
 
             {/* Wishlist Heart Button with Counter */}
@@ -183,28 +194,35 @@ export function Header() {
             </Link>
 
             <Link
+              href="/products?category=home-appliances-cooling-heating"
+              className="px-3.5 py-2.5 hover:text-amber-600 hover:bg-slate-100 transition-colors font-bold text-slate-900"
+            >
+              پنکه، کولر و بخاری برقی
+            </Link>
+            <Link
+              href="/repair-service"
+              className="px-3.5 py-2.5 text-amber-700 hover:text-amber-800 hover:bg-amber-50 transition-colors font-black flex items-center gap-1"
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              <span>کارگاه تعمیرات لوازم برقی</span>
+            </Link>
+            <Link
               href="/products?category=wiring-building"
               className="px-3.5 py-2.5 hover:text-amber-600 hover:bg-slate-100 transition-colors"
             >
-              سیم و کابل ساختمانی
+              سیم، کابل و آنتن
             </Link>
             <Link
               href="/products?category=lighting-fixtures"
               className="px-3.5 py-2.5 hover:text-amber-600 hover:bg-slate-100 transition-colors"
             >
-              روشنایی و نورپردازی
-            </Link>
-            <Link
-              href="/products?category=industrial-automation"
-              className="px-3.5 py-2.5 hover:text-amber-600 hover:bg-slate-100 transition-colors"
-            >
-              برق صنعتی و تابلو برق
+              روشنایی و پروژکتور خورشیدی
             </Link>
             <Link
               href="/products?category=maker-diy-electronics"
               className="px-3.5 py-2.5 hover:text-amber-600 hover:bg-slate-100 transition-colors"
             >
-              بردهای آردوینو و DIY
+              بردهای آردوینو و ابزار
             </Link>
           </div>
 
@@ -220,13 +238,7 @@ export function Header() {
               href="/contact"
               className="hover:text-amber-600 transition-colors py-2.5"
             >
-              تماس و شعبه
-            </Link>
-            <Link
-              href="/about"
-              className="hover:text-amber-600 transition-colors py-2.5"
-            >
-              درباره فروشگاه
+              شعبه نجف‌آباد
             </Link>
             <Link
               href="/admin"
@@ -251,6 +263,14 @@ export function Header() {
               صفحه اصلی
             </Link>
             <Link
+              href="/repair-service"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 font-extrabold text-amber-900 flex items-center gap-2"
+            >
+              <Wrench className="w-4 h-4 text-amber-600" />
+              <span>پذیرش تعمیرات پنکه، کولر و لوازم برقی</span>
+            </Link>
+            <Link
               href="/products"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg hover:bg-slate-100 font-bold text-amber-600"
@@ -258,42 +278,32 @@ export function Header() {
               کاتالوگ کلیه محصولات
             </Link>
             <Link
-              href="/wishlist"
+              href="/products?category=home-appliances-cooling-heating"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 flex items-center justify-between"
+              className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 pr-6 text-xs"
             >
-              <span>کالاهای ذخیره شده</span>
-              <span className="text-xs bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">
-                {toPersianDigits(wishlistCount)}
-              </span>
+              • پنکه، موتور کولر آبی، بخاری برقی و آنتن
             </Link>
             <Link
               href="/products?category=wiring-building"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 pr-6 text-xs"
             >
-              • سیم، کابل و لوله برق
+              • سیم، کابل، لوله و کلید پریز
             </Link>
             <Link
               href="/products?category=lighting-fixtures"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 pr-6 text-xs"
             >
-              • پنل و روشنایی ال‌ای‌دی
-            </Link>
-            <Link
-              href="/products?category=industrial-automation"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 pr-6 text-xs"
-            >
-              • تجهیزات برق صنعتی
+              • پنل ال‌ای‌دی و پروژکتور خورشیدی
             </Link>
             <Link
               href="/products?category=maker-diy-electronics"
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-600 pr-6 text-xs"
             >
-              • بردهای آردوینو و سنسورها
+              • بردهای آردوینو، قطعات و ابزار تعمیر
             </Link>
             <hr className="my-2 border-slate-100" />
             <Link
@@ -308,7 +318,7 @@ export function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-lg hover:bg-slate-100"
             >
-              تماس و آدرس فروشگاه
+              آدرس و نقشه شعبه نجف‌آباد
             </Link>
             <Link
               href="/admin"

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HeroBanner } from "@/components/home/HeroBanner";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { RepairWorkshopSection } from "@/components/home/RepairWorkshopSection";
 import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
 import { LightingWizard } from "@/components/home/LightingWizard";
 import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
@@ -11,7 +12,7 @@ import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Zap, ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
+import { Zap, ArrowLeft, Star, Sparkles, TrendingUp, Wrench } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
 // Server Component: Fetch Data directly from PostgreSQL
@@ -102,26 +103,29 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* 1. Original High-Impact Hero Banner */}
+      {/* 1. Hero Section for Shiasi Store Najafabad (Sales & Repair Workshop) */}
       <HeroBanner />
 
       <div className="max-w-7xl mx-auto px-4 space-y-8">
-        {/* 2. 4 Core Categories Grid */}
+        {/* 2. Core Categories Grid (Including Cooling/Heating Appliances, Wiring, Lighting, Electronics) */}
         <CategoryGrid categories={categories} />
 
-        {/* 3. Amazing Offers & Special Discounts Banner */}
+        {/* 3. Dedicated Repair Workshop Showcase (Fans, Coolers, Heaters, Antennas) */}
+        <RepairWorkshopSection />
+
+        {/* 4. Amazing Offers & Special Discounts Banner */}
         <AmazingOffersBanner products={discountedProducts} />
 
-        {/* 4. Smart Lighting & Wattage Selection Wizard */}
+        {/* 5. Smart Lighting & Power Selection Wizard */}
         <LightingWizard />
 
-        {/* 5. Direct All Items Catalog with Live Tabs */}
+        {/* 6. Direct All Items Catalog with Live Tabs */}
         <InteractiveHomeCatalog products={allProducts} categories={categories} />
 
-        {/* 6. Specialist Technical Consultation & Multi-line Support */}
+        {/* 7. Specialist Technical Consultation & Multi-line Support */}
         <ConsultationBanner />
 
-        {/* 7. Best Selling Products Section */}
+        {/* 8. Best Selling Products Section */}
         <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
@@ -130,11 +134,11 @@ export default async function HomePage() {
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                  پرفروش‌ترین تجهیزات برقی و قطعات
+                  پرفروش‌ترین کالاها و لوازم برقی
                 </h2>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                اقلام پرمصرف پروژه‌های ساختمانی، اتوماسیون صنعتی و پروژه‌های الکترونیک
+                پنکه، موتور کولر، بخاری برقی، سیم و کابل و اقلام پرمصرف مشتریان نجف‌آباد و اصفهان
               </p>
             </div>
 
@@ -154,25 +158,25 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 8. Brand Logos Row */}
+        {/* 9. Brand Logos Row */}
         <BrandLogosRow />
 
-        {/* 9. Lighting & Electronics Knowledge Base */}
+        {/* 10. Lighting & Electronics Knowledge Base */}
         <KnowledgeBaseSection />
 
-        {/* 10. Local Fast Delivery & Nationwide Shipping Banner with Google Maps Location */}
+        {/* 11. Local Fast Delivery in Najafabad & Google Maps Location */}
         <IsfahanBanner />
 
-        {/* 11. Customer Reviews & Feedback */}
+        {/* 12. Customer Reviews & Feedback */}
         {reviews.length > 0 && (
           <section className="py-6">
             <div className="text-center max-w-xl mx-auto mb-8">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-                <span>نظرات مشتریان و برق‌کاران</span>
+                <span>نظرات مشتریان و خریداران</span>
                 <Sparkles className="w-5 h-5 text-amber-500" />
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                تجربه خرید مهندسین، کارفرمایان و خریداران محترم
+                تجربه خرید و استفاده از خدمات فنی و تعمیرات فروشگاه شیاسی
               </p>
             </div>
 
@@ -193,7 +197,7 @@ export default async function HomePage() {
                             {rev.authorName}
                           </h4>
                           <span className="text-[10px] text-slate-400">
-                            {rev.city || "اصفهان"}
+                            {rev.city || "نجف‌آباد"}
                           </span>
                         </div>
                       </div>

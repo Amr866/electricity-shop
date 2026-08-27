@@ -2,9 +2,10 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding for Naghsh-e Jahan Electric Shop (Isfahan)...');
+  console.log('🌱 Starting database seeding for Shiasi Store (Najafabad, Isfahan)...');
 
   // Clean existing data
+  await prisma.repairRequest.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.review.deleteMany();
@@ -15,22 +16,23 @@ async function main() {
   await prisma.coupon.deleteMany();
   await prisma.storeSetting.deleteMany();
 
-  // 1. Seed Store Settings
+  // 1. Seed Store Settings (Najafabad, Isfahan)
   const settings = [
-    { key: 'store_name', value: 'کالای برق و الکترونیک نقش جهان (اصفهان)' },
-    { key: 'store_slogan', value: 'تخصصی‌ترین مرجع تامین تجهیزات برقی ساختمانی، روشنایی، اتوماسیون صنعتی و قطعات الکترونیک در نصف جهان' },
-    { key: 'store_city', value: 'اصفهان' },
-    { key: 'store_address', value: 'اصفهان، خیابان فردوسی، نرسیده به چهارراه فلسطین، روبروی بانک ملی، پلاک ۱۲۸' },
-    { key: 'store_phone', value: '031-32204567' },
+    { key: 'store_name', value: 'فروشگاه تخصصی شیاسی (نجف‌آباد اصفهان)' },
+    { key: 'store_slogan', value: 'مرکز خرید و تعمیرات تخصصی لوازم برقی خانگی، پنکه، کولر، بخاری، آنتن، روشنایی و قطعات الکترونیک' },
+    { key: 'store_city', value: 'نجف‌آباد' },
+    { key: 'store_province', value: 'اصفهان' },
+    { key: 'store_address', value: 'اصفهان، نجف‌آباد، خیابان شریعتی / قدس (فروشگاه شیاسی - ثبت رسمی گوگل‌مپ)' },
+    { key: 'store_maps_url', value: 'https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6' },
+    { key: 'store_phone', value: '031-42624567' },
     { key: 'store_mobile', value: '0913-111-2233' },
+    { key: 'store_repair_phone', value: '0916-266-5884' },
     { key: 'store_whatsapp', value: '989131112233' },
-    { key: 'store_eitaa', value: 'naghshejahan_bargh' },
-    { key: 'store_telegram', value: 'naghshejahan_electric' },
     { key: 'store_working_hours', value: 'شنبه تا چهارشنبه: ۸:۳۰ الی ۲۱:۰۰ | پنجشنبه‌ها: ۸:۳۰ الی ۱۸:۰۰' },
-    { key: 'delivery_isfahan_note', value: 'ارسال فوری با اسنپ‌باکس و پیک اختصاصی در کمتر از ۳ ساعت در شهر اصفهان' },
+    { key: 'delivery_najafabad_note', value: 'ارسال فوری با اسنپ‌باکس و پیک اختصاصی در نجف‌آباد، ویلاشهر، گلدشت، یزدانشهر و اصفهان' },
     { key: 'card_number', value: '6037-9975-1234-5678' },
-    { key: 'card_holder', value: 'فروشگاه الکتریک نقش جهان - رضایی' },
-    { key: 'bank_name', value: 'بانک ملی ایران - شعبه فردوسی اصفهان' },
+    { key: 'card_holder', value: 'فروشگاه شیاسی - شیاسی' },
+    { key: 'bank_name', value: 'بانک ملی ایران - شعبه نجف‌آباد' },
   ];
 
   for (const s of settings) {
@@ -39,74 +41,251 @@ async function main() {
 
   // 2. Seed Coupons
   const coupons = [
-    { code: 'ISFAHAN', discountPercent: 10, minOrderAmount: 200000, isActive: true },
-    { code: 'BAHAR1403', discountPercent: 15, minOrderAmount: 500000, isActive: true },
-    { code: 'VIP50K', discountAmount: 50000, minOrderAmount: 300000, isActive: true },
+    { code: 'NAJAFABAD', discountPercent: 10, minOrderAmount: 200000, isActive: true },
+    { code: 'SHIASI1403', discountPercent: 15, minOrderAmount: 500000, isActive: true },
+    { code: 'REPAIR50', discountAmount: 50000, minOrderAmount: 300000, isActive: true },
   ];
 
   for (const c of coupons) {
     await prisma.coupon.create({ data: c });
   }
 
-  // 3. Seed Categories
+  // 3. Seed Core & Appliance Categories
+  const catAppliances = await prisma.category.create({
+    data: {
+      name: 'لوازم برقی و سرمایش/گرمایش خانگی (پنکه، کولر، بخاری)',
+      slug: 'home-appliances-cooling-heating',
+      description: 'انواع پنکه ایستاده و رومیزی، موتور و پمپ کولر آبی، بخاری و هیترهای برقی، آنتن دیجیتال و اتصالات',
+      icon: 'Fan',
+      image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+      sortOrder: 1,
+    }
+  });
+
   const catWiring = await prisma.category.create({
     data: {
-      name: 'سیم، کابل و اتصالات ساختمانی',
+      name: 'سیم، کابل و کلید پریز ساختمانی',
       slug: 'wiring-building',
-      description: 'انواع سیم و کابل افشان و مفتولی تمام مس، کابل شبکه، کابل شیلددار، داکت و لوله خرطومی نسوز',
+      description: 'انواع سیم و کابل افشان و مفتولی تمام مس، کابل آنتن کواکسیال، کلید و پریز دلند، داکت و لوله برق',
       icon: 'Zap',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 1,
+      sortOrder: 2,
     }
   });
 
   const catLighting = await prisma.category.create({
     data: {
-      name: 'روشنایی و نورپردازی مدرن',
+      name: 'روشنایی، پنل LED و تجهیزات خورشیدی',
       slug: 'lighting-fixtures',
-      description: 'پنل‌های ال‌ای‌دی 60x60 سقفی، پروژکتورهای SMD و COB فضای باز، لامپ‌های فوق کم‌مصرف، ریسه و نور مخفی',
+      description: 'پنل‌های ال‌ای‌دی، پروژکتورهای خورشیدی سولار، چراغ‌های پارکی، لامپ‌های کم‌مصرف و ریسه نئون',
       icon: 'SunMedium',
       image: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 2,
-    }
-  });
-
-  const catIndustrial = await prisma.category.create({
-    data: {
-      name: 'برق صنعتی و اتوماسیون',
-      slug: 'industrial-automation',
-      description: 'کلیدهای مینیاتوری MCB و اتوماتیک، کنتاکتور، رله کنترل فاز، ترانس، اینورتر، شستی و تجهیزات تابلو برق',
-      icon: 'Cpu',
-      image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
       sortOrder: 3,
     }
   });
 
   const catMaker = await prisma.category.create({
     data: {
-      name: 'بردهای الکترونیکی و قطعات DIY',
+      name: 'قطعات الکترونیک، آردوینو و ابزار تعمیرات',
       slug: 'maker-diy-electronics',
-      description: 'میکروکنترلرهای آردوینو، بردهای ESP32 و رزبری‌پای، سنسورها، درایور موتور، منبع تغذیه سوئیچینگ و هویه',
-      icon: 'CircuitBoard',
+      description: 'هویه، مولتی‌متر، المنت بخاری، بردهای آردوینو، ماژول‌های الکترونیکی و تجهیزات کارگاهی تعمیرات',
+      icon: 'Cpu',
       image: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80',
       sortOrder: 4,
     }
   });
 
-  // 4. Products Data
+  // 4. Products Data (Including Fans, Cooler Motors, Heaters, Antennas, Wiring, Lighting, Electronics)
   const products = [
-    // Category 1: Wiring & Building
+    // --- APPLIANCES & REPAIRS (Fans, Coolers, Heaters, Antennas) ---
+    {
+      categoryId: catAppliances.id,
+      name: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA با گارانتی ۲۴ ماهه',
+      slug: 'pars-khazar-fan-fsr-shiba-remote',
+      sku: 'APP-FAN-PKFSR',
+      shortDesc: 'باددهی پرقدرت، کم‌صدا، مجهز به کنترل از راه دور، تایمر هوشمند و صفحه نمایش LED.',
+      description: 'پنکه ایستاده پارس خزر مدل شیبا با ۵ پره آیرودینامیک شفاف، قابلیت تنظیم زاویه عمودی و افقی خودکار، ۳ حالت وزش باد (عادی، نسیم، خواب) و موتور تمام مس مقاوم در برابر کارکرد طولانی. امکان خرید آنلاین و ارائه خدمات پس از فروش و تعمیرات تخصصی در فروشگاه شیاسی نجف‌آباد.',
+      price: 3450000,
+      originalPrice: 3850000,
+      discountPercent: 10,
+      stock: 18,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: false,
+      brand: 'پارس خزر (Pars Khazar)',
+      warranty: '۲۴ ماه گارانتی رسمی پارس خزر + پشتیبانی قطعات و تعمیرات شیاسی',
+      madeIn: 'ایران',
+      rating: 5.0,
+      reviewCount: 34,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنکه ایستاده ریموت دار پارس خزر' }
+      ],
+      specs: [
+        { label: 'توان مصرفی', value: '۶۰ وات' },
+        { label: 'تعداد پره', value: '۵ پره شفاف با راندمان بالا' },
+        { label: 'قابلیت‌ها', value: 'ریموت کنترل، تایمر تا ۷.۵ ساعت، تنظیم ارتفاع' },
+        { label: 'پشتیبانی تعمیرات', value: 'تعمیر تخصصی بوش و موتور در کارگاه شیاسی نجف‌آباد' }
+      ],
+      reviews: [
+        { authorName: 'حاج احمد امینی', city: 'نجف‌آباد', rating: 5, comment: 'پنکه عالی و بی صدا، تحویل فوری در نجف‌آباد با اخلاق عالی مدیریت شیاسی.' }
+      ]
+    },
+    {
+      categoryId: catAppliances.id,
+      name: 'موتور کولر آبی ۱/۲ اسب بخار موتوژن تبریز اصل (سیم‌پیچی تمام مس خازن‌دار)',
+      slug: 'motogen-cooler-motor-half-hp-copper',
+      sku: 'APP-CLR-MOT50',
+      shortDesc: 'استانداردترین الکتروموتور کولر آبی مناسب کولرهای ۴۰۰۰ تا ۵۰۰۰ با راندمان بالا.',
+      description: 'دینام کولر آبی ۱/۲ موتوژن تبریز اورجینال با درجه حفاظت رطوبتی، خازن روغنی راه‌انداز و کلید گریز از مرکز (پلاتین). فروش نقدی با ضمانت نامه اصالت کالا و امکان پذیرش تعمیر و تعویض موتور کولر سوخته با نو در شعبه نجف‌آباد.',
+      price: 3680000,
+      originalPrice: 3990000,
+      discountPercent: 8,
+      stock: 14,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: false,
+      brand: 'موتوژن تبریز (Motogen)',
+      warranty: '۲ سال ضمانت طلایی تعویض موتوژن',
+      madeIn: 'ایران (تبریز اصل)',
+      rating: 4.9,
+      reviewCount: 52,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' }
+      ],
+      specs: [
+        { label: 'قدرت موتور', value: '۱/۲ اسب بخار (1/2 HP)' },
+        { label: 'جنس سیم‌پیچ', value: '۱۰۰٪ مس استاندارد' },
+        { label: 'سرعت', value: 'دو دور (کند ۹۵۰ دور / تند ۱۴۲۵ دور)' },
+        { label: 'خدمات تعمیر', value: 'تعمیر تخصصی و سیم‌پیچی مجدد در کارگاه شیاسی' }
+      ]
+    },
+    {
+      categoryId: catAppliances.id,
+      name: 'بخاری برقی تابشی ۴ المان شیشه‌ای کوارتز اخوان مدل ۲۰۰۰ وات با ترموستات و فن',
+      slug: 'akhavan-electric-heater-quartz-2000w-fan',
+      sku: 'APP-HTR-AKH20',
+      shortDesc: 'گرمایش مطبوع تابشی با ۴ المنت سرامیکی شیشه‌ای، فن پرتاب گرما و سنسور واژگونی ایمن.',
+      description: 'هیتر و بخاری برقی اخوان ۲۰۰۰ وات دارای ۴ کلید مجزا برای کنترل المنت‌ها، فن توربو جهت گردش سریع گرما در محیط و سیستم ایمنی قطع خودکار در صورت واژگونی. در صورت نیاز به المنت یدکی یا تعمیر، کارگاه شیاسی نجف‌آباد در خدمت شماست.',
+      price: 1350000,
+      originalPrice: 1550000,
+      discountPercent: 13,
+      stock: 25,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: true,
+      brand: 'اخوان (Akhavan)',
+      warranty: '۱۲ ماه ضمانت شرکتی + تامین المنت و قطعات یدکی',
+      madeIn: 'ایران',
+      rating: 4.8,
+      reviewCount: 29,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'بخاری برقی فن دار تابشی اخوان' }
+      ],
+      specs: [
+        { label: 'توان حرارتی', value: '۲۰۰۰ وات (قابل تنظیم ۵۰۰ تا ۲۰۰۰ وات)' },
+        { label: 'نوع المنت', value: 'کوارتز شیشه‌ای ضدجرقه' },
+        { label: 'تجهیزات جانبی', value: 'مجهز به فن حلزونی و سنسور قطع ایمنی' },
+        { label: 'خدمات', value: 'فروش قطعات و تعمیر بخاری در نجف‌آباد' }
+      ]
+    },
+    {
+      categoryId: catAppliances.id,
+      name: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل 201 معطوف با بوستر تقویت سیگنال',
+      slug: 'hani-rotating-digital-tv-antenna-booster-201',
+      sku: 'APP-ANT-HANI201',
+      shortDesc: 'گیرندگی فوق‌العاده قوی شبکه‌های HD و 4K حتی در نقاط کور نجف‌آباد و باغات اطراف.',
+      description: 'آنتن تلویزیون گردان هانی مجهز به موتور برقی جهت چرخش ۳۶۰ درجه از داخل منزل با کنترل منبع تغذیه، تقویت‌کننده کم‌نویز UHF/VHF و پشتیبانی کامل از سیگنال‌های دیجیتال DVB-T2.',
+      price: 495000,
+      originalPrice: 560000,
+      discountPercent: 11,
+      stock: 30,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: false,
+      brand: 'هانی (Hani)',
+      warranty: '۲ سال گارانتی تعویض برد بوستر هانی',
+      madeIn: 'ایران',
+      rating: 4.9,
+      reviewCount: 41,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'آنتن هوایی گردان دیجیتال هانی' }
+      ],
+      specs: [
+        { label: 'باند دریافت', value: 'UHF, VHF, FM' },
+        { label: 'تقویت‌کننده', value: 'دارای بوستر نویز پایین (Low Noise Booster)' },
+        { label: 'چرخش', value: 'موتور برقی ۳۶۰ درجه با کلید دوطرفه' },
+        { label: 'خدمات', value: 'تعمیر بوستر و منبع تغذیه آنتن در نجف‌آباد' }
+      ]
+    },
+    {
+      categoryId: catAppliances.id,
+      name: 'پمپ آب کولر آبی الکتروژن مدل البرز ضدآب با فیلتر محافظ',
+      slug: 'electrogen-cooler-water-pump-alborz',
+      sku: 'APP-CLR-PUMP-ELC',
+      shortDesc: 'موتور بی‌صدا، عایق‌بندی کامل استاندارد IP و مقاوم در برابر رسوب آب.',
+      description: 'پمپ آب کولر الکتروژن مدل البرز یکی از مطمئن‌ترین پمپ‌های بازار با هد پمپاژ قوی آب و بدنه ضدخوردگی. مناسب برای کولرهای آبی ۳۵۰۰ تا ۷۰۰۰.',
+      price: 340000,
+      originalPrice: 380000,
+      discountPercent: 10,
+      stock: 45,
+      isFeatured: false,
+      isBestSeller: true,
+      isNewArrival: false,
+      brand: 'الکتروژن (Electrogen)',
+      warranty: 'یک سال گارانتی معتبر شرکتی',
+      madeIn: 'ایران',
+      rating: 4.8,
+      reviewCount: 38,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پمپ آب کولر الکتروژن' }
+      ],
+      specs: [
+        { label: 'ولتاژ', value: '۲۲۰ ولت متناوب' },
+        { label: 'دبی پمپاژ', value: '۱۱ الی ۱۳ لیتر در دقیقه' },
+        { label: 'جنس پروانه', value: 'پلاستیک فشرده ضد رسوب' }
+      ]
+    },
+    {
+      categoryId: catAppliances.id,
+      name: 'کلید کولر آبی لمسی دیجیتال هوشمند مجهز به ریموت کنترل و ترموستات خودکار',
+      slug: 'smart-touch-cooler-switch-remote-thermostat',
+      sku: 'APP-CLR-SWI-SMART',
+      shortDesc: 'خاموش و روشن خودکار کولر طبق دمای محیط نجف‌آباد، تایمر خواب و صفحه لمسی ضدآب.',
+      description: 'کلید کولر هوشمند لمسی با قابلیت کنترل از راه دور توسط ریموت RF، تایمر خاموشی و روشن‌سازی متناوب پمپ جهت کاهش ۳۰ درصدی مصرف آب و برق در تابستان.',
+      price: 520000,
+      originalPrice: 590000,
+      discountPercent: 12,
+      stock: 28,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: true,
+      brand: 'تکنو اسمارت',
+      warranty: '۱۸ ماه ضمانت تعویض برد',
+      madeIn: 'ایران',
+      rating: 4.9,
+      reviewCount: 26,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کلید کولر هوشمند لمسی ریموت دار' }
+      ],
+      specs: [
+        { label: 'نوع پنل', value: 'لمسی خازنی با نور پس‌زمینه' },
+        { label: 'سنسورها', value: 'ترموستات سنجش دمای محیط' },
+        { label: 'نصب', value: 'جایگزین مستقیم کلید کولرهای قدیمی بدون تغییر سیم‌کشی' }
+      ]
+    },
+
+    // --- WIRING & BUILDING ---
     {
       categoryId: catWiring.id,
       name: 'سیم افشان ۱.۵×۱ تمام مس البرز الکتریک (حلقه ۱۰۰ متری)',
       slug: 'alborz-wire-1-5-copper-100m',
       sku: 'WIR-ALB-15',
       shortDesc: 'سیم افشان انعطاف‌پذیر با هادی مس خلوص بالا و عایق استاندارد PVC مقاوم در برابر حرارت.',
-      description: 'سیم افشان ۱.۵ میلی‌متر مربع البرز الکتریک نور تولید شده بر اساس استانداردهای ملی ایران (ISIRI 607) و بین‌المللی IEC. مناسب برای سیم‌کشی سیستم‌های روشنایی، پریزهای کم‌مصرف ساختمانی، داخل لوله‌های خرطومی و کانال‌های برق. دارای خلوص مس بالای ۹۹.۹٪ که افت ولتاژ را به حداقل می‌رساند.',
+      description: 'سیم افشان ۱.۵ میلی‌متر مربع البرز الکتریک نور تولید شده بر اساس استانداردهای ملی ایران. دارای خلوص مس بالای ۹۹.۹٪ مناسب پروژه‌های ساختمانی نجف‌آباد و اصفهان.',
       price: 880000,
       originalPrice: 950000,
       discountPercent: 7,
-      stock: 45,
+      stock: 50,
       isFeatured: true,
       isBestSeller: true,
       isNewArrival: false,
@@ -116,423 +295,113 @@ async function main() {
       rating: 4.9,
       reviewCount: 28,
       images: [
-        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم افشان ۱.۵ البرز مس' },
-        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'حلقه سیم ساختمانی' }
+        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم افشان ۱.۵ البرز مس' }
       ],
       specs: [
         { label: 'سطح مقطع', value: '۱.۵ میلی‌متر مربع' },
-        { label: 'جنس هادی', value: 'مس آنیل شده کلاس ۵ (انعطاف‌پذیر)' },
-        { label: 'طول حلقه', value: '۱۰۰ متر' },
-        { label: 'ولتاژ نامی', value: '450/750 ولت' },
-        { label: 'استاندارد', value: 'ISIRI (607) 02' },
-      ],
-      reviews: [
-        { authorName: 'مهندس رضایی', city: 'اصفهان (چهارباغ)', rating: 5, comment: 'کیفیت مس عالی بود و افت ولتاژ تو پروژه نداشتیم. ارسال پیک در اصفهان هم زیر ۲ ساعت انجام شد.' },
-        { authorName: 'علی کاظمی', city: 'شاهین‌شهر', rating: 5, comment: 'قیمت نسبت به بازار طالقانی اصفهان مناسب‌تر بود.' }
+        { label: 'جنس هادی', value: 'مس آنیل شده کلاس ۵' },
+        { label: 'طول حلقه', value: '۱۰۰ متر' }
       ]
     },
     {
       categoryId: catWiring.id,
-      name: 'کابل مفتولی ۲×۲.۵ کات کابل اصفهان (کلاف ۱۰۰ متری)',
-      slug: 'kat-cable-isfahan-2x2-5-100m',
-      sku: 'CAB-KAT-225',
-      shortDesc: 'کابل مفتولی خشک ۲ رشته با عایق تقویت‌شده مناسب برق اصلی پریزها و کولر گازی.',
-      description: 'کابل ساختمانی ۲ رشته مقطع ۲.۵ تولید کارخانه معتبر کات کابل اصفهان. دارای روکش ضخیم ضدسایش و مس تمام عیار مناسب برای پروژه‌های انبوه‌سازی و صنعتی در استان اصفهان.',
-      price: 1850000,
-      originalPrice: 2000000,
-      discountPercent: 8,
-      stock: 22,
-      isFeatured: false,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'کات کابل اصفهان',
-      warranty: 'ضمانت تاییدیه نظام مهندسی ساختمان',
-      madeIn: 'ایران (اصفهان)',
-      rating: 4.8,
-      reviewCount: 14,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کابل مفتولی کات کابل اصفهان' }
-      ],
-      specs: [
-        { label: 'تعداد و سطح مقطع', value: '۲ در ۲.۵ میلی‌متر مربع' },
-        { label: 'نوع هادی', value: 'مفتول مسی کلاس ۱' },
-        { label: 'تحمل جریان', value: 'تا ۲۵ آمپر' },
-        { label: 'محل تولید', value: 'شهرک صنعتی مورچه‌خورت اصفهان' }
-      ]
-    },
-    {
-      categoryId: catWiring.id,
-      name: 'کلید و پریز مدل آسا سفید دلند الکتریک (پک ۱۰ عددی)',
-      slug: 'deland-asa-white-switch-socket-pack10',
-      sku: 'SWI-DEL-ASA10',
-      shortDesc: 'طراحی مدرن، مکانیزم پلی‌کربنات نسوز و ماندگاری رنگ در برابر اشعه خورشید.',
-      description: 'کلید و پریز دلند مدل آسا یکی از پرفروش‌ترین و باکیفیت‌ترین مدل‌های بازار ایران است. با رویه براق سفید، اتصالات برنجی قوی با فنریت بالا که حتی پس از هزاران بار استفاده شل نمی‌شوند.',
-      price: 490000,
-      originalPrice: 550000,
-      discountPercent: 11,
-      stock: 60,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'دلند الکتریک',
-      warranty: '۵ سال گارانتی تعویض بی قید و شرط',
-      madeIn: 'ایران',
-      rating: 4.9,
-      reviewCount: 35,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کلید و پریز دلند آسا' }
-      ],
-      specs: [
-        { label: 'مدل', value: 'آسا (Asa)' },
-        { label: 'رنگ', value: 'سفید صدفی' },
-        { label: 'جنس بدنه', value: 'پلی‌کربنات نشکن و ضد اشتعال' },
-        { label: 'جنس ترمینال', value: 'برنج و مس فسفردار' }
-      ]
-    },
-    {
-      categoryId: catWiring.id,
-      name: 'داکت شیاردار صنعتی البرز سایز ۶۰×۴۰ (شاخه ۲ متری)',
-      slug: 'alborz-slotted-duct-60x40',
-      sku: 'DCT-ALB-6040',
-      shortDesc: 'داکت تابلویی طوسی رنگ با انعطاف‌پذیری دندانه‌ها و قفل درب محکم.',
-      description: 'داکت شیاردار البرز جهت مرتب‌سازی و هدایت سیم‌ها در داخل تابلو برق‌های صنعتی، جعبه فیوزها و راک‌های شبکه. مقاوم در برابر شعله و حرارت تا ۶۰ درجه سانتی‌گراد.',
-      price: 125000,
-      originalPrice: 140000,
-      discountPercent: 10,
-      stock: 120,
-      isFeatured: false,
-      isBestSeller: false,
-      isNewArrival: true,
-      brand: 'البرز',
-      warranty: 'ضمانت اصالت فیزیکی',
-      madeIn: 'ایران',
-      rating: 4.7,
-      reviewCount: 9,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'داکت شیاردار البرز' }
-      ],
-      specs: [
-        { label: 'ابعاد', value: 'عرض ۶۰ میلی‌متر در ارتفاع ۴۰ میلی‌متر' },
-        { label: 'طول هر شاخه', value: '۲ متر' },
-        { label: 'رنگ', value: 'طوسی صنعتی' },
-      ]
-    },
-
-    // Category 2: Lighting & Modern Fixtures
-    {
-      categoryId: catLighting.id,
-      name: 'پنل سقفی توکار ۶۰×۶۰ فول لایت ۵۰ وات پارس شعاع توس',
-      slug: 'parsshoa-panel-60x60-50w-backlight',
-      sku: 'LGT-PST-6060',
-      shortDesc: 'نور کاملاً یکدست بدون فلیکر (سوسو زدن)، راندمان نوری بالا مناسب دفاتر کار و مجتمع‌ها.',
-      description: 'چراغ پنلی ال ای دی توکار ۶۰ در ۶۰ مدل بک لایت پارس شعاع توس با توان ۵۰ وات و شار نوری ۵۰۰۰ لومن. تکنولوژی ضدخستگی چشم و مصرف انرژی فوق‌العاده پایین (رده انرژی A++). مناسب سقف‌های کناف و شبکه در ادارات، بیمارستان‌ها و فروشگاه‌ها.',
-      price: 620000,
-      originalPrice: 690000,
-      discountPercent: 10,
-      stock: 50,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'پارس شعاع توس',
-      warranty: '۲۴ ماه گارانتی تعویض شرکتی',
-      madeIn: 'ایران',
-      rating: 4.9,
-      reviewCount: 42,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنل سقفی ۶۰ در ۶۰ پارس شعاع' },
-        { url: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'نورپردازی اداری' }
-      ],
-      specs: [
-        { label: 'توان مصرفی', value: '۵۰ وات' },
-        { label: 'شار نوری', value: '۵۰۰۰ لومن' },
-        { label: 'دمای رنگ', value: 'مهتابی (۶۵۰۰ کلوین) / آفتابی (۳۰۰۰ کلوین)' },
-        { label: 'ابعاد', value: '۵۹۵ × ۵۹۵ میلی‌متر' },
-        { label: 'طول عمر', value: '۳۰,۰۰۰ ساعت' }
-      ],
-      reviews: [
-        { authorName: 'دکتر صانعی', city: 'اصفهان (مرداویج)', rating: 5, comment: 'برای کلینیک ۱۰ عدد خریدیم، نور عالی و یکدست بدون هیچگونه سوسو زدن دوربین.' }
-      ]
-    },
-    {
-      categoryId: catLighting.id,
-      name: 'پروژکتور ۱۰۰ وات SMD ضدآب IP66 صبا ترانس (نور مهتابی)',
-      slug: 'sabatrans-smd-floodlight-100w-ip66',
-      sku: 'LGT-SAB-100W',
-      shortDesc: 'بدنه آلومینیوم دایکاست با هیت‌سینک پره‌ای قدرتمند برای محیط‌های باز و نمای ساختمان.',
-      description: 'پروژکتور SMD صد وات شرکت صبا ترانس با زاویه پخش نور ۱۲۰ درجه و مقاومت در برابر باران شدید، گرد و غبار با استاندارد IP66. ایده‌آل برای نورپردازی باغ، ویلاهای زاینده‌رود و اصفهان، پارکینگ‌ها و کارگاه‌های صنعتی.',
-      price: 790000,
-      originalPrice: 890000,
-      discountPercent: 11,
-      stock: 30,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'صبا ترانس',
-      warranty: '۱۲ ماه گارانتی تعویض طلایی',
-      madeIn: 'ایران',
-      rating: 4.8,
-      reviewCount: 19,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پروژکتور SMD صد وات' }
-      ],
-      specs: [
-        { label: 'توان', value: '۱۰۰ وات واقعی' },
-        { label: 'درجه حفاظت', value: 'IP66 ضد آب و گرد و غبار' },
-        { label: 'جنس بدنه', value: 'آلومینیوم دایکاست با رنگ پودری الکترواستاتیک' },
-        { label: 'شار نوری', value: '۱۰۰۰۰ لومن' }
-      ]
-    },
-    {
-      categoryId: catLighting.id,
-      name: 'ریسه نواری نئون فلکس ۱۲ ولت ضدآب (حلقه ۵ متری - آبی فیروزه‌ای اصفهان)',
-      slug: 'neon-flex-12v-turquoise-5m',
-      sku: 'LGT-NEON-TURQ',
-      shortDesc: 'نور نئونی یکپارچه بدون مشخص بودن دانه‌های ال‌ای‌دی، مناسب تابلو‌سازی و دکوراسیون خاص.',
-      description: 'ریسه نئون فلکسیبل ۱۲ ولت با انعطاف‌پذیری فوق‌العاده بالا برای ساخت طرح‌های نئونی، لاین‌های نوری مخفی، ویترین فروشگاه‌ها و معماری داخلی سنتی و مدرن اصفهان.',
-      price: 245000,
-      originalPrice: 280000,
+      name: 'کابل آنتن کواکسیال صادراتی تمام مس RG6 کات کابل (کلاف ۱۰۰ متری)',
+      slug: 'coaxial-antenna-cable-rg6-copper-100m',
+      sku: 'WIR-ANT-RG6',
+      shortDesc: 'شیلد و مغزی مس خالص با فویل دوبل جهت انتقال تصویر شفاف 4K بدون افت سیگنال.',
+      description: 'کابل آنتن صادراتی RG6 تمام مس مناسب انواع گیرنده‌های دیجیتال و آنتن‌های مرکزی مجتمع‌های ساختمانی.',
+      price: 920000,
+      originalPrice: 1050000,
       discountPercent: 12,
-      stock: 75,
-      isFeatured: false,
-      isBestSeller: false,
-      isNewArrival: true,
-      brand: 'اوپال لایت',
-      warranty: '۶ ماه ضمانت چیپ LED',
-      madeIn: 'وارداتی درجه یک',
-      rating: 4.7,
-      reviewCount: 11,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'ریسه نئون فلکس فیروزه‌ای' }
-      ],
-      specs: [
-        { label: 'ولتاژ کاری', value: '۱۲ ولت DC' },
-        { label: 'طول حلقه', value: '۵ متر' },
-        { label: 'قابلیت برش', value: 'هر ۲.۵ سانتی‌متر' },
-        { label: 'رنگ نور', value: 'فیروزه‌ای خاص (Turquoise)' }
-      ]
-    },
-    {
-      categoryId: catLighting.id,
-      name: 'لامپ ال ای دی ۲۰ وات استوانه‌ای پارس شهاب (پایه E27)',
-      slug: 'pars-shahab-led-bulb-20w-e27',
-      sku: 'LGT-PSH-20W',
-      shortDesc: 'روشنایی پرقدرت، بدون اشعه فرابنفش (UV)، جایگزین لامپ‌های ۱۰۰ وات رشته‌ای و کم‌مصرف.',
-      description: 'لامپ ال ای دی ۲۰ وات پارس شهاب از باکیفیت‌ترین لامپ‌های استاندارد بازار با طول عمر بیش از ۲۵ هزار ساعت. فاقد جیوه و گازهای مضر، روشن شدن آنی بدون نیاز به گرم شدن.',
-      price: 98000,
-      originalPrice: 110000,
-      discountPercent: 11,
-      stock: 150,
-      isFeatured: false,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'پارس شهاب',
-      warranty: '۱۲ ماه گارانتی تعویض پارس شهاب',
-      madeIn: 'ایران',
-      rating: 4.9,
-      reviewCount: 56,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'لامپ ۲۰ وات پارس شهاب' }
-      ],
-      specs: [
-        { label: 'توان مصرفی', value: '۲۰ وات' },
-        { label: 'سرپیچ', value: 'E27 (معمولی)' },
-        { label: 'شار نوری', value: '۱۹۰۰ لومن' },
-        { label: 'رده انرژی', value: 'A+' }
-      ]
-    },
-
-    // Category 3: Industrial & Automation
-    {
-      categoryId: catIndustrial.id,
-      name: 'کلید مینیاتوری تک پل ۱۶ آمپر هیوندای تیپ C (اصل کره)',
-      slug: 'hyundai-mcb-1p-16a-type-c',
-      sku: 'IND-HYU-1P16',
-      shortDesc: 'حفاظت دقیق در برابر اضافه‌بار و اتصال کوتاه با قدرت قطع ۶ کیلوآمپر (6kA).',
-      description: 'فیوز مینیاتوری تیپ C (موتوری/صنعتی) هیوندای الکتریک کره، طراحی شده برای قطع سریع در اضافه جریان‌های لحظه‌ای. مناسب جهت تابلو برق‌های کارگاهی، موتورها و پمپ‌های آب خانگی و صنعتی.',
-      price: 185000,
-      originalPrice: 210000,
-      discountPercent: 12,
-      stock: 80,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'هیوندای (Hyundai)',
-      warranty: 'ضمانت اصالت و سلامت ۱۰۰٪ شرکتی',
-      madeIn: 'کره جنوبی (تحت لیسانس)',
-      rating: 5.0,
-      reviewCount: 31,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کلید مینیاتوری هیوندای ۱۶ آمپر' }
-      ],
-      specs: [
-        { label: 'جریان نامی', value: '۱۶ آمپر' },
-        { label: 'تعداد پل', value: 'تک پل (1P)' },
-        { label: 'تیپ منحنی قطع', value: 'تیپ C (موتوری)' },
-        { label: 'قدرت قطع', value: '6kA' }
-      ]
-    },
-    {
-      categoryId: catIndustrial.id,
-      name: 'کنتاکتور ۲۵ آمپر هیوندای ۲۲۰ ولت مدل HGC 25',
-      slug: 'hyundai-contactor-25a-220v-hgc25',
-      sku: 'IND-HYU-CON25',
-      shortDesc: 'کنتاکتور پرقدرت صنعتی با بوبین ۲۲۰ ولت و تیغه‌های کمکی ۱NO + 1NC.',
-      description: 'کنتاکتور سه فاز هیوندای مدل HGC25 برای راه‌اندازی و کنترل الکتروموتورهای صنعتی تا ۱۱ کیلووات در ولتاژ ۴۰۰ ولت. دارای مقاومت بالای پلاتین‌ها در برابر جرقه‌زنی مکرر.',
-      price: 890000,
-      originalPrice: 990000,
-      discountPercent: 10,
-      stock: 25,
-      isFeatured: true,
-      isBestSeller: false,
-      isNewArrival: true,
-      brand: 'هیوندای (Hyundai)',
-      warranty: '۲۴ ماه گارانتی تعویض شرکتی',
-      madeIn: 'کره جنوبی',
-      rating: 4.9,
-      reviewCount: 16,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کنتاکتور ۲۵ آمپر هیوندای' }
-      ],
-      specs: [
-        { label: 'جریان نامی (AC-3)', value: '۲۵ آمپر' },
-        { label: 'ولتاژ بوبین', value: '220V AC' },
-        { label: 'کنتاکت‌های کمکی', value: '1NO + 1NC' },
-        { label: 'توان موتور قابل کنترل', value: 'تا 11KW' }
-      ]
-    },
-    {
-      categoryId: catIndustrial.id,
-      name: 'کنترل فاز دیجیتال شیوا امواج مدل 13B2',
-      slug: 'shiva-amvaj-digital-phase-control-13b2',
-      sku: 'IND-SHV-PHASE',
-      shortDesc: 'نمایشگر دیجیتال ولتاژ، حفاظت در برابر دوفاز شدن، نوسان شدید، عدم تقارن و جابجایی فاز.',
-      description: 'دستگاه کنترل فاز میکروپروسسوری شیوا امواج اصفهان جهت حفاظت دقیق از الکتروموتورها، پمپ‌های آب کشاورزی و چاه‌های استان اصفهان و ماشین‌آلات صنعتی در برابر نوسانات برق شبکه.',
-      price: 640000,
-      originalPrice: 700000,
-      discountPercent: 9,
       stock: 40,
       isFeatured: false,
       isBestSeller: true,
       isNewArrival: false,
-      brand: 'شیوا امواج',
-      warranty: '۳ سال ضمانت طلایی بدون قید و شرط شیوا امواج',
+      brand: 'کات کابل',
+      warranty: 'ضمانت کیفیت مس و انتقال سیگنال',
       madeIn: 'ایران',
       rating: 4.9,
-      reviewCount: 27,
+      reviewCount: 21,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کنترل فاز دیجیتال شیوا امواج' }
+        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'کابل آنتن کواکسیال تمام مس' }
       ],
       specs: [
-        { label: 'ولتاژ تغذیه', value: '180 الی 250 ولت متناوب' },
-        { label: 'قابلیت‌ها', value: 'تنظیم زمان وصل و قطع، نمایش ولتاژ شبکه' },
-        { label: 'خروجی رله', value: 'رله ۵ آمپر' },
-        { label: 'تاییدیه‌ها', value: 'دارای تاییدیه شرکت توانیر' }
-      ]
-    },
-    {
-      categoryId: catIndustrial.id,
-      name: 'اینورتر و درایو ۳ اسب (۲.۲ کیلووات) تک فاز به سه فاز دلتا سری EL',
-      slug: 'delta-inverter-vfd-el-2-2kw-single-to-three',
-      sku: 'IND-DLT-VFD22',
-      shortDesc: 'کنترل دور دقیق الکتروموتورهای سه فاز با برق ۲۲۰ ولت تک فاز خانگی.',
-      description: 'اینورتر کمپکت و قدرتمند دلتا سری VFD-EL دارای فیلتر EMI داخلی، کی‌پد جداشونده و پروتکل مدباس RS485. مناسب برای انواع پمپ، فن، نوار نقاله و دستگاه‌های تراش در کارگاه‌های صنعتی.',
-      price: 6850000,
-      originalPrice: 7400000,
-      discountPercent: 7,
-      stock: 12,
-      isFeatured: true,
-      isBestSeller: false,
-      isNewArrival: true,
-      brand: 'دلتا (Delta)',
-      warranty: '۱۸ ماه گارانتی رسمی دلتا ایران',
-      madeIn: 'تایوان',
-      rating: 5.0,
-      reviewCount: 8,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'اینورتر دلتا ۲.۲ کیلووات' }
-      ],
-      specs: [
-        { label: 'توان خروجی', value: '۲.۲ کیلووات (۳ اسب بخار)' },
-        { label: 'ولتاژ ورودی', value: 'تک فاز ۲۲۰ ولت' },
-        { label: 'ولتاژ خروجی', value: 'سه فاز ۲۲۰ ولت' },
-        { label: 'پورت ارتباطی', value: 'RS-485 Modbus' }
+        { label: 'نوع کابل', value: 'کواکسیال RG6' },
+        { label: 'جنس مغزی', value: 'مس خالص ۱.۰۲ میلی‌متر' },
+        { label: 'شیلد', value: 'بافت مس ۹۶ رشته با فویل آلومینیوم' }
       ]
     },
 
-    // Category 4: Maker & DIY Electronics
+    // --- LIGHTING & SOLAR ---
+    {
+      categoryId: catLighting.id,
+      name: 'پروژکتور ۲۰۰ وات خورشیدی سولار ویمکس سنسوردار با پنل مجزا و ریموت کنترل',
+      slug: 'vimax-solar-floodlight-200w-remote',
+      sku: 'LGT-SOL-VIM200',
+      shortDesc: 'روشنایی کاملاً رایگان خورشیدی برای باغ، ویلا و حیاط‌های نجف‌آباد بدون نیاز به سیم‌کشی برق.',
+      description: 'سیستم روشنایی خورشیدی ۲۰۰ وات ویمکس مجهز به پنل مونوکریستال پربازده، باتری لیتیومی بادوام با ماندگاری ۱۲ ساعته، سنسور تشخیص شب و ریموت کنترل هوشمند.',
+      price: 4520000,
+      originalPrice: 4780000,
+      discountPercent: 5,
+      stock: 15,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: true,
+      brand: 'ویمکس (Vimax)',
+      warranty: '۲ سال گارانتی کامل و خدمات تعویض باتری',
+      madeIn: 'وارداتی درجه یک',
+      rating: 5.0,
+      reviewCount: 44,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پروژکتور خورشیدی ۲۰۰ وات ویمکس' }
+      ],
+      specs: [
+        { label: 'توان روشنایی', value: '۲۰۰ وات LED' },
+        { label: 'باتری داخلی', value: 'لیتیوم فسفات ۲۰,۰۰۰ میلی‌آمپر' },
+        { label: 'مدت شارژدهی', value: '۱۰ الی ۱۴ ساعت مداوم' },
+        { label: 'ضدآب', value: 'IP66 مقاوم در برابر برف و باران' }
+      ]
+    },
+
+    // --- ELECTRONICS & DIY & REPAIR TOOLS ---
     {
       categoryId: catMaker.id,
-      name: 'برد آردوینو اونو مدل Arduino Uno R3 (میکروکنترلر ATmega328P SMD)',
-      slug: 'arduino-uno-r3-atmega328p-smd-cable',
+      name: 'برد آردوینو اونو مدل Arduino Uno R3 میکروکنترلر ATmega328P',
+      slug: 'arduino-uno-r3-atmega328p',
       sku: 'MKR-ARD-UNO3',
-      shortDesc: 'محبوب‌ترین برد توسعه و برنامه‌نویسی برای پروژه‌های هوشمندسازی، رباتیک و اینترنت اشیاء (IoT).',
-      description: 'برد آردوینو Uno R3 اورجینال دارای ۱۴ پین ورودی/خروجی دیجیتال (که ۶ تای آن‌ها PWM هستند)، ۶ ورودی آنالوگ، کریستال ۱۶ مگاهرتز و پورت USB Type-B به همراه کابل اتصال رایگان. کامپایل و پروگرم آنی با نرم‌افزار Arduino IDE.',
+      shortDesc: 'محبوب‌ترین برد توسعه و برنامه‌نویسی برای هوشمندسازی، رباتیک و پروژه‌های فنی.',
+      description: 'برد آردوینو Uno R3 اورجینال دارای ۱۴ پین دیجیتال و ۶ ورودی آنالوگ، همراه با کابل شیلددار USB.',
       price: 295000,
       originalPrice: 340000,
       discountPercent: 13,
-      stock: 65,
+      stock: 50,
       isFeatured: true,
       isBestSeller: true,
       isNewArrival: false,
       brand: 'آردوینو (Arduino)',
-      warranty: 'مهلت تست ۷ روزه و ضمانت سلامت چیپ',
+      warranty: 'مهلت تست ۷ روزه و ضمانت اصالت چیپ',
       madeIn: 'چین درجه یک',
       rating: 4.9,
-      reviewCount: 48,
+      reviewCount: 38,
       images: [
-        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد آردوینو اونو Arduino Uno' }
+        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد آردوینو Uno R3' }
       ],
       specs: [
         { label: 'میکروکنترلر', value: 'ATmega328P' },
-        { label: 'ولتاژ کاری', value: '۵ ولت DC' },
-        { label: 'فرکانس کاری', value: '۱۶ مگاهرتز' },
-        { label: 'حافظه فلش', value: '۳۲ کیلوبایت' },
-        { label: 'لوازم جانبی', value: 'همراه با کابل آبی شیلددار USB' }
-      ],
-      reviews: [
-        { authorName: 'محمد مهدی', city: 'اصفهان (دانشگاه صنعتی)', rating: 5, comment: 'برای پروژه پایانی رباتیک سفارش دادم، بدون دردسر چیپ CH340 شناسایی شد.' }
-      ]
-    },
-    {
-      categoryId: catMaker.id,
-      name: 'برد وای‌فای و بلوتوث ESP32 مدل NodeMCU-32S دو هسته‌ای',
-      slug: 'esp32-nodemcu-32s-wifi-bluetooth-dualcore',
-      sku: 'MKR-ESP-32S',
-      shortDesc: 'پردازنده فوق‌سریع دو هسته‌ای ۲۴۰ مگاهرتزی با وای‌فای داخلی ۲.۴ گیگاهرتز و بلوتوث نسخه ۴.۲.',
-      description: 'ماژول همه‌کاره ESP-WROOM-32 مناسب هوشمندسازی ساختمان، ارسال اطلاعات سنسورها به سرور محلی یا اینترنت، وب‌سرور داخلی و اتصال به خانه هوشمند Home Assistant.',
-      price: 265000,
-      originalPrice: 295000,
-      discountPercent: 10,
-      stock: 55,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: true,
-      brand: 'Espressif',
-      warranty: 'ضمانت تست قطعه و سلامت فیزیکی',
-      madeIn: 'چین',
-      rating: 4.9,
-      reviewCount: 39,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد ESP32 وای‌فای و بلوتوث' }
-      ],
-      specs: [
-        { label: 'پردازنده', value: 'Xtensa Dual-Core 32-bit LX6 @ 240MHz' },
-        { label: 'ارتباط بی‌سیم', value: 'WiFi 802.11 b/g/n + Bluetooth v4.2 BR/EDR & BLE' },
-        { label: 'حافظه SRAM', value: '۵۲۰ کیلوبایت' },
-        { label: 'پورت', value: 'Micro USB با آی‌سی CP2102' }
+        { label: 'ولتاژ کاری', value: '۵ ولت DC' }
       ]
     },
     {
       categoryId: catMaker.id,
       name: 'هویه برقی دیجیتال ۶۰ وات با قابلیت تنظیم دقیق دما (۱۸۰ تا ۴۸۰ درجه)',
-      slug: 'digital-soldering-iron-60w-adjustable-temp',
+      slug: 'digital-soldering-iron-60w',
       sku: 'MKR-SLD-DIG60',
-      shortDesc: 'گرمایش فوق‌سریع در ۱۰ ثانیه، نوک سرامیکی نسوز قابل تعویض با نمایشگر LCD.',
-      description: 'هویه حرفه‌ای قلمی ۶۰ وات مجهز به المنت سرامیکی ژاپنی با دکمه‌های تنظیم دما روی بدنه. مناسب تعمیرات برد الکترونیکی، لحیم‌کاری قطعات SMD و پروژه‌های دانشجویی و کارگاهی.',
+      shortDesc: 'گرمایش فوق‌سریع در ۱۰ ثانیه مناسب تعمیرات لوازم خانگی و بردهای الکترونیکی.',
+      description: 'هویه حرفه‌ای قلمی ۶۰ وات با نمایشگر LCD و تنظیم دیجیتال دما، ابزار ضروری تعمیرکاران لوازم برقی و الکترونیک.',
       price: 385000,
       originalPrice: 440000,
       discountPercent: 12,
-      stock: 35,
+      stock: 25,
       isFeatured: false,
       isBestSeller: true,
       isNewArrival: false,
@@ -540,74 +409,13 @@ async function main() {
       warranty: '۶ ماه گارانتی برد و المنت',
       madeIn: 'چین درجه یک',
       rating: 4.8,
-      reviewCount: 22,
+      reviewCount: 19,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'هویه دیجیتال تنظیم دما ۶۰ وات' }
+        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'هویه دیجیتال ۶۰ وات' }
       ],
       specs: [
         { label: 'توان', value: '۶۰ وات' },
-        { label: 'محدوده دما', value: '۱۸۰ الی ۴۸۰ درجه سانتی‌گراد' },
-        { label: 'نوع نوک', value: 'نوک ۹۰۰M قابل تعویض' },
-        { label: 'طول کابل', value: '۱.۴ متر سیلیکونی ضدحرارت' }
-      ]
-    },
-    {
-      categoryId: catMaker.id,
-      name: 'مولتی‌متر دیجیتال اتورنج ویکتور مدل Victor VC97 (نسخه اورجینال با پراپ دما)',
-      slug: 'victor-vc97-digital-multimeter-auto-range',
-      sku: 'MKR-MET-VC97',
-      shortDesc: 'دقیق‌ترین مولتی‌متر کارگاهی با قابلیت تست خازن، فرکانس، دما، تست دیود و ترانزیستور hFE.',
-      description: 'مولتی‌متر اتورنج ویکتور ۹۷ انتخاب اول مهندسان و تعمیرکاران الکترونیک در سراسر ایران. دارای بدنه ضربه‌گیر محافظ، نور پس‌زمینه صفحه نمایش (Backlight) و خاموشی خودکار برای بهینه‌سازی مصرف باتری.',
-      price: 1650000,
-      originalPrice: 1850000,
-      discountPercent: 11,
-      stock: 18,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      brand: 'ویکتور (Victor)',
-      warranty: 'یک سال گارانتی کالیبراسیون و تعویض',
-      madeIn: 'چین اورجینال',
-      rating: 5.0,
-      reviewCount: 64,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'مولتی‌متر اتورنج ویکتور VC97' }
-      ],
-      specs: [
-        { label: 'نوع اندازه‌گیری', value: 'Auto-Range (تنظیم خودکار رنج)' },
-        { label: 'ولتاژ DC/AC', value: 'تا ۱۰۰۰ ولت' },
-        { label: 'جریان DC/AC', value: 'تا ۲۰ آمپر' },
-        { label: 'تست خازن', value: 'تا ۲۰۰ میکروفاراد' },
-        { label: 'اندازه‌گیری دما', value: '-۲۰ تا ۱۰۰۰ درجه سانتی‌گراد' }
-      ]
-    },
-    {
-      categoryId: catMaker.id,
-      name: 'ماژول رله ۵ ولت ۴ کاناله با ایزولاسیون اپتوکوپلر',
-      slug: 'relay-module-5v-4channel-optocoupler',
-      sku: 'MKR-MOD-RLY4',
-      shortDesc: 'کنترل بارهای ۲۲۰ ولت ساختمانی توسط بردهای آردوینو، میکروکنترلر و رزبری‌پای.',
-      description: 'ماژول رله ۴ کانال مجهز به ایزولاتور نوری (Optocoupler) جهت جلوگیری از نویز و برگشت ولتاژ به پردازنده. تحمل جریان هر کانال تا ۱۰ آمپر در ۲۵۰ ولت AC.',
-      price: 145000,
-      originalPrice: 165000,
-      discountPercent: 12,
-      stock: 85,
-      isFeatured: false,
-      isBestSeller: false,
-      isNewArrival: true,
-      brand: 'الکترونیک اسمارت',
-      warranty: 'مهلت تست سلامت فیزیکی',
-      madeIn: 'چین',
-      rating: 4.8,
-      reviewCount: 15,
-      images: [
-        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'ماژول رله ۴ کاناله ۵ ولت' }
-      ],
-      specs: [
-        { label: 'ولتاژ تحریک بوبین', value: '۵ ولت DC' },
-        { label: 'حداکثر بار خروجی', value: '10A 250VAC / 10A 30VDC' },
-        { label: 'نوع سوئیچینگ', value: 'Active Low' },
-        { label: 'نشانگر LED', value: 'دارای ال‌ای‌دی وضعیت برای هر کانال' }
+        { label: 'محدوده دما', value: '۱۸۰ الی ۴۸۰ درجه سانتی‌گراد' }
       ]
     }
   ];
@@ -631,51 +439,68 @@ async function main() {
     console.log(`  ✓ Created product: ${createdProduct.name}`);
   }
 
-  // 5. Seed a Sample Completed Order for testing Order Tracking & Invoice
+  // 5. Seed Sample Completed Order
   const sampleOrder = await prisma.order.create({
     data: {
-      orderNumber: 'NJ-140306-089',
+      orderNumber: 'SH-140306-089',
       customerName: 'حمیدرضا معتمدی',
       customerPhone: '09132004050',
       customerEmail: 'motamedi@example.com',
       province: 'اصفهان',
-      city: 'اصفهان',
-      postalCode: '8146512345',
-      address: 'اصفهان، خیابان شیخ صدوق جنوبی، کوچه ارغوان، پلاک ۱۲، واحد ۳',
+      city: 'نجف‌آباد',
+      postalCode: '8514612345',
+      address: 'اصفهان، نجف‌آباد، خیابان امام شرقی، کوچه بهار، پلاک ۲۴',
       shippingMethod: 'isfahan_express',
-      shippingCost: 45000,
+      shippingCost: 35000,
       paymentMethod: 'zarinpal',
       paymentStatus: 'PAID',
       orderStatus: 'PROCESSING',
-      trackingCode: 'SNAP-ISF-98214',
-      subtotal: 1395000,
+      trackingCode: 'SNAP-NJF-98214',
+      subtotal: 3945000,
       discount: 50000,
-      totalAmount: 1390000,
+      totalAmount: 3930000,
       paymentRefId: 'ZP-982341908234',
-      notes: 'لطفا قبل از تحویل هماهنگ بفرمایید. زنگ واحد ۳ خراب است.',
+      notes: 'تحویل در نجف‌آباد با هماهنگی تلفنی.',
       items: {
         create: [
           {
-            productName: 'سیم افشان ۱.۵×۱ تمام مس البرز الکتریک (حلقه ۱۰۰ متری)',
-            price: 880000,
+            productName: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA با گارانتی ۲۴ ماهه',
+            price: 3450000,
             quantity: 1,
-            total: 880000,
-            productImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'
+            total: 3450000,
+            productImage: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80'
           },
           {
-            productName: 'کلید و پریز مدل آسا سفید دلند الکتریک (پک ۱۰ عددی)',
-            price: 490000,
+            productName: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل 201 معطوف با بوستر تقویت سیگنال',
+            price: 495000,
             quantity: 1,
-            total: 490000,
-            productImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80'
+            total: 495000,
+            productImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
           }
         ]
       }
     }
   });
 
-  console.log(`  ✓ Created sample order for tracking: ${sampleOrder.orderNumber}`);
-  console.log('✅ Seeding completed successfully!');
+  // 6. Seed Sample Repair Request Tickets in Najafabad
+  const sampleRepair = await prisma.repairRequest.create({
+    data: {
+      trackingCode: 'REP-1403-042',
+      customerName: 'رضا قادری',
+      customerPhone: '09139876543',
+      applianceType: 'پنکه ایستاده',
+      brandModel: 'پارس خزر مدل شیبا',
+      issueDesc: 'موتور پنکه داغ می‌شود و دور ۳ کار نمی‌کند، نیاز به تعویض بوش و روغن‌کاری.',
+      deliveryType: 'in_person',
+      status: 'IN_PROGRESS',
+      estimatedCost: 180000,
+      adminNotes: 'بوش‌های موتور تعویض شد، در حال تست ۲۴ ساعته در کارگاه.',
+    }
+  });
+
+  console.log(`  ✓ Created sample repair ticket: ${sampleRepair.trackingCode}`);
+  console.log(`  ✓ Created sample order: ${sampleOrder.orderNumber}`);
+  console.log('✅ Seeding for Shiasi Store Najafabad completed successfully!');
 }
 
 main()

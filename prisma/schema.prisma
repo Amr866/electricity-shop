@@ -34,7 +34,7 @@ model Product {
   isFeatured      Boolean        @default(false)
   isBestSeller    Boolean        @default(false)
   isNewArrival    Boolean        @default(false)
-  isIsfahanFast   Boolean        @default(true) // Ready for fast delivery in Isfahan
+  isIsfahanFast   Boolean        @default(true) // Ready for fast delivery in Najafabad & Isfahan
   brand           String?
   warranty        String?        @default("گارانتی اصالت و سلامت فیزیکی")
   madeIn          String?        @default("ایران")
@@ -70,7 +70,7 @@ model ProductSpec {
 model Review {
   id         String   @id @default(cuid())
   authorName String
-  city       String?  @default("اصفهان")
+  city       String?  @default("نجف‌آباد")
   rating     Int      @default(5)
   comment    String
   isVerified Boolean  @default(true)
@@ -81,15 +81,15 @@ model Review {
 
 model Order {
   id             String      @id @default(cuid())
-  orderNumber    String      @unique // e.g. NJ-140306-102
+  orderNumber    String      @unique // e.g. SH-140306-102
   customerName   String
   customerPhone  String
   customerEmail  String?
   province       String      @default("اصفهان")
-  city           String      @default("اصفهان")
+  city           String      @default("نجف‌آباد")
   postalCode     String?
   address        String
-  shippingMethod String      // isfahan_express, isfahan_pickup, tipax, post_pishtaz
+  shippingMethod String      // isfahan_express, najafabad_pickup, tipax, post_pishtaz
   shippingCost   Int         @default(0)
   paymentMethod  String      // zarinpal, cod_isfahan, card_to_card
   paymentStatus  String      @default("PENDING") // PENDING, PAID, FAILED
@@ -117,6 +117,23 @@ model OrderItem {
   orderId      String
   order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model RepairRequest {
+  id            String   @id @default(cuid())
+  trackingCode  String   @unique // e.g. REP-1403-082
+  customerName  String
+  customerPhone String
+  applianceType String   // پنکه، کولر آبی، بخاری برقی، آنتن، چای‌ساز، برد الکترونیکی، سایر
+  brandModel    String?  // مثلا: پارس خزر، موتوژن، اخوان، هانی
+  issueDesc     String   // شرح خرابی
+  deliveryType  String   @default("in_person") // in_person (تحویل حضوری در شعبه نجف‌آباد), courier (پیک نجف‌آباد)
+  status        String   @default("SUBMITTED") // SUBMITTED, IN_PROGRESS, READY, DELIVERED, CANCELLED
+  estimatedCost Int?     // In Toman
+  finalCost     Int?     // In Toman
+  adminNotes    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Coupon {

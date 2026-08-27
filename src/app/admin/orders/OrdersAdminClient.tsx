@@ -286,8 +286,8 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
                     <Zap className="w-6 h-6 fill-slate-950" />
                   </div>
                   <div>
-                    <h2 className="font-black text-base text-slate-950">پیش‌فاکتور فروشگاه کالای برق و الکترونیک نقش جهان</h2>
-                    <span className="text-xs text-slate-600">شعبه مرکزی: اصفهان، خیابان فردوسی، پلاک ۱۲۸ | تلفن: ۰۳۱-۳۲۲۰۴۵۶۷</span>
+                    <h2 className="font-black text-base text-slate-950">پیش‌فاکتور رسمی فروشگاه تخصصی شیاسی</h2>
+                    <span className="text-xs text-slate-600">شعبه نجف‌آباد اصفهان | تلفن: ۰۳۱-۴۲۶۲۴۵۶۷ | واحد تعمیرات: ۰۹۱۶۲۶۶۵۸۸۴</span>
                   </div>
                 </div>
 
@@ -343,7 +343,7 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
               {/* Totals & Stamp */}
               <div className="flex items-center justify-between pt-2">
                 <div className="border border-dashed border-slate-300 rounded-xl p-3 text-center text-[10px] text-slate-500">
-                  مهر و امضای فروشگاه نقش جهان اصفهان
+                  مهر و امضای فروشگاه تخصصی شیاسی (نجف‌آباد)
                 </div>
                 <div className="space-y-1 text-xs text-left min-w-[200px]">
                   <div className="flex justify-between">

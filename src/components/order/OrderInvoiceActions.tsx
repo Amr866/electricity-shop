@@ -14,7 +14,7 @@ export function OrderInvoiceActions({
   totalAmount,
 }: OrderInvoiceActionsProps) {
   const whatsappShareText = encodeURIComponent(
-    `سلام، سفارش من در الکتریک نقش جهان اصفهان با شماره فاکتور ${orderNumber} به مبلغ ${formatToman(
+    `سلام، سفارش من در فروشگاه تخصصی شیاسی با شماره فاکتور ${orderNumber} به مبلغ ${formatToman(
       totalAmount
     )} ثبت گردید.`
   );

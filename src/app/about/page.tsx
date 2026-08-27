@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ArrowLeft,
   MapPin,
+  Wrench,
 } from "lucide-react";
 
 export default function AboutPage() {
@@ -23,23 +24,23 @@ export default function AboutPage() {
             <Zap className="w-8 h-8 fill-slate-950" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white">
-            درباره فروشگاه الکتریک نقش جهان اصفهان
+            درباره فروشگاه تخصصی شیاسی
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            بیش از یک دهه تجربه در تامین و توزیع تخصصی تجهیزات برق ساختمانی، اتوماسیون صنعتی و قطعات الکترونیک در قلب بازار برق اصفهان.
+            مرکز معتبر تامین و توزیع تجهیزات برق ساختمانی، روشنایی، لوازم برقی خانگی و کارگاه تخصصی تعمیرات انواع پنکه، موتور کولر، بخاری و آنتن در نجف‌آباد اصفهان.
           </p>
         </div>
 
         {/* Story Section */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6 text-slate-800 leading-loose text-xs sm:text-sm text-justify">
           <h2 className="text-lg font-extrabold text-slate-900 border-r-4 border-amber-500 pr-3">
-            داستان ما و تعهد به کیفیت در نصف جهان
+            داستان ما و تعهد به کیفیت و خدمات تخصصی
           </h2>
           <p>
-            فروشگاه کالای برق و الکترونیک نقش جهان با هدف ارائه کالاهای باکیفیت و استاندارد برقی با قیمت دست‌اول در خیابان فردوسی اصفهان پایه‌گذاری شد. امروزه ما با همکاری مستقیم با برترین کارخانجات تولیدی سیم و کابل کشور (مانند سیم و کابل اصفهان، البرز الکتریک، کات کابل) و برترین برندهای روشنایی و صنعتی (پارس شعاع توس، پارس شهاب، هیوندای، شیوا امواج)، پاسخگوی نیازهای سازندگان، مهندسین ناظر، برق‌کاران و پژوهشگران الکترونیک در استان اصفهان و سراسر کشور هستیم.
+            فروشگاه تخصصی شیاسی با هدف ارائه کالاهای باکیفیت و استاندارد برقی و لوازم خانگی به قیمت دست‌اول در نجف‌آباد اصفهان پایه‌گذاری شد. امروزه ما با همکاری مستقیم با برترین کارخانجات تولیدی لوازم برقی (پارس خزر، موتوژن تبریز، اخوان، هانی) و تولیدکنندگان سیم و کابل استاندارد مس، علاوه بر فروش مطمئن، مجهز به کارگاه فنی تعمیرات و سیم‌پیچی الکتروموتورها و لوازم خانگی هستیم.
           </p>
           <p>
-            یکی از مهم‌ترین چالش‌های سازندگان محترم در بازار، وجود سیم‌های تقلبی با هادی‌های ناخالص مس یا CCA است. ما در الکتریک نقش جهان اصالت ۱۰۰٪ مس و تطابق کامل با استانداردهای نظام مهندسی را تضمین می‌نماییم.
+            ما در فروشگاه شیاسی اصالت ۱۰۰٪ مس، گارانتی معتبر قطعات و ضمانت مهلت تست تعمیرات را برای کلیه همشهریان عزیز و مشتریان سراسر کشور تضمین می‌نماییم.
           </p>
         </div>
 
@@ -47,11 +48,11 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
             <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
-              <ShieldCheck className="w-5 h-5" />
+              <Wrench className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-sm text-slate-900">تضمین ۱۰۰٪ اصالت مس</h3>
+            <h3 className="font-extrabold text-sm text-slate-900">کارگاه تعمیرات تخصصی</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              ارائه سیم و کابل دارای گواهی استاندارد ملی ایران و تاییدیه توانیر بدون افت ولتاژ.
+              عیب‌یابی و تعمیر انواع پنکه، موتور کولر آبی، بخاری برقی، آنتن و بردهای الکترونیک با قطعات اصلی.
             </p>
           </div>
 
@@ -59,19 +60,19 @@ export default function AboutPage() {
             <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3">
               <Truck className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-sm text-slate-900">ارسال فوری در اصفهان</h3>
+            <h3 className="font-extrabold text-sm text-slate-900">ارسال فوری در نجف‌آباد و اصفهان</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              تحویل ۲ الی ۳ ساعته با اسنپ‌باکس در کلیه مناطق شهری اصفهان و ارسال تیپاکس کشوری.
+              تحویل سریع با اسنپ‌باکس و پیک اختصاصی در نجف‌آباد، ویلاشهر، گلدشت، یزدانشهر و اصفهان.
             </p>
           </div>
 
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
             <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3">
-              <Award className="w-5 h-5" />
+              <ShieldCheck className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-sm text-slate-900">فاکتور رسمی پروژه‌ای</h3>
+            <h3 className="font-extrabold text-sm text-slate-900">ضمانت اصالت و سلامت</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              امکان صدور پیش‌فاکتور و فاکتور رسمی با مهر معتبر برای ارگان‌ها و پیمانکاران.
+              فروش کالاهای اورجینال با مهلت تست، گارانتی شرکتی و ارائه فاکتور رسمی پروژه‌ای.
             </p>
           </div>
         </div>
@@ -79,8 +80,8 @@ export default function AboutPage() {
         {/* Visit Us CTA */}
         <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-right">
-            <h3 className="font-extrabold text-base text-amber-400">مشتاق دیدار شما در شعبه اصفهان هستیم</h3>
-            <p className="text-xs text-slate-400">اصفهان، خیابان فردوسی، نرسیده به چهارراه فلسطین، پلاک ۱۲۸</p>
+            <h3 className="font-extrabold text-base text-amber-400">مشتاق دیدار شما در فروشگاه شیاسی هستیم</h3>
+            <p className="text-xs text-slate-400">اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)</p>
           </div>
           <Link
             href="/contact"

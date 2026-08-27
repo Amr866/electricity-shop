@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-export type BrandKey = "shiasi" | "naghshejahan" | "shiasi_isfahan";
+export type BrandKey = "shiasi" | "shiasi_appliances" | "shiasi_workshop";
 
 export interface BrandConfig {
   key: BrandKey;
@@ -38,33 +38,33 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     logoIcon: "zap",
     primaryAccent: "#F5A623",
   },
-  naghshejahan: {
-    key: "naghshejahan",
-    nameFa: "الکتریک نقش جهان اصفهان",
-    nameEn: "Naghsh-e Jahan Electric",
-    badge: "شعبه اصفهان",
-    tagline: "تامین‌کننده تخصصی صنعت برق، روشنایی و ساختمان در نصف جهان",
-    address: "اصفهان، خیابان فردوسی، پلاک ۱۲۸",
+  shiasi_appliances: {
+    key: "shiasi_appliances",
+    nameFa: "فروشگاه تخصصی شیاسی (لوازم برقی و خانگی)",
+    nameEn: "Shiasi Home & Electrical Store",
+    badge: "شعبه نجف‌آباد",
+    tagline: "پخش و فروش پنکه ریموت‌دار، موتور کولر آبی، بخاری برقی، آنتن و سیم و کابل مس",
+    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی",
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۳۲۲۰۴۵۶۷",
+    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۳۱۱۱۲۲۳۳",
     repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
-    city: "اصفهان",
+    city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "circuit",
     primaryAccent: "#F59E0B",
   },
-  shiasi_isfahan: {
-    key: "shiasi_isfahan",
-    nameFa: "کالای برق و الکترونیک شیاسی نجف‌آباد",
-    nameEn: "Shiasi Electric & Appliances",
+  shiasi_workshop: {
+    key: "shiasi_workshop",
+    nameFa: "فروشگاه تخصصی شیاسی (کارگاه فنی و تعمیرات)",
+    nameEn: "Shiasi Workshop & Services",
     badge: "خرید و تعمیرات",
-    tagline: "جامع‌ترین مرکز لوازم برقی خانگی، سیم‌پیچی موتور کولر، پنکه و قطعات الکترونیک",
+    tagline: "جامع‌ترین مرکز پذیرش عیب‌یابی و تعمیر انواع پنکه، موتور کولر، بخاری، آنتن و بردهای الکترونیک",
     address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی",
     googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
     phone: "۰۳۱-۴۲۶۲۴۵۶۷",
     mobile: "۰۹۱۶۲۶۶۵۸۸۴",
-    repairPhone: "۰۹۱6۲۶۶۵۸۸۴",
+    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",

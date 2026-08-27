@@ -76,7 +76,7 @@ export function AdminSidebar() {
           </div>
           <div>
             <h2 className="font-extrabold text-sm text-white">پنل مدیریت فروشگاه</h2>
-            <span className="text-[11px] text-amber-400 font-medium">الکتریک نقش جهان اصفهان</span>
+            <span className="text-[11px] text-amber-400 font-medium">فروشگاه تخصصی شیاسی (نجف‌آباد)</span>
           </div>
         </Link>
 

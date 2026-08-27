@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useBrand, BrandKey } from "@/context/BrandContext";
-import { Palette, Check, X, Sparkles } from "lucide-react";
+import { Palette, Check, X } from "lucide-react";
 
 export function BrandDemoFloatingPill() {
   const { brandKey, setBrandKey } = useBrand();
@@ -12,17 +12,17 @@ export function BrandDemoFloatingPill() {
     {
       key: "shiasi",
       title: "۱. فروشگاه تخصصی شیاسی (Shiasi Store)",
-      desc: "هویت مدرن، استارت‌آپی و جوان‌پسند (الهام از ادیسون‌کالا و الکسترا)",
+      desc: "هویت جامع فروشگاهی و قطعات الکترونیک در نجف‌آباد اصفهان",
     },
     {
-      key: "naghshejahan",
-      title: "۲. الکتریک نقش جهان اصفهان",
-      desc: "هویت بومی، سنتی و معتبر بازار برق اصفهان",
+      key: "shiasi_appliances",
+      title: "۲. فروشگاه شیاسی (لوازم برقی و خانگی)",
+      desc: "فروش تخصصی پنکه، موتور کولر آبی، بخاری برقی، آنتن و سیم و کابل",
     },
     {
-      key: "shiasi_isfahan",
-      title: "۳. کالای برق و الکترونیک شیاسی اصفهان",
-      desc: "نام ترکیبی جامع (پوشش همزمان قطعات الکترونیک و برق ساختمان)",
+      key: "shiasi_workshop",
+      title: "۳. کارگاه فنی و خدمات تعمیرات شیاسی",
+      desc: "مرکز عیب‌یابی و تعمیر انواع لوازم برقی با قطعات اصلی و مهلت تست",
     },
   ];
 
@@ -33,7 +33,7 @@ export function BrandDemoFloatingPill() {
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <div className="flex items-center gap-2 text-amber-400 font-extrabold text-xs">
               <Palette className="w-4 h-4" />
-              <span>سوئیچ زنده بین ۳ هویت برند:</span>
+              <span>سوئیچ زنده هویت فروشگاه شیاسی:</span>
             </div>
             <button
               onClick={() => setOpen(false)}
@@ -86,7 +86,7 @@ export function BrandDemoFloatingPill() {
           title="تغییر هویت برند"
         >
           <Palette className="w-4 h-4 text-amber-400" />
-          <span className="hidden sm:inline">تغییر هویت برند (۳ دمو)</span>
+          <span className="hidden sm:inline">هویت فروشگاه شیاسی</span>
         </button>
       )}
     </div>

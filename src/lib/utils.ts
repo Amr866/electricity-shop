@@ -143,7 +143,7 @@ export const PAYMENT_METHODS = [
   {
     id: "card_to_card",
     title: "کارت‌به‌کارت و بارگذاری فیش واریزی",
-    description: "انتقال وجه به شماره حساب بانک ملی فروشگاه نقش جهان",
+    description: "انتقال وجه به شماره حساب بانک ملی فروشگاه تخصصی شیاسی",
     icon: "Receipt",
     badge: "حساب شرکتی",
   },

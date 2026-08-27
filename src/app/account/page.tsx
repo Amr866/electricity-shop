@@ -338,7 +338,7 @@ export default function CustomerAccountPage() {
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="مثال: شرکت مهندسی ساختمانی نقش جهان"
+                  placeholder="مثال: شرکت مهندسی شیاسی"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500"
                 />
               </div>

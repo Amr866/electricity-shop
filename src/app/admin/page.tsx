@@ -49,10 +49,10 @@ export default async function AdminDashboardPage() {
         <div>
           <h1 className="text-xl font-extrabold text-white flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-400" />
-            <span>داشبورد وضعیت فروشگاه الکتریک نقش جهان</span>
+            <span>داشبورد وضعیت فروشگاه تخصصی شیاسی</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            گزارش عملکرد لحظه‌ای، وضعیت سفارش‌های استان اصفهان و کنترل موجودی انبار
+            گزارش عملکرد لحظه‌ای، وضعیت سفارش‌های نجف‌آباد و اصفهان و کنترل موجودی انبار
           </p>
         </div>
 

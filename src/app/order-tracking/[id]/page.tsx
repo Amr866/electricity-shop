@@ -195,8 +195,8 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                 <Zap className="w-7 h-7 fill-slate-950" />
               </div>
               <div>
-                <h2 className="text-lg font-black text-slate-950">فروشگاه کالای برق و الکترونیک نقش جهان</h2>
-                <span className="text-xs text-slate-600">شعبه مرکزی: اصفهان، خیابان فردوسی، پلاک ۱۲۸</span>
+                <h2 className="text-lg font-black text-slate-950">فروشگاه تخصصی شیاسی</h2>
+                <span className="text-xs text-slate-600">شعبه نجف‌آباد اصفهان | تلفن: ۰۳۱-۴۲۶۲۴۵۶۷ | واحد تعمیرات: ۰۹۱۶۲۶۶۵۸۸۴</span>
               </div>
             </div>
 
@@ -254,9 +254,9 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           {/* Total Calculation & Signatures */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end pt-2">
             <div className="border border-dashed border-slate-300 rounded-xl p-4 text-center space-y-6">
-              <span className="text-[11px] text-slate-500 font-bold block">مهر و امضای فروشگاه الکتریک نقش جهان اصفهان</span>
+              <span className="text-[11px] text-slate-500 font-bold block">مهر و امضای فروشگاه تخصصی شیاسی (نجف‌آباد)</span>
               <div className="w-20 h-20 border-2 border-emerald-600/60 rounded-full mx-auto flex items-center justify-center text-emerald-800 text-[10px] font-black rotate-[-12deg]">
-                الکتریک نقش جهان
+                فروشگاه شیاسی
                 <br />
                 تایید شد
               </div>

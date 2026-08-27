@@ -96,7 +96,7 @@ function ZarinpalMockContent() {
         <div className="bg-slate-50 p-4 border-b border-slate-200 text-xs text-slate-700 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-slate-500">پذیرنده:</span>
-            <strong className="text-slate-900">کالای برق و الکترونیک نقش جهان (اصفهان)</strong>
+            <strong className="text-slate-900">فروشگاه تخصصی شیاسی (نجف‌آباد)</strong>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate-500">شماره سفارش:</span>
@@ -196,7 +196,7 @@ function ZarinpalMockContent() {
               className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>پرداخت موفق و بازگشت به الکتریک نقش جهان</span>
+              <span>پرداخت موفق و بازگشت به فروشگاه شیاسی</span>
             </button>
 
             <button

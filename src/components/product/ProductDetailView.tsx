@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
   ShoppingCart,
@@ -22,6 +23,9 @@ import {
   FileCheck,
   Send,
   CheckCircle2,
+  Heart,
+  Download,
+  Layers,
 } from "lucide-react";
 
 interface ProductDetailViewProps {
@@ -61,6 +65,10 @@ interface ProductDetailViewProps {
 
 export function ProductDetailView({ product }: ProductDetailViewProps) {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+
+  const isFavorited = isInWishlist(product.id);
+
   const [selectedImage, setSelectedImage] = useState(
     product.images?.find((img) => img.isPrimary)?.url ||
       product.images?.[0]?.url ||
@@ -68,7 +76,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   );
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [activeTab, setActiveTab] = useState<"specs" | "desc" | "reviews">("specs");
+  const [activeTab, setActiveTab] = useState<"specs" | "bulk" | "desc" | "reviews">("specs");
 
   // Review Form States
   const [reviewsList, setReviewsList] = useState(product.reviews || []);
@@ -79,9 +87,17 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
+  // Bulk Tier Pricing (RoboEQ style)
+  const tier1Price = product.price;
+  const tier2Price = Math.round(product.price * 0.95);
+  const tier3Price = Math.round(product.price * 0.88);
+
+  const effectiveUnitPrice =
+    quantity >= 50 ? tier3Price : quantity >= 10 ? tier2Price : tier1Price;
+
   const handleAddToCart = () => {
     if (product.stock <= 0) return;
-    addToCart(product, quantity);
+    addToCart({ ...product, price: effectiveUnitPrice }, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
@@ -122,7 +138,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   const isOutOfStock = product.stock <= 0;
 
   const whatsappMessage = encodeURIComponent(
-    `سلام، در رابطه با خرید و استعلام قیمت کالا «${product.name}» با کد ${product.sku || product.id} از فروشگاه الکتریک نقش جهان اصفهان پیام می‌دهم.`
+    `سلام، در رابطه با خرید و استعلام قیمت کالا «${product.name}» با کد ${product.sku || product.id} از فروشگاه پیام می‌دهم.`
   );
 
   return (
@@ -140,12 +156,17 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
               </span>
             ) : null}
 
-            {product.isIsfahanFast && (
-              <span className="absolute top-4 left-4 bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md z-10 flex items-center gap-1">
-                <Truck className="w-3.5 h-3.5" />
-                ارسال فوری اصفهان
-              </span>
-            )}
+            {/* Wishlist Heart Button */}
+            <button
+              onClick={() => toggleWishlist(product)}
+              className={`absolute top-4 left-4 w-9 h-9 rounded-full flex items-center justify-center z-10 transition-all shadow-md ${
+                isFavorited
+                  ? "bg-rose-50 text-rose-500 border border-rose-200"
+                  : "bg-white/90 text-slate-400 hover:text-rose-500 border border-slate-200"
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${isFavorited ? "fill-rose-500" : ""}`} />
+            </button>
 
             <img
               src={selectedImage}
@@ -250,14 +271,56 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
               </p>
             )}
 
+            {/* RoboEQ-style Bulk Tier Pricing Table */}
+            <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-amber-950">
+                <span className="flex items-center gap-1.5">
+                  <Layers className="w-4 h-4 text-amber-600" />
+                  جدول تخفیف پله‌ای خرید تعداد بالا (ویژه همکاران):
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <div
+                  className={`p-2 rounded-xl border ${
+                    quantity < 10
+                      ? "bg-white border-amber-400 shadow-sm font-bold"
+                      : "bg-amber-100/50 border-amber-200 text-slate-600"
+                  }`}
+                >
+                  <span className="text-[10px] block">۱ تا ۹ عدد</span>
+                  <strong className="text-slate-900">{formatToman(tier1Price)}</strong>
+                </div>
+                <div
+                  className={`p-2 rounded-xl border ${
+                    quantity >= 10 && quantity < 50
+                      ? "bg-white border-amber-400 shadow-sm font-bold"
+                      : "bg-amber-100/50 border-amber-200 text-slate-600"
+                  }`}
+                >
+                  <span className="text-[10px] text-emerald-700 block">۱۰ تا ۴۹ عدد (۵٪ تخفیف)</span>
+                  <strong className="text-slate-900">{formatToman(tier2Price)}</strong>
+                </div>
+                <div
+                  className={`p-2 rounded-xl border ${
+                    quantity >= 50
+                      ? "bg-white border-amber-400 shadow-sm font-bold"
+                      : "bg-amber-100/50 border-amber-200 text-slate-600"
+                  }`}
+                >
+                  <span className="text-[10px] text-rose-700 block">۵۰ عدد به بالا (۱۲٪ تخفیف)</span>
+                  <strong className="text-slate-900">{formatToman(tier3Price)}</strong>
+                </div>
+              </div>
+            </div>
+
             {/* Isfahan Local Delivery Notice */}
-            <div className="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3.5 space-y-1">
+            <div className="bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3 space-y-1">
               <div className="flex items-center gap-2 text-emerald-900 font-bold text-xs">
                 <Truck className="w-4 h-4 text-emerald-600" />
-                <span>تحویل اختصاصی در شهر اصفهان</span>
+                <span>ارسال اختصاصی با اسنپ‌باکس در اصفهان</span>
               </div>
-              <p className="text-[11px] text-emerald-700 leading-relaxed">
-                ارسال با پیک اسنپ‌باکس زیر ۳ ساعت در تمام مناطق اصفهان. امکان تحویل حضوری در شعبه خیابان فردوسی نیز فراهم است.
+              <p className="text-[11px] text-emerald-700">
+                تحویل ۲ الی ۳ ساعته در تمامی مناطق اصفهان و امکان تحویل حضوری در شعبه.
               </p>
             </div>
           </div>
@@ -267,15 +330,15 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
             
             {/* Price section */}
             <div className="flex items-baseline justify-between">
-              <span className="text-xs text-slate-500 font-semibold">قیمت نهایی مصرف‌کننده:</span>
+              <span className="text-xs text-slate-500 font-semibold">مبلغ نهایی بر اساس تعداد:</span>
               <div className="flex flex-col items-end">
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xs text-slate-400 line-through">
-                    {formatToman(product.originalPrice)}
+                {effectiveUnitPrice < product.price && (
+                  <span className="text-xs text-rose-600 font-bold">
+                    تخفیف تعداد بالا اعمال شد!
                   </span>
                 )}
                 <span className="text-2xl font-black text-slate-950">
-                  {formatToman(product.price)}
+                  {formatToman(effectiveUnitPrice * quantity)}
                 </span>
               </div>
             </div>
@@ -348,7 +411,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                 className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-colors"
               >
                 <PhoneCall className="w-4 h-4 text-slate-700" />
-                <span>تماس با شعبه فردوسی</span>
+                <span>تماس با کارشناس</span>
               </a>
             </div>
 
@@ -361,30 +424,40 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
       {/* 2. Tabs Section: Technical Specs / Full Description / Reviews */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
         {/* Tab Buttons */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab("specs")}
-            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-colors ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shrink-0 transition-colors ${
               activeTab === "specs"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
                 : "text-slate-600 hover:bg-slate-100"
             }`}
           >
-            مشخصات فنی و استانداردهای کالا
+            مشخصات فنی و استانداردها
+          </button>
+          <button
+            onClick={() => setActiveTab("bulk")}
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shrink-0 transition-colors ${
+              activeTab === "bulk"
+                ? "bg-amber-500 text-slate-950 shadow-sm"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            دیتاشیت و خرید عمده
           </button>
           <button
             onClick={() => setActiveTab("desc")}
-            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-colors ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shrink-0 transition-colors ${
               activeTab === "desc"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
                 : "text-slate-600 hover:bg-slate-100"
             }`}
           >
-            توضیحات تخصصی و کاربرد
+            توضیحات و کاربرد
           </button>
           <button
             onClick={() => setActiveTab("reviews")}
-            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-colors ${
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm shrink-0 transition-colors ${
               activeTab === "reviews"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
                 : "text-slate-600 hover:bg-slate-100"
@@ -427,19 +500,44 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
         )}
 
-        {/* Tab 2: Full Description */}
+        {/* Tab 2: Datasheet & Bulk Table (RoboEQ style) */}
+        {activeTab === "bulk" && (
+          <div className="space-y-4 text-xs">
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+              <h4 className="font-bold text-slate-900 text-sm">دانلود فایل‌های فنی و دیتاشیت:</h4>
+              <p className="text-slate-600 leading-relaxed">
+                نقشه‌های شماتیک، کاتالوگ ابعادی و مشخصات الکتریکی دقیق طبق استاندارد IEC جهت استفاده مهندسین و طراحان مدار:
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert("دیتاشیت فنی این محصول در حال آماده‌سازی و بارگذاری است.");
+                  }}
+                  className="bg-white border border-slate-300 hover:border-amber-500 px-4 py-2.5 rounded-xl font-bold text-slate-800 flex items-center gap-2 transition-colors"
+                >
+                  <Download className="w-4 h-4 text-amber-600" />
+                  <span>دانلود کاتالوگ فنی (PDF Datasheet)</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Full Description */}
         {activeTab === "desc" && (
           <div className="prose prose-sm max-w-none text-slate-700 text-xs sm:text-sm leading-loose text-justify">
             <p className="whitespace-pre-line">{product.description}</p>
           </div>
         )}
 
-        {/* Tab 3: Customer Reviews */}
+        {/* Tab 4: Customer Reviews */}
         {activeTab === "reviews" && (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <h3 className="font-extrabold text-sm text-slate-900">
-                دیدگاه‌ها و نظرات خریداران در اصفهان
+                دیدگاه‌ها و نظرات خریداران
               </h3>
               <span className="text-xs text-slate-500">
                 {toPersianDigits(reviewsList.length)} نظر ثبت شده
@@ -543,7 +641,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
                     rows={3}
                     value={reviewerComment}
                     onChange={(e) => setReviewerComment(e.target.value)}
-                    placeholder="تجربه خود در مورد کیفیت مس، بسته‌بندی یا ارسال را بنویسید..."
+                    placeholder="تجربه خود در مورد کیفیت، بسته‌بندی یا ارسال را بنویسید..."
                     className="w-full bg-white border border-slate-200 rounded-xl p-2.5"
                   />
                 </div>

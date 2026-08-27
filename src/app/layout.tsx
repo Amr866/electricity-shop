@@ -3,7 +3,10 @@ import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
+import { BrandProvider } from "@/context/BrandContext";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -18,20 +21,21 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "الکتریک نقش جهان اصفهان | فروشگاه تخصصی کالای برق، روشنایی و الکترونیک",
+  title: "فروشگاه تخصصی شیاسی | مرجع کالای برق، روشنایی، اتوماسیون و الکترونیک",
   description:
-    "مرکز پخش و فروش عمده و خرد انواع سیم و کابل استاندارد ساختمانی تمام مس، پنل‌های ال‌ای‌دی، تجهیزات برق صنعتی، تابلو برق و قطعات الکترونیک و آردوینو در اصفهان با ارسال فوری.",
+    "مرکز پخش و فروش عمده و خرد انواع سیم و کابل استاندارد ساختمانی، پنل‌های روشنایی LED، پروژکتورهای خورشیدی، تجهیزات برق صنعتی و قطعات الکترونیک و آردوینو.",
   keywords: [
+    "فروشگاه شیاسی",
+    "شیاسی استور",
+    "کالای برق شیاسی",
     "الکتریکی اصفهان",
-    "کالای برق اصفهان",
-    "خرید سیم و کابل در اصفهان",
-    "فروشگاه الکترونیک اصفهان",
-    "کلید و پریز اصفهان",
-    "برق صنعتی اصفهان",
-    "قطعات آردوینو اصفهان",
-    "الکتریک خیابان فردوسی اصفهان"
+    "ادیسون کالا",
+    "خرید سیم و کابل",
+    "قطعات الکترونیک و آردوینو",
+    "پروژکتور خورشیدی",
+    "کلید و پریز"
   ],
-  authors: [{ name: "فروشگاه الکتریک نقش جهان" }],
+  authors: [{ name: "فروشگاه تخصصی شیاسی" }],
 };
 
 export default function RootLayout({
@@ -47,14 +51,19 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans`}
+        className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans pb-16 md:pb-0`}
         suppressHydrationWarning
       >
-        <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </CartProvider>
+        <BrandProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <MobileBottomNav />
+            </CartProvider>
+          </WishlistProvider>
+        </BrandProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
   ShoppingCart,
@@ -10,8 +11,7 @@ import {
   Star,
   Zap,
   Truck,
-  ShieldCheck,
-  Eye,
+  Heart,
 } from "lucide-react";
 
 interface ProductCardProps {
@@ -39,7 +39,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [added, setAdded] = useState(false);
+
+  const isFavorited = isInWishlist(product.id);
 
   const primaryImage =
     product.images?.find((img) => img.isPrimary)?.url ||
@@ -56,14 +59,20 @@ export function ProductCard({ product }: ProductCardProps) {
     setTimeout(() => setAdded(false), 1800);
   };
 
+  const handleToggleFav = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
   const isOutOfStock = product.stock <= 0;
 
   return (
     <div className="group relative bg-white rounded-2xl border border-slate-200/80 hover:border-amber-400/60 shadow-sm hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between overflow-hidden">
       
-      {/* Top Section: Badges & Image */}
+      {/* Top Section: Badges, Wishlist & Image */}
       <div>
-        {/* Badges Bar */}
+        {/* Badges & Wishlist Bar */}
         <div className="absolute top-3 right-3 left-3 z-10 flex items-center justify-between pointer-events-none">
           <div className="flex flex-col gap-1 items-start">
             {product.discountPercent && product.discountPercent > 0 ? (
@@ -79,12 +88,29 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          {product.isIsfahanFast && (
-            <span className="bg-emerald-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1 backdrop-blur-sm">
-              <Truck className="w-2.5 h-2.5" />
-              ارسال فوری اصفهان
-            </span>
-          )}
+          <div className="flex items-center gap-1.5 pointer-events-auto">
+            {product.isIsfahanFast && (
+              <span className="bg-emerald-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1 backdrop-blur-sm">
+                <Truck className="w-2.5 h-2.5" />
+                ارسال فوری
+              </span>
+            )}
+
+            {/* Wishlist Heart Button (Edisonkala style) */}
+            <button
+              onClick={handleToggleFav}
+              aria-label="ذخیره در علاقه‌مندی‌ها"
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
+                isFavorited
+                  ? "bg-rose-50 text-rose-500 border border-rose-200 scale-105"
+                  : "bg-white/90 text-slate-400 hover:text-rose-500 hover:bg-white border border-slate-200"
+              }`}
+            >
+              <Heart
+                className={`w-4 h-4 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Product Image Container */}

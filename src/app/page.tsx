@@ -1,10 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { HeroBanner } from "@/components/home/HeroBanner";
+import { EdisonHeroBanner } from "@/components/home/EdisonHeroBanner";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { LightingWizard } from "@/components/home/LightingWizard";
 import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
+import { ConsultationBanner } from "@/components/home/ConsultationBanner";
 import { SpecialOffers } from "@/components/home/SpecialOffers";
+import { BrandLogosRow } from "@/components/home/BrandLogosRow";
+import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Zap, ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
@@ -97,34 +101,41 @@ export default async function HomePage() {
   } = await getHomeData();
 
   return (
-    <div className="space-y-4 pb-12">
-      {/* 1. Hero Section */}
-      <HeroBanner />
+    <div className="space-y-8 pb-12">
+      <div className="max-w-7xl mx-auto px-4 space-y-8">
+        
+        {/* 1. Edisonkala-Style 3-Piece Hero Banner & 5 Trust Badges */}
+        <EdisonHeroBanner />
 
-      {/* 2. 4 Core Product Categories Grid */}
-      <CategoryGrid categories={categories} />
+        {/* 2. Core Categories Grid */}
+        <CategoryGrid categories={categories} />
 
-      {/* 3. Direct All Items Catalog with Live Tabs */}
-      <InteractiveHomeCatalog products={allProducts} categories={categories} />
+        {/* 3. Edisonkala-Style Smart Lighting Selection Wizard */}
+        <LightingWizard />
 
-      {/* 4. Special Offers & Discounts */}
-      <SpecialOffers products={discountedProducts} />
+        {/* 4. Instant Live Tab Filtered All Items Catalog */}
+        <InteractiveHomeCatalog products={allProducts} categories={categories} />
 
-      {/* 5. Best Selling Products Section */}
-      <section className="py-12 bg-white border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-8">
+        {/* 5. Specialist Technical Consultation & Multi-line Support */}
+        <ConsultationBanner />
+
+        {/* 6. Special Offers & Discounts Section */}
+        <SpecialOffers products={discountedProducts} />
+
+        {/* 7. Bestselling Products Section */}
+        <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                   <TrendingUp className="w-5 h-5" />
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                  پرفروش‌ترین تجهیزات برقی
+                  پرفروش‌ترین تجهیزات برقی و قطعات
                 </h2>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                اقلام پرمصرف پروژه‌های ساختمانی و صنعتی استان اصفهان
+                اقلام پرمصرف پروژه‌های ساختمانی، اتوماسیون صنعتی و پروژه‌های الکترونیک
               </p>
             </div>
 
@@ -142,23 +153,27 @@ export default async function HomePage() {
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* 6. Isfahan Local Shop Highlight Banner */}
-      <IsfahanBanner />
+        {/* 8. Reputable Brand Logos Row */}
+        <BrandLogosRow />
 
-      {/* 7. Isfahan Customer Reviews Section */}
-      {reviews.length > 0 && (
-        <section className="py-12 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center max-w-xl mx-auto mb-10">
+        {/* 9. Lighting & Electronics Knowledge Base / Blog */}
+        <KnowledgeBaseSection />
+
+        {/* 10. Local Fast Delivery & Nationwide Shipping Banner */}
+        <IsfahanBanner />
+
+        {/* 11. Customer Reviews & Ratings */}
+        {reviews.length > 0 && (
+          <section className="py-6">
+            <div className="text-center max-w-xl mx-auto mb-8">
               <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-                <span>نظرات مشتریان و برق‌کاران اصفهان</span>
+                <span>نظرات مشتریان و برق‌کاران</span>
                 <Sparkles className="w-5 h-5 text-amber-500" />
               </h2>
-              <p className="text-xs text-slate-500 mt-1.5">
-                تجربه خرید مهندسین، کارفرمایان و خریداران محترم از فروشگاه نقش جهان
+              <p className="text-xs text-slate-500 mt-1">
+                تجربه خرید مهندسین، کارفرمایان و خریداران محترم
               </p>
             </div>
 
@@ -166,7 +181,7 @@ export default async function HomePage() {
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between"
+                  className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -197,7 +212,7 @@ export default async function HomePage() {
                   </div>
 
                   {rev.product && (
-                    <div className="pt-3 mt-3 border-t border-slate-200/60 text-[11px] text-slate-500 flex items-center justify-between">
+                    <div className="pt-3 mt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
                       <span className="truncate max-w-[200px]">
                         کالا: {rev.product.name}
                       </span>
@@ -209,9 +224,10 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
+
+      </div>
     </div>
   );
 }

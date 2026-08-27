@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { toPersianDigits, formatToman } from "@/lib/utils";
+import { LiveSearchBar } from "@/components/search/LiveSearchBar";
 import {
   Zap,
-  Search,
   ShoppingCart,
   Phone,
   MapPin,
@@ -15,17 +14,13 @@ import {
   Menu,
   X,
   FileText,
-  ShieldCheck,
-  ChevronDown,
   Sparkles,
   LayoutDashboard,
   MessageCircle,
 } from "lucide-react";
 
 export function Header() {
-  const router = useRouter();
   const { itemCount, subtotal } = useCart();
-  const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -36,14 +31,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
-      setMobileMenuOpen(false);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm transition-all">
@@ -73,14 +60,14 @@ export function Header() {
               className="flex items-center gap-1 text-amber-400 hover:text-amber-300 font-semibold"
             >
               <Phone className="w-3 h-3" />
-              <span className="persian-numbers">۰۳۱-۳۲۲۰۴۵۶۷</span>
+              <span className="font-mono">۰۳۱-۳۲۲۰۴۵۶۷</span>
             </a>
           </div>
         </div>
       </div>
 
       {/* 2. Main Navigation Header */}
-      <div className={`max-w-7xl mx-auto px-4 py-3.5 transition-all ${isScrolled ? "py-2.5" : "py-3.5"}`}>
+      <div className={`max-w-7xl mx-auto px-4 transition-all ${isScrolled ? "py-2.5" : "py-3.5"}`}>
         <div className="flex items-center justify-between gap-4">
           
           {/* Logo & Shop Title */}
@@ -97,25 +84,10 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Persian Live Search Form */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative">
-            <div className="relative w-full">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="جستجوی سیم و کابل، کلید و پریز، پروژکتور، آردوینو، کنتاکتور..."
-                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl pr-10 pl-24 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all shadow-inner placeholder:text-slate-400"
-              />
-              <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5" />
-              <button
-                type="submit"
-                className="absolute left-1.5 top-1.5 bottom-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-3.5 rounded-lg transition-colors flex items-center gap-1"
-              >
-                جستجو
-              </button>
-            </div>
-          </form>
+          {/* Desktop Interactive Live Search with Real-time Dropdown */}
+          <div className="hidden md:flex flex-1 max-w-xl">
+            <LiveSearchBar isMobile={false} />
+          </div>
 
           {/* Action Buttons: Phone / Cart / WhatsApp */}
           <div className="flex items-center gap-2.5">
@@ -162,25 +134,10 @@ export function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Bar */}
-        <form onSubmit={handleSearch} className="mt-3 md:hidden">
-          <div className="relative w-full">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="جستجوی کالا در الکتریک نقش جهان..."
-              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl pr-10 pl-20 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
-            />
-            <Search className="w-4 h-4 text-slate-400 absolute right-3 top-2.5" />
-            <button
-              type="submit"
-              className="absolute left-1 top-1 bottom-1 bg-amber-500 text-slate-950 text-xs font-bold px-3 rounded-lg"
-            >
-              بیاب
-            </button>
-          </div>
-        </form>
+        {/* Mobile Interactive Live Search */}
+        <div className="mt-3 md:hidden">
+          <LiveSearchBar isMobile={true} />
+        </div>
       </div>
 
       {/* 3. Category & Navigation Menu Bar */}
@@ -223,11 +180,11 @@ export function Header() {
 
           <div className="flex items-center gap-3 text-slate-600">
             <Link
-              href="/order-tracking/NJ-140306-089"
+              href="/order-tracking"
               className="flex items-center gap-1 hover:text-amber-600 transition-colors py-2.5"
             >
               <FileText className="w-3.5 h-3.5 text-slate-400" />
-              <span>پیگیری سفارش</span>
+              <span>پیگیری سفارشات</span>
             </Link>
             <Link
               href="/contact"
@@ -243,7 +200,7 @@ export function Header() {
             </Link>
             <Link
               href="/admin"
-              className="flex items-center gap-1 text-slate-800 bg-slate-200/80 hover:bg-amber-400 px-2.5 py-1 rounded-md transition-colors"
+              className="flex items-center gap-1 text-slate-800 bg-slate-200/80 hover:bg-amber-400 px-2.5 py-1 rounded-md transition-colors font-bold"
             >
               <LayoutDashboard className="w-3.5 h-3.5" />
               <span>پنل مدیریت</span>
@@ -254,7 +211,7 @@ export function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3">
+        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 animate-in fade-in slide-in-from-top-2">
           <div className="space-y-1 font-medium text-sm text-slate-800">
             <Link
               href="/"
@@ -300,11 +257,11 @@ export function Header() {
             </Link>
             <hr className="my-2 border-slate-100" />
             <Link
-              href="/order-tracking/NJ-140306-089"
+              href="/order-tracking"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg hover:bg-slate-100"
+              className="block px-3 py-2 rounded-lg hover:bg-slate-100 font-bold text-slate-900"
             >
-              پیگیری سفارشات
+              پیگیری سفارشات و مشاهده فاکتور
             </Link>
             <Link
               href="/contact"
@@ -316,9 +273,9 @@ export function Header() {
             <Link
               href="/admin"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg bg-amber-50 text-amber-800 font-bold"
+              className="block px-3 py-2.5 rounded-xl bg-amber-50 text-amber-900 font-extrabold border border-amber-200"
             >
-              پنل مدیریت فروشگاه
+              ورود به پنل مدیریت فروشگاه
             </Link>
           </div>
         </div>

@@ -40,8 +40,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
-      <body className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans`}>
+    <html
+      lang="fa"
+      dir="rtl"
+      className={vazirmatn.variable}
+      suppressHydrationWarning
+    >
+      <body
+        className={`${vazirmatn.className} antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans`}
+        suppressHydrationWarning
+      >
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>

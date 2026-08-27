@@ -2,12 +2,14 @@ import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HeroBanner } from "@/components/home/HeroBanner";
+import { TrustFeaturesBar } from "@/components/home/TrustFeaturesBar";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { RepairWorkshopSection } from "@/components/home/RepairWorkshopSection";
 import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
 import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
+import { BomCallToActionBanner } from "@/components/home/BomCallToActionBanner";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
 
@@ -89,17 +91,20 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-5 sm:space-y-8 pb-12 transition-colors duration-200">
-      {/* 1. Hero Section for Shiasi Store Najafabad (Sales & Repair Workshop) */}
+      {/* 1. Hero Section for Shiasi Store Najafabad */}
       <HeroBanner />
 
+      {/* 2. Slim 4-Item Trust Ribbon (Directly Below Hero) */}
+      <TrustFeaturesBar />
+
       <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-5 sm:space-y-8">
-        {/* 2. Amazing Offers & Special Discounts Banner */}
+        {/* 3. Amazing Offers & Special Discounts Carousel */}
         <AmazingOffersBanner products={discountedProducts} />
 
-        {/* 3. Core Categories Grid (2x2 on Mobile with Real Photos) */}
+        {/* 4. Core Categories Grid (2x2 on Mobile with Real Photos) */}
         <CategoryGrid categories={categories} />
 
-        {/* 4. Best Selling Products Section (Horizontal touch-scrollable carousel on mobile) */}
+        {/* 5. Best Selling Products Section (Touch-scrollable on mobile) */}
         <section className="py-5 sm:py-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 transition-colors duration-200">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
@@ -138,19 +143,22 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 5. Dedicated Repair Workshop Showcase (Fans, Coolers, Heaters, Antennas, Other Appliances) */}
+        {/* 6. Dedicated Repair Workshop Showcase */}
         <RepairWorkshopSection />
 
-        {/* 6. Local Fast Delivery in Najafabad & Google Maps Location (Restructured for Mobile) */}
+        {/* 7. Local Fast Delivery in Najafabad & Google Maps Location */}
         <IsfahanBanner />
 
-        {/* 7. Brand Logos Row */}
+        {/* 8. Call to Action: BOM Upload for Contractors & Electricians */}
+        <BomCallToActionBanner />
+
+        {/* 9. Brand Logos Row */}
         <BrandLogosRow />
 
-        {/* 9. Lighting & Electronics Knowledge Base */}
+        {/* 10. Lighting & Electronics Knowledge Base */}
         <KnowledgeBaseSection />
 
-        {/* 10. Customer Reviews & Feedback */}
+        {/* 11. Customer Reviews & Feedback */}
         {reviews.length > 0 && (
           <section className="py-4 sm:py-6">
             <div className="text-center max-w-xl mx-auto mb-5 sm:mb-8">

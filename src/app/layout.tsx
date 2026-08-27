@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { BrandDemoFloatingPill } from "@/components/brand/BrandDemoFloatingPill";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
@@ -61,6 +62,7 @@ export default function RootLayout({
               <main className="flex-1">{children}</main>
               <Footer />
               <MobileBottomNav />
+              <BrandDemoFloatingPill />
             </CartProvider>
           </WishlistProvider>
         </BrandProvider>

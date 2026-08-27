@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { EdisonHeroBanner } from "@/components/home/EdisonHeroBanner";
-import { EdisonCategoryGrid } from "@/components/home/EdisonCategoryGrid";
+import { HeroBanner } from "@/components/home/HeroBanner";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { AmazingOffersBanner } from "@/components/home/AmazingOffersBanner";
 import { LightingWizard } from "@/components/home/LightingWizard";
 import { InteractiveHomeCatalog } from "@/components/home/InteractiveHomeCatalog";
@@ -102,27 +102,26 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-8 pb-12">
+      {/* 1. Original High-Impact Hero Banner */}
+      <HeroBanner />
+
       <div className="max-w-7xl mx-auto px-4 space-y-8">
-        
-        {/* 1. Edisonkala-Style 3-Piece Hero Banner & 5 Trust Badges */}
-        <EdisonHeroBanner />
+        {/* 2. 4 Core Categories Grid */}
+        <CategoryGrid categories={categories} />
 
-        {/* 2. Edisonkala-Style 12-Card Category Grid with Pastel Icons */}
-        <EdisonCategoryGrid />
-
-        {/* 3. Edisonkala-Style Curved Red/Orange Amazing Offers Banner */}
+        {/* 3. Amazing Offers & Special Discounts Banner */}
         <AmazingOffersBanner products={discountedProducts} />
 
-        {/* 4. Edisonkala-Style Smart Lighting Selection Wizard */}
+        {/* 4. Smart Lighting & Wattage Selection Wizard */}
         <LightingWizard />
 
-        {/* 5. Instant Live Tab Filtered All Items Catalog */}
+        {/* 5. Direct All Items Catalog with Live Tabs */}
         <InteractiveHomeCatalog products={allProducts} categories={categories} />
 
         {/* 6. Specialist Technical Consultation & Multi-line Support */}
         <ConsultationBanner />
 
-        {/* 7. Bestselling Products Section */}
+        {/* 7. Best Selling Products Section */}
         <section className="py-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
@@ -155,16 +154,16 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 8. Reputable Brand Logos Row */}
+        {/* 8. Brand Logos Row */}
         <BrandLogosRow />
 
-        {/* 9. Lighting & Electronics Knowledge Base / Blog */}
+        {/* 9. Lighting & Electronics Knowledge Base */}
         <KnowledgeBaseSection />
 
         {/* 10. Local Fast Delivery & Nationwide Shipping Banner with Google Maps Location */}
         <IsfahanBanner />
 
-        {/* 11. Customer Reviews & Ratings */}
+        {/* 11. Customer Reviews & Feedback */}
         {reviews.length > 0 && (
           <section className="py-6">
             <div className="text-center max-w-xl mx-auto mb-8">
@@ -226,7 +225,6 @@ export default async function HomePage() {
             </div>
           </section>
         )}
-
       </div>
     </div>
   );

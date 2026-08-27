@@ -7,7 +7,6 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useBrand } from "@/context/BrandContext";
 import { toPersianDigits, formatToman } from "@/lib/utils";
 import { LiveSearchBar } from "@/components/search/LiveSearchBar";
-import { BrandDemoSwitcher } from "@/components/brand/BrandDemoSwitcher";
 import {
   Zap,
   ShoppingCart,
@@ -22,7 +21,6 @@ import {
   MessageCircle,
   Heart,
   Cpu,
-  Sun,
 } from "lucide-react";
 
 export function Header() {
@@ -42,9 +40,6 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm transition-all">
-      {/* 0. Live Brand Demo Switcher (Shiasi vs Naghsh-e Jahan vs Hybrid) */}
-      <BrandDemoSwitcher />
-
       {/* 1. Top Announcement Bar */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white text-xs py-2 px-4 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
@@ -110,7 +105,7 @@ export function Header() {
             <LiveSearchBar isMobile={false} />
           </div>
 
-          {/* Action Buttons: Phone / Wishlist / Cart / WhatsApp */}
+          {/* Action Buttons: WhatsApp / Wishlist / Cart */}
           <div className="flex items-center gap-2">
             {/* Quick WhatsApp Inquiry */}
             <a

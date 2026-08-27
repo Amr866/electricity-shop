@@ -118,17 +118,17 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
       )}
 
       <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
-        {/* Search Input Form */}
+        {/* Search Input Form (RTL Natural Alignment) */}
         <form onSubmit={handleSubmit} className="relative w-full">
           <div
             className={`relative flex items-center transition-all duration-200 rounded-xl ${
               isOpen
                 ? "bg-white dark:bg-slate-900 border-2 border-amber-500/80 dark:border-amber-400/80 shadow-xl shadow-amber-500/10 ring-4 ring-amber-500/10"
-                : "bg-slate-100/90 dark:bg-slate-850/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                : "bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
-            {/* Search Icon / Animated Spinner */}
-            <div className={`pr-3 pl-1.5 flex items-center justify-center ${isOpen ? "text-amber-500" : "text-slate-400"}`}>
+            {/* Right: Search Icon */}
+            <div className={`pr-3.5 pl-1 flex items-center justify-center shrink-0 ${isOpen ? "text-amber-500" : "text-slate-400"}`}>
               {loading ? (
                 <Loader2 className="w-4 h-4 text-amber-500 animate-spin" />
               ) : (
@@ -136,7 +136,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
               )}
             </div>
 
-            {/* Text Input */}
+            {/* Center: Text Input */}
             <input
               ref={inputRef}
               type="text"
@@ -148,35 +148,36 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
               }}
               placeholder={
                 isMobile
-                  ? "جستجوی نام کالا یا برند..."
+                  ? "جستجوی کالا یا برند..."
                   : "جستجوی نام کالا، برند یا قطعه (مثال: موتوژن، سیم مس)..."
               }
-              className="w-full bg-transparent text-xs sm:text-sm py-2 sm:py-2.5 pl-3 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium text-slate-900 dark:text-white"
+              className="w-full bg-transparent text-xs sm:text-sm py-2 sm:py-2.5 px-2 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium text-slate-900 dark:text-white text-right"
             />
 
-            {/* Clear Button */}
-            {query && (
-              <button
-                type="button"
-                onClick={() => {
-                  setQuery("");
-                  setResults({ products: [], categories: [] });
-                  inputRef.current?.focus();
-                }}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors ml-1"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
+            {/* Left: Clear (X) and Search Button */}
+            <div className="pl-1.5 flex items-center gap-1 shrink-0">
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setResults({ products: [], categories: [] });
+                    inputRef.current?.focus();
+                  }}
+                  className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
 
-            {/* Sleek Minimal Search Action Icon */}
-            <button
-              type="submit"
-              className="p-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-lg m-1 transition-all active:scale-95 shrink-0 flex items-center justify-center"
-              title="جستجو"
-            >
-              <Search className="w-3.5 h-3.5 text-amber-400" />
-            </button>
+              <button
+                type="submit"
+                className="p-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-lg transition-all active:scale-95 flex items-center justify-center shadow-sm"
+                title="جستجو"
+              >
+                <Search className="w-3.5 h-3.5 text-amber-400" />
+              </button>
+            </div>
           </div>
         </form>
 

@@ -88,24 +88,24 @@ export function HeroBanner() {
             </div>
           </div>
 
-          {/* Right Column: 4 Appliance & Equipment Feature Cards with Images */}
+          {/* Right Column: 4 Appliance & Equipment Feature Cards with Local Images */}
           <div className="lg:col-span-5 grid grid-cols-2 gap-2.5 sm:gap-3.5">
             
             <Link
               href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 transition-all hover:-translate-y-1 shadow-md h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
             >
               <img
-                src="https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=400&q=80"
+                src="/images/products/wal_172619-fans-7995865_1920.jpg"
                 alt="پنکه و تهویه"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
               <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/90 text-slate-950 flex items-center justify-center mb-1 shadow-md">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Fan className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-400 transition-colors">
+                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
                   پنکه و تهویه خانگی
                 </h3>
                 <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
@@ -116,19 +116,19 @@ export function HeroBanner() {
 
             <Link
               href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 transition-all hover:-translate-y-1 shadow-md h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
             >
               <img
-                src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80"
+                src="/images/products/موتور-کولر-موتوژن-3-4.jpg"
                 alt="موتور و پمپ کولر"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
               <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500/90 text-white flex items-center justify-center mb-1 shadow-md">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-400 transition-colors">
+                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
                   موتور و پمپ کولر آبی
                 </h3>
                 <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
@@ -139,19 +139,19 @@ export function HeroBanner() {
 
             <Link
               href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 transition-all hover:-translate-y-1 shadow-md h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
             >
               <img
-                src="https://images.unsplash.com/photo-1545259742-b43a38f38692?auto=format&fit=crop&w=400&q=80"
+                src="/images/products/Electric-heater-element.jpg"
                 alt="بخاری برقی"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
               <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-500/90 text-white flex items-center justify-center mb-1 shadow-md">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-400 transition-colors">
+                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
                   بخاری برقی و هیتر
                 </h3>
                 <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
@@ -162,19 +162,19 @@ export function HeroBanner() {
 
             <Link
               href="/products?category=home-appliances-cooling-heating"
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-500/60 transition-all hover:-translate-y-1 shadow-md h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-400 transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1.5 shadow-md hover:shadow-xl hover:shadow-amber-500/20 dark:hover:shadow-amber-500/25 h-40 sm:h-44 flex flex-col justify-end p-3 sm:p-3.5 bg-slate-900"
             >
               <img
-                src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80"
+                src="/images/products/maxis_pictures-the-main-processor-3334336_1920.jpg"
                 alt="آنتن تلویزیون"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/20 group-hover:via-slate-950/60 transition-all duration-300" />
               <div className="relative z-10">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-500/90 text-white flex items-center justify-center mb-1 shadow-md">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center mb-1 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                   <Tv className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
-                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-400 transition-colors">
+                <h3 className="font-bold text-white text-xs sm:text-sm group-hover:text-amber-300 transition-colors">
                   آنتن تلویزیون و بوستر
                 </h3>
                 <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">

@@ -22,7 +22,7 @@ async function main() {
     { key: 'store_slogan', value: 'مرکز خرید و تعمیرات تخصصی لوازم برقی خانگی، پنکه، کولر، بخاری، آنتن، روشنایی و قطعات الکترونیک' },
     { key: 'store_city', value: 'نجف‌آباد' },
     { key: 'store_province', value: 'اصفهان' },
-    { key: 'store_address', value: 'اصفهان، نجف‌آباد، خیابان شریعتی / قدس (فروشگاه شیاسی - ثبت رسمی گوگل‌مپ)' },
+    { key: 'store_address', value: 'اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه تخصصی شیاسی)' },
     { key: 'store_maps_url', value: 'https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6' },
     { key: 'store_phone', value: '031-42624567' },
     { key: 'store_mobile', value: '0913-111-2233' },
@@ -31,7 +31,7 @@ async function main() {
     { key: 'store_working_hours', value: 'شنبه تا چهارشنبه: ۸:۳۰ الی ۲۱:۰۰ | پنجشنبه‌ها: ۸:۳۰ الی ۱۸:۰۰' },
     { key: 'delivery_najafabad_note', value: 'ارسال فوری با اسنپ‌باکس و پیک اختصاصی در نجف‌آباد، ویلاشهر، گلدشت، یزدانشهر و اصفهان' },
     { key: 'card_number', value: '6037-9975-1234-5678' },
-    { key: 'card_holder', value: 'فروشگاه شیاسی - شیاسی' },
+    { key: 'card_holder', value: 'فروشگاه شیاسی' },
     { key: 'bank_name', value: 'بانک ملی ایران - شعبه نجف‌آباد' },
   ];
 
@@ -50,14 +50,14 @@ async function main() {
     await prisma.coupon.create({ data: c });
   }
 
-  // 3. Seed Core & Appliance Categories
+  // 3. Seed Categories with relatable photos
   const catAppliances = await prisma.category.create({
     data: {
-      name: 'لوازم برقی و سرمایش/گرمایش خانگی (پنکه، کولر، بخاری)',
+      name: 'لوازم برقی خانگی و سرمایش/گرمایش (پنکه، کولر، بخاری)',
       slug: 'home-appliances-cooling-heating',
       description: 'انواع پنکه ایستاده و رومیزی، موتور و پمپ کولر آبی، بخاری و هیترهای برقی، آنتن دیجیتال و اتصالات',
       icon: 'Fan',
-      image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80',
       sortOrder: 1,
     }
   });
@@ -95,9 +95,9 @@ async function main() {
     }
   });
 
-  // 4. Products Data (Including Fans, Cooler Motors, Heaters, Antennas, Wiring, Lighting, Electronics)
+  // 4. Products Data with Relatable High-Quality Product Galleries
   const products = [
-    // --- APPLIANCES & REPAIRS (Fans, Coolers, Heaters, Antennas) ---
+    // --- 1. Standing Fan ---
     {
       categoryId: catAppliances.id,
       name: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA با گارانتی ۲۴ ماهه',
@@ -118,7 +118,9 @@ async function main() {
       rating: 5.0,
       reviewCount: 34,
       images: [
-        { url: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنکه ایستاده ریموت دار پارس خزر' }
+        { url: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پنکه ایستاده ریموت دار پارس خزر' },
+        { url: 'https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'پره ها و موتور تمام مس پنکه' },
+        { url: 'https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'نمای کامل پنکه در منزل' }
       ],
       specs: [
         { label: 'توان مصرفی', value: '۶۰ وات' },
@@ -130,6 +132,8 @@ async function main() {
         { authorName: 'حاج احمد امینی', city: 'نجف‌آباد', rating: 5, comment: 'پنکه عالی و بی صدا، تحویل فوری در نجف‌آباد با اخلاق عالی مدیریت شیاسی.' }
       ]
     },
+
+    // --- 2. Water Cooler Motor Motogen ---
     {
       categoryId: catAppliances.id,
       name: 'موتور کولر آبی ۱/۲ اسب بخار موتوژن تبریز اصل (سیم‌پیچی تمام مس خازن‌دار)',
@@ -150,7 +154,9 @@ async function main() {
       rating: 4.9,
       reviewCount: 52,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' }
+        { url: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
+        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'سیم‌پیچی مس و قطعات داخلی موتور' },
+        { url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'تست در کارگاه فنی شیاسی' }
       ],
       specs: [
         { label: 'قدرت موتور', value: '۱/۲ اسب بخار (1/2 HP)' },
@@ -159,6 +165,8 @@ async function main() {
         { label: 'خدمات تعمیر', value: 'تعمیر تخصصی و سیم‌پیچی مجدد در کارگاه شیاسی' }
       ]
     },
+
+    // --- 3. Electric Quartz Radiant Heater ---
     {
       categoryId: catAppliances.id,
       name: 'بخاری برقی تابشی ۴ المان شیشه‌ای کوارتز اخوان مدل ۲۰۰۰ وات با ترموستات و فن',
@@ -179,7 +187,8 @@ async function main() {
       rating: 4.8,
       reviewCount: 29,
       images: [
-        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'بخاری برقی فن دار تابشی اخوان' }
+        { url: 'https://images.unsplash.com/photo-1545259742-b43a38f38692?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'بخاری برقی فن دار تابشی اخوان' },
+        { url: 'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'المنت‌های شیشه‌ای کوارتز گرمایشی' }
       ],
       specs: [
         { label: 'توان حرارتی', value: '۲۰۰۰ وات (قابل تنظیم ۵۰۰ تا ۲۰۰۰ وات)' },
@@ -188,6 +197,8 @@ async function main() {
         { label: 'خدمات', value: 'فروش قطعات و تعمیر بخاری در نجف‌آباد' }
       ]
     },
+
+    // --- 4. Rotating TV Antenna ---
     {
       categoryId: catAppliances.id,
       name: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل 201 معطوف با بوستر تقویت سیگنال',
@@ -208,7 +219,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 41,
       images: [
-        { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'آنتن هوایی گردان دیجیتال هانی' }
+        { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'آنتن هوایی گردان دیجیتال هانی' },
+        { url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'بوستر و منبع تغذیه آنتن' }
       ],
       specs: [
         { label: 'باند دریافت', value: 'UHF, VHF, FM' },
@@ -217,6 +229,8 @@ async function main() {
         { label: 'خدمات', value: 'تعمیر بوستر و منبع تغذیه آنتن در نجف‌آباد' }
       ]
     },
+
+    // --- 5. Water Cooler Submersible Pump ---
     {
       categoryId: catAppliances.id,
       name: 'پمپ آب کولر آبی الکتروژن مدل البرز ضدآب با فیلتر محافظ',
@@ -245,6 +259,8 @@ async function main() {
         { label: 'جنس پروانه', value: 'پلاستیک فشرده ضد رسوب' }
       ]
     },
+
+    // --- 6. Smart Digital Cooler Switch ---
     {
       categoryId: catAppliances.id,
       name: 'کلید کولر آبی لمسی دیجیتال هوشمند مجهز به ریموت کنترل و ترموستات خودکار',
@@ -274,7 +290,7 @@ async function main() {
       ]
     },
 
-    // --- WIRING & BUILDING ---
+    // --- 7. Pure Copper Electrical Wire 1.5mm ---
     {
       categoryId: catWiring.id,
       name: 'سیم افشان ۱.۵×۱ تمام مس البرز الکتریک (حلقه ۱۰۰ متری)',
@@ -295,7 +311,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 28,
       images: [
-        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم افشان ۱.۵ البرز مس' }
+        { url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'سیم افشان ۱.۵ البرز مس' },
+        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'کلاف کابل برق استاندارد تمام مس' }
       ],
       specs: [
         { label: 'سطح مقطع', value: '۱.۵ میلی‌متر مربع' },
@@ -303,6 +320,8 @@ async function main() {
         { label: 'طول حلقه', value: '۱۰۰ متر' }
       ]
     },
+
+    // --- 8. Coaxial RG6 TV Cable ---
     {
       categoryId: catWiring.id,
       name: 'کابل آنتن کواکسیال صادراتی تمام مس RG6 کات کابل (کلاف ۱۰۰ متری)',
@@ -332,7 +351,7 @@ async function main() {
       ]
     },
 
-    // --- LIGHTING & SOLAR ---
+    // --- 9. Solar LED Floodlight ---
     {
       categoryId: catLighting.id,
       name: 'پروژکتور ۲۰۰ وات خورشیدی سولار ویمکس سنسوردار با پنل مجزا و ریموت کنترل',
@@ -353,7 +372,8 @@ async function main() {
       rating: 5.0,
       reviewCount: 44,
       images: [
-        { url: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پروژکتور خورشیدی ۲۰۰ وات ویمکس' }
+        { url: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'پروژکتور خورشیدی ۲۰۰ وات ویمکس' },
+        { url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'پنل سولار و چراغ LED' }
       ],
       specs: [
         { label: 'توان روشنایی', value: '۲۰۰ وات LED' },
@@ -363,7 +383,7 @@ async function main() {
       ]
     },
 
-    // --- ELECTRONICS & DIY & REPAIR TOOLS ---
+    // --- 10. Arduino Uno R3 ---
     {
       categoryId: catMaker.id,
       name: 'برد آردوینو اونو مدل Arduino Uno R3 میکروکنترلر ATmega328P',
@@ -384,13 +404,16 @@ async function main() {
       rating: 4.9,
       reviewCount: 38,
       images: [
-        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد آردوینو Uno R3' }
+        { url: 'https://images.unsplash.com/photo-1517055729441-db3aab13588f?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'برد آردوینو Uno R3' },
+        { url: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'مدار مجتمع و چیپست میکروکنترلر' }
       ],
       specs: [
         { label: 'میکروکنترلر', value: 'ATmega328P' },
         { label: 'ولتاژ کاری', value: '۵ ولت DC' }
       ]
     },
+
+    // --- 11. Digital Soldering Iron & Repair Kit ---
     {
       categoryId: catMaker.id,
       name: 'هویه برقی دیجیتال ۶۰ وات با قابلیت تنظیم دقیق دما (۱۸۰ تا ۴۸۰ درجه)',
@@ -411,7 +434,8 @@ async function main() {
       rating: 4.8,
       reviewCount: 19,
       images: [
-        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'هویه دیجیتال ۶۰ وات' }
+        { url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', isPrimary: true, alt: 'هویه دیجیتال ۶۰ وات و ابزار لحیم‌کاری' },
+        { url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80', isPrimary: false, alt: 'کارگاه عیب‌یابی و لحیم‌کاری برد الکترونیکی' }
       ],
       specs: [
         { label: 'توان', value: '۶۰ وات' },
@@ -448,64 +472,87 @@ async function main() {
       customerEmail: 'motamedi@example.com',
       province: 'اصفهان',
       city: 'نجف‌آباد',
-      postalCode: '8514612345',
-      address: 'اصفهان، نجف‌آباد، خیابان امام شرقی، کوچه بهار، پلاک ۲۴',
+      postalCode: '8514812345',
+      address: 'نجف‌آباد، خیابان امام خمینی غربی، کوچه لاله، پلاک ۲۴',
       shippingMethod: 'isfahan_express',
       shippingCost: 35000,
       paymentMethod: 'zarinpal',
       paymentStatus: 'PAID',
-      orderStatus: 'PROCESSING',
-      trackingCode: 'SNAP-NJF-98214',
-      subtotal: 3945000,
-      discount: 50000,
-      totalAmount: 3930000,
-      paymentRefId: 'ZP-982341908234',
-      notes: 'تحویل در نجف‌آباد با هماهنگی تلفنی.',
+      orderStatus: 'DELIVERED',
+      subtotal: 4800000,
+      discount: 0,
+      totalAmount: 4835000,
+      trackingCode: '14030678912345',
       items: {
         create: [
           {
-            productName: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA با گارانتی ۲۴ ماهه',
+            productName: 'پنکه ایستاده ۵ پره ریموت‌دار پارس خزر مدل FSR-SHIBA',
             price: 3450000,
             quantity: 1,
             total: 3450000,
             productImage: 'https://images.unsplash.com/photo-1619725002198-6a689b72f41d?auto=format&fit=crop&w=800&q=80'
           },
           {
-            productName: 'آنتن هوایی گردان دیجیتال تمام باند هانی مدل 201 معطوف با بوستر تقویت سیگنال',
-            price: 495000,
+            productName: 'بخاری برقی تابشی ۴ المان شیشه‌ای اخوان',
+            price: 1350000,
             quantity: 1,
-            total: 495000,
-            productImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
+            total: 1350000,
+            productImage: 'https://images.unsplash.com/photo-1545259742-b43a38f38692?auto=format&fit=crop&w=800&q=80'
           }
         ]
       }
     }
   });
-
-  // 6. Seed Sample Repair Request Tickets in Najafabad
-  const sampleRepair = await prisma.repairRequest.create({
-    data: {
-      trackingCode: 'REP-1403-042',
-      customerName: 'رضا قادری',
-      customerPhone: '09139876543',
-      applianceType: 'پنکه ایستاده',
-      brandModel: 'پارس خزر مدل شیبا',
-      issueDesc: 'موتور پنکه داغ می‌شود و دور ۳ کار نمی‌کند، نیاز به تعویض بوش و روغن‌کاری.',
-      deliveryType: 'in_person',
-      status: 'IN_PROGRESS',
-      estimatedCost: 180000,
-      adminNotes: 'بوش‌های موتور تعویض شد، در حال تست ۲۴ ساعته در کارگاه.',
-    }
-  });
-
-  console.log(`  ✓ Created sample repair ticket: ${sampleRepair.trackingCode}`);
   console.log(`  ✓ Created sample order: ${sampleOrder.orderNumber}`);
-  console.log('✅ Seeding for Shiasi Store Najafabad completed successfully!');
+
+  // 6. Seed Sample Repair Requests
+  const repairs = [
+    {
+      trackingCode: 'REP-1403-8412',
+      customerName: 'علی‌اکبر شریفی',
+      customerPhone: '09131112233',
+      applianceType: 'پنکه ایستاده پارس خزر',
+      brandModel: 'پارس خزر مدل شیبا',
+      issueDesc: 'موتور داغ می‌کرد و دور تند کار نمی‌کرد. بوش و خازن تعویض شد.',
+      status: 'READY',
+      estimatedCost: 280000,
+      adminNotes: 'بوش برنجی تعویض و روغن‌کاری سیلیکونی انجام شد. آماده تحویل در نجف‌آباد.',
+    },
+    {
+      trackingCode: 'REP-1403-9120',
+      customerName: 'مهدی کریمی',
+      customerPhone: '09139998877',
+      applianceType: 'موتور کولر آبی ۱/۲',
+      brandModel: 'موتوژن',
+      issueDesc: 'پلاتین عمل نمی‌کرد و موتور صدای وزوز می‌داد.',
+      status: 'IN_PROGRESS',
+      estimatedCost: 450000,
+      adminNotes: 'سیم‌پیچی کمکی در حال بررسی و تعویض کلاچ گریز از مرکز.',
+    },
+    {
+      trackingCode: 'REP-1403-9934',
+      customerName: 'حسین احمدی',
+      customerPhone: '09132223344',
+      applianceType: 'سایر: جاروبرقی فیلیپس',
+      brandModel: 'فیلیپس FC9170',
+      issueDesc: 'روشن نمی‌شود و بوی سوختگی دارد. زغال و بلبرینگ‌ها تعویض گردید.',
+      status: 'READY',
+      estimatedCost: 350000,
+      adminNotes: 'زغال موتور تعویض و کلکتور تراشکاری شد. تست مکش با موفقیت انجام شد.',
+    }
+  ];
+
+  for (const r of repairs) {
+    await prisma.repairRequest.create({ data: r });
+  }
+  console.log(`  ✓ Seeded sample repair requests.`);
+
+  console.log('✅ Seeding completed successfully!');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seeding error:', e);
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {

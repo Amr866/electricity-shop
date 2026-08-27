@@ -46,13 +46,27 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     where.category = { slug: categorySlug };
   }
 
-  if (searchQuery) {
-    where.OR = [
-      { name: { contains: searchQuery, mode: "insensitive" } },
-      { description: { contains: searchQuery, mode: "insensitive" } },
-      { shortDesc: { contains: searchQuery, mode: "insensitive" } },
-      { brand: { contains: searchQuery, mode: "insensitive" } },
-    ];
+  if (searchQuery && searchQuery.trim()) {
+    const tokens = searchQuery
+      .replace(/[\u200C\u200B\u200E\u200F]/g, " ")
+      .replace(/[ي]/g, "ی")
+      .replace(/[ك]/g, "ک")
+      .replace(/[ة]/g, "ه")
+      .split(/[\s,،\-–_+*]+/)
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+
+    if (tokens.length > 0) {
+      where.AND = tokens.map((token) => ({
+        OR: [
+          { name: { contains: token, mode: "insensitive" } },
+          { description: { contains: token, mode: "insensitive" } },
+          { shortDesc: { contains: token, mode: "insensitive" } },
+          { brand: { contains: token, mode: "insensitive" } },
+          { sku: { contains: token, mode: "insensitive" } },
+        ],
+      }));
+    }
   }
 
   if (inStockOnly) {

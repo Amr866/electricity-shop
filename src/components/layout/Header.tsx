@@ -58,10 +58,10 @@ export function Header() {
               <span>خرید و تعمیرات تخصصی لوازم برقی در نجف‌آباد و اصفهان + ارسال فوری</span>
             </span>
             <span className="hidden md:inline-block text-slate-600">•</span>
-            <span className="hidden md:flex items-center gap-1 text-slate-300">
+            <Link href="/contact#map" className="hidden md:flex items-center gap-1 text-slate-300 hover:text-amber-400 transition-colors">
               <MapPin className="w-3 h-3 text-emerald-400" />
               <span>{brand.address}</span>
-            </span>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4 text-slate-300">
@@ -433,9 +433,13 @@ export function Header() {
 
             <span className="text-slate-300 dark:text-slate-700">|</span>
 
-            <span className="text-slate-600 dark:text-slate-400">
-              شعبه نجف‌آباد
-            </span>
+            <Link
+              href="/contact"
+              className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>ارتباط با ما</span>
+            </Link>
           </div>
         </div>
       </nav>

@@ -24,6 +24,8 @@ const POPULAR_SEARCHES = [
   "پروژکتور خورشیدی ۲۰۰ وات",
   "برد آردوینو Uno",
   "هویه دیجیتال ۶۰ وات",
+  "مولتی‌متر DT9205A",
+  "کلید و پریز دلند",
 ];
 
 export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
@@ -39,15 +41,24 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Close when clicked outside
+  // Close on Escape or click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   // Debounced search
@@ -69,7 +80,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timeoutId);
   }, [query]);
@@ -94,26 +105,26 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 transition-opacity duration-300 animate-in fade-in"
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 transition-opacity duration-300 animate-in fade-in"
         />
       )}
 
       <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
-        {/* Search Input Container with Sleek Darkened / Highlighted State */}
+        {/* Search Input Container with Dual Light & Dark Theme Highlights */}
         <form onSubmit={handleSubmit} className="relative w-full">
           <div
             className={`relative flex items-center transition-all duration-300 rounded-2xl ${
               isOpen
-                ? "bg-slate-900 text-white border-2 border-amber-400 shadow-2xl shadow-amber-500/20 ring-4 ring-amber-400/20"
+                ? "bg-white dark:bg-slate-900 border-2 border-amber-500 dark:border-amber-400 shadow-2xl shadow-amber-500/20 ring-4 ring-amber-500/20 dark:ring-amber-400/20"
                 : "bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             {/* Search Icon / Animated Spinner */}
-            <div className={`pr-3.5 pl-2 flex items-center justify-center ${isOpen ? "text-amber-400" : "text-slate-400 dark:text-slate-400"}`}>
+            <div className={`pr-3.5 pl-2 flex items-center justify-center ${isOpen ? "text-amber-500 dark:text-amber-400" : "text-slate-400 dark:text-slate-400"}`}>
               {loading ? (
-                <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
+                <Loader2 className="w-4 h-4 text-amber-500 animate-spin" />
               ) : isOpen ? (
-                <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
+                <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400 animate-pulse" />
               ) : (
                 <Search className="w-4 h-4 text-slate-400" />
               )}
@@ -134,9 +145,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                   ? "جستجوی کالا، برند یا قطعه..."
                   : "جستجوی پنکه، موتور کولر، بخاری برقی، آنتن، سیم و کابل، آردوینو..."
               }
-              className={`w-full bg-transparent text-xs sm:text-sm py-2.5 sm:py-3 pl-20 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium ${
-                isOpen ? "text-white placeholder:text-slate-500" : "text-slate-900 dark:text-white"
-              }`}
+              className="w-full bg-transparent text-xs sm:text-sm py-2.5 sm:py-3 pl-20 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium text-slate-900 dark:text-white"
             />
 
             {/* Clear Button */}
@@ -148,11 +157,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                   setResults({ products: [], categories: [] });
                   inputRef.current?.focus();
                 }}
-                className={`p-1.5 rounded-full ml-2 transition-colors ${
-                  isOpen
-                    ? "text-slate-400 hover:text-white hover:bg-slate-800"
-                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700"
-                }`}
+                className="p-1.5 rounded-full ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -228,7 +233,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                             <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 truncate">
                               {p.name}
                             </h4>
-                            <span className="font-extrabold text-xs text-slate-950 dark:text-amber-400 block mt-0.5">
+                            <span className="font-extrabold text-xs text-slate-950 dark:text-amber-400 block mt-0.5 font-mono">
                               {formatToman(p.price)}
                             </span>
                           </div>

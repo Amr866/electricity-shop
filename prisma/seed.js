@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seeding with local high-res product photos for Shiasi Store...');
+  console.log('🌱 Seeding database with authentic user-provided product photos for Shiasi Store...');
 
   // Clean existing data
   await prisma.repairRequest.deleteMany();
@@ -50,7 +50,7 @@ async function main() {
     await prisma.coupon.create({ data: c });
   }
 
-  // 3. Seed 4 Core Product Categories with Local Crisp Images
+  // 3. Seed 4 Core Product Categories
   const catAppliances = await prisma.category.create({
     data: {
       name: 'پنکه، کولر و بخاری برقی',
@@ -95,7 +95,7 @@ async function main() {
     }
   });
 
-  // 4. Products Data with Authentic Iranian Product Galleries using local images
+  // 4. Products Data with exact local photos
   const products = [
     // --- 1. Standing Fan Pars Khazar ---
     {
@@ -154,8 +154,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 52,
       images: [
-        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
-        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: false, alt: 'الکتروموتور سیم‌پیچی مس' },
+        { url: '/images/products/موتور-کولر-موتوژن-3-4.jpg', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
+        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: false, alt: 'الکتروموتور سیم‌پیچی مس' },
       ],
       specs: [
         { label: 'قدرت موتور', value: '۱/۲ اسب بخار (1/2 HP)' },
@@ -186,7 +186,8 @@ async function main() {
       rating: 5.0,
       reviewCount: 40,
       images: [
-        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: true, alt: 'موتور کولر ۳/۴ موتوژن' },
+        { url: '/images/products/موتور-کولر-موتوژن-3-4.jpg', isPrimary: true, alt: 'موتور کولر ۳/۴ موتوژن' },
+        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: false, alt: 'دینام کولر آبی موتوژن' }
       ],
       specs: [
         { label: 'توان', value: '۳/۴ اسب بخار' },
@@ -195,37 +196,68 @@ async function main() {
       ]
     },
 
-    // --- 4. Electrogen Cooler Pump ---
+    // --- 4. Polymer Water Cooler 8000 ---
     {
       categoryId: catAppliances.id,
-      name: 'پمپ آب کولر آبی الکتروژن مدل البرز ضدآب با فیلتر محافظ رسوب',
-      slug: 'electrogen-cooler-water-pump-alborz',
-      sku: 'APP-CLR-PUMP-ELC',
-      shortDesc: 'موتور بی‌صدا، عایق‌بندی کامل استاندارد IP و مقاوم در برابر املاح و رسوب آب.',
-      description: 'پمپ آب کولر الکتروژن مدل البرز یکی از مطمئن‌ترین پمپ‌های بازار با هد پمپاژ قوی آب و بدنه ضدخوردگی. مناسب برای تمامی کولرهای آبی از ۳۵۰۰ تا ۷۵۰۰.',
-      price: 340000,
-      originalPrice: 380000,
-      discountPercent: 10,
-      stock: 45,
+      name: 'کولر آبی پلیمری سلولزی ۸۰۰۰ اینورتر ایرومکس با پد سلولزی و بدنه پلیمری ضدزنگ',
+      slug: 'airomax-polymer-water-cooler-8000',
+      sku: 'APP-CLR-AIR8000',
+      shortDesc: 'فناوری جدید خنک‌کنندگی با پد سلولزی ضخیم، بدنه مقاوم در برابر آفتاب نجف‌آباد و مصرف بهینه برق.',
+      description: 'کولر آبی پلیمری ۸۰۰۰ با موتور درایو اینورتر BLDC، فوق کم‌مصرف با راندمان خنک‌کاری ۴۰ درصد بیشتر از پوشال معمولی. بدون زنگ‌زدگی کفی کولر و طول عمر بالای ۱۵ سال.',
+      price: 18900000,
+      originalPrice: 20500000,
+      discountPercent: 8,
+      stock: 6,
+      isFeatured: true,
+      isBestSeller: true,
+      isNewArrival: true,
+      isIsfahanFast: true,
+      brand: 'ایرومکس (Airomax)',
+      warranty: '۲ سال ضمانت طلایی تعویض قطعات و موتور',
+      madeIn: 'ایران',
+      rating: 5.0,
+      reviewCount: 15,
+      images: [
+        { url: '/images/products/AIromax-polymer-water-cooler-8000.webp', isPrimary: true, alt: 'کولر آبی پلیمری ایرومکس ۸۰۰۰' },
+      ],
+      specs: [
+        { label: 'ظرفیت هوادهی', value: '۸۰۰۰ متر مکعب بر ساعت' },
+        { label: 'نوع پد', value: 'سلولزی فنلاندی ضدقارچ و باکتری' },
+        { label: 'جنس بدنه', value: 'پلیمر فشرده مقاوم در برابر اشعه UV' }
+      ]
+    },
+
+    // --- 5. Electric Quartz Heater Element ---
+    {
+      categoryId: catAppliances.id,
+      name: 'المنت شیشه‌ای کوارتز بخاری برقی طول ۲۵ سانتی‌متر ۵۰۰ وات ضدشوک حرارتی',
+      slug: 'electric-heater-quartz-element-25cm',
+      sku: 'APP-HTR-ELM25',
+      shortDesc: 'المنت یدکی استاندارد مناسب انواع بخاری‌های برقی اخوان، مهر، ارشیا و صنام.',
+      description: 'المنت کوارتز با فنر نیکل-کروم دوبل، انتقال حرارت تابشی سریع و بدون ایجاد دود و بو. آماده نصب با سرپیچ‌های استاندارد در کارگاه شیاسی نجف‌آباد.',
+      price: 65000,
+      originalPrice: 75000,
+      discountPercent: 13,
+      stock: 80,
       isFeatured: false,
       isBestSeller: true,
       isNewArrival: false,
       isIsfahanFast: true,
-      brand: 'الکتروژن (Electrogen)',
-      warranty: 'یک سال گارانتی معتبر شرکتی',
+      brand: 'اخوان (Akhavan Element)',
+      warranty: 'ضمانت سلامت فیزیکی و تست حرارت',
       madeIn: 'ایران',
       rating: 4.8,
-      reviewCount: 22,
+      reviewCount: 24,
       images: [
-        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: true, alt: 'پمپ آب کولر الکتروژن' },
+        { url: '/images/products/Electric-heater-element.jpg', isPrimary: true, alt: 'المنت شیشه ای کوارتز بخاری برقی' },
       ],
       specs: [
-        { label: 'جنس بدنه', value: 'پلیمر فشرده ضدخوردگی' },
-        { label: 'دبی پمپاژ', value: '۱۲ لیتر بر دقیقه' },
+        { label: 'توان حرارتی', value: '۵۰۰ وات' },
+        { label: 'طول لوله', value: '۲۵ سانتی‌متر استاندارد' },
       ]
     },
 
-    // --- 5. Copper Electrical Wire 1.5mm Alborz ---
+    // --- 6. Copper Electrical Wire 1.5mm Alborz ---
     {
       categoryId: catWiring.id,
       name: 'سیم برق افشان سایز ۱.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
@@ -247,8 +279,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 68,
       images: [
-        { url: '/images/products/skdunning-wire-962753_1920.jpg', isPrimary: true, alt: 'سیم برق افشان مس البرز الکتریک' },
-        { url: '/images/products/republica-wire-732209_1920.jpg', isPrimary: false, alt: 'رشته های مس افشان' },
+        { url: '/images/products/parto-electric-stranded-wire-1-15.png', isPrimary: true, alt: 'سیم برق افشان مس البرز الکتریک' },
+        { url: '/images/products/کابل-افشان-دو-رشته-سایز-15-استاندارد.jpeg', isPrimary: false, alt: 'کلاف کابل افشان مس' },
       ],
       specs: [
         { label: 'طول کلاف', value: '۱۰۰ متر بسته‌بندی کارخانه‌ای' },
@@ -257,134 +289,37 @@ async function main() {
       ]
     },
 
-    // --- 6. Copper Electrical Wire 2.5mm Alborz ---
+    // --- 7. Copper Antenna Coaxial Cable RG6 ---
     {
       categoryId: catWiring.id,
-      name: 'سیم برق افشان سایز ۲.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
-      slug: 'copper-wire-25-alborz-electric',
-      sku: 'WIR-ALB-25',
-      shortDesc: 'مناسب سیم‌کشی پریزهای برق، کولر آبی و گازی و مصارف ساختمانی با دوام بالا.',
-      description: 'سیم افشان ۲.۵ میلی‌متر مربع با قابلیت تحمل جریان تا ۲۵ آمپر، عایق مستحکم در برابر حرارت و خلوص مس ۹۹.۹٪ جهت جلوگیری از افت ولتاژ و آتش‌سوزی.',
-      price: 1580000,
-      originalPrice: 1780000,
-      discountPercent: 11,
-      stock: 45,
+      name: 'کابل آنتن کواکسیال تمام مس 4.5C صادراتی با شیلد ۹۶ رشته و فویل آلومینیوم (متری)',
+      slug: 'coaxial-antenna-cable-copper-rg6',
+      sku: 'WIR-ANT-COAX',
+      shortDesc: 'انتقال سیگنال بدون افت کیفیت برای تلویزیون‌های 4K و گیرنده‌های دیجیتال.',
+      description: 'کابل کواکسیال مغزی مس خالص با روکش محافظ ضدآفتاب و باران مناسب انتقال تصویر شفاف شبکه‌های صدا و سیما بدون پارازیت و نویز.',
+      price: 18000,
+      originalPrice: 22000,
+      discountPercent: 18,
+      stock: 500,
       isFeatured: true,
       isBestSeller: true,
       isNewArrival: false,
       isIsfahanFast: true,
-      brand: 'البرز الکتریک نور (Alborz)',
-      warranty: 'ضمانت استاندارد و خلوص مس',
+      brand: 'کابل صادراتی مس',
+      warranty: 'ضمانت خلوص مس و عدم افت سیگنال',
       madeIn: 'ایران',
-      rating: 5.0,
-      reviewCount: 55,
-      images: [
-        { url: '/images/products/republica-wire-732209_1920.jpg', isPrimary: true, alt: 'سیم افشان ۲.۵ البرز' },
-        { url: '/images/products/ds_30-cable-4875319_1920.jpg', isPrimary: false, alt: 'کلاف سیم و کابل' },
-      ],
-      specs: [
-        { label: 'سطح مقطع', value: '۲.۵ میلی‌متر مربع' },
-        { label: 'جریان مجاز', value: 'تا ۲۵ آمپر در لوله برق' },
-      ]
-    },
-
-    // --- 7. Digital Multimeter DT9205A ---
-    {
-      categoryId: catMaker.id,
-      name: 'مولتی‌متر دیجیتال اتورنج حرفه‌ای مدل DT-9205A همراه با پراب تست و باتری',
-      slug: 'digital-multimeter-dt9205a-autoranging',
-      sku: 'ELC-TOOL-MULTI92',
-      shortDesc: 'ابزار دقیق تست ولتاژ AC/DC، جریان، خازن‌سنج، تست بوق اتصال کوتاه و دیود.',
-      description: 'مولتی‌متر دیجیتال DT-9205A یکی از دقیق‌ترین و اقتصادی‌ترین ابزارهای تعمیرکاران الکترونیک و برق‌کاران ساختمان. دارای پایه رومیزی، محافظ ضدضربه سیلیکونی و خاموشی خودکار.',
-      price: 495000,
-      originalPrice: 580000,
-      discountPercent: 14,
-      stock: 24,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: true,
-      isIsfahanFast: true,
-      brand: 'ویکتور (Victor Series)',
-      warranty: 'مهلت تست سلامت فیزیکی و کالیبراسیون',
-      madeIn: 'وارداتی درجه ۱',
       rating: 4.9,
-      reviewCount: 38,
+      reviewCount: 43,
       images: [
-        { url: '/images/products/old-digital-multimeter-isolated-white-background.jpg', isPrimary: true, alt: 'مولتی متر دیجیتال' },
-        { url: '/images/products/ds_30-measurement-4850058_1920.jpg', isPrimary: false, alt: 'تست با مولتی متر' },
+        { url: '/images/products/کابل-آنتن-08_48-تمام-مس-1-600x600.jpeg', isPrimary: true, alt: 'کابل آنتن کواکسیال تمام مس' },
       ],
       specs: [
-        { label: 'سنجش ولتاژ', value: 'تا ۱۰۰۰ ولت DC و ۷۵۰ ولت AC' },
-        { label: 'تست بوق بازر', value: 'کمتر از ۵۰ اهم' },
-        { label: 'اقلام همراه', value: 'پراب تست نسوز، باتری ۹ ولت کتابی' },
+        { label: 'مغزی', value: 'تمام مس ۱ میلی‌متر' },
+        { label: 'شیلد', value: '۹۶ رشته بافته شده مسی' },
       ]
     },
 
-    // --- 8. Miniature Circuit Breaker Schneider ---
-    {
-      categoryId: catWiring.id,
-      name: 'فیوز مینیاتوری تک پل ۱۶ آمپر اشنایدر الکتریک مدل Acti9 تیپ C (تیپ موتوری)',
-      slug: 'miniature-circuit-breaker-16a-schneider',
-      sku: 'WIR-MCB-SCH16',
-      shortDesc: 'حفاظت مطمئن از مدارات روشنایی و پریز در برابر اتصال کوتاه و اضافه بار.',
-      description: 'کلید مینیاتوری تکفاز ۱۶ آمپر اشنایدر اصل با قدرت قطع ۶ کیلوآمپر، بدنه نسوز و ترمینال‌های ضدلرزش. انتخابی بی‌رقیب برای تابلو برق منازل و کارگاه‌های نجف‌آباد.',
-      price: 185000,
-      originalPrice: 220000,
-      discountPercent: 15,
-      stock: 50,
-      isFeatured: false,
-      isBestSeller: true,
-      isNewArrival: false,
-      isIsfahanFast: true,
-      brand: 'اشنایدر الکتریک (Schneider)',
-      warranty: 'ضمانت ۱۰۰٪ اصالت اشنایدر',
-      madeIn: 'تحت لیسانس فرانسه',
-      rating: 4.9,
-      reviewCount: 29,
-      images: [
-        { url: '/images/products/paulbr75-electricity-3038497_1920.jpg', isPrimary: true, alt: 'فیوز مینیاتوری اشنایدر' },
-        { url: '/images/products/richard_ssmid-equipment-3111880_1920.jpg', isPrimary: false, alt: 'تابلو برق و مینیاتوری' },
-      ],
-      specs: [
-        { label: 'جریان نامی', value: '۱۶ آمپر' },
-        { label: 'قدرت قطع', value: '۶ کیلو آمپر (6kA)' },
-        { label: 'تیپ منحنی', value: 'C (موتوری و عمومی)' },
-      ]
-    },
-
-    // --- 9. Vimax 200W Solar Street Light ---
-    {
-      categoryId: catLighting.id,
-      name: 'پروژکتور خورشیدی سرلوله ۲۰۰ وات ویمکس سنسوردار با پنل خورشیدی و ریموت',
-      slug: 'solar-street-light-200w-vimax',
-      sku: 'LGT-SLR-200W',
-      shortDesc: 'روشنایی رایگان بدون نیاز به سیم‌کشی برق، مناسب باغات، معابر و کارگاه‌های نجف‌آباد.',
-      description: 'پروژکتور خورشیدی خیابانی ۲۰۰ وات برند معتبر ویمکس با باتری لیتیومی باکیفیت LiFePO4، روشنایی خودکار از غروب تا طلوع آفتاب و سنسور حرکتی هوشمند رادار.',
-      price: 4250000,
-      originalPrice: 4780000,
-      discountPercent: 11,
-      stock: 15,
-      isFeatured: true,
-      isBestSeller: true,
-      isNewArrival: false,
-      isIsfahanFast: true,
-      brand: 'ویمکس (Vimax)',
-      warranty: '۲ سال ضمانت رسمی شرکتی',
-      madeIn: 'وارداتی درجه ۱',
-      rating: 4.9,
-      reviewCount: 38,
-      images: [
-        { url: '/images/products/hans-westbeek-7Oqc89s3VI8-unsplash.jpg', isPrimary: true, alt: 'پروژکتور خورشیدی خیابانی ۲۰۰ وات' },
-        { url: '/images/products/6653167-flashlight-6786569_1920.jpg', isPrimary: false, alt: 'چراغ پروژکتور پرقدرت' },
-      ],
-      specs: [
-        { label: 'توان', value: '۲۰۰ وات LED فوق کم‌مصرف' },
-        { label: 'باتری', value: 'لیتیومی ظرفیت بالا با شارژدهی تا ۱۲ ساعت' },
-        { label: 'ضدآب', value: 'استاندارد IP65 مقاوم در برابر باران و گرد و غبار' },
-      ]
-    },
-
-    // --- 10. Shahcheraq 24W LED Sensor Panel ---
+    // --- 8. Shahcheraq 24W LED Sensor Panel ---
     {
       categoryId: catLighting.id,
       name: 'پنل سنسوردار هوشمند ۲۴ وات شاهچراغ مدل روژان روکار با ۲ سال ضمانت',
@@ -406,8 +341,7 @@ async function main() {
       rating: 4.7,
       reviewCount: 26,
       images: [
-        { url: '/images/products/inspiredimages-light-bulb-1138047_1920.jpg', isPrimary: true, alt: 'پنل سقفی سنسوردار ۲۴ وات' },
-        { url: '/images/products/pexels-light-1283795_1920.jpg', isPrimary: false, alt: 'نورپردازی ال ای دی' },
+        { url: '/images/products/پنل-24-وات-سنسوردار-شاهچراغ-روکار.webp', isPrimary: true, alt: 'پنل سقفی سنسوردار ۲۴ وات شاهچراغ' },
       ],
       specs: [
         { label: 'توان', value: '۲۴ وات LED SMD' },
@@ -415,96 +349,63 @@ async function main() {
       ]
     },
 
-    // --- 11. Arduino Uno R3 DIP ---
+    // --- 9. Afratab 50W LED Cylinder Bulb ---
     {
-      categoryId: catMaker.id,
-      name: 'برد توسعه آردوینو اونو مدل Arduino Uno R3 چیپ DIP با کابل اتصال USB',
-      slug: 'arduino-uno-r3-dip-board',
-      sku: 'ELC-ARD-UNO-R3',
-      shortDesc: 'محبوب‌ترین برد کنترلر میکرو برای پروژه‌های هوشمندسازی، رباتیک و الکترونیک.',
-      description: 'برد آردوینو Uno R3 مجهز به میکروکنترلر ATmega328P، پشتیبانی از محیط آردوینو IDE، ۱۴ پین ورودی/خروجی دیجیتال و ۶ ورودی آنالوگ همراه با کابل اتصال USB استاندارد.',
-      price: 365000,
-      originalPrice: 420000,
-      discountPercent: 13,
-      stock: 28,
+      categoryId: catLighting.id,
+      name: 'لامپ ال‌ای‌دی ۵۰ وات استوانه‌ای افراتاب پرنور پایه E27 با ۱۸ ماه گارانتی',
+      slug: 'afratab-50w-led-cylinder-bulb',
+      sku: 'LGT-BLB-AFR50',
+      shortDesc: 'روشنایی فوق‌العاده قوی معادل ۴۰۰ وات رشته‌ای، مناسب مغازه، کارگاه و منازل بزرگ.',
+      description: 'لامپ ۵۰ وات افراتاب با بدنه آلومینیومی خنک‌کننده هیت‌سینک، زاویه تابش ۲۲۰ درجه، طول عمر ۲۵۰۰۰ ساعت و نور بدون لرزش و پرش.',
+      price: 285000,
+      originalPrice: 320000,
+      discountPercent: 11,
+      stock: 40,
       isFeatured: true,
       isBestSeller: true,
       isNewArrival: false,
       isIsfahanFast: true,
-      brand: 'آردوینو (Arduino)',
-      warranty: 'مهلت تست سلامت و اصالت قطعه الکترونیک',
-      madeIn: 'وارداتی گرید A',
+      brand: 'افراتاب (Afratab)',
+      warranty: '۱۸ ماه گارانتی تعویض افراتاب',
+      madeIn: 'ایران',
       rating: 4.9,
-      reviewCount: 45,
+      reviewCount: 37,
       images: [
-        { url: '/images/products/maxis_pictures-the-main-processor-3334336_1920.jpg', isPrimary: true, alt: 'برد آردوینو Uno R3' },
-        { url: '/images/products/kouji-tsuru-wQuGKXfAcGQ-unsplash.jpg', isPrimary: false, alt: 'چیپست پردازنده' },
+        { url: '/images/products/لامپ-50-وات-ایرانی-افراتاب-استوانه-.jpeg', isPrimary: true, alt: 'لامپ ۵۰ وات استوانه ای افراتاب' },
       ],
       specs: [
-        { label: 'میکروکنترلر', value: 'ATmega328P با بوت‌لودر فابریک' },
-        { label: 'ولتاژ ورودی', value: '۷ تا ۱۲ ولت DC' },
+        { label: 'توان نوری', value: '۴۵۰۰ لومن' },
+        { label: 'سرپیچ', value: 'استاندارد E27 معمولی' },
       ]
     },
 
-    // --- 12. Soldering Station 60W Adjustable ---
+    // --- 10. Rechargeable Battery Pack 18650 Saba ---
     {
       categoryId: catMaker.id,
-      name: 'هویه لحیم‌کاری ۶۰ وات دیمردار با قابلیت تنظیم دما همراه با نوک نسوز',
-      slug: 'soldering-iron-60w-adjustable-temperature',
-      sku: 'ELC-TOOL-SOLD60',
-      shortDesc: 'ابزار ضروری تعمیرکاران برای لحیم‌کاری بردهای الکترونیکی، پنکه و وسایل برقی.',
-      description: 'هویه قلمی ۶۰ وات با ولوم تنظیم دما از ۲۰۰ تا ۴۵۰ درجه سانتی‌گراد، المنت سرامیکی سریع‌گرم‌شونده و نوک با روکش نیکل ضدزنگ.',
-      price: 245000,
-      originalPrice: 290000,
-      discountPercent: 15,
-      stock: 35,
-      isFeatured: false,
-      isBestSeller: true,
-      isNewArrival: false,
-      isIsfahanFast: true,
-      brand: 'گوت (Goot Style)',
-      warranty: 'مهلت تست در کارگاه شیاسی',
-      madeIn: 'وارداتی',
-      rating: 4.8,
-      reviewCount: 28,
-      images: [
-        { url: '/images/products/close-up-circuit-reparing-tool.jpg', isPrimary: true, alt: 'هویه ۶۰ وات دیمردار' },
-        { url: '/images/products/gosiak1980-technique-4909953_1920.jpg', isPrimary: false, alt: 'لحیم کاری برد' },
-      ],
-      specs: [
-        { label: 'توان', value: '۶۰ وات' },
-        { label: 'محدوده دما', value: '۲۰۰ الی ۴۵۰ درجه سانتی‌گراد' },
-      ]
-    },
-
-    // --- 13. Rechargeable Battery Pack 18650 ---
-    {
-      categoryId: catMaker.id,
-      name: 'باتری لیتیومی شارژی ۱۸۶۵۰ ظرفیت ۲۶۰۰mAh سرتخت صنعتی ۳.۷ ولت',
-      slug: 'rechargeable-battery-18650-2600mah',
-      sku: 'ELC-BAT-18650',
+      name: 'باتری لیتیوم-یون سایز ۱۸۶۵۰ ظرفیت ۲۲۰۰mAh سرتخت صبا باتری اصل ۳.۷ ولت',
+      slug: 'rechargeable-battery-18650-2200mah-saba',
+      sku: 'ELC-BAT-SABA18',
       shortDesc: 'مناسب چراغ قوه، دریل شارژی، پروژکتورهای خورشیدی و بردهای آردوینو.',
-      description: 'باتری لیتیوم یون با تخلیه جریان مداوم بالا، عمر چرخه‌ای بیش از ۱۰۰۰ بار شارژ و دشارژ و بدون اثر حافظه.',
-      price: 145000,
-      originalPrice: 175000,
-      discountPercent: 17,
+      description: 'باتری لیتیوم یون استاندارد صبا با تخلیه جریان مداوم بالا، عمر چرخه‌ای بیش از ۱۰۰۰ بار شارژ و دشارژ و بدون افت ولتاژ ناگهانی.',
+      price: 135000,
+      originalPrice: 160000,
+      discountPercent: 16,
       stock: 70,
       isFeatured: false,
       isBestSeller: true,
       isNewArrival: true,
       isIsfahanFast: true,
-      brand: 'سامسونگ سل (Samsung Grade)',
+      brand: 'صبا باتری (Saba Battery)',
       warranty: 'ضمانت ظرفیت واقعی و سلامت',
-      madeIn: 'وارداتی',
+      madeIn: 'ایران',
       rating: 4.8,
       reviewCount: 35,
       images: [
-        { url: '/images/products/jeanvdmeulen-battery-4628419_1920.jpg', isPrimary: true, alt: 'باتری شارژی لیتیومی' },
-        { url: '/images/products/publicdomainpictures-battery-19983_1920.jpg', isPrimary: false, alt: 'پک باتری های صنعتی' },
+        { url: '/images/products/باتری-لیتیوم-یون-36v-سایز-18650-2200mah-سرتخت-inr-صبا.jpg', isPrimary: true, alt: 'باتری شارژی لیتیومی ۱۸۶۵۰ صبا' },
       ],
       specs: [
         { label: 'ولتاژ نامی', value: '۳.۷ ولت (ماکزیمم ۴.۲ ولت)' },
-        { label: 'ظرفیت واقعی', value: '۲۶۰۰ میلی‌آمپر ساعت' },
+        { label: 'ظرفیت واقعی', value: '۲۲۰۰ میلی‌آمپر ساعت' },
       ]
     }
   ];
@@ -566,11 +467,11 @@ async function main() {
             productImage: '/images/products/wal_172619-fans-7995865_1920.jpg'
           },
           {
-            productName: 'سیم برق افشان سایز ۱.۵*۱ تمام مس استاندارد البرز الکتریک کلاف ۱۰۰ متری',
-            price: 980000,
+            productName: 'موتور کولر آبی ۳/۴ اسب بخار موتوژن تبریز',
+            price: 4150000,
             quantity: 1,
-            total: 980000,
-            productImage: '/images/products/skdunning-wire-962753_1920.jpg'
+            total: 4150000,
+            productImage: '/images/products/موتور-کولر-موتوژن-3-4.jpg'
           }
         ]
       }

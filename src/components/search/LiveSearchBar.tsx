@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatToman } from "@/lib/utils";
@@ -33,6 +34,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [results, setResults] = useState<{ products: any[]; categories: any[] }>({
     products: [],
     categories: [],
@@ -40,6 +42,10 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close on Escape or click outside
   useEffect(() => {
@@ -101,12 +107,14 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
 
   return (
     <>
-      {/* Dark Dimming Backdrop Overlay when Search is Active */}
-      {isOpen && (
+      {/* Full Viewport Dimming Backdrop mounted directly to Body via Portal */}
+      {isOpen && mounted && typeof document !== "undefined" && createPortal(
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 transition-opacity duration-300 animate-in fade-in"
-        />
+          aria-hidden="true"
+          className="fixed inset-0 w-screen h-screen bg-slate-950/70 backdrop-blur-sm z-40 transition-opacity duration-300 animate-in fade-in cursor-pointer"
+        />,
+        document.body
       )}
 
       <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
@@ -166,7 +174,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
             {/* Submit Action Button with 'بیاب' */}
             <button
               type="submit"
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-4 py-1.5 sm:py-2 rounded-xl m-1 transition-all active:scale-95 shadow-sm shrink-0 flex items-center gap-1"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-4 py-1.5 sm:py-2 rounded-xl m-1 transition-all active:scale-95 shadow-sm shrink-0 flex items-center gap-1 hover-glow"
             >
               <span>بیاب</span>
             </button>
@@ -247,7 +255,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                   <button
                     onClick={handleSubmit}
-                    className="w-full py-2.5 bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 hover-glow"
                   >
                     <span>مشاهده همه نتایج جستجو برای «{query}»</span>
                     <ArrowLeft className="w-3.5 h-3.5" />
@@ -284,7 +292,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                       key={term}
                       type="button"
                       onClick={() => handleSelectPopular(term)}
-                      className="bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/70 text-slate-700 dark:text-slate-300 hover:text-amber-900 dark:hover:text-amber-300 text-xs font-medium px-3 py-1.5 rounded-xl transition-colors border border-slate-200/80 dark:border-slate-700"
+                      className="bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950/70 text-slate-700 dark:text-slate-300 hover:text-amber-900 dark:hover:text-amber-300 text-xs font-medium px-3 py-1.5 rounded-xl transition-colors border border-slate-200/80 dark:border-slate-700 hover-glow"
                     >
                       {term}
                     </button>

@@ -372,6 +372,12 @@ export function Header() {
                         📋 بارگذاری لیست قطعات (BOM)
                       </Link>
                       <Link
+                        href="/price-lists"
+                        className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-amber-600 dark:text-amber-400"
+                      >
+                        📄 لیست قیمت رسمی کارخانجات
+                      </Link>
+                      <Link
                         href="/order-tracking"
                         className="block p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-medium text-slate-700 dark:text-slate-300"
                       >

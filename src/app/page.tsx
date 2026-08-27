@@ -10,6 +10,7 @@ import { BrandLogosRow } from "@/components/home/BrandLogosRow";
 import { KnowledgeBaseSection } from "@/components/home/KnowledgeBaseSection";
 import { IsfahanBanner } from "@/components/home/IsfahanBanner";
 import { BomCallToActionBanner } from "@/components/home/BomCallToActionBanner";
+import { ElectricalCableCalculator } from "@/components/tools/ElectricalCableCalculator";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ArrowLeft, Star, Sparkles, TrendingUp } from "lucide-react";
 
@@ -146,10 +147,13 @@ export default async function HomePage() {
         {/* 6. Dedicated Repair Workshop Showcase */}
         <RepairWorkshopSection />
 
-        {/* 7. Local Fast Delivery in Najafabad & Google Maps Location */}
+        {/* 7. Interactive Electrical Cable & Fuse Breaker Calculator */}
+        <ElectricalCableCalculator />
+
+        {/* 8. Local Fast Delivery in Najafabad & Google Maps Location */}
         <IsfahanBanner />
 
-        {/* 8. Call to Action: BOM Upload for Contractors & Electricians */}
+        {/* 9. Call to Action: BOM Upload for Contractors & Electricians */}
         <BomCallToActionBanner />
 
         {/* 9. Brand Logos Row */}

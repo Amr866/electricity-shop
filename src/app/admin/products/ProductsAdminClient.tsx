@@ -12,7 +12,9 @@ import {
   X,
   Zap,
   UploadCloud,
+  FileSpreadsheet,
 } from "lucide-react";
+import { ProductExcelImportModal } from "@/components/admin/ProductExcelImportModal";
 
 interface ProductsAdminClientProps {
   initialProducts: any[];
@@ -27,6 +29,7 @@ export function ProductsAdminClient({
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [excelModalOpen, setExcelModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState("");
@@ -166,13 +169,23 @@ export function ProductsAdminClient({
           </p>
         </div>
 
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" />
-          <span>افزودن محصول جدید</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setExcelModalOpen(true)}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>بارگذاری اکسل / CSV</span>
+          </button>
+
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>افزودن محصول جدید</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter / Search Bar */}
@@ -466,6 +479,14 @@ export function ProductsAdminClient({
         </div>
       )}
 
+      {/* Bulk Excel Import Modal */}
+      <ProductExcelImportModal
+        isOpen={excelModalOpen}
+        onClose={() => setExcelModalOpen(false)}
+        onSuccess={() => {
+          window.location.reload();
+        }}
+      />
     </div>
   );
 }

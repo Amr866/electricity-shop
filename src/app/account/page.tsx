@@ -51,12 +51,12 @@ export default function CustomerAccountPage() {
       if (!session?.user) return;
       setLoadingData(true);
       try {
-        const phone = session.user.phone;
+        const phone = (session.user as any).phone;
 
         // Fetch user orders & repairs
         const [ordersRes, repairsRes] = await Promise.all([
           fetch("/api/orders/my-orders"),
-          phone ? fetch(`/api/repairs?phone=${encodeURIComponent(phone)}`) : Promise.resolve({ json: () => ({ repairs: [] }) }),
+          phone ? fetch(`/api/repairs?phone=${encodeURIComponent(phone)}`) : Promise.resolve({ json: () => ({ repairs: [] }) } as any),
         ]);
 
         const ordersData = await ordersRes.json();
@@ -106,7 +106,7 @@ export default function CustomerAccountPage() {
       <div className="max-w-7xl mx-auto px-4 space-y-8">
         
         {/* User Header Profile Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-slate-900 dark:text-white">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-3xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shadow-amber-500/20">
               {userName.slice(0, 1)}
@@ -129,7 +129,7 @@ export default function CustomerAccountPage() {
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex-1 md:flex-initial text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 font-bold px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-colors"
+              className="flex-1 md:flex-initial text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 font-bold px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               <span>خروج از حساب</span>
@@ -196,25 +196,25 @@ export default function CustomerAccountPage() {
                 {orders.map((order) => (
                   <div
                     key={order.id}
-                    className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4"
+                    className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-white"
                   >
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs">
                           <Package className="w-5 h-5" />
                         </div>
                         <div>
-                          <strong className="text-sm text-slate-900 font-mono block">
+                          <strong className="text-sm text-slate-900 dark:text-white font-mono block">
                             سفارش {order.orderNumber}
                           </strong>
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500">
                             ثبت شده در: {new Date(order.createdAt).toLocaleDateString("fa-IR")}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-3 py-1 rounded-xl">
+                        <span className="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold px-3 py-1 rounded-xl">
                           {order.orderStatus === "PROCESSING"
                             ? "در حال پردازش / آماده‌سازی"
                             : order.orderStatus === "SHIPPED"
@@ -225,7 +225,7 @@ export default function CustomerAccountPage() {
                         </span>
                         <Link
                           href={`/order-tracking/${order.orderNumber}`}
-                          className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-colors flex items-center gap-1"
+                          className="bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-400 text-white dark:text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl transition-colors flex items-center gap-1"
                         >
                           <FileText className="w-3.5 h-3.5" />
                           <span>مشاهده فاکتور</span>
@@ -233,30 +233,30 @@ export default function CustomerAccountPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
-                      <div>مبلغ کل: <strong className="text-slate-900 text-sm">{formatToman(order.totalAmount)}</strong></div>
-                      <div>شیوه ارسال: <strong className="text-slate-800">{order.shippingMethod === "isfahan_express" ? "پیک نجف‌آباد / اسنپ" : "تیپاکس و پست"}</strong></div>
-                      <div>وضعیت پرداخت: <strong className="text-emerald-700">{order.paymentStatus === "PAID" ? "پرداخت شده" : "در انتظار"}</strong></div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600 dark:text-slate-300">
+                      <div>مبلغ کل: <strong className="text-slate-900 dark:text-amber-400 text-sm font-mono">{formatToman(order.totalAmount)}</strong></div>
+                      <div>شیوه ارسال: <strong className="text-slate-800 dark:text-white">{order.shippingMethod === "isfahan_express" ? "پیک نجف‌آباد / اسنپ" : "تیپاکس و پست"}</strong></div>
+                      <div>وضعیت پرداخت: <strong className="text-emerald-600 dark:text-emerald-400">{order.paymentStatus === "PAID" ? "پرداخت شده" : "در انتظار"}</strong></div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
-                <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto" />
-                <h3 className="font-bold text-slate-700 text-sm">هنوز سفارشی ثبت نکرده‌اید</h3>
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 space-y-3">
+                <ShoppingBag className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
+                <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">هنوز سفارشی ثبت نکرده‌اید</h3>
                 <Link
                   href="/products"
-                  className="inline-block bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl"
+                  className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition-all"
                 >
-                  مرور و خرید محصولات
+                  مشاهده کاتالوگ و خرید کالا
                 </Link>
               </div>
             )}
           </div>
         )}
 
-        {/* Tab 2: Appliance Repair Tickets */}
+        {/* Tab 2: Repairs History */}
         {activeTab === "repairs" && (
           <div className="space-y-4">
             {repairs.length > 0 ? (
@@ -264,105 +264,113 @@ export default function CustomerAccountPage() {
                 {repairs.map((rep) => (
                   <div
                     key={rep.id}
-                    className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-3"
+                    className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-white"
                   >
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                      <div className="flex items-center gap-2">
-                        <Wrench className="w-5 h-5 text-amber-500" />
-                        <strong className="text-sm text-slate-900">{rep.applianceType}</strong>
-                        <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
-                          {rep.trackingCode}
-                        </span>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs">
+                          <Wrench className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <strong className="text-sm text-slate-900 dark:text-white font-mono block">
+                            تیکت تعمیر {rep.trackingCode}
+                          </strong>
+                          <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                            دستگاه: {rep.applianceType} {rep.brandModel ? `(${rep.brandModel})` : ""}
+                          </span>
+                        </div>
                       </div>
 
-                      <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold px-3 py-1 rounded-xl">
-                        {rep.status === "IN_PROGRESS"
-                          ? "در حال عیب‌یابی در کارگاه نجف‌آباد"
-                          : rep.status === "READY"
-                          ? "تعمیر تکمیل شد / آماده تحویل"
-                          : "ثبت شده"}
+                      <span className={`text-xs font-bold px-3 py-1 rounded-xl ${
+                        rep.status === "COMPLETED"
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                          : rep.status === "REPAIRING"
+                          ? "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300"
+                          : "bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300"
+                      }`}>
+                        {rep.status === "SUBMITTED" && "درخواست ثبت شد - در نوبت تحویل"}
+                        {rep.status === "RECEIVED" && "پذیرش شد - در نوبت عیب‌یابی"}
+                        {rep.status === "INSPECTING" && "در حال بررسی فنی"}
+                        {rep.status === "REPAIRING" && "در حال تعمیر"}
+                        {rep.status === "COMPLETED" && "آماده تحویل"}
+                        {rep.status === "DELIVERED" && "تحویل داده شده"}
                       </span>
                     </div>
 
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      شرح خرابی: {rep.issueDesc}
-                    </p>
-
-                    {rep.estimatedCost && (
-                      <div className="text-xs text-emerald-700 font-bold">
-                        هزینه برآورد: {formatToman(rep.estimatedCost)}
-                      </div>
-                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
+                      <div>شرح ایراد اعلامی: <span className="text-slate-800 dark:text-white">{rep.issueDesc}</span></div>
+                      {rep.estimatedCost && (
+                        <div>برآورد هزینه: <strong className="text-slate-900 dark:text-amber-400 font-mono">{formatToman(rep.estimatedCost)}</strong></div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
-                <Wrench className="w-12 h-12 text-slate-300 mx-auto" />
-                <h3 className="font-bold text-slate-700 text-sm">هیچ دستگاهی در حال تعمیر ندارید</h3>
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 space-y-3">
+                <Wrench className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
+                <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">درخواست تعمیری ثبت نکرده‌اید</h3>
                 <Link
                   href="/repair-service"
-                  className="inline-block bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl"
+                  className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition-all"
                 >
-                  ثبت درخواست تعمیر پنکه، کولر، بخاری و آنتن
+                  ثبت آنلاین درخواست تعمیر لوازم برقی
                 </Link>
               </div>
             )}
           </div>
         )}
 
-        {/* Tab 3: Corporate / Legal Invoice Form */}
+        {/* Tab 3: Corporate Info Form */}
         {activeTab === "corporate" && (
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5 max-w-2xl">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-slate-900 dark:text-white">
             <div>
-              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
-                <Building className="w-4 h-4 text-amber-500" />
-                <span>اطلاعات صدور فاکتور رسمی (اشخاص حقوقی و شرکت‌ها)</span>
+              <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
+                اطلاعات حقوقی جهت صدور فاکتور رسمی
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                جهت صدور پیش‌فاکتور و فاکتور رسمی نظام مهندسی و اداره دارایی با شناسه ملی و کد اقتصادی
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                برای شرکت‌ها، پیمانکاران و ارگان‌های دولتی جهت صدور فاکتور رسمی با کد اقتصادی معتبر
               </p>
             </div>
 
-            {corporateSaved && (
-              <div className="bg-emerald-100 text-emerald-800 text-xs p-3 rounded-xl flex items-center gap-2 font-bold">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>اطلاعات حقوقی شما با موفقیت ذخیره گردید.</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveCorporate} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveCorporate} className="space-y-4 max-w-xl text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1.5">نام رسمی شرکت / ارگان:</label>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  نام کامل شرکت / سازمان:
+                </label>
                 <input
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="مثال: شرکت مهندسی شیاسی"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500"
+                  placeholder="مثال: شرکت مهندسی برق آذرخش نجف‌آباد"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1.5">شناسه ملی / کد ملی:</label>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    شناسه ملی شرکت (۱۱ رقم):
+                  </label>
                   <input
                     type="text"
                     value={nationalCode}
                     onChange={(e) => setNationalCode(e.target.value)}
-                    placeholder="۱۰ یا ۱۱ رقمی"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500 font-mono text-left"
+                    placeholder="۱۰۱۰..."
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1.5">کد اقتصادی (۱۲ رقمی):</label>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    کد اقتصادی:
+                  </label>
                   <input
                     type="text"
                     value={economicCode}
                     onChange={(e) => setEconomicCode(e.target.value)}
-                    placeholder="۱۲ رقمی مالیاتی"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:ring-2 focus:ring-amber-500 font-mono text-left"
+                    placeholder="۱۲ رقمی"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
@@ -370,24 +378,53 @@ export default function CustomerAccountPage() {
               <button
                 type="submit"
                 disabled={savingCorporate}
-                className="py-3 px-6 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-colors"
+                className="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2"
               >
-                {savingCorporate ? "در حال ذخیره..." : "ذخیره اطلاعات فاکتور رسمی"}
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{savingCorporate ? "در حال ذخیره..." : "ذخیره اطلاعات حقوقی"}</span>
               </button>
+
+              {corporateSaved && (
+                <p className="text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                  ✓ اطلاعات حقوقی با موفقیت ذخیره گردید و در فاکتورهای آتی اعمال خواهد شد.
+                </p>
+              )}
             </form>
           </div>
         )}
 
         {/* Tab 4: Wishlist */}
         {activeTab === "wishlist" && (
-          <div>
-            <Link
-              href="/wishlist"
-              className="inline-flex items-center gap-2 text-xs font-bold text-amber-600 hover:underline"
-            >
-              <span>مشاهده و مدیریت کامل کالاهای ذخیره شده</span>
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
+          <div className="space-y-4">
+            {wishlist.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {wishlist.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3 flex flex-col justify-between"
+                  >
+                    <Link href={`/products/${item.slug}`} className="aspect-square bg-slate-50 dark:bg-slate-800 rounded-2xl p-3 flex items-center justify-center overflow-hidden">
+                      <img src={item.image || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80"} alt={item.name} className="w-full h-full object-contain" />
+                    </Link>
+                    <div>
+                      <h4 className="font-bold text-xs text-slate-900 dark:text-white line-clamp-2">{item.name}</h4>
+                      <p className="text-amber-600 dark:text-amber-400 font-extrabold text-xs font-mono mt-1">{formatToman(item.price)}</p>
+                    </div>
+                    <Link
+                      href={`/products/${item.slug}`}
+                      className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl text-center block transition-colors"
+                    >
+                      مشاهده کالا
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 space-y-3">
+                <Heart className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
+                <h3 className="font-bold text-slate-700 dark:text-slate-300 text-sm">لیست کالاهای ذخیره‌شده خالی است</h3>
+              </div>
+            )}
           </div>
         )}
 

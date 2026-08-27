@@ -64,14 +64,11 @@ export function Header() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 text-slate-300">
-            <Link href="/contact" className="hover:text-amber-400 font-medium transition-colors">
-              تماس و نشانی
-            </Link>
-            <span className="text-slate-600">•</span>
-            <Link href="/about" className="hover:text-amber-400 font-medium transition-colors">
-              درباره ما
-            </Link>
+          <div className="flex items-center gap-4 text-slate-300">
+            <span className="hidden sm:flex items-center gap-1 text-slate-300">
+              <Clock className="w-3 h-3 text-amber-400" />
+              <span>ساعات کاری: ۸:۳۰ الی ۲۱:۰۰</span>
+            </span>
             <span className="hidden sm:inline-block text-slate-600">•</span>
             <a
               href="tel:03142624567"

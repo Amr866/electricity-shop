@@ -61,10 +61,14 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm transition-all duration-300">
+    <header className={`sticky top-0 z-50 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-all duration-300 ${
+      isScrolled ? "shadow-lg shadow-slate-900/5 dark:shadow-black/30" : "shadow-xs"
+    }`}>
       
-      {/* 1. Super Top Utility Bar */}
-      <div className="bg-slate-100/90 dark:bg-slate-950 text-slate-700 dark:text-slate-300 text-[11px] py-1.5 px-4 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+      {/* 1. Super Top Utility Bar (Smoothly collapses when scrolling down for compact floating header) */}
+      <div className={`bg-slate-100/90 dark:bg-slate-950 text-slate-700 dark:text-slate-300 text-[11px] px-4 transition-all duration-300 overflow-hidden ${
+        isScrolled ? "max-h-0 opacity-0 py-0 border-none" : "max-h-12 opacity-100 py-1.5 border-b border-slate-200/80 dark:border-slate-800/80"
+      }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Shop Location & Fast Courier Notice */}

@@ -37,6 +37,12 @@ export const metadata: Metadata = {
     "آنتن تلویزیون هانی"
   ],
   authors: [{ name: "فروشگاه شیاسی (لوازم برقی و خانگی)" }],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-icon",
+  },
 };
 
 export default function RootLayout({

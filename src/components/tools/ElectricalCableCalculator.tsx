@@ -1,186 +1,230 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
-import { formatToman, toPersianDigits } from "@/lib/utils";
+import { toPersianDigits, formatToman } from "@/lib/utils";
 import {
-  Calculator,
   Zap,
-  ShieldAlert,
+  Calculator,
   CheckCircle2,
+  AlertTriangle,
   ShoppingCart,
-  ArrowLeft,
+  Check,
+  ShieldCheck,
+  RotateCcw,
   Sparkles,
-  Info,
   ChevronDown,
 } from "lucide-react";
 
+interface DevicePreset {
+  id: string;
+  name: string;
+  defaultPowerWatts: number;
+  phase: "single" | "three";
+  iconName: string;
+}
+
+const PRESETS: DevicePreset[] = [
+  { id: "split_ac", name: "اسپلیت و کولر گازی ۲۴۰۰۰", defaultPowerWatts: 3500, phase: "single", iconName: "Fan" },
+  { id: "water_cooler", name: "کولر آبی ۷۰۰۰ (موتور ۳/۴ اسب)", defaultPowerWatts: 850, phase: "single", iconName: "Sun" },
+  { id: "electric_heater", name: "بخاری برقی و هیتر المنتی", defaultPowerWatts: 2200, phase: "single", iconName: "Flame" },
+  { id: "water_pump", name: "پمپ آب خانگی ۱ اسب", defaultPowerWatts: 750, phase: "single", iconName: "Plug" },
+  { id: "welding_machine", name: "اینورتر و دستگاه جوشکاری", defaultPowerWatts: 4500, phase: "single", iconName: "Zap" },
+  { id: "three_phase_motor", name: "الکتروموتور ۵.۵ اسب ۳ فاز", defaultPowerWatts: 4000, phase: "three", iconName: "Cpu" },
+  { id: "custom", name: "سفارشی (تنظیم دستی توان)", defaultPowerWatts: 2000, phase: "single", iconName: "Sliders" },
+];
+
+const WIRE_PRICING: Record<number, { name: string; pricePerMeter: number; productId: string }> = {
+  1.5: { name: "سیم افشان ۱.۵ تمام مس البرز", pricePerMeter: 18500, productId: "cable-alborz-1-5" },
+  2.5: { name: "سیم افشان ۲.۵ تمام مس البرز", pricePerMeter: 29500, productId: "cable-alborz-2-5" },
+  4: { name: "سیم افشان ۴ تمام مس البرز", pricePerMeter: 46000, productId: "cable-alborz-4-0" },
+  6: { name: "سیم افشان ۶ تمام مس البرز", pricePerMeter: 68000, productId: "cable-alborz-6-0" },
+  10: { name: "سیم افشان ۱۰ تمام مس البرز", pricePerMeter: 112000, productId: "cable-alborz-10-0" },
+};
+
+const FUSE_PRICING: Record<string, { name: string; price: number; productId: string }> = {
+  B10: { name: "کلید مینیاتوری ۱۰ آمپر دنا الکتریک", price: 115000, productId: "fuse-b10" },
+  B16: { name: "کلید مینیاتوری ۱۶ آمپر دنا الکتریک", price: 120000, productId: "fuse-b16" },
+  C25: { name: "کلید مینیاتوری ۲۵ آمپر دنا الکتریک", price: 135000, productId: "fuse-c25" },
+  C32: { name: "کلید مینیاتوری ۳۲ آمپر دنا الکتریک", price: 145000, productId: "fuse-c32" },
+  C50: { name: "کلید مینیاتوری ۵۰ آمپر دنا الکتریک", price: 185000, productId: "fuse-c50" },
+};
+
 export function ElectricalCableCalculator() {
   const { addToCart } = useCart();
-
-  // Inputs
-  const [phaseType, setPhaseType] = useState<"single" | "three">("single"); // 220V vs 380V
-  const [loadPowerWatts, setLoadPowerWatts] = useState<number>(3500); // in Watts
-  const [distanceMeters, setDistanceMeters] = useState<number>(25); // in Meters
-  const [appliancePreset, setAppliancePreset] = useState<string>("split_ac");
-  const [addedToCart, setAddedToCart] = useState(false);
-
-  // Presets
-  const PRESETS = [
-    { id: "cooler_motor", name: "موتور کولر آبی + پمپ", power: 1200, phase: "single" as const },
-    { id: "electric_heater", name: "بخاری برقی / هیتر ۲ کیلووات", power: 2200, phase: "single" as const },
-    { id: "lighting_circuit", name: "مدار روشنایی و لاین نوری ساختمان", power: 800, phase: "single" as const },
-    { id: "split_ac", name: "اسپلیت و کولر گازی ۲۴۰۰۰", power: 3500, phase: "single" as const },
-    { id: "workshop_motor", name: "الکتروموتور کارگاهی سه‌فاز ۵.۵ اسب", power: 4000, phase: "three" as const },
-  ];
+  const [selectedPresetId, setSelectedPresetId] = useState<string>("split_ac");
+  const [loadPowerWatts, setLoadPowerWatts] = useState<number>(3500);
+  const [distanceMeters, setDistanceMeters] = useState<number>(25);
+  const [phaseType, setPhaseType] = useState<"single" | "three">("single");
+  const [isCopied, setIsCopied] = useState(false);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const handleSelectPreset = (presetId: string) => {
-    const found = PRESETS.find((p) => p.id === presetId);
-    if (found) {
-      setAppliancePreset(presetId);
-      setLoadPowerWatts(found.power);
-      setPhaseType(found.phase);
+    setSelectedPresetId(presetId);
+    const preset = PRESETS.find((p) => p.id === presetId);
+    if (preset && preset.id !== "custom") {
+      setLoadPowerWatts(preset.defaultPowerWatts);
+      setPhaseType(preset.phase);
     }
   };
 
-  // Calculation Logic (Standard Iranian National Building Code - مبحث ۱۳ مقررات ملی ساختمان)
-  const voltage = phaseType === "single" ? 220 : 380;
-  const powerFactor = 0.85; // typical inductive load
-  
-  // Current in Amperes
-  const currentAmps =
-    phaseType === "single"
-      ? loadPowerWatts / (voltage * powerFactor)
-      : loadPowerWatts / (Math.sqrt(3) * voltage * powerFactor);
+  const {
+    currentAmps,
+    recommendedGauge,
+    recommendedFuse,
+    voltageDropVolts,
+    voltageDropPercent,
+    isDropAcceptable,
+    totalPackagePrice,
+  } = useMemo(() => {
+    const powerFactor = 0.85;
+    const rho = 0.0175;
 
-  // Copper resistivity rho = 0.0175 ohm*mm2/m
-  // Voltage drop formula: deltaV = 2 * L * I * rho / S (for single phase)
-  // Required cross section S = 2 * L * I * rho / (V * deltaV_percentage)
-  const maxDropPercent = 0.03; // 3% allowable voltage drop
-  const maxDropVolts = voltage * maxDropPercent;
-  
-  const minCrossSectionDrop =
-    phaseType === "single"
-      ? (2 * distanceMeters * currentAmps * 0.0175) / maxDropVolts
-      : (Math.sqrt(3) * distanceMeters * currentAmps * 0.0175) / maxDropVolts;
+    let amps = 0;
+    if (phaseType === "single") {
+      amps = loadPowerWatts / (220 * powerFactor);
+    } else {
+      amps = loadPowerWatts / (Math.sqrt(3) * 380 * powerFactor);
+    }
 
-  // Determine standard copper wire size
-  let recommendedGauge = 1.5;
-  let recommendedFuseAmps = 10;
-  let recommendedFuseType = "B10";
+    let gauge = 1.5;
+    let fuse = "B10";
 
-  if (currentAmps <= 10 && minCrossSectionDrop <= 1.5) {
-    recommendedGauge = 1.5;
-    recommendedFuseAmps = 10;
-    recommendedFuseType = "B10 یا B16";
-  } else if (currentAmps <= 16 && minCrossSectionDrop <= 2.5) {
-    recommendedGauge = 2.5;
-    recommendedFuseAmps = 16;
-    recommendedFuseType = "B16";
-  } else if (currentAmps <= 25 && minCrossSectionDrop <= 4.0) {
-    recommendedGauge = 4.0;
-    recommendedFuseAmps = 25;
-    recommendedFuseType = "C25";
-  } else if (currentAmps <= 35 && minCrossSectionDrop <= 6.0) {
-    recommendedGauge = 6.0;
-    recommendedFuseAmps = 32;
-    recommendedFuseType = "C32";
-  } else {
-    recommendedGauge = 10.0;
-    recommendedFuseAmps = 50;
-    recommendedFuseType = "C50";
-  }
+    if (amps <= 10) {
+      gauge = 1.5;
+      fuse = "B10";
+    } else if (amps <= 16) {
+      gauge = 2.5;
+      fuse = "B16";
+    } else if (amps <= 25) {
+      gauge = 4;
+      fuse = "C25";
+    } else if (amps <= 32) {
+      gauge = 6;
+      fuse = "C32";
+    } else {
+      gauge = 10;
+      fuse = "C50";
+    }
 
-  // Estimated pricing for recommended products
-  const cableMeterPrice =
-    recommendedGauge === 1.5
-      ? 9800
-      : recommendedGauge === 2.5
-      ? 16500
-      : recommendedGauge === 4.0
-      ? 28000
-      : recommendedGauge === 6.0
-      ? 42000
-      : 68000;
+    let vDrop = 0;
+    if (phaseType === "single") {
+      vDrop = (2 * distanceMeters * amps * rho) / gauge;
+    } else {
+      vDrop = (Math.sqrt(3) * distanceMeters * amps * rho) / gauge;
+    }
 
-  const totalCableCost = cableMeterPrice * distanceMeters;
-  const fuseCost = 145000;
+    const nominalVoltage = phaseType === "single" ? 220 : 380;
+    let vDropPercent = (vDrop / nominalVoltage) * 100;
 
-  const handleAddBundleToCart = () => {
-    // Add Cable
+    if (vDropPercent > 3.0) {
+      if (gauge === 1.5) gauge = 2.5;
+      else if (gauge === 2.5) gauge = 4;
+      else if (gauge === 4) gauge = 6;
+      else if (gauge === 6) gauge = 10;
+
+      if (phaseType === "single") {
+        vDrop = (2 * distanceMeters * amps * rho) / gauge;
+      } else {
+        vDrop = (Math.sqrt(3) * distanceMeters * amps * rho) / gauge;
+      }
+      vDropPercent = (vDrop / nominalVoltage) * 100;
+    }
+
+    const dropOk = vDropPercent <= 3.0;
+
+    const wireInfo = WIRE_PRICING[gauge] || WIRE_PRICING[2.5];
+    const fuseInfo = FUSE_PRICING[fuse] || FUSE_PRICING["B16"];
+    const wireCost = wireInfo.pricePerMeter * distanceMeters;
+    const fuseCost = fuseInfo.price;
+    const packageTotal = wireCost + fuseCost;
+
+    return {
+      currentAmps: amps,
+      recommendedGauge: gauge,
+      recommendedFuse: fuse,
+      voltageDropVolts: vDrop,
+      voltageDropPercent: vDropPercent,
+      isDropAcceptable: dropOk,
+      totalPackagePrice: packageTotal,
+    };
+  }, [loadPowerWatts, distanceMeters, phaseType]);
+
+  const handleAddPackageToCart = () => {
+    const wireInfo = WIRE_PRICING[recommendedGauge] || WIRE_PRICING[2.5];
+    const fuseInfo = FUSE_PRICING[recommendedFuse] || FUSE_PRICING["B16"];
+
     addToCart(
       {
-        id: `cable-${recommendedGauge}`,
-        name: `سیم برق افشان تمام مس استاندارد سایز ${recommendedGauge} میلی‌متر (${distanceMeters} متر)`,
-        slug: "copper-wire-15-alborz-electric",
-        price: cableMeterPrice,
+        id: `${wireInfo.productId}-${distanceMeters}m`,
+        name: `${wireInfo.name} (${toPersianDigits(distanceMeters)} متر برش سفارشی)`,
+        slug: "alborz-pure-copper-cable",
+        price: wireInfo.pricePerMeter * distanceMeters,
         stock: 500,
-        images: [{ url: "/images/products/parto-electric-stranded-wire-1-15.png" }],
-      },
-      distanceMeters
-    );
-
-    // Add Fuse
-    addToCart(
-      {
-        id: `fuse-${recommendedFuseAmps}`,
-        name: `کلید فیوز مینیاتوری ${recommendedFuseType} اشنایدر / هیوندای استاندارد`,
-        slug: "copper-wire-15-alborz-electric",
-        price: fuseCost,
-        stock: 50,
-        images: [{ url: "/images/products/ds_30-cable-4875319_1920.jpg" }],
+        category: { name: "سیم و کابل", slug: "wiring-building" },
       },
       1
     );
 
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2500);
+    addToCart(
+      {
+        id: fuseInfo.productId,
+        name: fuseInfo.name,
+        slug: "dena-electric-miniature-circuit-breaker",
+        price: fuseInfo.price,
+        stock: 50,
+        category: { name: "تجهیزات حفاظتی", slug: "wiring-building" },
+      },
+      1
+    );
+
+    setIsAddedToCart(true);
+    setTimeout(() => setIsAddedToCart(false), 2500);
   };
 
   return (
-    <section className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-amber-500/30 shadow-2xl space-y-6 relative overflow-hidden">
-      {/* Background Decorative Lighting */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-10 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+    <section id="calculator" className="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white border border-slate-800 shadow-xl space-y-6 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-5 relative z-10">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-              <Calculator className="w-5 h-5" />
-            </span>
-            <h3 className="text-base sm:text-xl font-extrabold text-white">
-              محاسبه‌گر مهندسی سایز کابل و فیوز مینیاتوری
-            </h3>
+      {/* Header & Preset Selector */}
+      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
+            <Calculator className="w-3.5 h-3.5" />
+            <span>محاسبه‌گر مهندسی سایز کابل و فیوز مینیاتوری</span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            بر اساس استاندارد مقررات ملی ساختمان ایران (مبحث ۱۳) و مسافت کابل‌کشی
+          <h2 className="text-xl sm:text-2xl font-black text-white">
+            تعیین استاندارد سیم مسی، افت ولتاژ و تیپ فیوز
+          </h2>
+          <p className="text-xs text-slate-300 font-medium">
+            بر اساس مقررات ملی ساختمان ایران (مبحث ۱۳) و استانداردهای نظام مهندسی برق
           </p>
         </div>
 
-        {/* Preset Selector */}
-        <div className="flex items-center gap-2 self-stretch sm:self-auto">
-          <span className="text-[11px] text-slate-400 font-semibold shrink-0">دستگاه:</span>
-          <select
-            value={appliancePreset}
-            onChange={(e) => handleSelectPreset(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-amber-400 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-amber-500 font-bold w-full sm:w-auto"
-          >
-            {PRESETS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+        {/* Device Preset Dropdown Selector */}
+        <div className="w-full md:w-auto">
+          <div className="relative">
+            <select
+              value={selectedPresetId}
+              onChange={(e) => handleSelectPreset(e.target.value)}
+              className="w-full md:w-64 bg-slate-850 hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 appearance-none cursor-pointer transition-colors shadow-sm"
+            >
+              {PRESETS.map((preset) => (
+                <option key={preset.id} value={preset.id} className="bg-slate-900 text-white">
+                  {preset.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
         </div>
       </div>
 
       {/* Form Controls */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
         {/* Input 1: Phase Type */}
-        <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
+        <div className="p-4 bg-slate-850 rounded-2xl border border-slate-750 space-y-2">
           <label className="text-xs font-bold text-slate-300 block">
             نوع برق ورودی:
           </label>
@@ -190,7 +234,7 @@ export function ElectricalCableCalculator() {
               onClick={() => setPhaseType("single")}
               className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                 phaseType === "single"
-                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md font-black"
+                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-sm font-black"
                   : "bg-slate-800 text-slate-400 border-slate-700 hover:text-white"
               }`}
             >
@@ -201,7 +245,7 @@ export function ElectricalCableCalculator() {
               onClick={() => setPhaseType("three")}
               className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                 phaseType === "three"
-                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md font-black"
+                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-sm font-black"
                   : "bg-slate-800 text-slate-400 border-slate-700 hover:text-white"
               }`}
             >
@@ -211,9 +255,9 @@ export function ElectricalCableCalculator() {
         </div>
 
         {/* Input 2: Load Power */}
-        <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
+        <div className="p-4 bg-slate-850 rounded-2xl border border-slate-750 space-y-2">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-300">توان مصرفی مصرف‌کننده:</span>
+            <span className="text-slate-300">توان مصرفی:</span>
             <span className="text-amber-400 font-mono font-bold">
               {toPersianDigits(loadPowerWatts)} وات ({(loadPowerWatts / 1000).toFixed(1)} kW)
             </span>
@@ -225,9 +269,9 @@ export function ElectricalCableCalculator() {
             step="100"
             value={loadPowerWatts}
             onChange={(e) => setLoadPowerWatts(Number(e.target.value))}
-            className="w-full accent-amber-500 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>۲۰۰W</span>
             <span>۵kW</span>
             <span>۱۵kW</span>
@@ -235,9 +279,9 @@ export function ElectricalCableCalculator() {
         </div>
 
         {/* Input 3: Distance */}
-        <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
+        <div className="p-4 bg-slate-850 rounded-2xl border border-slate-750 space-y-2">
           <div className="flex items-center justify-between text-xs font-bold">
-            <span className="text-slate-300">مسافت کابل‌کشی (طول سیم):</span>
+            <span className="text-slate-300">طول مسیر سیم‌کشی:</span>
             <span className="text-amber-400 font-mono font-bold">
               {toPersianDigits(distanceMeters)} متر
             </span>
@@ -249,9 +293,9 @@ export function ElectricalCableCalculator() {
             step="5"
             value={distanceMeters}
             onChange={(e) => setDistanceMeters(Number(e.target.value))}
-            className="w-full accent-amber-500 cursor-pointer"
+            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>۵ متر</span>
             <span>۷۵ متر</span>
             <span>۱۵۰ متر</span>
@@ -260,66 +304,73 @@ export function ElectricalCableCalculator() {
       </div>
 
       {/* Engineering Results Display Box */}
-      <div className="bg-slate-950/90 rounded-3xl p-5 sm:p-6 border border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
+      <div className="bg-slate-950 rounded-3xl p-5 sm:p-6 border border-slate-800 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
         {/* Left Col: Calculated Technical Values */}
         <div className="lg:col-span-7 space-y-4">
           <div className="grid grid-cols-3 gap-2.5 text-center text-xs">
-            <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800">
-              <span className="text-[11px] text-slate-400 block mb-1">جریان نامی مصرفی</span>
+            <div className="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+              <span className="text-[11px] text-slate-400 block mb-1 font-medium">جریان نامی مصرفی</span>
               <strong className="text-amber-400 font-mono text-sm sm:text-base font-bold">
                 {currentAmps.toFixed(1)} A
               </strong>
             </div>
 
-            <div className="p-3 bg-slate-900 rounded-2xl border border-amber-500/40 shadow-sm">
-              <span className="text-[11px] text-slate-300 block mb-1">سایز سیم پیشنهادی</span>
+            <div className="p-3.5 bg-slate-900 rounded-2xl border border-amber-500/50 shadow-sm">
+              <span className="text-[11px] text-slate-300 block mb-1 font-medium">سایز سیم پیشنهادی</span>
               <strong className="text-white font-mono text-sm sm:text-base font-black">
                 {recommendedGauge} mm²
               </strong>
             </div>
 
-            <div className="p-3 bg-slate-900 rounded-2xl border border-slate-800">
-              <span className="text-[11px] text-slate-400 block mb-1">فیوز مینیاتوری</span>
+            <div className="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+              <span className="text-[11px] text-slate-400 block mb-1 font-medium">فیوز مینیاتوری</span>
               <strong className="text-emerald-400 font-mono text-sm sm:text-base font-bold">
-                {recommendedFuseType}
+                {recommendedFuse}
               </strong>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>
-              سیم محاسبه‌شده ۱۰۰٪ تمام مس آنیل شده با افت ولتاژ زیر ۳٪ در مسافت {toPersianDigits(distanceMeters)} متر است.
-            </span>
+          {/* Voltage drop validation badge */}
+          <div className="flex items-center justify-between text-[11px] bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
+            <div className="flex items-center gap-1.5">
+              {isDropAcceptable ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              )}
+              <span className="text-slate-300 font-medium">
+                سیم محاسبه‌شده ۱۰۰٪ تمام مس آنیل شده با افت ولتاژ زیر ۳٪ در مسافت {toPersianDigits(distanceMeters)} متر است.
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Right Col: Instant 1-Click Purchase of calculated bundle */}
-        <div className="lg:col-span-5 bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">پکیج کابل مس + فیوز محافظ:</span>
-            <span className="text-amber-400 font-extrabold font-mono text-sm">
-              {formatToman(totalCableCost + fuseCost)}
+        {/* Right Col: Instant 1-Click Purchase Package */}
+        <div className="lg:col-span-5 bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-400 font-medium">پکیج کابل مس + فیوز محافظ:</span>
+            <span className="text-sm sm:text-base font-black text-amber-400 font-mono">
+              {formatToman(totalPackagePrice)}
             </span>
           </div>
 
           <button
-            onClick={handleAddBundleToCart}
-            className={`w-full py-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 hover-glow ${
-              addedToCart
-                ? "bg-emerald-600 text-white shadow-emerald-600/30"
-                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20"
+            onClick={handleAddPackageToCart}
+            className={`w-full py-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md active:scale-95 ${
+              isAddedToCart
+                ? "bg-emerald-600 text-white"
+                : "bg-amber-500 hover:bg-amber-400 text-slate-950 hover-glow"
             }`}
           >
-            {addedToCart ? (
+            {isAddedToCart ? (
               <>
-                <CheckCircle2 className="w-4 h-4" />
-                <span>پکیج کابل و فیوز به سبد اضافه شد</span>
+                <Check className="w-4 h-4" />
+                <span>پکیج به سبد خرید اضافه شد</span>
               </>
             ) : (
               <>
                 <ShoppingCart className="w-4 h-4" />
-                <span>افزودن سیم ({distanceMeters}متر) و فیوز به سبد</span>
+                <span>افزودن سیم ({toPersianDigits(distanceMeters)}متر) و فیوز به سبد</span>
               </>
             )}
           </button>

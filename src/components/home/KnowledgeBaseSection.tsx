@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { BookOpen, Clock, ArrowLeft, Sparkles, Lightbulb } from "lucide-react";
+import { BookOpen, Clock, ArrowLeft, Lightbulb } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
 export function KnowledgeBaseSection() {
@@ -20,11 +20,11 @@ export function KnowledgeBaseSection() {
     {
       id: 2,
       title: "چه مکان‌هایی را در خانه و نما می‌توان نور مخفی و لاین نوری کار کرد؟",
-      category: "طراحی نورپردازی",
+      category: "طراحی لاین نوری",
       readTime: "۳ دقیقه مطالعه",
       date: "۱۴۰۳/۰۶/۱۰",
       image:
-        "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
       slug: "hidden-lighting-places",
     },
     {
@@ -51,7 +51,7 @@ export function KnowledgeBaseSection() {
               دانستنی‌های روشنایی و تعمیرات لوازم برقی
             </h3>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
             مقاله‌های تخصصی درباره برق ساختمان، نگهداری لوازم خانگی، سیستم‌های سرمایشی و گرمایشی
           </p>
         </div>
@@ -69,7 +69,7 @@ export function KnowledgeBaseSection() {
         {articles.map((art) => (
           <div
             key={art.id}
-            className="group rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 overflow-hidden flex flex-col justify-between hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all hover:shadow-md"
+            className="group rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-750 overflow-hidden flex flex-col justify-between hover:border-amber-400/80 dark:hover:border-amber-500/80 transition-all hover:shadow-md"
           >
             <div>
               <div className="aspect-video w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
@@ -81,7 +81,7 @@ export function KnowledgeBaseSection() {
               </div>
 
               <div className="p-4 space-y-2.5">
-                <span className="inline-block bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
+                <span className="inline-block bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
                   {art.category}
                 </span>
 
@@ -91,7 +91,7 @@ export function KnowledgeBaseSection() {
               </div>
             </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-700/60 mt-3 pt-3">
+            <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-400 border-t border-slate-100 dark:border-slate-750 mt-3 pt-3">
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                 {art.readTime}

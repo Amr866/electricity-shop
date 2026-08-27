@@ -102,25 +102,25 @@ export default function CustomerAccountPage() {
   const userName = session?.user?.name || "مشتری محترم";
 
   return (
-    <div className="bg-slate-50 min-h-screen py-10">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-10 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 space-y-8">
         
         {/* User Header Profile Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-3xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shadow-amber-500/20">
               {userName.slice(0, 1)}
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h1 className="font-extrabold text-lg sm:text-xl text-slate-900">
+                <h1 className="font-extrabold text-lg sm:text-xl text-slate-900 dark:text-white">
                   {userName}
                 </h1>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                   حساب کاربری فعال
                 </span>
               </div>
-              <p className="text-xs text-slate-500 font-mono">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                 شماره همراه: {toPersianDigits(userPhone)}
               </p>
             </div>
@@ -129,7 +129,7 @@ export default function CustomerAccountPage() {
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex-1 md:flex-initial text-xs text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 font-bold px-4 py-2.5 rounded-xl border border-rose-200 flex items-center justify-center gap-1.5 transition-colors"
+              className="flex-1 md:flex-initial text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 font-bold px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               <span>خروج از حساب</span>
@@ -138,13 +138,13 @@ export default function CustomerAccountPage() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
+        <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 overflow-x-auto">
           <button
             onClick={() => setActiveTab("orders")}
             className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 transition-colors ${
               activeTab === "orders"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             <Package className="w-4 h-4" />
@@ -156,7 +156,7 @@ export default function CustomerAccountPage() {
             className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 transition-colors ${
               activeTab === "repairs"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             <Wrench className="w-4 h-4" />
@@ -168,7 +168,7 @@ export default function CustomerAccountPage() {
             className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 transition-colors ${
               activeTab === "corporate"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             <Building className="w-4 h-4" />
@@ -180,11 +180,11 @@ export default function CustomerAccountPage() {
             className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 transition-colors ${
               activeTab === "wishlist"
                 ? "bg-amber-500 text-slate-950 shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             <Heart className="w-4 h-4" />
-            <span>علاقه‌مندی‌ها ({toPersianDigits(wishlistCount)})</span>
+            <span>کالاهای ذخیره‌شده ({toPersianDigits(wishlistCount)})</span>
           </button>
         </div>
 

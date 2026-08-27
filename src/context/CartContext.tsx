@@ -6,7 +6,8 @@ export interface CartItem {
   id: string; // Product ID
   name: string;
   slug: string;
-  price: number; // Discounted/effective price in Toman
+  basePrice: number; // Base single unit price
+  price: number; // Effective unit price based on tiered quantity
   originalPrice?: number | null;
   image: string;
   categoryName?: string;
@@ -48,6 +49,16 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Helper to compute unit price based on tiered quantity
+function computeTieredUnitPrice(basePrice: number, qty: number): number {
+  if (qty >= 50) {
+    return Math.round(basePrice * 0.9); // 10% wholesale discount
+  } else if (qty >= 10) {
+    return Math.round(basePrice * 0.95); // 5% pack discount
+  }
+  return basePrice;
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<CouponData | null>(null);
@@ -58,7 +69,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const savedCart = localStorage.getItem("naghsh_jahan_cart");
       const savedCoupon = localStorage.getItem("naghsh_jahan_coupon");
-      if (savedCart) setItems(JSON.parse(savedCart));
+      if (savedCart) {
+        const parsed = JSON.parse(savedCart);
+        // Ensure basePrice exists and prices are dynamically adjusted
+        const updated = parsed.map((item: any) => {
+          const basePrice = item.basePrice || item.price;
+          return {
+            ...item,
+            basePrice,
+            price: computeTieredUnitPrice(basePrice, item.quantity),
+          };
+        });
+        setItems(updated);
+      }
       if (savedCoupon) setAppliedCoupon(JSON.parse(savedCoupon));
     } catch (e) {
       console.error("Failed to load cart from storage", e);
@@ -87,13 +110,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const existing = prev.find((item) => item.id === product.id);
       const primaryImg = product.images?.find((img: any) => img.isPrimary)?.url || product.images?.[0]?.url || product.image || "/images/placeholder.jpg";
       const stock = product.stock ?? 20;
+      const basePrice = product.price;
 
       if (existing) {
         const newQty = Math.min(existing.quantity + qty, stock);
+        const effectivePrice = computeTieredUnitPrice(existing.basePrice || basePrice, newQty);
         return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: newQty } : item
+          item.id === product.id
+            ? { ...item, quantity: newQty, price: effectivePrice, basePrice: existing.basePrice || basePrice }
+            : item
         );
       }
+
+      const initialQty = Math.min(qty, stock);
+      const effectivePrice = computeTieredUnitPrice(basePrice, initialQty);
 
       return [
         ...prev,
@@ -101,12 +131,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           id: product.id,
           name: product.name,
           slug: product.slug,
-          price: product.price,
+          basePrice: basePrice,
+          price: effectivePrice,
           originalPrice: product.originalPrice,
           image: primaryImg,
           categoryName: product.category?.name,
           sku: product.sku,
-          quantity: Math.min(qty, stock),
+          quantity: initialQty,
           stock: stock,
         },
       ];
@@ -126,7 +157,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       prev.map((item) => {
         if (item.id === productId) {
           const validQty = Math.min(quantity, item.stock);
-          return { ...item, quantity: validQty };
+          const effectivePrice = computeTieredUnitPrice(item.basePrice || item.price, validQty);
+          return { ...item, quantity: validQty, price: effectivePrice };
         }
         return item;
       })

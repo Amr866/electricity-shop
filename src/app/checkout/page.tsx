@@ -55,6 +55,14 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Sync session user details when loaded
+  React.useEffect(() => {
+    if (session?.user) {
+      if (session.user.name && !customerName) setCustomerName(session.user.name);
+      if (session.user.phone && !customerPhone) setCustomerPhone(session.user.phone);
+    }
+  }, [session]);
+
   // Calculate final shipping cost and grand total
   const shippingMethod =
     SHIPPING_METHODS.find((s) => s.id === selectedShipping) || SHIPPING_METHODS[0];

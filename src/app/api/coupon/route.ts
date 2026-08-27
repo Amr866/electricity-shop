@@ -18,8 +18,16 @@ export async function POST(req: NextRequest) {
 
     if (!coupon || !coupon.isActive) {
       return NextResponse.json(
-        { message: "کد تخفیف وارد شده معتبر نیست یا منقضی شده است." },
+        { message: "کد تخفیف وارد شده معتبر نیست یا غیرفعال شده است." },
         { status: 404 }
+      );
+    }
+
+    // Check expiration date
+    if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
+      return NextResponse.json(
+        { message: "مهلت استفاده از این کد تخفیف به پایان رسیده است." },
+        { status: 400 }
       );
     }
 

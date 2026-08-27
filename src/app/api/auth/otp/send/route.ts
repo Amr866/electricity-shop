@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       where: { phone: cleanPhone },
     });
 
-    // Save token
+    // Save token to DB
     await prisma.verificationToken.create({
       data: {
         phone: cleanPhone,
@@ -32,13 +32,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(`📱 [SMS Gateway] OTP for ${cleanPhone}: ${code}`);
+    console.log(`📱 [SMS Gateway] OTP code for ${cleanPhone}: ${code}`);
+
+    const isDev = process.env.NODE_ENV !== "production";
 
     return NextResponse.json({
       success: true,
-      message: `کد تایید ۵ رقمی به شماره ${cleanPhone} ارسال گردید.`,
-      // Return code in dev for testing convenience
-      devCode: code,
+      message: `کد تایید ۵ رقمی به شماره ${cleanPhone} پیامک شد.`,
+      ...(isDev ? { devCode: code } : {}),
     });
   } catch (error) {
     console.error("Error sending OTP:", error);

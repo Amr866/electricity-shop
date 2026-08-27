@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkAdminSession } from "@/lib/adminAuth";
 
 export async function POST(req: NextRequest) {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
   try {
     const { code, discountPercent, discountAmount, minOrderAmount } = await req.json();
 
@@ -29,6 +33,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
   try {
     const { id, isActive } = await req.json();
 
@@ -44,6 +51,9 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");

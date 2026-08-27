@@ -1,7 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkAdminSession } from "@/lib/adminAuth";
+
+export async function GET() {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        items: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ success: true, orders });
+  } catch (error) {
+    console.error("Error fetching admin orders:", error);
+    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
+  }
+}
 
 export async function PUT(req: NextRequest) {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
   try {
     const { orderId, orderStatus, paymentStatus, trackingCode } = await req.json();
 

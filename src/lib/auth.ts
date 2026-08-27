@@ -16,7 +16,6 @@ export const authOptions: NextAuthOptions = {
         phone: { label: "شماره موبایل", type: "text" },
         otpCode: { label: "کد تایید", type: "text" },
         password: { label: "کلمه عبور (ادمین)", type: "password" },
-        role: { label: "نقش", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.phone) return null;
@@ -25,10 +24,18 @@ export const authOptions: NextAuthOptions = {
 
         // 1. Admin login with password
         if (credentials.password) {
+          const adminUser = await prisma.user.findFirst({
+            where: {
+              phone,
+              role: "ADMIN",
+            },
+          });
+
+          // Check credentials (or auto-bootstrap primary admin in DB)
           if (phone === "09131112233" && credentials.password === "admin123") {
-            let adminUser = await prisma.user.findUnique({ where: { phone } });
-            if (!adminUser) {
-              adminUser = await prisma.user.create({
+            let admin = adminUser;
+            if (!admin) {
+              admin = await prisma.user.create({
                 data: {
                   phone,
                   name: "مدیریت فروشگاه شیاسی",
@@ -38,9 +45,9 @@ export const authOptions: NextAuthOptions = {
               });
             }
             return {
-              id: adminUser.id,
-              name: adminUser.name || "مدیر فروشگاه",
-              phone: adminUser.phone,
+              id: admin.id,
+              name: admin.name || "مدیر فروشگاه",
+              phone: admin.phone,
               role: "ADMIN",
             };
           }
@@ -49,23 +56,21 @@ export const authOptions: NextAuthOptions = {
 
         // 2. Customer OTP Verification Login
         if (credentials.otpCode) {
+          const inputCode = credentials.otpCode.trim();
           const validToken = await prisma.verificationToken.findFirst({
             where: {
               phone,
-              code: credentials.otpCode.trim(),
+              code: inputCode,
               expiresAt: { gt: new Date() },
             },
           });
 
-          // Also allow test OTP "12345" for seamless testing
-          if (!validToken && credentials.otpCode !== "12345") {
+          if (!validToken) {
             return null;
           }
 
           // Delete token once used
-          if (validToken) {
-            await prisma.verificationToken.delete({ where: { id: validToken.id } });
-          }
+          await prisma.verificationToken.delete({ where: { id: validToken.id } });
 
           // Find or create customer
           let user = await prisma.user.findUnique({ where: { phone } });
@@ -85,7 +90,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name || "مشتری گرامی",
             phone: user.phone,
-            role: user.role,
+            role: "CUSTOMER",
           };
         }
 
@@ -104,9 +109,9 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
-        (session.user as any).phone = token.phone;
+        session.user.id = (token.id as string) || "";
+        session.user.role = (token.role as "ADMIN" | "CUSTOMER") || "CUSTOMER";
+        session.user.phone = (token.phone as string) || "";
       }
       return session;
     },

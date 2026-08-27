@@ -51,12 +51,12 @@ export default function CustomerAccountPage() {
       if (!session?.user) return;
       setLoadingData(true);
       try {
-        const phone = (session.user as any).phone || "09131112233";
+        const phone = session.user.phone;
 
         // Fetch user orders & repairs
         const [ordersRes, repairsRes] = await Promise.all([
-          fetch("/api/admin/orders"),
-          fetch(`/api/repairs?phone=${encodeURIComponent(phone)}`),
+          fetch("/api/orders/my-orders"),
+          phone ? fetch(`/api/repairs?phone=${encodeURIComponent(phone)}`) : Promise.resolve({ json: () => ({ repairs: [] }) }),
         ]);
 
         const ordersData = await ordersRes.json();

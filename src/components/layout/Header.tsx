@@ -19,11 +19,19 @@ import {
   FileText,
   Sparkles,
   LayoutDashboard,
-  MessageCircle,
   Heart,
   Cpu,
   Wrench,
   User,
+  Fan,
+  Sun,
+  Flame,
+  Tv,
+  Plug,
+  ArrowLeft,
+  ChevronDown,
+  SunMedium,
+  Layers,
 } from "lucide-react";
 
 export function Header() {
@@ -33,6 +41,7 @@ export function Header() {
   const { brand } = useBrand();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -195,17 +204,200 @@ export function Header() {
         </div>
       </div>
 
-      {/* 3. Category & Navigation Menu Bar */}
-      <nav className="border-t border-slate-100 bg-slate-50/80 hidden md:block">
+      {/* 3. Category & Navigation Menu Bar with Hover Mega Menu Preview */}
+      <nav className="border-t border-slate-100 bg-slate-50/90 relative hidden md:block">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold text-slate-700">
           <div className="flex items-center gap-1">
-            <Link
-              href="/products"
-              className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2.5 font-bold transition-colors"
+            {/* Mega Menu Trigger button */}
+            <div
+              className="relative"
+              onMouseEnter={() => setMegaMenuOpen(true)}
+              onMouseLeave={() => setMegaMenuOpen(false)}
             >
-              <Menu className="w-4 h-4" />
-              <span>همه دسته‌بندی‌های کالا</span>
-            </Link>
+              <Link
+                href="/products"
+                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2.5 font-bold transition-all"
+              >
+                <Menu className="w-4 h-4" />
+                <span>همه دسته‌بندی‌های کالا</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${megaMenuOpen ? "rotate-180" : ""}`} />
+              </Link>
+
+              {/* Hover Mega Menu Overlay Preview */}
+              {megaMenuOpen && (
+                <div
+                  className="absolute top-full right-0 w-[850px] bg-white rounded-3xl border border-slate-200/90 shadow-2xl p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 grid grid-cols-12 gap-6 text-slate-800"
+                >
+                  {/* Col 1: Categories Breakdown (5 cols) */}
+                  <div className="col-span-5 space-y-3 border-l border-slate-100 pl-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="font-extrabold text-sm text-slate-900">
+                        دسته‌بندی‌های اصلی
+                      </span>
+                      <Link
+                        href="/products"
+                        className="text-[11px] text-amber-600 hover:underline font-bold"
+                      >
+                        کاتالوگ کامل
+                      </Link>
+                    </div>
+
+                    <div className="space-y-1">
+                      <Link
+                        href="/products?category=home-appliances-cooling-heating"
+                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-amber-50 group transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                          <Fan className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <strong className="text-xs font-bold text-slate-900 group-hover:text-amber-600 block">
+                            پنکه، کولر و بخاری برقی
+                          </strong>
+                          <span className="text-[10px] text-slate-400">
+                            پارس خزر، موتوژن، اخوان
+                          </span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/products?category=wiring-building"
+                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-blue-50 group transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                          <Zap className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <strong className="text-xs font-bold text-slate-900 group-hover:text-blue-600 block">
+                            سیم، کابل و آنتن تلویزیون
+                          </strong>
+                          <span className="text-[10px] text-slate-400">
+                            سیم افشان تمام مس، آنتن هانی
+                          </span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/products?category=lighting-fixtures"
+                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-emerald-50 group transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                          <SunMedium className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <strong className="text-xs font-bold text-slate-900 group-hover:text-emerald-600 block">
+                            روشنایی و پروژکتور خورشیدی
+                          </strong>
+                          <span className="text-[10px] text-slate-400">
+                            پنل‌های LED و نورپردازی
+                          </span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/products?category=maker-diy-electronics"
+                        className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-purple-50 group transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                          <Cpu className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <strong className="text-xs font-bold text-slate-900 group-hover:text-purple-600 block">
+                            بردهای آردوینو و الکترونیک
+                          </strong>
+                          <span className="text-[10px] text-slate-400">
+                            ماژول‌ها و ابزار لحیم‌کاری
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Col 2: Repair Workshop Live Preview (4 cols) */}
+                  <div className="col-span-4 space-y-3 border-l border-slate-100 pl-4">
+                    <div className="flex items-center gap-1.5 text-amber-700 font-extrabold text-xs pb-2 border-b border-slate-100">
+                      <Wrench className="w-4 h-4 text-amber-600" />
+                      <span>کارگاه تعمیرات نجف‌آباد</span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      پذیرش و عیب‌یابی انواع وسایل برقی با قطعات اصلی و تست حضوری در کارگاه شیاسی:
+                    </p>
+
+                    <div className="space-y-1.5 text-xs text-slate-700">
+                      <div className="flex items-center gap-2 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span>تعمیر و سرویس انواع پنکه ایستاده و رومیزی</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span>تعویض پلاتین و کلاچ موتور کولر آبی</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span>تعویض المنت و کلید بخاری برقی و هیتر</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span>تعمیر بوستر آنتن و منابع تغذیه</span>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/repair-service"
+                      className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] px-3.5 py-2 rounded-xl transition-all w-full justify-center shadow-sm"
+                    >
+                      <Wrench className="w-3.5 h-3.5" />
+                      <span>ثبت آنلاین درخواست تعمیر</span>
+                    </Link>
+                  </div>
+
+                  {/* Col 3: Quick Direct Links & Bestsellers (3 cols) */}
+                  <div className="col-span-3 space-y-3 flex flex-col justify-between">
+                    <div>
+                      <span className="font-extrabold text-xs text-slate-900 block pb-2 border-b border-slate-100 mb-2">
+                        دسته‌بندی‌های پرتقاضا
+                      </span>
+
+                      <div className="space-y-1.5 text-xs">
+                        <Link
+                          href="/products?bestseller=true"
+                          className="block text-slate-600 hover:text-amber-600 transition-colors"
+                        >
+                          🔥 پرفروش‌ترین کالاها
+                        </Link>
+                        <Link
+                          href="/products?category=home-appliances-cooling-heating"
+                          className="block text-slate-600 hover:text-amber-600 transition-colors"
+                        >
+                          ⚡ موتور کولر ۱/۳ و ۱/۲
+                        </Link>
+                        <Link
+                          href="/products?category=wiring-building"
+                          className="block text-slate-600 hover:text-amber-600 transition-colors"
+                        >
+                          🔌 کابل افشان ۲ در ۲.۵
+                        </Link>
+                        <Link
+                          href="/products?category=lighting-fixtures"
+                          className="block text-slate-600 hover:text-amber-600 transition-colors"
+                        >
+                          💡 پروژکتور خورشیدی ۲۰۰W
+                        </Link>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/products"
+                      className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-3 rounded-2xl flex items-center justify-between group transition-colors"
+                    >
+                      <span>ورود به فروشگاه</span>
+                      <ArrowLeft className="w-3.5 h-3.5 text-amber-400 group-hover:-translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <Link
               href="/products?category=home-appliances-cooling-heating"

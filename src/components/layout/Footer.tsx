@@ -16,10 +16,15 @@ import {
   Info,
   Navigation,
   MessageCircle,
+  ExternalLink,
 } from "lucide-react";
 
 export function Footer() {
   const { brand } = useBrand();
+  const rawPhone = brand.rawPhone || "03142624567";
+  const displayPhone = brand.phone || "۰۳۱-۴۲۶۲۴۵۶۷";
+  const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9162665884";
+  const whatsappUrl = `https://wa.me/98${cleanMobile}`;
 
   return (
     <footer className="bg-slate-950 text-slate-300 pt-10 pb-24 md:pb-8 border-t border-slate-850 transition-colors duration-200">
@@ -50,10 +55,20 @@ export function Footer() {
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <span>{brand.address}</span>
               </div>
+              
+              {/* Clickable Phone Number Link */}
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>تلفن فروشگاه: <bdi dir="ltr" className="text-amber-400 font-mono font-bold text-left inline-block">۰۳۱-۴۲۶۲۴۵۶۷</bdi></span>
+                <span>تلفن فروشگاه: </span>
+                <a
+                  href={`tel:${rawPhone}`}
+                  aria-label={`تماس تلفنی با فروشگاه شیاسی: ${displayPhone}`}
+                  className="text-amber-400 hover:text-amber-300 font-mono font-bold hover:underline inline-block transition-colors"
+                >
+                  <bdi dir="ltr">{displayPhone}</bdi>
+                </a>
               </div>
+
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>شنبه تا چهارشنبه ۸:۳۰ الی ۲۱:۰۰ | پنجشنبه‌ها ۸:۳۰ الی ۱۸:۰۰</span>
@@ -64,7 +79,7 @@ export function Footer() {
             <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <Link
                 href="/contact"
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-98"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-98 hover-glow"
               >
                 <Navigation className="w-3.5 h-3.5" />
                 <span>تماس با ما و مسیریابی</span>
@@ -72,7 +87,7 @@ export function Footer() {
 
               <Link
                 href="/about"
-                className="bg-slate-850 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-colors border border-slate-750 active:scale-98"
+                className="bg-slate-850 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all border border-slate-750 active:scale-98"
               >
                 <Info className="w-3.5 h-3.5 text-amber-400" />
                 <span>درباره فروشگاه شیاسی</span>
@@ -171,27 +186,31 @@ export function Footer() {
           {/* Col 5: Trust Badges & Messengers */}
           <div className="space-y-3 border-t border-slate-850 md:border-t-0 pt-6 md:pt-0">
             <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">نمادهای اعتماد و پشتیبانی</h4>
+            
+            {/* Enhanced Trust Badges with Glowing Hover Borders */}
             <div className="grid grid-cols-2 gap-2">
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 text-center flex flex-col items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-emerald-400 mb-1" />
+              <div className="group bg-slate-900 hover:bg-slate-850 p-3 rounded-2xl border border-slate-800 hover:border-emerald-500/60 text-center flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-2xs">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] text-slate-200 font-bold">پروانه کسب</span>
                 <span className="text-[9px] text-slate-400">صنف الکتریک</span>
               </div>
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 text-center flex flex-col items-center justify-center">
-                <ShieldCheck className="w-6 h-6 text-amber-400 mb-1" />
+              <div className="group bg-slate-900 hover:bg-slate-850 p-3 rounded-2xl border border-slate-800 hover:border-amber-500/60 text-center flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-2xs">
+                <ShieldCheck className="w-6 h-6 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
                 <span className="text-[10px] text-slate-200 font-bold">درگاه امن</span>
                 <span className="text-[9px] text-slate-400">زرین‌پال و شاپرک</span>
               </div>
             </div>
 
+            {/* Official Messengers with Direct Hover and WAI-ARIA */}
             <div className="pt-2">
-              <p className="text-xs text-slate-400 mb-2 font-medium">پیام‌رسان‌های رسمی فروشگاه:</p>
+              <p className="text-xs text-slate-300 mb-2 font-bold">پیام‌رسان‌های رسمی فروشگاه:</p>
               <div className="flex items-center gap-2">
                 <a
-                  href={`https://wa.me/98${brand.rawMobile?.replace(/^0/, "") || "9131112233"}`}
+                  href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                  aria-label="ارسال پیام به واتساپ رسمی فروشگاه شیاسی"
+                  className="flex-1 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 shadow-2xs shadow-emerald-500/10"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>واتساپ</span>
@@ -200,7 +219,8 @@ export function Footer() {
                   href="https://eitaa.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white border border-orange-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                  aria-label="کانال رسمی فروشگاه شیاسی در ایتا"
+                  className="flex-1 bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white border border-orange-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 shadow-2xs shadow-orange-500/10"
                 >
                   <span>ایتا</span>
                 </a>
@@ -208,7 +228,8 @@ export function Footer() {
                   href="https://t.me"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white border border-sky-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                  aria-label="کانال تلگرام فروشگاه شیاسی"
+                  className="flex-1 bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white border border-sky-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 shadow-2xs shadow-sky-500/10"
                 >
                   <span>تلگرام</span>
                 </a>
@@ -218,10 +239,10 @@ export function Footer() {
         </div>
 
         {/* Bottom Copyright */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
           <p>© تمامی حقوق برای {brand.nameFa} محفوظ است.</p>
-          <p className="flex items-center gap-1">
-            خرید و خدمات فنی الکتریک، لوازم برقی و سرمایش/گرمایش نجف‌آباد
+          <p className="flex items-center gap-1 text-slate-400">
+            <span>مرکز تخصصی لوازم برقی، روشنایی، سرمایش و گرمایش نجف‌آباد</span>
           </p>
         </div>
       </div>

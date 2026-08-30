@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useBrand } from "@/context/BrandContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
 import {
@@ -21,10 +22,25 @@ import {
   Tv,
   Cpu,
   Sparkles,
-  Layers,
   Plug,
   AlertCircle,
+  Camera,
+  UploadCloud,
+  X,
+  Copy,
+  Check,
+  FileCheck2,
+  Cog,
+  PackageCheck,
 } from "lucide-react";
+
+function toEnglishDigits(str: string): string {
+  if (!str) return "";
+  return str
+    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
+    .trim();
+}
 
 export default function RepairServicePage() {
   const { brand } = useBrand();
@@ -37,19 +53,78 @@ export default function RepairServicePage() {
   const [brandModel, setBrandModel] = useState("");
   const [issueDesc, setIssueDesc] = useState("");
   const [deliveryType, setDeliveryType] = useState("in_person");
+  
+  // Photo Attachment State
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [submitting, setSubmitting] = useState(false);
   const [ticketResult, setTicketResult] = useState<any>(null);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   // Tracking State
   const [trackCode, setTrackCode] = useState("");
   const [trackingLoading, setTrackingLoading] = useState(false);
   const [trackResult, setTrackResult] = useState<any>(null);
   const [trackError, setTrackError] = useState("");
+  const [isOrderCode, setIsOrderCode] = useState(false);
+
+  // Handle Photo Upload
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.");
+      return;
+    }
+
+    setPhotoError("");
+    setUploadingPhoto(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/repairs/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPhotoUrl(data.url);
+      } else {
+        setPhotoError(data.error || "خطا در آپلود تصویر");
+      }
+    } catch (err) {
+      setPhotoError("خطا در برقراری ارتباط با سرور آپلود");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoUrl(null);
+    setPhotoError("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleCopyTrackingCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName || !customerPhone || !issueDesc) return;
 
+    const normalizedPhone = toEnglishDigits(customerPhone);
     const finalApplianceType =
       applianceType === "سایر وسایل برقی (غیره)" && customApplianceName.trim()
         ? `سایر: ${customApplianceName.trim()}`
@@ -62,11 +137,12 @@ export default function RepairServicePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerName,
-          customerPhone,
+          customerPhone: normalizedPhone,
           applianceType: finalApplianceType,
           brandModel,
           issueDesc,
           deliveryType,
+          photoUrl,
         }),
       });
 
@@ -78,6 +154,7 @@ export default function RepairServicePage() {
         setCustomApplianceName("");
         setBrandModel("");
         setIssueDesc("");
+        setPhotoUrl(null);
       } else {
         alert(data.error || "خطا در ثبت درخواست تعمیر");
       }
@@ -88,11 +165,9 @@ export default function RepairServicePage() {
     }
   };
 
-  const [isOrderCode, setIsOrderCode] = useState(false);
-
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
-    const clean = trackCode.trim().toUpperCase();
+    const clean = toEnglishDigits(trackCode.trim()).toUpperCase();
     if (!clean) return;
 
     setIsOrderCode(false);
@@ -107,7 +182,7 @@ export default function RepairServicePage() {
     setTrackResult(null);
 
     try {
-      const res = await fetch(`/api/repairs?phone=${encodeURIComponent(trackCode)}`);
+      const res = await fetch(`/api/repairs?phone=${encodeURIComponent(clean)}`);
       const data = await res.json();
       if (res.ok && data.repairs && data.repairs.length > 0) {
         setTrackResult(data.repairs[0]);
@@ -129,6 +204,38 @@ export default function RepairServicePage() {
     { label: "برد الکترونیکی و تغذیه", value: "برد الکترونیکی", icon: Cpu },
     { label: "سایر وسایل برقی و صنعتی (غیره)", value: "سایر وسایل برقی (غیره)", icon: Plug },
   ];
+
+  // Helper for Stepper stages
+  const getStepIndex = (status: string) => {
+    switch (status) {
+      case "SUBMITTED":
+        return 0;
+      case "RECEIVED":
+      case "IN_PROGRESS":
+        return 1;
+      case "INSPECTING":
+        return 2;
+      case "REPAIRING":
+        return 3;
+      case "COMPLETED":
+      case "READY":
+      case "DELIVERED":
+        return 4;
+      default:
+        return 0;
+    }
+  };
+
+  const stepsList = [
+    { label: "ثبت درخواست", icon: FileCheck2 },
+    { label: "پذیرش کارگاه", icon: Wrench },
+    { label: "بررسی و عیب‌یابی", icon: Cog },
+    { label: "در حال تعمیر", icon: Sparkles },
+    { label: "آماده تحویل", icon: PackageCheck },
+  ];
+
+  // Extract attached photo from adminNotes if present
+  const attachedPhoto = trackResult?.adminNotes?.match(/\[تصویر ضمیمه\]:\s*(\S+)/)?.[1];
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-10 transition-colors duration-200">
@@ -202,7 +309,7 @@ export default function RepairServicePage() {
                   <Wrench className="w-4 h-4 text-amber-500" />
                   <span>ثبت آنلاین درخواست عیب‌یابی و تعمیر کالا</span>
                 </h2>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">شعبه نجف‌آباد</span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-bold">شعبه نجف‌آباد</span>
               </div>
 
               {ticketResult ? (
@@ -215,11 +322,32 @@ export default function RepairServicePage() {
                     </p>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 inline-block text-center space-y-1">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">کد رهگیری پذیرش تعمیرات شما:</span>
-                    <strong className="text-xl font-mono font-black text-emerald-700 dark:text-amber-400 block">
-                      {ticketResult.trackingCode}
-                    </strong>
+                  <div className="bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 inline-flex flex-col items-center gap-2 shadow-sm">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
+                      کد رهگیری پذیرش تعمیرات شما:
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <strong className="text-xl font-mono font-black text-emerald-700 dark:text-amber-400 dir-ltr">
+                        {ticketResult.trackingCode}
+                      </strong>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyTrackingCode(ticketResult.trackingCode)}
+                        className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors"
+                        title="کپی کد رهگیری"
+                      >
+                        {copiedCode ? (
+                          <Check className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                    {copiedCode && (
+                      <span className="text-[10px] text-emerald-600 font-bold">
+                        کد با موفقیت کپی شد!
+                      </span>
+                    )}
                   </div>
 
                   <div className="pt-2">
@@ -338,6 +466,64 @@ export default function RepairServicePage() {
                     />
                   </div>
 
+                  {/* Photo Attachment (Optional) */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      تصویر قطعه یا پلاک مشخصات دستگاه (اختیاری جهت برآورد دقیق‌تر)
+                    </label>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handlePhotoSelect}
+                      className="hidden"
+                    />
+
+                    {photoUrl ? (
+                      <div className="relative inline-block border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden p-1 bg-slate-50 dark:bg-slate-800">
+                        <img
+                          src={photoUrl}
+                          alt="پیش‌نمایش تصویر قطعه"
+                          className="w-24 h-24 object-cover rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemovePhoto}
+                          className="absolute top-2 left-2 bg-rose-500 text-white rounded-full p-1 shadow-md hover:bg-rose-600"
+                          title="حذف تصویر"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingPhoto}
+                        className="w-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-4 text-center transition-colors flex flex-col items-center justify-center gap-1.5 bg-slate-50/50 dark:bg-slate-800/40"
+                      >
+                        <div className="w-9 h-9 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                          {uploadingPhoto ? (
+                            <Clock className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Camera className="w-4 h-4" />
+                          )}
+                        </div>
+                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {uploadingPhoto ? "در حال بارگذاری تصویر..." : "بارگذاری تصویر یا عکس از پلاک دستگاه"}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          فرمت‌های مجاز: JPG, PNG, WEBP (حداکثر ۵ مگابایت)
+                        </span>
+                      </button>
+                    )}
+
+                    {photoError && (
+                      <p className="text-[11px] text-rose-500 font-bold mt-1.5">{photoError}</p>
+                    )}
+                  </div>
+
                   {/* Delivery / Dropoff Method */}
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
@@ -434,7 +620,7 @@ export default function RepairServicePage() {
                     </p>
                     {isOrderCode && (
                       <Link
-                        href={`/order-tracking/${encodeURIComponent(trackCode.trim().toUpperCase())}`}
+                        href={`/order-tracking/${encodeURIComponent(toEnglishDigits(trackCode.trim()).toUpperCase())}`}
                         className="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-lg transition-all shadow-sm"
                       >
                         <span>انتقال به بخش پیگیری سفارشات کالا ↗</span>
@@ -446,21 +632,67 @@ export default function RepairServicePage() {
 
               {/* Tracking Result View */}
               {trackResult && (
-                <div className="mt-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 space-y-3 animate-in fade-in">
+                <div className="mt-4 bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 space-y-4 animate-in fade-in">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
                     <span className="text-xs font-bold text-slate-900 dark:text-white">
                       {trackResult.applianceType} {trackResult.brandModel ? `(${trackResult.brandModel})` : ""}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 dir-ltr">
                       {trackResult.trackingCode}
                     </span>
                   </div>
 
-                  <div className="space-y-2 text-xs">
+                  {/* Visual Lifecycle Stepper */}
+                  <div className="py-2">
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block mb-3">
+                      مراحل پیشرفت فرآیند تعمیر:
+                    </span>
+                    <div className="relative flex items-center justify-between">
+                      {/* Connecting Line */}
+                      <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-1 bg-slate-200 dark:bg-slate-700 -z-0" />
+                      
+                      {stepsList.map((step, idx) => {
+                        const currentIdx = getStepIndex(trackResult.status);
+                        const isDone = idx < currentIdx;
+                        const isCurrent = idx === currentIdx;
+                        const StepIcon = step.icon;
+
+                        return (
+                          <div key={step.label} className="relative z-10 flex flex-col items-center">
+                            <div
+                              className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm ${
+                                isDone
+                                  ? "bg-emerald-600 text-white"
+                                  : isCurrent
+                                  ? "bg-amber-500 text-slate-950 ring-4 ring-amber-500/20 font-black scale-110"
+                                  : "bg-slate-200 dark:bg-slate-700 text-slate-400"
+                              }`}
+                            >
+                              {isDone ? <Check className="w-3.5 h-3.5" /> : <StepIcon className="w-3.5 h-3.5" />}
+                            </div>
+                            <span
+                              className={`text-[9px] mt-1.5 text-center font-medium ${
+                                isCurrent
+                                  ? "text-amber-600 dark:text-amber-400 font-bold"
+                                  : isDone
+                                  ? "text-emerald-700 dark:text-emerald-400 font-medium"
+                                  : "text-slate-400"
+                              }`}
+                            >
+                              {step.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Details Summary */}
+                  <div className="space-y-2 text-xs pt-2 border-t border-slate-200 dark:border-slate-700">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-500 dark:text-slate-400">وضعیت فعلی:</span>
                       <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
-                        trackResult.status === "COMPLETED"
+                        trackResult.status === "COMPLETED" || trackResult.status === "DELIVERED"
                           ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                           : trackResult.status === "REPAIRING"
                           ? "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300"
@@ -478,18 +710,45 @@ export default function RepairServicePage() {
                     {trackResult.estimatedCost && (
                       <div className="flex items-center justify-between">
                         <span className="text-slate-500 dark:text-slate-400">برآورد هزینه:</span>
-                        <span className="font-bold text-slate-900 dark:text-amber-400">
+                        <span className="font-bold text-slate-950 dark:text-amber-400 font-mono">
                           {formatToman(trackResult.estimatedCost)}
                         </span>
                       </div>
                     )}
 
-                    {trackResult.technicianNotes && (
-                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300">
-                        <strong className="block text-slate-900 dark:text-white mb-0.5">گزارش کارشناس تعمیرگاه:</strong>
-                        {trackResult.technicianNotes}
+                    {attachedPhoto && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">عکس ضمیمه‌شده:</span>
+                        <a
+                          href={attachedPhoto}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-amber-600 dark:text-amber-400 hover:underline font-bold text-[11px]"
+                        >
+                          مشاهده تصویر قطعه ↗
+                        </a>
                       </div>
                     )}
+
+                    {trackResult.adminNotes && !trackResult.adminNotes.startsWith("[تصویر ضمیمه]:") && (
+                      <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300">
+                        <strong className="block text-slate-900 dark:text-white mb-0.5">گزارش کارشناس تعمیرگاه:</strong>
+                        {trackResult.adminNotes}
+                      </div>
+                    )}
+
+                    {/* Direct WhatsApp Follow-up */}
+                    <a
+                      href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                        `سلام، پیگیری وضعیت تعمیر دستگاه ${trackResult.applianceType} با کد رهگیری ${trackResult.trackingCode}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>پیگیری مستقیم این پرونده در واتساپ</span>
+                    </a>
                   </div>
                 </div>
               )}

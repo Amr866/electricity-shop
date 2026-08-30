@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -13,8 +13,17 @@ import {
   CheckCircle2,
   Lock,
   Zap,
+  Eye,
+  EyeOff,
+  Loader2,
+  Wrench,
+  FileText,
+  Truck,
+  RotateCcw,
+  Check,
+  Users,
 } from "lucide-react";
-import { toPersianDigits } from "@/lib/utils";
+import { toPersianDigits, toAsciiDigits } from "@/lib/utils";
 
 function LoginForm() {
   const router = useRouter();
@@ -24,25 +33,40 @@ function LoginForm() {
   const [mode, setMode] = useState<"customer" | "admin">("customer");
   const [phone, setPhone] = useState("");
   const [otpStep, setOtpStep] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
+  const [otpDigits, setOtpDigits] = useState<string[]>(["", "", "", "", ""]);
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [devCode, setDevCode] = useState("");
   const [timer, setTimer] = useState(120);
 
+  const otpInputsRef = useRef<(HTMLInputElement | null)[]>([]);
+
+  // 120s Countdown Timer
   useEffect(() => {
-    let interval: any;
+    let interval: ReturnType<typeof setInterval>;
     if (otpStep && timer > 0) {
       interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     }
     return () => clearInterval(interval);
   }, [otpStep, timer]);
 
+  // Focus first OTP input when step changes
+  useEffect(() => {
+    if (otpStep) {
+      setTimeout(() => {
+        otpInputsRef.current[0]?.focus();
+      }, 100);
+    }
+  }, [otpStep]);
+
   // Step 1: Request OTP
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!phone || !/^09\d{9}$/.test(phone.trim())) {
+  const handleSendOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanPhone = toAsciiDigits(phone.trim());
+
+    if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
       setErrorMsg("لطفاً شماره موبایل ۱۱ رقمی معتبر وارد نمایید (مثال: 09131112233)");
       return;
     }
@@ -54,40 +78,49 @@ function LoginForm() {
       const res = await fetch("/api/auth/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phone.trim() }),
+        body: JSON.stringify({ phone: cleanPhone }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
         setOtpStep(true);
         setTimer(120);
+        setOtpDigits(["", "", "", "", ""]);
         if (data.devCode) {
           setDevCode(data.devCode);
-          setOtpCode(data.devCode); // Auto-fill in dev mode
+          // Split devCode into array
+          const codeArr = data.devCode.split("").slice(0, 5);
+          setOtpDigits(codeArr);
         }
       } else {
-        setErrorMsg(data.error || "خطا در ارسال کد تایید");
+        setErrorMsg(data.error || "خطا در ارسال کد تایید.");
       }
-    } catch (err) {
-      setErrorMsg("خطای ارتباط با سرور");
+    } catch {
+      setErrorMsg("خطای سرور در برقراری ارتباط.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify OTP and Sign In
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpCode.trim()) return;
+  // Step 2: Verify OTP
+  const handleVerifyOtp = async (codeToVerify?: string) => {
+    const code = codeToVerify || otpDigits.join("");
+    const cleanCode = toAsciiDigits(code.trim());
 
+    if (cleanCode.length !== 5) {
+      setErrorMsg("لطفاً کد تایید ۵ رقمی را کامل وارد نمایید.");
+      return;
+    }
+
+    const cleanPhone = toAsciiDigits(phone.trim());
     setLoading(true);
     setErrorMsg("");
 
     try {
       const res = await signIn("credentials", {
         redirect: false,
-        phone: phone.trim(),
-        otpCode: otpCode.trim(),
+        phone: cleanPhone,
+        otpCode: cleanCode,
       });
 
       if (res?.ok) {
@@ -96,23 +129,76 @@ function LoginForm() {
       } else {
         setErrorMsg("کد تایید وارد شده نامعتبر یا منقضی شده است.");
       }
-    } catch (err) {
+    } catch {
       setErrorMsg("خطا در ورود به حساب کاربری.");
     } finally {
       setLoading(false);
     }
   };
 
+  // OTP Digits Handling with Auto-Advance & Paste
+  const handleDigitChange = (index: number, val: string) => {
+    const ascii = toAsciiDigits(val).replace(/\D/g, "");
+    if (!ascii) {
+      const newDigits = [...otpDigits];
+      newDigits[index] = "";
+      setOtpDigits(newDigits);
+      return;
+    }
+
+    const lastChar = ascii.slice(-1);
+    const newDigits = [...otpDigits];
+    newDigits[index] = lastChar;
+    setOtpDigits(newDigits);
+
+    // Auto-advance to next input
+    if (index < 4) {
+      otpInputsRef.current[index + 1]?.focus();
+    } else {
+      // 5th digit entered: Auto-submit
+      const fullCode = newDigits.join("");
+      if (fullCode.length === 5) {
+        handleVerifyOtp(fullCode);
+      }
+    }
+  };
+
+  const handleDigitKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
+      otpInputsRef.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasteData = toAsciiDigits(e.clipboardData.getData("text")).replace(/\D/g, "").slice(0, 5);
+    if (pasteData.length > 0) {
+      const newDigits = ["", "", "", "", ""];
+      for (let i = 0; i < pasteData.length; i++) {
+        newDigits[i] = pasteData[i];
+      }
+      setOtpDigits(newDigits);
+
+      if (pasteData.length === 5) {
+        otpInputsRef.current[4]?.focus();
+        handleVerifyOtp(pasteData);
+      } else {
+        otpInputsRef.current[pasteData.length]?.focus();
+      }
+    }
+  };
+
   // Admin Password Login
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanPhone = toAsciiDigits(phone.trim());
     setLoading(true);
     setErrorMsg("");
 
     try {
       const res = await signIn("credentials", {
         redirect: false,
-        phone: phone.trim(),
+        phone: cleanPhone,
         password: password.trim(),
       });
 
@@ -120,212 +206,353 @@ function LoginForm() {
         router.push("/admin");
         router.refresh();
       } else {
-        setErrorMsg("شماره همراه یا کلمه عبور ادمین نادرست است.");
+        setErrorMsg("شماره همراه یا کلمه عبور مدیریت نادرست است.");
       }
-    } catch (err) {
-      setErrorMsg("خطا در برقراری ارتباط.");
+    } catch {
+      setErrorMsg("خطا در برقراری ارتباط با سرور.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 text-slate-900 dark:text-white transition-colors duration-200">
-      {/* Top Logo & Title */}
-      <div className="text-center space-y-2">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center mx-auto shadow-md shadow-amber-500/20">
-          <Zap className="w-7 h-7 fill-slate-950" />
+    <div className="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 transition-all duration-300">
+      
+      {/* Right Column (Desktop): Brand Identity & Trust Panel */}
+      <div className="lg:col-span-5 bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 text-slate-950 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+        
+        {/* Ambient Glow & Lightning watermark */}
+        <div className="absolute -left-10 -bottom-10 opacity-15 pointer-events-none">
+          <Zap className="w-64 h-64 fill-slate-950" />
         </div>
-        <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
-          ورود و عضویت در فروشگاه شیاسی
-        </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          پیگیری سفارشات، فاکتورها و وضعیت تعمیرات لوازم برقی در نجف‌آباد
-        </p>
-      </div>
 
-      {/* Tab Switcher: Customer vs Admin */}
-      <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-300">
-        <button
-          onClick={() => {
-            setMode("customer");
-            setErrorMsg("");
-            setOtpStep(false);
-          }}
-          className={`flex-1 py-2 rounded-xl transition-all ${
-            mode === "customer" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm" : "hover:text-slate-900 dark:hover:text-white"
-          }`}
-        >
-          ورود مشتری (کد پیامکی OTP)
-        </button>
-        <button
-          onClick={() => {
-            setMode("admin");
-            setErrorMsg("");
-          }}
-          className={`flex-1 py-2 rounded-xl transition-all ${
-            mode === "admin" ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm" : "hover:text-slate-900 dark:hover:text-white"
-          }`}
-        >
-          ورود مدیریت (ادمین)
-        </button>
-      </div>
-
-      {errorMsg && (
-        <div className="bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs p-3 rounded-xl border border-rose-200 dark:border-rose-900">
-          {errorMsg}
-        </div>
-      )}
-
-      {/* Customer Mode: Step 1 Enter Phone */}
-      {mode === "customer" && !otpStep && (
-        <form onSubmit={handleSendOtp} className="space-y-4 text-xs">
-          <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-              شماره موبایل خود را وارد کنید:
-            </label>
-            <div className="relative">
-              <input
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="۰۹۱۳..."
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs text-left font-mono tracking-wider focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
-              />
-              <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3.5 pointer-events-none" />
+        <div className="relative z-10 space-y-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-11 h-11 rounded-2xl bg-slate-950 text-amber-400 flex items-center justify-center font-black shadow-lg">
+              <Zap className="w-6 h-6 fill-amber-400" />
+            </div>
+            <div>
+              <h2 className="font-black text-base text-slate-950 leading-tight">فروشگاه و کارگاه شیاسی</h2>
+              <span className="text-[11px] font-bold text-slate-900/80">مرکز تخصصی برق و تعمیرات نجف‌آباد</span>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95"
-          >
-            <span>{loading ? "در حال ارسال کد..." : "دریافت کد تایید ۵ رقمی"}</span>
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-        </form>
-      )}
+          <p className="text-xs text-slate-900/90 leading-relaxed font-medium pt-2">
+            با ورود به سامانه، از خدمات تخصصی، گارانتی قطعات و پیگیری زنده سفارش‌های خود بهره‌مند شوید.
+          </p>
+        </div>
 
-      {/* Customer Mode: Step 2 Enter OTP */}
-      {mode === "customer" && otpStep && (
-        <form onSubmit={handleVerifyOtp} className="space-y-4 text-xs">
-          <div className="bg-amber-50/70 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200/80 dark:border-amber-800 space-y-1 text-slate-700 dark:text-slate-300">
-            <div className="flex items-center justify-between">
-              <span>کد تایید به شماره <strong>{toPersianDigits(phone)}</strong> ارسال شد.</span>
+        {/* 3 Value Pillars */}
+        <div className="relative z-10 space-y-3 my-6 text-xs font-bold text-slate-950">
+          <div className="flex items-center gap-2.5 bg-slate-950/10 backdrop-blur-xs p-3 rounded-2xl border border-slate-950/15">
+            <div className="w-7 h-7 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center shrink-0">
+              <Wrench className="w-3.5 h-3.5" />
+            </div>
+            <span>پیگیری آنلاین وضعیت تعمیرات کارگاه (کولر، پنکه، بخاری)</span>
+          </div>
+
+          <div className="flex items-center gap-2.5 bg-slate-950/10 backdrop-blur-xs p-3 rounded-2xl border border-slate-950/15">
+            <div className="w-7 h-7 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center shrink-0">
+              <FileText className="w-3.5 h-3.5" />
+            </div>
+            <span>صدور و دانلود پیش‌فاکتور رسمی و سوابق خرید</span>
+          </div>
+
+          <div className="flex items-center gap-2.5 bg-slate-950/10 backdrop-blur-xs p-3 rounded-2xl border border-slate-950/15">
+            <div className="w-7 h-7 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center shrink-0">
+              <Truck className="w-3.5 h-3.5" />
+            </div>
+            <span>ارسال فوری با پیک در نجف‌آباد و سراسر اصفهان</span>
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="relative z-10 pt-2 border-t border-slate-950/20 text-[11px] text-slate-900/80 font-medium flex items-center justify-between">
+          <span>پشتیبانی: ۰۳۱-۴۲۶۲۴۵۶۷</span>
+          <span>شعبه قدس نجف‌آباد</span>
+        </div>
+
+      </div>
+
+      {/* Left Column: Form & Interaction */}
+      <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+        
+        <div className="space-y-5">
+          
+          {/* Header Title */}
+          <div>
+            <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+              {mode === "customer"
+                ? otpStep
+                  ? "تایید کد پیامکی"
+                  : "ورود یا ثبت‌نام خریداران"
+                : "ورود به پنل مدیریت فروشگاه"}
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {mode === "customer"
+                ? otpStep
+                  ? `کد ۵ رقمی ارسال شده به شماره ${toPersianDigits(phone)} را وارد کنید.`
+                  : "با وارد کردن شماره موبایل، کد تایید یکبار مصرف برای شما پیامک می‌شود."
+                : "ورود پرسنل و مدیران مجاز فروشگاه با کلمه عبور."}
+            </p>
+          </div>
+
+          {/* Role Mode Capsule Switcher */}
+          {!otpStep && (
+            <div className="flex bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80">
               <button
                 type="button"
-                onClick={() => setOtpStep(false)}
-                className="text-amber-700 dark:text-amber-400 font-bold hover:underline text-[11px]"
+                onClick={() => {
+                  setMode("customer");
+                  setErrorMsg("");
+                }}
+                className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  mode === "customer"
+                    ? "bg-white dark:bg-slate-900 text-slate-950 dark:text-amber-400 shadow-md"
+                    : "hover:text-slate-950 dark:hover:text-white"
+                }`}
               >
-                ویرایش شماره
+                <Users className="w-3.5 h-3.5" />
+                <span>ورود خریداران (پیامک OTP)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("admin");
+                  setErrorMsg("");
+                }}
+                className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  mode === "admin"
+                    ? "bg-white dark:bg-slate-900 text-slate-950 dark:text-amber-400 shadow-md"
+                    : "hover:text-slate-950 dark:hover:text-white"
+                }`}
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span>ورود مدیریت</span>
               </button>
             </div>
-            {devCode && (
-              <div className="text-[11px] text-emerald-800 dark:text-emerald-400 font-bold pt-1">
-                کد آزمایشی برای ورود سریع: <strong className="font-mono">{devCode}</strong>
+          )}
+
+          {errorMsg && (
+            <div className="bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 text-xs p-3.5 rounded-2xl border border-rose-200 dark:border-rose-900 font-medium animate-in fade-in">
+              {errorMsg}
+            </div>
+          )}
+
+          {/* Form Step 1: Customer Phone */}
+          {mode === "customer" && !otpStep && (
+            <form onSubmit={handleSendOtp} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  شماره تلفن همراه شما:
+                </label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="۰۹۱۳۱۲۳۴۵۶۷"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono tracking-wider focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 transition-colors"
+                  />
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                </div>
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-              کد تایید ۵ رقمی:
-            </label>
-            <input
-              type="text"
-              required
-              maxLength={5}
-              value={otpCode}
-              onChange={(e) => setOtpCode(e.target.value)}
-              placeholder="۱۲۳۴۵"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-center text-lg font-mono font-bold tracking-widest focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-2xl transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>در حال ارسال کد تایید...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>دریافت کد تایید ۵ رقمی</span>
+                    <ArrowLeft className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
 
-          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            {timer > 0 ? (
-              <span>ارسال مجدد کد پس از: <strong>{toPersianDigits(timer)} ثانیه</strong></span>
-            ) : (
+          {/* Form Step 2: Customer 5-Digit Segmented OTP */}
+          {mode === "customer" && otpStep && (
+            <div className="space-y-5 text-xs">
+              
+              <div className="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-200 dark:border-amber-900 flex items-center justify-between text-slate-700 dark:text-slate-300">
+                <span>کد تایید به شماره <strong>{toPersianDigits(phone)}</strong> پیامک شد.</span>
+                <button
+                  type="button"
+                  onClick={() => setOtpStep(false)}
+                  className="text-amber-700 dark:text-amber-400 font-bold hover:underline text-[11px] cursor-pointer"
+                >
+                  ویرایش شماره
+                </button>
+              </div>
+
+              {devCode && (
+                <div className="bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800 text-[11px] text-emerald-800 dark:text-emerald-300 font-bold flex items-center justify-between">
+                  <span>کد آزمایشی برای ورود سریع:</span>
+                  <span className="font-mono text-sm tracking-widest text-emerald-600 dark:text-emerald-400">{devCode}</span>
+                </div>
+              )}
+
+              {/* 5 Segmented Boxes */}
+              <div className="space-y-2">
+                <label className="block font-bold text-slate-700 dark:text-slate-300 text-center mb-1">
+                  کد تایید ۵ رقمی را وارد کنید:
+                </label>
+
+                <div className="flex items-center justify-center gap-2.5 sm:gap-3" dir="ltr" onPaste={handleOtpPaste}>
+                  {otpDigits.map((digit, idx) => (
+                    <input
+                      key={idx}
+                      ref={(el) => {
+                        otpInputsRef.current[idx] = el;
+                      }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleDigitChange(idx, e.target.value)}
+                      onKeyDown={(e) => handleDigitKeyDown(idx, e)}
+                      className="w-12 h-14 sm:w-14 sm:h-16 text-center text-xl sm:text-2xl font-black font-mono bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl focus:border-amber-500 focus:bg-white dark:focus:bg-slate-850 focus:ring-4 focus:ring-amber-500/20 text-slate-900 dark:text-white transition-all transform active:scale-95"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Countdown Timer & Resend */}
+              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+                {timer > 0 ? (
+                  <span>ارسال مجدد کد پس از: <strong className="font-mono text-amber-600 dark:text-amber-400">{toPersianDigits(timer)} ثانیه</strong></span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleSendOtp()}
+                    className="text-amber-600 dark:text-amber-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>ارسال مجدد کد تایید</span>
+                  </button>
+                )}
+              </div>
+
               <button
                 type="button"
-                onClick={handleSendOtp}
-                className="text-amber-600 dark:text-amber-400 font-bold hover:underline"
+                onClick={() => handleVerifyOtp()}
+                disabled={loading || otpDigits.join("").length !== 5}
+                className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-2xl transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               >
-                ارسال مجدد کد تایید
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>در حال بررسی و ورود...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>تایید و ورود به حساب کاربری</span>
+                  </>
+                )}
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            <span>{loading ? "در حال تایید..." : "تایید و ورود به حساب"}</span>
-          </button>
-        </form>
-      )}
+          {/* Form Admin Login */}
+          {mode === "admin" && (
+            <form onSubmit={handleAdminLogin} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  شماره همراه مدیر:
+                </label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="09131112233"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
+                  />
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                </div>
+              </div>
 
-      {/* Admin Login Mode */}
-      {mode === "admin" && (
-        <form onSubmit={handleAdminLogin} className="space-y-4 text-xs">
-          <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-              شماره همراه مدیر:
-            </label>
-            <input
-              type="tel"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="09131112233"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs text-left font-mono focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  کلمه عبور مدیریت:
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
 
-          <div>
-            <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-              کلمه عبور مدیریت:
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs text-left font-mono focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
+              <div className="bg-slate-100 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                همراه مدیر: <code>09131112233</code> | رمز: <code>admin123</code>
+              </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400">
-            پیش‌فرض تست: همراه: <code>09131112233</code> | رمز: <code>admin123</code>
-          </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 bg-slate-950 hover:bg-slate-900 dark:bg-amber-500 dark:hover:bg-amber-400 disabled:opacity-50 text-white dark:text-slate-950 font-black text-xs sm:text-sm rounded-2xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>در حال احراز هویت...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>ورود به پنل مدیریت</span>
+                  </>
+                )}
+              </button>
+            </form>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-amber-500 dark:hover:bg-amber-400 disabled:opacity-50 text-white dark:text-slate-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
-          >
-            <Lock className="w-4 h-4" />
-            <span>{loading ? "در حال احراز هویت..." : "ورود به پنل مدیریت"}</span>
-          </button>
-        </form>
-      )}
+        </div>
 
-      <div className="pt-2 text-center text-[11px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800">
-        با ورود به سایت، شرایط و قوانین فروشگاه تخصصی شیاسی را می‌پذیرید.
+        {/* Footer Legal Terms */}
+        <div className="pt-4 text-center text-[11px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800">
+          با ورود به سیستم، <Link href="/terms" className="text-amber-600 dark:text-amber-400 underline">قوانین و حریم خصوصی</Link> فروشگاه شیاسی را می‌پذیرید.
+        </div>
+
       </div>
+
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-[80vh] flex items-center justify-center py-12 px-4 transition-colors duration-200">
-      <Suspense fallback={<div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />}>
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-[85vh] flex items-center justify-center py-12 px-4 transition-colors duration-200 relative overflow-hidden">
+      
+      {/* Ambient Electric Background Blur Highlights */}
+      <div className="absolute top-1/4 -right-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+      <Suspense fallback={<div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />}>
         <LoginForm />
       </Suspense>
     </div>

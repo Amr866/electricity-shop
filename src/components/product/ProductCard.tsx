@@ -79,7 +79,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {/* Top-Right Badge: Single Primary Badge */}
           <div className="absolute top-2 right-2 z-10">
             {product.discountPercent && product.discountPercent > 0 ? (
-              <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
+              <span className="bg-gradient-to-r from-copper-600 to-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
                 {toPersianDigits(product.discountPercent)}٪ تخفیف
               </span>
             ) : product.isBestSeller ? (

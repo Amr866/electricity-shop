@@ -104,7 +104,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
   ];
 
   return (
-    <section className="bg-gradient-to-l from-rose-600 via-rose-500 to-amber-500 dark:from-rose-950 dark:via-slate-900 dark:to-amber-950 rounded-3xl p-4 sm:p-7 text-white shadow-xl space-y-4 sm:space-y-6 relative overflow-hidden border border-rose-400/30 dark:border-rose-900/50 transition-colors duration-300">
+    <section className="bg-gradient-to-l from-amber-600 via-amber-500 to-copper-600 dark:from-amber-950 dark:via-slate-900 dark:to-copper-950 rounded-3xl p-4 sm:p-7 text-white shadow-xl shadow-amber-500/10 space-y-4 sm:space-y-6 relative overflow-hidden border border-amber-400/40 dark:border-amber-700/50 transition-colors duration-300">
       
       {/* Top Header Bar */}
       <div className="flex items-center justify-between gap-3">
@@ -112,7 +112,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
         <div className="flex items-center gap-2">
           <Link
             href="/products?bestseller=true"
-            className="bg-amber-400 hover:bg-amber-300 dark:bg-amber-500 dark:hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all shadow-md flex items-center gap-1 active:scale-95 shrink-0"
+            className="bg-white hover:bg-slate-100 dark:bg-amber-500 dark:hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all shadow-md flex items-center gap-1 active:scale-95 shrink-0"
           >
             <span>مشاهده همه</span>
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -157,8 +157,8 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
             </p>
           </div>
 
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 flex items-center justify-center shadow-lg shrink-0 border border-transparent dark:border-rose-900/60">
-            <Zap className="w-5 h-5 sm:w-7 sm:h-7 fill-rose-600 dark:fill-rose-400" />
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 text-amber-500 dark:text-amber-400 flex items-center justify-center shadow-lg shrink-0 border border-amber-200/50 dark:border-amber-700/60">
+            <Zap className="w-5 h-5 sm:w-7 sm:h-7 fill-amber-500 dark:fill-amber-400 text-amber-500 dark:text-amber-400" />
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
               <div>
                 {/* Top Badges: Discount pill + Heart */}
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="bg-rose-500 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full shadow-sm">
+                  <span className="bg-gradient-to-r from-copper-600 to-amber-500 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full shadow-sm">
                     {toPersianDigits(deal.discountPercent || 15)}٪
                   </span>
 

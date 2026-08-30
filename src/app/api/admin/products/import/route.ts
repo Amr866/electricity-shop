@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   const { isAdmin, response } = await checkAdminSession();
   if (!isAdmin) return response!;

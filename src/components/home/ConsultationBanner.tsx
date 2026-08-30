@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Headphones, Phone, MessageCircle, Clock, Sparkles } from "lucide-react";
-import { toPersianDigits } from "@/lib/utils";
+import { Headphones, Phone, MessageCircle, Clock } from "lucide-react";
 
 export function ConsultationBanner() {
   return (
@@ -40,25 +39,20 @@ export function ConsultationBanner() {
           {/* Direct Phone Lines */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
             <a
-              href="tel:09919112050"
-              className="bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5"
+              href="tel:03142624567"
+              aria-label="تلفن ثابت فروشگاه: ۰۳۱-۴۲۶۲۴۵۶۷"
+              className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>۰۹۹۱-۹۱۱-۲۰۵۰</span>
+              <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
             </a>
             <a
               href="tel:09162665884"
-              className="bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5"
+              aria-label="تلفن همراه کارگاه و تعمیرات: ۰۹۱۶-۲۶۶-۵۸۸۴"
+              className="bg-slate-800/80 hover:bg-slate-800 text-emerald-400 font-bold px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-emerald-400/80 transition-all"
             >
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <Phone className="w-3.5 h-3.5 text-emerald-400" />
               <span>۰۹۱۶-۲۶۶-۵۸۸۴</span>
-            </a>
-            <a
-              href="tel:03135564235"
-              className="bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5"
-            >
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>۰۳۱-۳۵۵۶۴۲۳۵</span>
             </a>
           </div>
         </div>

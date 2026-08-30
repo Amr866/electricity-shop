@@ -7,8 +7,6 @@ import Link from "next/link";
 import { formatToman } from "@/lib/utils";
 import {
   Search,
-  Zap,
-  Sparkles,
   ArrowLeft,
   X,
   Loader2,
@@ -84,7 +82,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
     return () => window.removeEventListener("keydown", handleGlobalSlash);
   }, []);
 
-  // Debounced search
+  // Debounced search with AbortController to prevent race conditions
   useEffect(() => {
     if (!query.trim()) {
       setResults({ products: [], categories: [] });
@@ -93,19 +91,27 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
     }
 
     setLoading(true);
+    const controller = new AbortController();
     const timeoutId = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`, {
+          signal: controller.signal,
+        });
         const data = await res.json();
         setResults(data);
-      } catch (e) {
-        console.error("Live search failed", e);
+      } catch (e: any) {
+        if (e.name !== "AbortError") {
+          console.error("Live search failed", e);
+        }
       } finally {
         setLoading(false);
       }
     }, 200);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [query]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -123,8 +129,19 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
   };
 
   return (
-    <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
-      {/* Search Input Form (RTL Natural Alignment) */}
+    <>
+      {/* Subtle Dark Dimming Backdrop with Soft Blur */}
+      {isOpen && mounted && typeof document !== "undefined" && createPortal(
+        <div
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+          className="fixed inset-0 w-screen h-screen bg-slate-950/45 backdrop-blur-[2px] z-30 transition-opacity duration-200 animate-in fade-in cursor-pointer"
+        />,
+        document.body
+      )}
+
+      <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-40" : "z-10"}`}>
+        {/* Search Input Form (RTL Natural Alignment) */}
         <form onSubmit={handleSubmit} className="relative w-full">
           <div
             className={`relative flex items-center transition-all duration-200 rounded-xl ${
@@ -142,10 +159,15 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
               )}
             </div>
 
-            {/* Center: Text Input */}
+            {/* Center: Text Input with WAI-ARIA Attributes */}
             <input
               ref={inputRef}
               type="text"
+              role="combobox"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              aria-label="جستجوی کاتالوگ فروشگاه شیاسی"
               value={query}
               onFocus={() => setIsOpen(true)}
               onChange={(e) => {
@@ -177,18 +199,22 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                     inputRef.current?.focus();
                   }}
                   className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700 transition-colors"
+                  aria-label="پاک کردن متن جستجو"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
 
-              {/* Clean Submit Button */}
+              {/* Show submit button */}
               <button
                 type="submit"
-                className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-all active:scale-95 flex items-center justify-center shadow-xs"
+                className={`p-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-lg transition-all active:scale-95 flex items-center justify-center shadow-sm ${
+                  isMobile && !query ? "hidden" : "flex"
+                }`}
                 title="جستجو"
+                aria-label="ارسال جستجو"
               >
-                <span>جستجو</span>
+                <Search className="w-3.5 h-3.5 text-amber-400" />
               </button>
             </div>
           </div>
@@ -196,7 +222,11 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
 
         {/* Live Search Results Dropdown */}
         {isOpen && (
-          <div className="absolute top-full right-0 left-0 mt-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div
+            role="listbox"
+            aria-label="پیشنهادات جستجو"
+            className="absolute top-full right-0 left-0 mt-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+          >
             {/* When Empty Query: Show Popular Searches */}
             {!query.trim() && (
               <div className="p-4 space-y-3">
@@ -315,5 +345,6 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
           </div>
         )}
       </div>
+    </>
   );
 }

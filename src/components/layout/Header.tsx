@@ -49,7 +49,6 @@ export function Header() {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastScrollY = useRef(0);
   const [cartBump, setCartBump] = useState(false);
 
   // Trigger bounce effect on desktop cart button when items added
@@ -60,6 +59,7 @@ export function Header() {
       return () => clearTimeout(timer);
     }
   }, [itemCount]);
+
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -75,7 +75,6 @@ export function Header() {
             setIsScrolled(false);
           }
           
-          lastScrollY.current = currentY;
           ticking = false;
         });
         ticking = true;

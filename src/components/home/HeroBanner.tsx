@@ -2,90 +2,79 @@
 
 import React from "react";
 import Link from "next/link";
-import { useBrand } from "@/context/BrandContext";
 import {
-  Zap,
-  Truck,
   ArrowLeft,
   Sparkles,
   Wrench,
   ChevronLeft,
-  Fan,
-  Flame,
-  Sun,
   ShieldCheck,
 } from "lucide-react";
 
+// 1. Static Showcase Data (Defined outside render function to eliminate GC memory allocation)
+const SHOWCASE_CATEGORIES = [
+  {
+    id: "parskhazar",
+    title: "پنکه و لوازم پارس خزر",
+    subtitle: "ایستاده ریموت‌دار، رومیزی و بخاری",
+    tag: "گارانتی ۲۴ ماهه",
+    badge: "پارس خزر",
+    link: "/price-lists#parskhazar",
+    image: "/images/products/wal_172619-fans-7995865_1920.jpg",
+    hoverBorder: "hover:border-amber-500 dark:hover:border-amber-400",
+    hoverShadow: "hover:shadow-amber-500/20 hover:shadow-2xl",
+    glowBg: "group-hover:from-amber-500/10 group-hover:to-orange-500/10 dark:group-hover:from-amber-500/15 dark:group-hover:to-orange-500/15",
+    badgeStyle: "bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200/80 dark:border-amber-800",
+    accentText: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
+    iconBg: "bg-amber-500 text-slate-950",
+  },
+  {
+    id: "motogen",
+    title: "موتور کولر موتوژن تبریز",
+    subtitle: "سیم‌پیچی مس، پمپ و کلاچ کولر",
+    tag: "تخفیف ویژه همکار",
+    badge: "موتوژن تبریز",
+    link: "/price-lists#motogen",
+    image: "/images/products/موتور-کولر-موتوژن-3-4.jpg",
+    hoverBorder: "hover:border-sky-500 dark:hover:border-sky-400",
+    hoverShadow: "hover:shadow-sky-500/20 hover:shadow-2xl",
+    glowBg: "group-hover:from-sky-500/10 group-hover:to-cyan-500/10 dark:group-hover:from-sky-500/15 dark:group-hover:to-cyan-500/15",
+    badgeStyle: "bg-sky-50 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border-sky-200/80 dark:border-sky-800",
+    accentText: "group-hover:text-sky-600 dark:group-hover:text-sky-400",
+    iconBg: "bg-sky-500 text-white",
+  },
+  {
+    id: "shahcheragh",
+    title: "روشنایی و پنل شاهچراغ",
+    subtitle: "پروژکتور خورشیدی و پنل‌های LED",
+    tag: "فوق کم‌مصرف A+",
+    badge: "روشنایی مدرن",
+    link: "/price-lists#shahcheragh",
+    image: "/images/products/6653167-flashlight-6786569_1920.jpg",
+    hoverBorder: "hover:border-amber-400 dark:hover:border-amber-300",
+    hoverShadow: "hover:shadow-amber-400/20 hover:shadow-2xl",
+    glowBg: "group-hover:from-amber-400/10 group-hover:to-yellow-500/10 dark:group-hover:from-amber-400/15 dark:group-hover:to-yellow-500/15",
+    badgeStyle: "bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200/80 dark:border-amber-800",
+    accentText: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
+    iconBg: "bg-amber-400 text-slate-950",
+  },
+  {
+    id: "alborz-wire",
+    title: "سیم و کابل مس البرز",
+    subtitle: "کلاف ۱۰۰ متری و برش متری استاندارد",
+    tag: "۱۰۰٪ مس استاندارد",
+    badge: "سیم و کابل تمام مس",
+    link: "/price-lists#alborz-wire",
+    image: "/images/products/skdunning-wire-962753_1920.jpg",
+    hoverBorder: "hover:border-orange-500 dark:hover:border-orange-400",
+    hoverShadow: "hover:shadow-orange-500/20 hover:shadow-2xl",
+    glowBg: "group-hover:from-orange-500/10 group-hover:to-amber-500/10 dark:group-hover:from-orange-500/15 dark:group-hover:to-amber-500/15",
+    badgeStyle: "bg-orange-50 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300 border-orange-200/80 dark:border-orange-800",
+    accentText: "group-hover:text-orange-600 dark:group-hover:text-orange-400",
+    iconBg: "bg-orange-600 text-white",
+  },
+];
+
 export function HeroBanner() {
-  const { brand } = useBrand();
-
-  const showcaseCategories = [
-    {
-      id: "parskhazar",
-      title: "پنکه و لوازم پارس خزر",
-      subtitle: "ایستاده ریموت‌دار، رومیزی و بخاری",
-      tag: "گارانتی ۲۴ ماهه",
-      badge: "پارس خزر",
-      link: "/price-lists#parskhazar",
-      image: "/images/products/wal_172619-fans-7995865_1920.jpg",
-      // Electric Amber Glow
-      hoverBorder: "hover:border-amber-500 dark:hover:border-amber-400",
-      hoverShadow: "hover:shadow-amber-500/20 hover:shadow-2xl",
-      glowBg: "group-hover:from-amber-500/10 group-hover:to-orange-500/10 dark:group-hover:from-amber-500/15 dark:group-hover:to-orange-500/15",
-      badgeStyle: "bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200/80 dark:border-amber-800",
-      accentText: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
-      iconBg: "bg-amber-500 text-slate-950",
-    },
-    {
-      id: "motogen",
-      title: "موتور کولر موتوژن تبریز",
-      subtitle: "سیم‌پیچی مس، پمپ و کلاچ کولر",
-      tag: "تخفیف ویژه همکار",
-      badge: "موتوژن تبریز",
-      link: "/price-lists#motogen",
-      image: "/images/products/موتور-کولر-موتوژن-3-4.jpg",
-      // Electric Cool Sky Glow
-      hoverBorder: "hover:border-sky-500 dark:hover:border-sky-400",
-      hoverShadow: "hover:shadow-sky-500/20 hover:shadow-2xl",
-      glowBg: "group-hover:from-sky-500/10 group-hover:to-cyan-500/10 dark:group-hover:from-sky-500/15 dark:group-hover:to-cyan-500/15",
-      badgeStyle: "bg-sky-50 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border-sky-200/80 dark:border-sky-800",
-      accentText: "group-hover:text-sky-600 dark:group-hover:text-sky-400",
-      iconBg: "bg-sky-500 text-white",
-    },
-    {
-      id: "shahcheragh",
-      title: "روشنایی و پنل شاهچراغ",
-      subtitle: "پروژکتور خورشیدی و پنل‌های LED",
-      tag: "فوق کم‌مصرف A+",
-      badge: "روشنایی مدرن",
-      link: "/price-lists#shahcheragh",
-      image: "/images/products/6653167-flashlight-6786569_1920.jpg",
-      // Gold Lighting Glow
-      hoverBorder: "hover:border-amber-400 dark:hover:border-amber-300",
-      hoverShadow: "hover:shadow-amber-400/20 hover:shadow-2xl",
-      glowBg: "group-hover:from-amber-400/10 group-hover:to-yellow-500/10 dark:group-hover:from-amber-400/15 dark:group-hover:to-yellow-500/15",
-      badgeStyle: "bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200/80 dark:border-amber-800",
-      accentText: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
-      iconBg: "bg-amber-400 text-slate-950",
-    },
-    {
-      id: "alborz-wire",
-      title: "سیم و کابل مس البرز",
-      subtitle: "کلاف ۱۰۰ متری و برش متری استاندارد",
-      tag: "۱۰۰٪ مس استاندارد",
-      badge: "سیم و کابل تمام مس",
-      link: "/price-lists#alborz-wire",
-      image: "/images/products/skdunning-wire-962753_1920.jpg",
-      // Pure Annealed Copper Glow
-      hoverBorder: "hover:border-orange-500 dark:hover:border-orange-400",
-      hoverShadow: "hover:shadow-orange-500/20 hover:shadow-2xl",
-      glowBg: "group-hover:from-orange-500/10 group-hover:to-amber-500/10 dark:group-hover:from-orange-500/15 dark:group-hover:to-amber-500/15",
-      badgeStyle: "bg-orange-50 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300 border-orange-200/80 dark:border-orange-800",
-      accentText: "group-hover:text-orange-600 dark:group-hover:text-orange-400",
-      iconBg: "bg-orange-600 text-white",
-    },
-  ];
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-amber-50/60 via-slate-50 to-slate-100/40 dark:from-slate-950 dark:via-slate-900/60 dark:to-slate-950 text-slate-900 dark:text-white py-6 sm:py-10 lg:py-14 border-b border-slate-200/80 dark:border-slate-800/40 transition-colors duration-300">
       
@@ -97,7 +86,7 @@ export function HeroBanner() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-center">
           
           {/* Right Column: Hero Content & Clear CTA Hierarchy */}
-          <div className="lg:col-span-6 space-y-3 sm:space-y-5 text-right">
+          <div className="lg:col-span-6 space-y-3.5 sm:space-y-5 text-right">
             
             {/* Location & Authenticity Badge */}
             <div className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full shadow-2xs">
@@ -133,8 +122,8 @@ export function HeroBanner() {
               </div>
             </div>
 
-            {/* Action Buttons with Shimmer Light Sweep */}
-            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 pt-1 sm:pt-2">
+            {/* Action Buttons with Shimmer Light Sweep & Enhanced Contrast */}
+            <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 pt-1.5 sm:pt-2.5">
               <Link
                 href="/products"
                 className="relative overflow-hidden bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 sm:px-6 py-3 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center group"
@@ -147,11 +136,17 @@ export function HeroBanner() {
 
               <Link
                 href="/repair-service"
-                className="bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
+                className="bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
               >
-                <Wrench className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 shrink-0" />
+                <Wrench className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>پذیرش تعمیرات</span>
               </Link>
+            </div>
+
+            {/* Quick Trust Stat Micro-Metric */}
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <span className="font-semibold text-slate-700 dark:text-slate-300">+۵,۰۰۰ سفارش موفق، عیب‌یابی و توزیع در استان اصفهان</span>
             </div>
           </div>
 
@@ -174,7 +169,7 @@ export function HeroBanner() {
             </div>
 
             <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
-            {showcaseCategories.map((item) => (
+            {SHOWCASE_CATEGORIES.map((item) => (
               <Link
                 key={item.id}
                 href={item.link}
@@ -195,12 +190,14 @@ export function HeroBanner() {
                   </div>
                 </div>
 
-                {/* Center: Image Frame with Depth */}
+                {/* Center: Image Frame with Depth & Soft Eager Loading */}
                 <div className="relative aspect-[4/3] w-full rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200/80 dark:from-slate-800/80 dark:to-slate-850/80 overflow-hidden p-1 mb-2.5 border border-slate-100 dark:border-slate-800/60 shadow-inner">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-108 transition-transform duration-500 ease-out"
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}
                   <span className="absolute bottom-1.5 right-1.5 text-[9px] font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 shadow-sm">

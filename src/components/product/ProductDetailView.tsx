@@ -41,6 +41,9 @@ import {
   Wrench,
   Activity,
   Package,
+  Copy,
+  Printer,
+  QrCode,
 } from "lucide-react";
 
 export interface ProductSpecItem {
@@ -103,7 +106,7 @@ interface TerminalPin {
   functionDesc: string;
 }
 
-// 1. Smart Category-Aware Default Specifications Generator
+// 1. Universal Category-Aware Specifications Generator (Applies to 100% current & future products)
 function getProductTechnicalSpecs(product: ProductDetailData): ProductSpecItem[] {
   if (product.specs && product.specs.length > 0) {
     return product.specs;
@@ -262,9 +265,10 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const [selectedImage, setSelectedImage] = useState(primaryImage);
   const [activeTab, setActiveTab] = useState<"specs" | "wiring" | "desc" | "reviews" | "isfahan">("specs");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [copiedSku, setCopiedSku] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
-  // New Review Form State
+  // Review Form State
   const [reviewerName, setReviewerName] = useState("");
   const [reviewerCity, setReviewerCity] = useState("نجف‌آباد");
   const [reviewerRating, setReviewerRating] = useState(5);
@@ -303,12 +307,19 @@ export function ProductDetailView({ product }: ProductDetailProps) {
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
+  const handleCopySku = () => {
+    const textToCopy = `${product.name}\nکد فنی: ${product.sku || product.id}\nقیمت: ${effectiveUnitPrice.toLocaleString("fa-IR")} تومان\nفروشگاه شیاسی نجف‌آباد`;
+    navigator.clipboard.writeText(textToCopy);
+    setCopiedSku(true);
+    setTimeout(() => setCopiedSku(false), 2500);
+  };
+
   const handleDownloadDatasheet = () => {
     setDownloadingPdf(true);
     setTimeout(() => {
       setDownloadingPdf(false);
       window.print();
-    }, 600);
+    }, 400);
   };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -356,8 +367,84 @@ export function ProductDetailView({ product }: ProductDetailProps) {
 
   return (
     <div className="space-y-8">
-      {/* 1. Main Product Overview Section */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start transition-colors duration-200">
+      
+      {/* ========================================================================= */}
+      {/* 0. DEDICATED OFFICIAL PRINT-ONLY ENGINEERING DATASHEET (Visible only on print) */}
+      {/* ========================================================================= */}
+      <div className="hidden print:block bg-white text-black p-8 font-sans space-y-6" dir="rtl">
+        {/* Printable Header */}
+        <div className="border-b-2 border-black pb-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-black">فروشگاه و مرکز خدمات فنی مهندسی شیاسی نجف‌آباد</h1>
+            <p className="text-xs text-gray-700 mt-1">
+              شناسنامه فنی و برگه مشخصات مهندسی کالا (Datasheet) • تاسیس ۱۳۷۸
+            </p>
+          </div>
+          <div className="text-left text-xs font-mono">
+            <div>تاریخ صدور: {new Date().toLocaleDateString("fa-IR")}</div>
+            <div>تلفن کارگاه: ۰۳۱-۴۲۶۲۴۵۶۷</div>
+            <div>همراه فنی: ۰۹۱۶-۲۶۶-۵۸۸۴</div>
+          </div>
+        </div>
+
+        {/* Product Identity */}
+        <div className="grid grid-cols-3 gap-6 items-center border border-gray-300 rounded-xl p-4">
+          <div className="col-span-2 space-y-2">
+            <h2 className="text-base font-black">{product.name}</h2>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div><strong>کد شناسایی (SKU):</strong> {product.sku || product.id}</div>
+              <div><strong>برند سازنده:</strong> {product.brand || "فروشگاه شیاسی"}</div>
+              <div><strong>دسته‌بندی:</strong> {product.category?.name}</div>
+              <div><strong>کشور سازنده:</strong> {product.madeIn || "ایران"}</div>
+              <div><strong>وضعیت گارانتی:</strong> {product.warranty || "اصالت و سلامت فیزیکی"}</div>
+              <div><strong>قیمت رسمی:</strong> {effectiveUnitPrice.toLocaleString("fa-IR")} تومان</div>
+            </div>
+          </div>
+          <div className="col-span-1 text-center">
+            <div className="w-28 h-28 mx-auto relative border border-gray-200 rounded-lg p-2">
+              <img src={selectedImage} alt={product.name} className="w-full h-full object-contain" />
+            </div>
+          </div>
+        </div>
+
+        {/* Technical Specs Table */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-black border-b border-gray-400 pb-1">جدول مشخصات و استانداردهای فنی</h3>
+          <table className="w-full text-xs border-collapse border border-gray-300">
+            <tbody>
+              {technicalSpecs.map((s, idx) => (
+                <tr key={idx} className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                  <td className="border border-gray-300 p-2 font-bold w-1/3">{s.label || s.key}</td>
+                  <td className="border border-gray-300 p-2">{s.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Wiring Diagram Pins */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-black border-b border-gray-400 pb-1">{wiringSchematic.title}</h3>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            {wiringSchematic.terminals.map((t, idx) => (
+              <div key={idx} className="border border-gray-300 p-2 rounded">
+                <strong>{t.colorName} ({t.label}):</strong> {t.functionDesc}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Workshop Seal & Address */}
+        <div className="border-t border-gray-300 pt-4 flex items-center justify-between text-xs text-gray-600">
+          <div>آدرس: اصفهان، نجف‌آباد، خیابان قدس، فروشگاه و کارگاه تخصصی برق شیاسی</div>
+          <div className="font-bold">مهر و تاییدیه اصالت کارگاه فنی شیاسی</div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 1. SCREEN VIEW: Main Product Overview Section (Interactive UI) */}
+      {/* ========================================================================= */}
+      <div className="print:hidden bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start transition-colors duration-200">
         
         {/* Left Col: Images & Gallery */}
         <div className="lg:col-span-5 space-y-4">
@@ -442,11 +529,25 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                 </Link>
               </div>
 
-              {product.sku && (
-                <span className="font-mono text-slate-500 dark:text-slate-400 text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 font-bold">
-                  کد: {product.sku}
-                </span>
-              )}
+              {/* 1-Click Copy SKU Button */}
+              <button
+                type="button"
+                onClick={handleCopySku}
+                title="کپی کد فنی و مشخصات کالا جهت ارسال به همکاران"
+                className="flex items-center gap-1 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-750 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 font-bold transition-all active:scale-95 text-slate-700 dark:text-slate-300"
+              >
+                {copiedSku ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-emerald-600 dark:text-emerald-400">کپی شد!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3 text-slate-400" />
+                    <span>کد: {product.sku || product.id}</span>
+                  </>
+                )}
+              </button>
             </div>
 
             <h1 className="text-base sm:text-xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
@@ -656,8 +757,10 @@ export function ProductDetailView({ product }: ProductDetailProps) {
         </div>
       </div>
 
+      {/* ========================================================================= */}
       {/* 2. Enhanced Tabs Section: Specs, Wiring, Description, Reviews, Delivery */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden transition-colors duration-200">
+      {/* ========================================================================= */}
+      <div className="print:hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden transition-colors duration-200">
         {/* Tabs Bar with WAI-ARIA Role */}
         <div role="tablist" aria-label="بخش‌های اطلاعات فنی کالا" className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 px-4 overflow-x-auto scrollbar-none">
           <button
@@ -689,7 +792,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             }`}
           >
             <Cpu className="w-4 h-4 text-amber-500" />
-            <span>نقشه سیم‌کشی و دانلود کاتالوگ</span>
+            <span>نقشه سیم‌کشی و کاتالوگ</span>
           </button>
 
           <button
@@ -792,8 +895,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   disabled={downloadingPdf}
                   className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 shrink-0 active:scale-95 hover-glow"
                 >
-                  <Download className="w-4 h-4" />
-                  <span>{downloadingPdf ? "در حال آماده‌سازی..." : "دانلود کاتالوگ (PDF)"}</span>
+                  <Printer className="w-4 h-4" />
+                  <span>{downloadingPdf ? "در حال آماده‌سازی پرینت..." : "چاپ شناسنامه فنی (Datasheet)"}</span>
                 </button>
               </div>
 
@@ -1137,8 +1240,10 @@ export function ProductDetailView({ product }: ProductDetailProps) {
         </div>
       </div>
 
-      {/* 3. Mobile Sticky Bottom Buy Bar */}
-      <div className="sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 border-t border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-300">
+      {/* ========================================================================= */}
+      {/* 3. Mobile Sticky Bottom Buy Bar (Shows on Mobile for Quick Action) */}
+      {/* ========================================================================= */}
+      <div className="print:hidden sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 border-t border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-300">
         <div className="flex flex-col">
           <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">قیمت واحد:</span>
           <span className="text-sm font-black text-slate-950 dark:text-amber-400 font-mono">

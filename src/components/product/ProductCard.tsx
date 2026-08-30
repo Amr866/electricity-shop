@@ -58,10 +58,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const isFavorited = isInWishlist(product.id);
 
-  const primaryImage =
-    product.images?.find((img) => img.isPrimary)?.url ||
-    product.images?.[0]?.url ||
-    "/images/products/wal_172619-fans-7995865_1920.jpg";
+  const [imageError, setImageError] = useState(false);
+
+  const primaryImage = imageError
+    ? "/images/products/wal_172619-fans-7995865_1920.jpg"
+    : product.images?.find((img) => img.isPrimary)?.url ||
+      product.images?.[0]?.url ||
+      "/images/products/wal_172619-fans-7995865_1920.jpg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -128,6 +131,7 @@ export function ProductCard({ product }: ProductCardProps) {
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
               loading="lazy"
+              onError={() => setImageError(true)}
             />
           </Link>
 

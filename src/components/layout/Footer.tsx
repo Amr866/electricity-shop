@@ -18,6 +18,7 @@ import {
   Navigation,
   MessageCircle,
   ExternalLink,
+  HelpCircle,
 } from "lucide-react";
 
 export function Footer() {
@@ -178,6 +179,12 @@ export function Footer() {
                   <Link href="/order-tracking" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
                     <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                     <span>پیگیری فاکتور</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <HelpCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                    <span>سوالات متداول</span>
                   </Link>
                 </li>
                 <li>

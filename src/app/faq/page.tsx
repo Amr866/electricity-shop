@@ -14,6 +14,8 @@ import {
   Sparkles,
   ArrowLeft,
   CheckCircle2,
+  Fan,
+  FileSpreadsheet,
 } from "lucide-react";
 
 interface FAQItem {
@@ -24,7 +26,7 @@ interface FAQItem {
 }
 
 const FAQS: FAQItem[] = [
-  // 1. سیم و کابل
+  // 1. سیم و کابل استاندارد مس
   {
     id: "cable-1",
     category: "cables",
@@ -37,7 +39,7 @@ const FAQS: FAQItem[] = [
     category: "cables",
     question: "آیا امکان خرید سیم و کابل به صورت متری یا خرد وجود دارد یا فقط کلاف ۱۰۰ متری؟",
     answer:
-      "برای کابل‌های ضخیم صنعتی (نظیر کابل‌های ۱۰، ۱۶ و ۲۵ میلی‌متر)، امکان برش متری دقیق بر اساس نیاز پروژه فراهم است. سیم‌های ساختمانی نازک‌تر (۱.۵ و ۲.۵) عموماً در قالب کلاف‌های پلمپ ۱۰۰ متری کارخانه عرضه می‌شوند.",
+      "برای کابل‌های ضخیم صنعتی (نظیر کابل‌های ۱۰، ۱۶ و ۲۵ میلی‌متر)، امکان برش متری دقیق بر اساس نیاز پروژه فراهم است. سیم‌های ساختمانی نازک‌تر (۱.۵ و ۲.۵) عموماً در قالب کلاف‌های پلمپ ۱۰۰ متری کارخانه با برچسب اصالت عرضه می‌شوند.",
   },
   {
     id: "cable-3",
@@ -46,8 +48,15 @@ const FAQS: FAQItem[] = [
     answer:
       "برای کولرهای آبی تا ۷۰۰۰، استاندارد مهندسی کابل ۴ رشته یا ۵ رشته با مقطع ۱.۵ میلی‌متر مربع (کابل ۴x۱.۵ یا ۵x۱.۵ فویل‌دار) است تا علاوه بر تحمل جریان راه‌اندازی الکتروموتور، پمپ آب و کلید راه‌انداز به صورت ایمن تغذیه شوند.",
   },
+  {
+    id: "cable-4",
+    category: "cables",
+    question: "تفاوت سیم افشان (انعطاف‌پذیر) با سیم مفتولی (خشک) در چیست؟",
+    answer:
+      "سیم افشان از رشته‌های نازک مس به هم تابیده تشکیل شده و بسیار منعطف است که برای لوله‌کشی‌های پرپیچ‌وخم ساختمانی و سیم‌کشی لوازم خانگی کاربرد دارد. سیم مفتول از یک رشته مس یکپارچه تشکیل شده و برای تابلوهای برق و کابل‌کشی‌های ثابت زمینی استفاده می‌شود.",
+  },
 
-  // 2. کارگاه تعمیرات
+  // 2. کارگاه تعمیرات تخصصی
   {
     id: "repair-1",
     category: "repairs",
@@ -58,12 +67,19 @@ const FAQS: FAQItem[] = [
   {
     id: "repair-2",
     category: "repairs",
+    question: "علت کم شدن دور پنکه یا صدای ویزویز آن چیست و چطور تعمیر می‌شود؟",
+    answer:
+      "معمولاً خشک شدن روغن نمدی بوش‌ها، سوختن یا کاهش ظرفیت خازن راه‌انداز (۱.۵ الی ۲.۵ میکروفاراد) یا ساییدگی بلبرینگ‌ها عامل افت دور پنکه است. در کارگاه شیاسی نجف‌آباد، بوش‌ها و خازن‌ها با قطعات شرکتی تعویض و روان‌کاری تخصصی انجام می‌شود.",
+  },
+  {
+    id: "repair-3",
+    category: "repairs",
     question: "هزینه تعمیر قبل از شروع به مشتری اعلام می‌شود؟",
     answer:
       "بله، پس از پذیرش و عیب‌یابی دقیق دستگاه در کارگاه مرکزی نجف‌آباد، کارشناسان فنی هزینه قطعات و اجرت را تلفنی به شما اعلام می‌کنند و فرآیند تعمیر تنها با تایید و رضایت شما آغاز می‌گردد.",
   },
   {
-    id: "repair-3",
+    id: "repair-4",
     category: "repairs",
     question: "آیا امکان ارسال موتور کولر یا پنکه از سایر شهرهای استان اصفهان وجود دارد؟",
     answer:
@@ -106,7 +122,7 @@ const FAQS: FAQItem[] = [
 export default function FAQPage() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [openIds, setOpenIds] = useState<string[]>(["cable-1", "repair-1"]);
+  const [openIds, setOpenIds] = useState<string[]>(["cable-1", "repair-1", "repair-2"]);
 
   const toggleFAQ = (id: string) => {
     setOpenIds((prev) =>
@@ -129,30 +145,35 @@ export default function FAQPage() {
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-12 transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 space-y-8">
         
-        {/* Header Hero */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 text-center space-y-4 shadow-2xl relative overflow-hidden">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/25">
-            <HelpCircle className="w-7 h-7" />
+        {/* Header Hero - Balanced Light & Dark Mode */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xl relative overflow-hidden transition-all duration-300">
+          
+          {/* Ambient Amber Glow Background */}
+          <div className="absolute -top-12 right-1/2 translate-x-1/2 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="w-16 h-16 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/25 relative z-10">
+            <HelpCircle className="w-8 h-8" />
           </div>
 
-          <h1 className="text-xl sm:text-3xl font-black text-white">
-            سوالات متداول و راهنمای مشتریان
-          </h1>
+          <div className="space-y-2 relative z-10">
+            <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white">
+              سوالات متداول و راهنمای مشتریان
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto leading-relaxed font-medium">
+              پاسخ جامع به پرسش‌های پرتکرار پیرامون اصالت کابل مس، عیب‌یابی پنکه و کولر، زمان‌بندی ارسال و گارانتی
+            </p>
+          </div>
 
-          <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed font-medium">
-            پاسخ سریع به پرسش‌های پرتکرار درباره اصالت کابل مس، عیب‌یابی پنکه و کولر، زمان‌بندی ارسال و گارانتی
-          </p>
-
-          {/* Live Search Bar */}
-          <div className="relative max-w-md mx-auto pt-2">
+          {/* Live Search Bar with High Contrast in Both Modes */}
+          <div className="relative max-w-lg mx-auto pt-2 relative z-10">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="جستجو در سوالات (مثال: سیم مس، تعمیر پنکه، ارسال، فاکتور)..."
-              className="w-full bg-slate-800/90 border border-slate-700 text-white text-xs sm:text-sm rounded-2xl pr-11 pl-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner"
+              placeholder="جستجو در سوالات (مثال: سیم مس، پنکه، موتور کولر، فاکتور، ارسال)..."
+              className="w-full bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm rounded-2xl pr-11 pl-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-inner"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute right-4 top-5.5 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-400 dark:text-slate-400 absolute right-4 top-6 pointer-events-none" />
           </div>
         </div>
 
@@ -166,18 +187,19 @@ export default function FAQPage() {
             { id: "warranty", label: "گارانتی و فاکتور", icon: ShieldCheck },
           ].map((tab) => {
             const Icon = tab.icon;
+            const isSelected = activeCategory === tab.id;
             return (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveCategory(tab.id)}
-                className={`px-4 py-2.5 rounded-2xl border transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeCategory === tab.id
-                    ? "bg-amber-500 text-slate-950 border-amber-500 shadow-md shadow-amber-500/20"
-                    : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-amber-500/50"
+                className={`px-4 py-2.5 rounded-2xl border transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${
+                  isSelected
+                    ? "bg-amber-500 text-slate-950 border-amber-500 font-black shadow-md shadow-amber-500/20"
+                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-amber-500/50 shadow-xs"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-slate-950" : "text-amber-500"}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -189,8 +211,8 @@ export default function FAQPage() {
           {filteredFaqs.length === 0 ? (
             <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-sm">
               <HelpCircle className="w-10 h-10 text-slate-400 mx-auto" />
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">سوالی با این مشخصات یافت نشد</h3>
-              <p className="text-xs text-slate-500">می‌توانید با پشتیبانی فروشگاه تماس حاصل فرمایید.</p>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">سوالی با این عبارت یافت نشد</h3>
+              <p className="text-xs text-slate-500">می‌توانید با پشتیبانی کارگاه و فروشگاه شیاسی تماس حاصل فرمایید.</p>
             </div>
           ) : (
             filteredFaqs.map((faq) => {
@@ -198,21 +220,27 @@ export default function FAQPage() {
               return (
                 <div
                   key={faq.id}
-                  className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm transition-all duration-200"
+                  className={`bg-white dark:bg-slate-900 rounded-3xl border transition-all duration-200 shadow-sm overflow-hidden ${
+                    isOpen
+                      ? "border-amber-500/60 dark:border-amber-500/40 shadow-md shadow-amber-500/5"
+                      : "border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                  }`}
                 >
                   <button
                     type="button"
                     onClick={() => toggleFAQ(faq.id)}
-                    className="w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors"
+                    className="w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/70 dark:hover:bg-slate-850/50 transition-colors"
                   >
-                    <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2.5">
+                      <span className={`w-2 h-2 rounded-full shrink-0 transition-colors ${isOpen ? "bg-amber-500 shadow-xs shadow-amber-500/50" : "bg-slate-300 dark:bg-slate-600"}`} />
                       <span>{faq.question}</span>
                     </span>
 
                     <div
-                      className={`w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0 transition-transform duration-300 ${
-                        isOpen ? "rotate-180 text-amber-500 bg-amber-500/10" : ""
+                      className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        isOpen
+                          ? "rotate-180 text-amber-500 bg-amber-500/10 dark:bg-amber-500/20"
+                          : "text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800"
                       }`}
                     >
                       <ChevronDown className="w-4 h-4" />
@@ -220,10 +248,10 @@ export default function FAQPage() {
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 animate-in fade-in duration-200">
-                      <p className="bg-slate-50 dark:bg-slate-850 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80">
+                    <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 animate-in fade-in duration-200">
+                      <div className="bg-amber-50/40 dark:bg-slate-850/80 p-4 sm:p-5 rounded-2xl border border-amber-200/40 dark:border-slate-800 leading-loose">
                         {faq.answer}
-                      </p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -232,8 +260,8 @@ export default function FAQPage() {
           )}
         </div>
 
-        {/* Contact Assistance Box */}
-        <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+        {/* Contact Assistance Box - Harmonious in Light & Dark Mode */}
+        <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
           <div className="space-y-1 text-center sm:text-right">
             <h3 className="font-black text-sm text-white flex items-center justify-center sm:justify-start gap-2">
               <Phone className="w-4 h-4 text-emerald-400" />

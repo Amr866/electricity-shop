@@ -181,6 +181,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/terms" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-cyan-400" />
+                    <span>قوانین و حریم خصوصی</span>
+                  </Link>
+                </li>
+                <li>
                   <Link href="/account" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
                     <User className="w-3.5 h-3.5 shrink-0" />
                     <span>حساب کاربری</span>

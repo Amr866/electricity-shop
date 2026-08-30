@@ -21,6 +21,9 @@ import {
   Zap,
   ShieldCheck,
   FileText,
+  FileSpreadsheet,
+  Download,
+  FileDown,
   AlertCircle,
   MessageCircle,
   Copy,
@@ -200,6 +203,106 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
+  const handleExportExcel = () => {
+    if (orders.length === 0) {
+      alert("سفارشی برای خروجی اکسل وجود ندارد.");
+      return;
+    }
+
+    // CSV Headers
+    const headers = [
+      "شماره فاکتور",
+      "تاریخ ثبت",
+      "نام مشتری",
+      "شماره تماس",
+      "استان",
+      "شهر",
+      "کد پستی",
+      "آدرس کامل",
+      "نوع فاکتور",
+      "نام شرکت",
+      "شناسه ملی",
+      "کد اقتصادی",
+      "اقلام سفارش",
+      "روش ارسال",
+      "هزینه ارسال (تومان)",
+      "روش پرداخت",
+      "وضعیت پرداخت",
+      "وضعیت سفارش",
+      "کد رهگیری پستی / اسنپ",
+      "جمع اقلام (تومان)",
+      "تخفیف (تومان)",
+      "مبلغ کل فاکتور (تومان)",
+      "یادداشت سفارش",
+    ];
+
+    // CSV Rows
+    const rows = orders.map((o) => {
+      const itemsText = o.items
+        ? o.items.map((i) => `${i.productName} (${i.quantity} عدد)`).join(" + ")
+        : "";
+
+      const shippingText =
+        o.shippingMethod === "isfahan_express"
+          ? "پیک اختصاصی نجف‌آباد/اصفهان"
+          : o.shippingMethod === "tipax"
+          ? "تیپاکس"
+          : "پست پیشتاز";
+
+      const orderStatusText =
+        o.orderStatus === "DELIVERED"
+          ? "تحویل شده"
+          : o.orderStatus === "SHIPPED"
+          ? "ارسال شده با پیک/پست"
+          : o.orderStatus === "PROCESSING"
+          ? "در حال آماده‌سازی انبار"
+          : "ثبت اولیه";
+
+      const paymentStatusText =
+        o.paymentStatus === "PAID" ? "پرداخت شده" : "در انتظار پرداخت";
+
+      const dateStr = formatJalaliDateTime(o.createdAt);
+
+      return [
+        o.orderNumber,
+        dateStr,
+        o.customerName,
+        o.customerPhone,
+        o.province || "اصفهان",
+        o.city || "نجف‌آباد",
+        o.postalCode || "",
+        `"${(o.address || "").replace(/"/g, '""')}"`,
+        o.isCorporate ? "حقوقی (شرکتی)" : "حقیقی",
+        o.companyName || "",
+        o.nationalCode || "",
+        o.economicCode || "",
+        `"${itemsText.replace(/"/g, '""')}"`,
+        shippingText,
+        o.shippingCost || 0,
+        o.paymentMethod || "online",
+        paymentStatusText,
+        orderStatusText,
+        o.trackingCode || "",
+        o.subtotal || o.totalAmount,
+        o.discount || 0,
+        o.totalAmount,
+        `"${(o.notes || "").replace(/"/g, '""')}"`,
+      ].join(",");
+    });
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const timestamp = new Date().toISOString().slice(0, 10);
+    link.setAttribute("download", `shiasi_orders_report_${timestamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
       const matchSearch =
@@ -223,7 +326,7 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
     <div className="space-y-6">
       
       {/* 1. Header & Metrics Row */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-black text-white flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-emerald-400" />
@@ -233,6 +336,18 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
             هماهنگی ارسال مرسوله‌ها در نجف‌آباد و اصفهان، تخصیص بارکد پستی و چاپ فاکتور رسمی
           </p>
         </div>
+
+        {/* Export Excel / CSV Button */}
+        <button
+          type="button"
+          onClick={handleExportExcel}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-2xl flex items-center gap-2 shadow-lg shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer shrink-0"
+          title="دانلود فایل اکسل و CSV کامل تمامی سفارش‌ها"
+        >
+          <FileSpreadsheet className="w-4 h-4 text-white" />
+          <span>خروجی اکسل / CSV سفارشات</span>
+          <Download className="w-3.5 h-3.5 opacity-80" />
+        </button>
       </div>
 
       {/* 4 Financial & Logistics Metric Cards */}

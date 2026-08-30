@@ -2,88 +2,133 @@
 
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Award, Sparkles, ExternalLink } from "lucide-react";
+import {
+  ShieldCheck,
+  Award,
+  ExternalLink,
+  Fan,
+  Cpu,
+  Zap,
+  Flame,
+  Radio,
+  Lightbulb,
+  Sun,
+  Activity,
+  Layers,
+  ToggleRight,
+} from "lucide-react";
 
-const OFFICIAL_BRANDS = [
+interface BrandItem {
+  name: string;
+  category: string;
+  tag: string;
+  slug: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconBg: string;
+  iconColor: string;
+  borderColor: string;
+}
+
+const OFFICIAL_BRANDS: BrandItem[] = [
   {
     name: "پارس خزر",
     category: "پنکه و تهویه خانگی",
     tag: "ضمانت ۲۴ ماهه",
     slug: "pars-khazar",
-    monogram: "PK",
-    accentColor: "from-amber-500/20 to-amber-600/10 border-amber-500/30 text-amber-500",
+    icon: Fan,
+    iconBg: "bg-rose-500/15 dark:bg-rose-500/20",
+    iconColor: "text-rose-500",
+    borderColor: "border-rose-500/30 group-hover:border-rose-500",
   },
   {
     name: "موتوژن تبریز",
     category: "الکتروموتور کولر آبی",
     tag: "سیم مس ۱۰۰٪",
     slug: "motogen",
-    monogram: "MG",
-    accentColor: "from-blue-500/20 to-blue-600/10 border-blue-500/30 text-blue-500",
+    icon: Cpu,
+    iconBg: "bg-blue-500/15 dark:bg-blue-500/20",
+    iconColor: "text-blue-500",
+    borderColor: "border-blue-500/30 group-hover:border-blue-500",
   },
   {
     name: "البرز الکتریک",
-    category: "سیم و کابل مس",
-    tag: "استاندارد توانیر",
+    category: "سیم و کابل استاندارد",
+    tag: "تاییدیه توانیر",
     slug: "alborz",
-    monogram: "AL",
-    accentColor: "from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 text-emerald-500",
+    icon: Zap,
+    iconBg: "bg-emerald-500/15 dark:bg-emerald-500/20",
+    iconColor: "text-emerald-500",
+    borderColor: "border-emerald-500/30 group-hover:border-emerald-500",
   },
   {
     name: "صنایع اخوان",
     category: "بخاری برقی و هیتر",
     tag: "گارانتی شرکتی",
     slug: "akhavan",
-    monogram: "AK",
-    accentColor: "from-rose-500/20 to-rose-600/10 border-rose-500/30 text-rose-500",
+    icon: Flame,
+    iconBg: "bg-amber-500/15 dark:bg-amber-500/20",
+    iconColor: "text-amber-500",
+    borderColor: "border-amber-500/30 group-hover:border-amber-500",
   },
   {
     name: "آنتن هانی",
-    category: "تقویت سیگنال و دیجیتال",
-    tag: "گیرندگی فوق‌العاده",
+    category: "تقویت سیگنال و گیرنده",
+    tag: "کیفیت تصویر 4K",
     slug: "hani",
-    monogram: "HN",
-    accentColor: "from-purple-500/20 to-purple-600/10 border-purple-500/30 text-purple-500",
+    icon: Radio,
+    iconBg: "bg-purple-500/15 dark:bg-purple-500/20",
+    iconColor: "text-purple-500",
+    borderColor: "border-purple-500/30 group-hover:border-purple-500",
   },
   {
     name: "افراتاب",
     category: "روشنایی و پروژکتور LED",
     tag: "فوق‌کم‌مصرف A+",
     slug: "afratab",
-    monogram: "AF",
-    accentColor: "from-yellow-500/20 to-yellow-600/10 border-yellow-500/30 text-yellow-500",
+    icon: Lightbulb,
+    iconBg: "bg-yellow-500/15 dark:bg-yellow-500/20",
+    iconColor: "text-yellow-500",
+    borderColor: "border-yellow-500/30 group-hover:border-yellow-500",
   },
   {
     name: "پارس شهاب",
     category: "لامپ و سیستم‌های نور",
     tag: "طول عمر بالا",
     slug: "pars-shahab",
-    monogram: "PS",
-    accentColor: "from-teal-500/20 to-teal-600/10 border-teal-500/30 text-teal-500",
+    icon: Sun,
+    iconBg: "bg-teal-500/15 dark:bg-teal-500/20",
+    iconColor: "text-teal-500",
+    borderColor: "border-teal-500/30 group-hover:border-teal-500",
   },
   {
     name: "شیوا امواج",
     category: "رله و کنترل صنعتی",
     tag: "دقت مهندسی",
     slug: "shiva-amvaj",
-    monogram: "SH",
-    accentColor: "from-indigo-500/20 to-indigo-600/10 border-indigo-500/30 text-indigo-500",
+    icon: Activity,
+    iconBg: "bg-indigo-500/15 dark:bg-indigo-500/20",
+    iconColor: "text-indigo-500",
+    borderColor: "border-indigo-500/30 group-hover:border-indigo-500",
   },
   {
     name: "سیم و کابل اصفهان",
-    category: "هادی مس تمام عیار",
+    category: "هادی تمام مس",
     tag: "خلوص ۹۹.۹٪",
     slug: "isfahan-cable",
-    monogram: "IC",
-    accentColor: "from-cyan-500/20 to-cyan-600/10 border-cyan-500/30 text-cyan-500",
+    icon: Layers,
+    iconBg: "bg-cyan-500/15 dark:bg-cyan-500/20",
+    iconColor: "text-cyan-500",
+    borderColor: "border-cyan-500/30 group-hover:border-cyan-500",
   },
   {
     name: "دلند الکتریک",
-    category: "کلید و پریز لوکس",
+    category: "کلید و پریز ساختمانی",
     tag: "مقاوم و استاندارد",
     slug: "deland",
-    monogram: "DL",
-    accentColor: "from-orange-500/20 to-orange-600/10 border-orange-500/30 text-orange-500",
+    icon: ToggleRight,
+    iconBg: "bg-orange-500/15 dark:bg-orange-500/20",
+    iconColor: "text-orange-500",
+    borderColor: "border-orange-500/30 group-hover:border-orange-500",
   },
 ];
 
@@ -116,46 +161,43 @@ export function BrandLogosRow() {
 
         {/* 60fps Scrolling Track */}
         <div className="animate-marquee-rtl flex items-center gap-3.5 sm:gap-4 select-none cursor-pointer">
-          {marqueeBrands.map((b, idx) => (
-            <Link
-              key={`${b.slug}-${idx}`}
-              href={`/products?brand=${encodeURIComponent(b.slug)}`}
-              className="group shrink-0 w-52 sm:w-60 bg-slate-50 dark:bg-slate-850/80 hover:bg-white dark:hover:bg-slate-800 p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-amber-500/60 dark:hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 shadow-2xs hover:shadow-lg hover:shadow-amber-500/10 flex items-center gap-3"
-            >
-              {/* Monogram Badge */}
-              <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${b.accentColor} border flex items-center justify-center font-mono font-black text-sm sm:text-base shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-inner`}>
-                {b.monogram}
-              </div>
-
-              {/* Brand Title & Tag */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <h4 className="font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-amber-500 transition-colors">
-                    {b.name}
-                  </h4>
-                  <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+          {marqueeBrands.map((b, idx) => {
+            const Icon = b.icon;
+            return (
+              <Link
+                key={`${b.slug}-${idx}`}
+                href={`/products?brand=${encodeURIComponent(b.slug)}`}
+                className={`group shrink-0 w-52 sm:w-60 bg-slate-50 dark:bg-slate-850/80 hover:bg-white dark:hover:bg-slate-800 p-3 sm:p-3.5 rounded-2xl border ${b.borderColor} transition-all duration-300 hover:-translate-y-1 shadow-2xs hover:shadow-lg hover:shadow-amber-500/10 flex items-center gap-3`}
+              >
+                {/* Brand Logo Emblem */}
+                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl ${b.iconBg} border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center ${b.iconColor} shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-inner`}>
+                  <Icon className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
                 </div>
 
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
-                  {b.category}
-                </p>
+                {/* Brand Title & Tag */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <h4 className="font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-amber-500 transition-colors">
+                      {b.name}
+                    </h4>
+                    <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  </div>
 
-                <div className="mt-1">
-                  <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    {b.tag}
-                  </span>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                    {b.category}
+                  </p>
+
+                  <div className="mt-1">
+                    <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      {b.tag}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
-      </div>
-
-      <div className="pt-1 text-center">
-        <span className="text-[10px] text-slate-400 dark:text-slate-500">
-          با قرار دادن ماوس یا لمس، حرکت متوقف شده و می‌توانید کالاهای هر برند را بررسی فرمایید.
-        </span>
       </div>
 
     </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -40,6 +41,7 @@ import {
 } from "lucide-react";
 
 export function Header() {
+  const pathname = usePathname();
   const { data: session } = useSession();
   const { itemCount, subtotal, openCartDrawer } = useCart();
   const { wishlistCount } = useWishlist();
@@ -50,6 +52,11 @@ export function Header() {
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [cartBump, setCartBump] = useState(false);
+
+  // Suppress public store header in admin panel
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   // Trigger bounce effect on desktop cart button when items added
   useEffect(() => {

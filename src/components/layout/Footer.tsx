@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useBrand } from "@/context/BrandContext";
 import {
   Zap,
@@ -20,7 +21,13 @@ import {
 } from "lucide-react";
 
 export function Footer() {
+  const pathname = usePathname();
   const { brand } = useBrand();
+
+  // Suppress public footer in admin panel
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
   const rawPhone = brand.rawPhone || "03142624567";
   const displayPhone = brand.phone || "۰۳۱-۴۲۶۲۴۵۶۷";
   const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9162665884";

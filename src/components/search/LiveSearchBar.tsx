@@ -67,6 +67,23 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
     };
   }, []);
 
+  // Global '/' (Forward Slash) shortcut to instantly focus search bar
+  useEffect(() => {
+    function handleGlobalSlash(event: KeyboardEvent) {
+      if (
+        event.key === "/" &&
+        !["INPUT", "TEXTAREA", "SELECT"].includes((document.activeElement?.tagName || ""))
+      ) {
+        event.preventDefault();
+        inputRef.current?.focus();
+        inputRef.current?.select();
+        setIsOpen(true);
+      }
+    }
+    window.addEventListener("keydown", handleGlobalSlash);
+    return () => window.removeEventListener("keydown", handleGlobalSlash);
+  }, []);
+
   // Debounced search
   useEffect(() => {
     if (!query.trim()) {
@@ -106,19 +123,8 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
   };
 
   return (
-    <>
-      {/* Full Viewport Dimming Backdrop */}
-      {isOpen && mounted && typeof document !== "undefined" && createPortal(
-        <div
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-          className="fixed inset-0 w-screen h-screen bg-slate-950/60 backdrop-blur-sm z-40 transition-opacity duration-300 animate-in fade-in cursor-pointer"
-        />,
-        document.body
-      )}
-
-      <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
-        {/* Search Input Form (RTL Natural Alignment) */}
+    <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-50" : "z-10"}`}>
+      {/* Search Input Form (RTL Natural Alignment) */}
         <form onSubmit={handleSubmit} className="relative w-full">
           <div
             className={`relative flex items-center transition-all duration-200 rounded-xl ${
@@ -154,8 +160,14 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
               className="w-full bg-transparent text-xs sm:text-sm py-2 sm:py-2.5 px-2 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium text-slate-900 dark:text-white text-right"
             />
 
-            {/* Left: Clear (X) and Search Button */}
-            <div className="pl-1.5 flex items-center gap-1 shrink-0">
+            {/* Left: Keyboard shortcut hint, Clear (X) and Search Button */}
+            <div className="pl-1.5 flex items-center gap-1.5 shrink-0">
+              {!isMobile && !query && (
+                <kbd className="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 bg-slate-200/70 dark:bg-slate-750 rounded border border-slate-300/80 dark:border-slate-600/80 shadow-2xs select-none" title="کلید میانبر جستجو">
+                  /
+                </kbd>
+              )}
+
               {query && (
                 <button
                   type="button"
@@ -170,12 +182,13 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                 </button>
               )}
 
+              {/* Clean Submit Button */}
               <button
                 type="submit"
-                className="p-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-lg transition-all active:scale-95 flex items-center justify-center shadow-sm"
+                className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition-all active:scale-95 flex items-center justify-center shadow-xs"
                 title="جستجو"
               >
-                <Search className="w-3.5 h-3.5 text-amber-400" />
+                <span>جستجو</span>
               </button>
             </div>
           </div>
@@ -302,6 +315,5 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
           </div>
         )}
       </div>
-    </>
   );
 }

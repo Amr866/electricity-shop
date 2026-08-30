@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
@@ -89,25 +90,28 @@ export function ProductCard({ product }: ProductCardProps) {
             ) : null}
           </div>
 
-          {/* Top-Left: Wishlist Heart */}
+          {/* 9. Wishlist Heart Button with Spring Pop & Fill */}
           <button
+            type="button"
             onClick={handleToggleFav}
             aria-label="ذخیره در علاقه‌مندی‌ها"
-            className={`absolute top-2 left-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-90 ${
+            className={`absolute top-2 left-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-75 ${
               isFavorited
-                ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 scale-105"
-                : "bg-white/90 dark:bg-slate-900/90 text-slate-400 dark:text-slate-300 hover:text-rose-500 border border-slate-200/80 dark:border-slate-700 backdrop-blur-sm"
+                ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 scale-105 shadow-rose-500/20"
+                : "bg-white/90 dark:bg-slate-900/90 text-slate-400 dark:text-slate-300 hover:text-rose-500 hover:scale-110 border border-slate-200/80 dark:border-slate-700 backdrop-blur-sm"
             }`}
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorited ? "fill-rose-500 text-rose-500" : ""}`} />
+            <Heart className={`w-3.5 h-3.5 transition-all duration-300 ${isFavorited ? "fill-rose-500 text-rose-500 animate-in zoom-in-75" : ""}`} />
           </button>
 
           {/* Product Image */}
-          <Link href={`/products/${product.slug}`} className="w-full h-full flex items-center justify-center">
-            <img
+          <Link href={`/products/${product.slug}`} className="relative w-full h-full block">
+            <Image
               src={primaryImage}
               alt={product.name}
-              className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500 ease-out"
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
               loading="lazy"
             />
           </Link>
@@ -173,32 +177,39 @@ export function ProductCard({ product }: ProductCardProps) {
                 {formatToman(product.originalPrice)}
               </span>
             )}
-            <span className="font-black text-xs sm:text-sm lg:text-base text-slate-950 dark:text-amber-400 font-mono">
-              {formatToman(product.price)}
-            </span>
+            <div className="flex items-baseline gap-1">
+              <span className="font-black text-xs sm:text-sm lg:text-base text-slate-950 dark:text-amber-400 font-mono">
+                {formatToman(product.price)}
+              </span>
+              {product.name.includes("کلاف") ? (
+                <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-normal">/کلاف</span>
+              ) : product.name.includes("سیم") || product.name.includes("کابل") ? (
+                <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-normal">/متر</span>
+              ) : null}
+            </div>
           </div>
 
-          {/* Add To Cart CTA Button */}
+          {/* 1. Spring Pop & Ripple Add To Cart CTA Button */}
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1 shadow-sm active:scale-90 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 ${
               isOutOfStock
                 ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
                 : added
-                ? "bg-emerald-600 text-white shadow-emerald-600/30"
-                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20 hover-glow"
+                ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-105 animate-in zoom-in-95"
+                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20 hover-glow hover:scale-105"
             }`}
             title="افزودن به سبد خرید"
           >
             {added ? (
               <>
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5 animate-in zoom-in spin-in-12" />
                 <span className="text-[11px]">ثبت شد</span>
               </>
             ) : (
               <>
-                <ShoppingCart className="w-3.5 h-3.5" />
+                <ShoppingCart className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 <span className="text-[11px]">خرید</span>
               </>
             )}

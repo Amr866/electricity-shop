@@ -145,35 +145,32 @@ export default function FAQPage() {
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-12 transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 space-y-8">
         
-        {/* Header Hero - Balanced Light & Dark Mode */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xl relative overflow-hidden transition-all duration-300">
+        {/* Header Hero - Original Signature Dark Gradient */}
+        <div className="bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 text-center space-y-4 shadow-2xl relative overflow-hidden">
           
-          {/* Ambient Amber Glow Background */}
-          <div className="absolute -top-12 right-1/2 translate-x-1/2 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="w-16 h-16 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/25 relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/25">
             <HelpCircle className="w-8 h-8" />
           </div>
 
-          <div className="space-y-2 relative z-10">
-            <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white">
+          <div className="space-y-2">
+            <h1 className="text-xl sm:text-3xl font-black text-white">
               سوالات متداول و راهنمای مشتریان
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed font-medium">
               پاسخ جامع به پرسش‌های پرتکرار پیرامون اصالت کابل مس، عیب‌یابی پنکه و کولر، زمان‌بندی ارسال و گارانتی
             </p>
           </div>
 
-          {/* Live Search Bar with High Contrast in Both Modes */}
-          <div className="relative max-w-lg mx-auto pt-2 relative z-10">
+          {/* Live Search Bar */}
+          <div className="relative max-w-lg mx-auto pt-2">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="جستجو در سوالات (مثال: سیم مس، پنکه، موتور کولر، فاکتور، ارسال)..."
-              className="w-full bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-xs sm:text-sm rounded-2xl pr-11 pl-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-inner"
+              className="w-full bg-slate-800/90 border border-slate-700 text-white placeholder:text-slate-400 text-xs sm:text-sm rounded-2xl pr-11 pl-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner"
             />
-            <Search className="w-4 h-4 text-slate-400 dark:text-slate-400 absolute right-4 top-6 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-400 absolute right-4 top-6 pointer-events-none" />
           </div>
         </div>
 

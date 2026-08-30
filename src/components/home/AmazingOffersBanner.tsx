@@ -68,7 +68,6 @@ const FALLBACK_DEALS = [
   },
 ];
 
-// 2. Isolated Countdown Timer Component (Confines 1s re-render to this tiny node only)
 function OfferCountdown() {
   const [timeLeft, setTimeLeft] = useState({ hours: 8, minutes: 24, seconds: 15 });
 
@@ -91,7 +90,7 @@ function OfferCountdown() {
         <span>پیشنهاد ویژه امروز</span>
       </span>
       <span
-        className="relative bg-slate-950/50 text-amber-300 font-mono text-[9px] sm:text-[10px] font-black px-2.5 py-0.5 rounded-full border border-amber-400/40 shadow-xs tracking-wider"
+        className="relative bg-slate-950/60 text-amber-300 font-mono text-[9px] sm:text-[10px] font-black px-2.5 py-0.5 rounded-full border border-amber-400/40 shadow-xs tracking-wider ring-2 ring-amber-400/20 animate-pulse duration-[3000ms]"
         dir="ltr"
       >
         {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
@@ -267,6 +266,17 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                     <span>{toPersianDigits(deal.rating || 4.9)}</span>
                   </div>
                 </div>
+
+                {/* Stock Inventory Progress */}
+                <div className="space-y-0.5 pt-1">
+                  <div className="flex items-center justify-between text-[8.5px] font-bold text-slate-500 dark:text-slate-400">
+                    <span>موجودی تخفیف:</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-extrabold">{toPersianDigits(deal.stock || 4)} عدد در انبار</span>
+                  </div>
+                  <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full w-[70%]" />
+                  </div>
+                </div>
               </div>
 
               {/* Bottom: Cart button & Price in Toman */}
@@ -301,6 +311,13 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
             </div>
           );
         })}
+      </div>
+
+      {/* Minimalist Bottom Scroll Trackbar */}
+      <div className="flex justify-center pt-0.5">
+        <div className="w-20 sm:w-28 h-1 bg-white/20 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-full bg-white/60 dark:bg-amber-400/80 rounded-full w-1/3" />
+        </div>
       </div>
     </section>
   );

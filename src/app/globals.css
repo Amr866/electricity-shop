@@ -106,3 +106,24 @@ input[type="range"]::-moz-range-thumb {
     display: none !important;
   }
 }
+
+/* 60fps Infinite Brand Marquee Animation */
+@keyframes marquee-rtl {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(50%);
+  }
+}
+
+.animate-marquee-rtl {
+  display: flex;
+  width: max-content;
+  animation: marquee-rtl 35s linear infinite;
+}
+
+.animate-marquee-rtl:hover {
+  animation-play-state: paused;
+}
+

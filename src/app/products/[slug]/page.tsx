@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { ProductDetailView } from "@/components/product/ProductDetailView";
+import { ProductDetailView, type ProductDetailData } from "@/components/product/ProductDetailView";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ChevronLeft, Zap } from "lucide-react";
 import type { Metadata } from "next";
@@ -113,45 +113,45 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-8 transition-colors duration-200">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-8 transition-colors duration-200">
       {/* Inject JSON-LD Schema.org markup for Search Engines */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         
         {/* Breadcrumb Bar */}
-        <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <nav aria-label="مسیر راهنما" className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 overflow-x-auto whitespace-nowrap scrollbar-none pb-1">
           <Link href="/" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
             صفحه اصلی
           </Link>
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
           <Link href="/products" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
             کاتالوگ محصولات
           </Link>
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
           <Link
             href={`/products?category=${product.category.slug}`}
             className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
           >
             {product.category.name}
           </Link>
-          <ChevronLeft className="w-3.5 h-3.5" />
-          <span className="text-slate-900 dark:text-white font-semibold truncate max-w-xs">
+          <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
+          <span className="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-xs">
             {product.name}
           </span>
         </nav>
 
         {/* Main Product Component */}
-        <ProductDetailView product={product as any} />
+        <ProductDetailView product={product as ProductDetailData} />
 
         {/* Related Products Grid */}
         {relatedProducts.length > 0 && (
-          <div className="pt-8 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
                 <span>کالاهای مرتبط و مکمل</span>
               </h2>
@@ -163,7 +163,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-stretch">
               {relatedProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

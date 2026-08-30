@@ -13,7 +13,20 @@ import {
   Zap,
   Truck,
   Heart,
+  ShieldCheck,
 } from "lucide-react";
+
+// 1. Static Module Helpers (Extracted outside component function to eliminate in-render regex and calculations)
+function formatBrandName(brand?: string | null): string {
+  if (!brand) return "";
+  return brand.replace(/\s*\(.*?\)/g, "").trim();
+}
+
+function getPriceUnit(name: string): string | null {
+  if (name.includes("کلاف")) return "/کلاف";
+  if (name.includes("سیم") || name.includes("کابل")) return "/متر";
+  return null;
+}
 
 interface ProductCardProps {
   product: {
@@ -67,34 +80,36 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   const isOutOfStock = product.stock <= 0;
+  const brandLabel = formatBrandName(product.brand);
+  const priceUnit = getPriceUnit(product.name);
 
   return (
-    <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+    <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15 transition-all duration-300 flex flex-col justify-between h-full overflow-hidden">
       
       {/* Top Section: Badges, Wishlist & Image */}
-      <div>
-        {/* Product Image Frame */}
-        <div className="relative m-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700/60 overflow-hidden aspect-square flex items-center justify-center p-3">
+      <div className="flex-1 flex flex-col">
+        {/* Product Image Frame: Clean Soft Background in both Light and Dark Modes */}
+        <div className="relative m-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 overflow-hidden aspect-square flex items-center justify-center p-3">
           
-          {/* Top-Right Badge: Single Primary Badge */}
+          {/* Top-Right Badge: Discount or Best Seller */}
           <div className="absolute top-2 right-2 z-10">
             {product.discountPercent && product.discountPercent > 0 ? (
-              <span className="bg-gradient-to-r from-copper-600 to-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
+              <span className="bg-gradient-to-r from-amber-600 to-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
                 {toPersianDigits(product.discountPercent)}٪ تخفیف
               </span>
             ) : product.isBestSeller ? (
-              <span className="bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
+              <span className="bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow-xs flex items-center gap-0.5">
                 <Zap className="w-2.5 h-2.5 fill-slate-950" />
                 پرفروش
               </span>
             ) : null}
           </div>
 
-          {/* 9. Wishlist Heart Button with Spring Pop & Fill */}
+          {/* Wishlist Heart Button with Elastic Spring Pop */}
           <button
             type="button"
             onClick={handleToggleFav}
-            aria-label="ذخیره در علاقه‌مندی‌ها"
+            aria-label={`افزودن ${product.name} به علاقه‌مندی‌ها`}
             className={`absolute top-2 left-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-75 ${
               isFavorited
                 ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 scale-105 shadow-rose-500/20"
@@ -104,7 +119,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <Heart className={`w-3.5 h-3.5 transition-all duration-300 ${isFavorited ? "fill-rose-500 text-rose-500 animate-in zoom-in-75" : ""}`} />
           </button>
 
-          {/* Product Image */}
+          {/* Product Image Link */}
           <Link href={`/products/${product.slug}`} className="relative w-full h-full block">
             <Image
               src={primaryImage}
@@ -125,27 +140,29 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Content Details */}
-        <div className="px-3.5 pb-2 sm:px-4 space-y-2">
-          {/* Category & Brand Tags (Non-Truncating Clean Row) */}
-          <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 gap-1">
-            <span className="truncate">{product.category?.name || "تجهیزات برق"}</span>
-            {product.brand && (
-              <span className="font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200/60 dark:border-amber-800/60 shrink-0">
-                {product.brand.replace(/\s*\(.*?\)/g, "")}
-              </span>
-            )}
+        {/* Content Details (Flex-1 to keep spacing balanced across all cards) */}
+        <div className="px-3.5 pb-2 sm:px-4 space-y-2 flex-1 flex flex-col justify-between">
+          <div>
+            {/* Category & Brand Tags */}
+            <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 gap-1 mb-1">
+              <span className="truncate">{product.category?.name || "تجهیزات برق"}</span>
+              {brandLabel && (
+                <span className="font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200/60 dark:border-amber-800/60 shrink-0">
+                  {brandLabel}
+                </span>
+              )}
+            </div>
+
+            {/* Product Title (Locked to consistent 2-line height) */}
+            <Link href={`/products/${product.slug}`} className="block">
+              <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-8 sm:h-10">
+                {product.name}
+              </h3>
+            </Link>
           </div>
 
-          {/* Product Title */}
-          <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-8 sm:h-10">
-              {product.name}
-            </h3>
-          </Link>
-
-          {/* Rating & Fast Courier Badge */}
-          <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 pt-0.5">
+          {/* Rating & Warranty / Delivery Badge */}
+          <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 pt-1">
             <div className="flex items-center gap-1 text-amber-500">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span className="font-bold text-slate-700 dark:text-slate-300 text-[10px] sm:text-[11px]">
@@ -154,8 +171,9 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {product.warranty ? (
-              <span className="text-[9px] sm:text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800 shrink-0">
-                {product.warranty}
+              <span className="text-[9px] sm:text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800 shrink-0 flex items-center gap-0.5">
+                <ShieldCheck className="w-2.5 h-2.5" />
+                <span className="truncate max-w-[120px]">{product.warranty}</span>
               </span>
             ) : product.isIsfahanFast ? (
               <span className="text-[9px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 font-bold">
@@ -167,33 +185,34 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
 
-      {/* Bottom Section: Price & Add to Cart Action */}
-      <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80">
+      {/* Bottom Section: Price & Add to Cart Action (Locked with mt-auto to strictly align across all grid cards) */}
+      <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 dark:border-slate-800/80 mt-auto">
         <div className="flex items-center justify-between gap-1.5 pt-2.5">
           {/* Price Container */}
-          <div className="flex flex-col">
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[10px] sm:text-[11px] text-slate-400 line-through">
+          <div className="flex flex-col min-h-[34px] justify-center">
+            {product.originalPrice && product.originalPrice > product.price ? (
+              <span className="text-[10px] sm:text-[11px] text-slate-400 line-through leading-none mb-0.5">
                 {formatToman(product.originalPrice)}
               </span>
-            )}
+            ) : null}
             <div className="flex items-baseline gap-1">
               <span className="font-black text-xs sm:text-sm lg:text-base text-slate-950 dark:text-amber-400 font-mono">
                 {formatToman(product.price)}
               </span>
-              {product.name.includes("کلاف") ? (
-                <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-normal">/کلاف</span>
-              ) : product.name.includes("سیم") || product.name.includes("کابل") ? (
-                <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-normal">/متر</span>
-              ) : null}
+              {priceUnit && (
+                <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-slate-400 font-normal">
+                  {priceUnit}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* 1. Spring Pop & Ripple Add To Cart CTA Button */}
+          {/* Spring Pop Add To Cart CTA Button */}
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 ${
+            aria-label={`افزودن ${product.name} به سبد خرید`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 shrink-0 ${
               isOutOfStock
                 ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
                 : added
@@ -205,7 +224,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {added ? (
               <>
                 <Check className="w-3.5 h-3.5 animate-in zoom-in spin-in-12" />
-                <span className="text-[11px]">ثبت شد</span>
+                <span className="text-[11px]" aria-live="polite">ثبت شد</span>
               </>
             ) : (
               <>

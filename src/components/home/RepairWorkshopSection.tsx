@@ -85,14 +85,14 @@ export function RepairWorkshopSection() {
         </div>
       </div>
 
-      {/* 5 Repair Service Cards */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* 5 Repair Service Cards (Horizontal Touch Carousel on Mobile, 5-col Grid on Desktop) */}
+      <div className="relative z-10 flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
         {services.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.title}
-              className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 hover:border-amber-400/80 dark:hover:border-amber-400/60 transition-all flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md"
+              className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 hover:border-amber-400/80 dark:hover:border-amber-400/60 transition-all flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none shrink-0 snap-center"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">

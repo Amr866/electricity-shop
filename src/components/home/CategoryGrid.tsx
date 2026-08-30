@@ -42,7 +42,11 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
   };
 
   return (
-    <section className="py-5 sm:py-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 transition-colors duration-200">
+    <section className="relative overflow-hidden py-5 sm:py-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-6 transition-colors duration-200">
+      {/* 4. Ambient Aurora Glow Breathing Lights */}
+      <div className="absolute -top-12 -left-12 w-72 h-72 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-[6000ms]" />
+      <div className="absolute -bottom-12 -right-12 w-72 h-72 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-[8000ms]" />
+
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <div>
@@ -78,7 +82,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-4 bg-slate-900"
+              className="group relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-md transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-3.5 sm:p-4 bg-slate-850 dark:bg-slate-900"
             >
               {/* Background Photo */}
               <img
@@ -87,15 +91,15 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
               />
               {/* Gradient Overlay for crisp text legibility in both themes */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-slate-950/20 dark:from-slate-950 dark:via-slate-950/85 dark:to-slate-950/40" />
 
               {/* Top: Icon + Count */}
               <div className="relative z-10 flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-white/95 dark:bg-slate-900/90 text-slate-950 dark:text-amber-400 flex items-center justify-center shadow-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/60">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/95 dark:bg-slate-900/90 text-slate-950 dark:text-amber-400 flex items-center justify-center shadow-md backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/60">
                   {getIcon(cat.slug)}
                 </div>
                 {cat._count && (
-                  <span className="text-[11px] font-bold text-amber-400 bg-slate-950/80 border border-slate-700/80 px-2 py-0.5 rounded-full backdrop-blur-sm shadow-sm">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-amber-300 dark:text-amber-400 bg-slate-900/90 border border-slate-700/80 px-2 py-0.5 rounded-full backdrop-blur-sm shadow-sm">
                     {toPersianDigits(cat._count.products)} کالا
                   </span>
                 )}

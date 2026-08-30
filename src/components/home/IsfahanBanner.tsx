@@ -43,38 +43,50 @@ export function IsfahanBanner() {
               </p>
             </div>
 
-            {/* 4 Advantages Grid */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-750 space-y-1 hover:border-amber-400/60 transition-colors">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            {/* 4 Advantages Grid (Compact & Sleek) */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2">
+              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-2.5 sm:p-3.5 border border-slate-200/80 dark:border-slate-750 flex items-center gap-2.5 hover:border-amber-400/60 transition-colors">
+                <div className="relative w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
                   <Truck className="w-4 h-4" />
                 </div>
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">ارسال فوری اسنپ</strong>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium">تحویل سریع در نجف‌آباد و اصفهان</span>
+                <div className="min-w-0">
+                  <strong className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white block truncate">ارسال فوری اسنپ</strong>
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium truncate">نجف‌آباد و اصفهان</span>
+                </div>
               </div>
 
-              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-750 space-y-1 hover:border-amber-400/60 transition-colors">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-2.5 sm:p-3.5 border border-slate-200/80 dark:border-slate-750 flex items-center gap-2.5 hover:border-amber-400/60 transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
                   <CreditCard className="w-4 h-4" />
                 </div>
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">پرداخت در محل</strong>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium">کارتخوان سیار پس از تحویل</span>
+                <div className="min-w-0">
+                  <strong className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white block truncate">پرداخت در محل</strong>
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium truncate">کارتخوان سیار</span>
+                </div>
               </div>
 
-              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-750 space-y-1 hover:border-amber-400/60 transition-colors">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-2.5 sm:p-3.5 border border-slate-200/80 dark:border-slate-750 flex items-center gap-2.5 hover:border-amber-400/60 transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                   <MapPin className="w-4 h-4" />
                 </div>
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">تحویل حضوری</strong>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium">تست کالا در فروشگاه</span>
+                <div className="min-w-0">
+                  <strong className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white block truncate">تحویل حضوری</strong>
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium truncate">تست در فروشگاه</span>
+                </div>
               </div>
 
-              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-3.5 border border-slate-200/80 dark:border-slate-750 space-y-1 hover:border-amber-400/60 transition-colors">
-                <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+              <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-2.5 sm:p-3.5 border border-slate-200/80 dark:border-slate-750 flex items-center gap-2.5 hover:border-amber-400/60 transition-colors">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">پیش‌فاکتور رسمی</strong>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium">مهر و شناسه معتبر</span>
+                <div className="min-w-0">
+                  <strong className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white block truncate">پیش‌فاکتور رسمی</strong>
+                  <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 block leading-tight font-medium truncate">مهر و شناسه معتبر</span>
+                </div>
               </div>
             </div>
           </div>

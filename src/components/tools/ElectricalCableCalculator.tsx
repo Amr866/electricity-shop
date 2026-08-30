@@ -46,6 +46,39 @@ const FUSE_PRICING: Record<string, { name: string; price: number; productId: str
   C50: { name: "کلید مینیاتوری ۵۰ آمپر دنا الکتریک", price: 185000, productId: "fuse-c50" },
 };
 
+// 3. Smooth Number Ticker Interpolation Hook (60fps requestAnimationFrame)
+function useAnimatedNumber(value: number, duration: number = 250) {
+  const [displayValue, setDisplayValue] = useState(value);
+
+  React.useEffect(() => {
+    let startTimestamp: number | null = null;
+    const startValue = displayValue;
+    const endValue = value;
+
+    if (startValue === endValue) return;
+
+    let animationFrameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(startValue + (endValue - startValue) * easeProgress);
+      setDisplayValue(current);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [value, duration]);
+
+  return displayValue;
+}
+
 export function ElectricalCableCalculator() {
   const { addToCart } = useCart();
   const [selectedPresetId, setSelectedPresetId] = useState<string>("split_ac");
@@ -144,6 +177,9 @@ export function ElectricalCableCalculator() {
     };
   }, [loadPowerWatts, distanceMeters, phaseType]);
 
+  const animatedPackagePrice = useAnimatedNumber(totalPackagePrice, 250);
+  const animatedAmps = useAnimatedNumber(Math.round(currentAmps * 10), 200) / 10;
+
   const handleAddPackageToCart = () => {
     const wireInfo = WIRE_PRICING[recommendedGauge] || WIRE_PRICING[2.5];
     const fuseInfo = FUSE_PRICING[recommendedFuse] || FUSE_PRICING["B16"];
@@ -177,7 +213,7 @@ export function ElectricalCableCalculator() {
   };
 
   return (
-    <section id="calculator" className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200 scroll-mt-28">
+    <section id="calculator" className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-4 sm:space-y-6 relative overflow-hidden transition-colors duration-200 scroll-mt-28">
       {/* Background Glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -304,8 +340,8 @@ export function ElectricalCableCalculator() {
           <div className="grid grid-cols-3 gap-2.5 text-center text-xs">
             <div className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1 font-medium">جریان نامی مصرفی</span>
-              <strong className="text-amber-600 dark:text-amber-400 font-mono text-sm sm:text-base font-bold">
-                {currentAmps.toFixed(1)} A
+              <strong className="text-amber-600 dark:text-amber-400 font-mono text-sm sm:text-base font-bold transition-all">
+                {animatedAmps.toFixed(1)} A
               </strong>
             </div>
 
@@ -324,15 +360,21 @@ export function ElectricalCableCalculator() {
             </div>
           </div>
 
-          {/* Voltage drop validation badge */}
-          <div className="flex items-center justify-between text-[11px] bg-white/80 dark:bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-1.5">
+          {/* Voltage drop validation badge with Dynamic Gauge Morph */}
+          <div
+            className={`flex items-center justify-between text-[11px] px-3.5 py-2.5 rounded-xl border transition-all duration-500 ${
+              isDropAcceptable
+                ? "bg-emerald-500/10 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-900 dark:text-emerald-300"
+                : "bg-amber-500/15 dark:bg-amber-950/40 border-amber-500/40 text-amber-900 dark:text-amber-300"
+            }`}
+          >
+            <div className="flex items-center gap-2">
               {isDropAcceptable ? (
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 animate-pulse" />
               )}
-              <span className="text-slate-700 dark:text-slate-300 font-medium">
+              <span className="font-medium leading-relaxed">
                 {isDropAcceptable
                   ? `سیم محاسبه‌شده ۱۰۰٪ تمام مس با افت ولتاژ مجاز (${voltageDropPercent.toFixed(1)}٪) در مسافت ${toPersianDigits(distanceMeters)} متر است.`
                   : `افت ولتاژ (${voltageDropPercent.toFixed(1)}٪) بیش از حد مجاز ۳٪ بود؛ سایز سیم جهت حفاظت مصرف‌کننده ارتقا یافت.`}
@@ -345,8 +387,8 @@ export function ElectricalCableCalculator() {
         <div className="lg:col-span-5 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">پکیج کابل مس + فیوز محافظ:</span>
-            <span className="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400 font-mono">
-              {formatToman(totalPackagePrice)}
+            <span className="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400 font-mono transition-all">
+              {formatToman(animatedPackagePrice)}
             </span>
           </div>
 

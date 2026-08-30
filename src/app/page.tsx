@@ -209,16 +209,17 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-6">
+            {/* Reviews: Horizontal Touch Carousel on Mobile, 3-col Grid on Desktop */}
+            <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 gap-3.5 sm:gap-6">
               {reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200"
+                  className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors duration-200 min-w-[270px] max-w-[290px] sm:min-w-0 sm:max-w-none shrink-0 snap-center"
                 >
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-xs">
+                        <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs shadow-2xs">
                           {rev.authorName.slice(0, 1)}
                         </div>
                         <div>
@@ -231,10 +232,17 @@ export default async function HomePage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-0.5 text-amber-400">
-                        {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                          <Star key={i} className="w-3 h-3 fill-amber-400" />
-                        ))}
+                      <div className="flex flex-col items-end gap-1">
+                        <div className="flex items-center gap-0.5 text-amber-400">
+                          {Array.from({ length: rev.rating || 5 }).map((_, i) => (
+                            <Star key={i} className="w-3 h-3 fill-amber-400" />
+                          ))}
+                        </div>
+                        {rev.product && (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold text-[9px] bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded border border-emerald-200/60 dark:border-emerald-800/60">
+                            خرید تایید شده
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -245,11 +253,8 @@ export default async function HomePage() {
 
                   {rev.product && (
                     <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between font-medium">
-                      <span className="truncate max-w-[180px]">
+                      <span className="truncate">
                         کالا: {rev.product.name}
-                      </span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold text-[10px]">
-                        خرید تایید شده
                       </span>
                     </div>
                   )}

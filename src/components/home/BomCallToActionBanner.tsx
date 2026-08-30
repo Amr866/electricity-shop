@@ -44,8 +44,10 @@ export function BomCallToActionBanner() {
         <div className="shrink-0 w-full sm:w-auto">
           <Link
             href="/bom-upload"
-            className="w-full sm:w-auto px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 group transition-all transform active:scale-95 hover-glow"
+            className="relative overflow-hidden w-full sm:w-auto px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-2xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 group transition-all transform active:scale-95 hover-glow"
           >
+            {/* Subtle Shimmer Sweep Light */}
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-1000 ease-in-out pointer-events-none" />
             <UploadCloud className="w-4 h-4 text-slate-950" />
             <span>بارگذاری سریع لیست قطعات</span>
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

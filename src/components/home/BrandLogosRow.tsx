@@ -28,12 +28,13 @@ export function BrandLogosRow() {
         <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">ضمانت اصالت و گارانتی شرکتی</span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+      {/* Brands: Horizontal Touch Slider on Mobile, 5-col Grid on Desktop */}
+      <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-5 gap-2.5 sm:gap-3">
         {brands.map((b) => (
           <Link
             key={b.slug}
             href={`/products?q=${encodeURIComponent(b.name.split(" ")[0])}`}
-            className="group p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-400 transition-all text-center flex flex-col items-center justify-center min-h-[64px] shadow-sm hover:shadow-md"
+            className="group p-2.5 sm:p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-400 transition-all text-center flex flex-col items-center justify-center min-w-[130px] sm:min-w-0 min-h-[58px] sm:min-h-[64px] shrink-0 snap-center shadow-2xs hover:shadow-sm"
           >
             <span className="font-black text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
               {b.name}

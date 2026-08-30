@@ -65,23 +65,26 @@ export function KnowledgeBaseSection() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-5">
         {articles.map((art) => (
-          <div
+          <Link
             key={art.id}
-            className="group rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col justify-between hover:border-amber-400 dark:hover:border-amber-400 transition-all hover:shadow-md"
+            href={`/blog/${art.slug}`}
+            className="group rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-row md:flex-col justify-between hover:border-amber-400 dark:hover:border-amber-400 transition-all hover:shadow-md p-2.5 sm:p-0"
           >
-            <div>
-              <div className="aspect-video w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
-                <img
-                  src={art.image}
-                  alt={art.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
+            {/* Image: Compact Thumbnail on mobile, aspect-video on desktop */}
+            <div className="w-22 h-22 sm:w-full sm:h-auto sm:aspect-video overflow-hidden bg-slate-200 dark:bg-slate-700 rounded-xl sm:rounded-none shrink-0">
+              <img
+                src={art.image}
+                alt={art.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
 
-              <div className="p-4 space-y-2.5">
-                <span className="inline-block bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
+            {/* Content Details */}
+            <div className="flex-1 flex flex-col justify-between p-1 sm:p-4 mr-2.5 sm:mr-0 min-w-0">
+              <div className="space-y-1 sm:space-y-2">
+                <span className="inline-block bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
                   {art.category}
                 </span>
 
@@ -89,16 +92,16 @@ export function KnowledgeBaseSection() {
                   {art.title}
                 </h4>
               </div>
-            </div>
 
-            <div className="p-4 pt-0 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-300 border-t border-slate-200 dark:border-slate-700 mt-3 pt-3">
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-slate-400 dark:text-slate-400" />
-                {art.readTime}
-              </span>
-              <span className="font-mono text-[10px]">{toPersianDigits(art.date)}</span>
+              <div className="pt-2 sm:pt-3 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-700/60 mt-1.5">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-slate-400 dark:text-slate-400" />
+                  {art.readTime}
+                </span>
+                <span className="font-mono text-[10px]">{toPersianDigits(art.date)}</span>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

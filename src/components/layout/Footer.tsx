@@ -22,7 +22,7 @@ export function Footer() {
   const { brand } = useBrand();
 
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-10 pb-8 border-t border-slate-850 transition-colors duration-200">
+    <footer className="bg-slate-950 text-slate-300 pt-10 pb-24 md:pb-8 border-t border-slate-850 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* Main Footer Links & Information */}
@@ -60,11 +60,11 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Quick Map and About Buttons */}
-            <div className="flex gap-2 pt-2">
+            {/* Quick Map and About Buttons (Stacked on mobile, row on desktop) */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <Link
                 href="/contact"
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-colors shadow-sm"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm active:scale-98"
               >
                 <Navigation className="w-3.5 h-3.5" />
                 <span>تماس با ما و مسیریابی</span>
@@ -72,7 +72,7 @@ export function Footer() {
 
               <Link
                 href="/about"
-                className="bg-slate-850 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-colors border border-slate-750"
+                className="bg-slate-850 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-colors border border-slate-750 active:scale-98"
               >
                 <Info className="w-3.5 h-3.5 text-amber-400" />
                 <span>درباره فروشگاه شیاسی</span>
@@ -80,96 +80,104 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Col 3: Categories */}
-          <div className="space-y-3">
-            <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">دسته‌بندی‌های کالا</h4>
-            <ul className="space-y-2 text-xs text-slate-400 font-medium">
-              <li>
-                <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors">
-                  پنکه و تهویه خانگی
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors">
-                  موتور و پمپ کولر آبی
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors">
-                  بخاری برقی و هیتر
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=wiring-building" className="hover:text-amber-400 transition-colors">
-                  سیم، کابل و آنتن دیجیتال
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=lighting-fixtures" className="hover:text-amber-400 transition-colors">
-                  روشنایی و پروژکتور خورشیدی
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=maker-diy-electronics" className="hover:text-amber-400 transition-colors">
-                  بردهای آردوینو و ماژول‌ها
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* Col 3 & Col 4: Categories & Services (Side-by-side 2 columns on Mobile!) */}
+          <div className="lg:col-span-2 grid grid-cols-2 gap-4 sm:gap-6 border-t border-slate-850 md:border-t-0 pt-6 md:pt-0">
+            
+            {/* Col 3: Categories */}
+            <div className="space-y-3">
+              <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">
+                دسته‌بندی‌های کالا
+              </h4>
+              <ul className="space-y-2 text-xs text-slate-400 font-medium">
+                <li>
+                  <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors block py-0.5">
+                    پنکه و تهویه خانگی
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors block py-0.5">
+                    موتور و پمپ کولر
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors block py-0.5">
+                    بخاری برقی و هیتر
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?category=wiring-building" className="hover:text-amber-400 transition-colors block py-0.5">
+                    سیم، کابل و آنتن
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?category=lighting-fixtures" className="hover:text-amber-400 transition-colors block py-0.5">
+                    پروژکتور خورشیدی
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products?category=maker-diy-electronics" className="hover:text-amber-400 transition-colors block py-0.5">
+                    بردهای آردوینو
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-          {/* Col 4: Services & Direct Pages */}
-          <div className="space-y-3">
-            <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">دسترسی و خدمات</h4>
-            <ul className="space-y-2 text-xs text-slate-400 font-medium">
-              <li>
-                <Link href="/contact" className="text-amber-400 font-bold hover:underline flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>تماس با ما و نشانی شعبه</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <Info className="w-3.5 h-3.5" />
-                  <span>درباره فروشگاه شیاسی</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/repair-service" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <Wrench className="w-3.5 h-3.5" />
-                  <span>پذیرش و پیگیری تعمیرات</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/bom-upload" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>خرید عمده و بارگذاری BOM</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/order-tracking" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>پیگیری سفارش و فاکتور رسمی</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/account" className="hover:text-amber-400 transition-colors flex items-center gap-1">
-                  <User className="w-3.5 h-3.5" />
-                  <span>حساب کاربری و تاریخچه خرید</span>
-                </Link>
-              </li>
-            </ul>
+            {/* Col 4: Services & Direct Pages */}
+            <div className="space-y-3">
+              <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">
+                دسترسی و خدمات
+              </h4>
+              <ul className="space-y-2 text-xs text-slate-400 font-medium">
+                <li>
+                  <Link href="/contact" className="text-amber-400 font-bold hover:underline flex items-center gap-1 py-0.5">
+                    <Phone className="w-3.5 h-3.5 shrink-0" />
+                    <span>تماس و نشانی</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <Info className="w-3.5 h-3.5 shrink-0" />
+                    <span>درباره شیاسی</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/repair-service" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <Wrench className="w-3.5 h-3.5 shrink-0" />
+                    <span>پیگیری تعمیرات</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/bom-upload" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <FileSpreadsheet className="w-3.5 h-3.5 shrink-0" />
+                    <span>بارگذاری BOM</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/order-tracking" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                    <span>پیگیری فاکتور</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/account" className="hover:text-amber-400 transition-colors flex items-center gap-1 py-0.5">
+                    <User className="w-3.5 h-3.5 shrink-0" />
+                    <span>حساب کاربری</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Col 5: Trust Badges & Messengers */}
-          <div className="space-y-3">
+          <div className="space-y-3 border-t border-slate-850 md:border-t-0 pt-6 md:pt-0">
             <h4 className="text-white font-bold text-sm border-r-2 border-amber-400 pr-2.5">نمادهای اعتماد و پشتیبانی</h4>
             <div className="grid grid-cols-2 gap-2">
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-center flex flex-col items-center justify-center">
+              <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 text-center flex flex-col items-center justify-center">
                 <CheckCircle2 className="w-6 h-6 text-emerald-400 mb-1" />
                 <span className="text-[10px] text-slate-200 font-bold">پروانه کسب</span>
                 <span className="text-[9px] text-slate-400">صنف الکتریک</span>
               </div>
-              <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-center flex flex-col items-center justify-center">
+              <div className="bg-slate-900 p-3 rounded-xl border border-slate-850 text-center flex flex-col items-center justify-center">
                 <ShieldCheck className="w-6 h-6 text-amber-400 mb-1" />
                 <span className="text-[10px] text-slate-200 font-bold">درگاه امن</span>
                 <span className="text-[9px] text-slate-400">زرین‌پال و شاپرک</span>
@@ -177,32 +185,32 @@ export function Footer() {
             </div>
 
             <div className="pt-2">
-              <p className="text-xs text-slate-400 mb-2 font-medium">پیام‌رسان‌های فروشگاه:</p>
+              <p className="text-xs text-slate-400 mb-2 font-medium">پیام‌رسان‌های رسمی فروشگاه:</p>
               <div className="flex items-center gap-2">
                 <a
                   href={`https://wa.me/98${brand.rawMobile?.replace(/^0/, "") || "9131112233"}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                  className="flex-1 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
+                  <MessageCircle className="w-4 h-4" />
                   <span>واتساپ</span>
                 </a>
                 <a
                   href="https://eitaa.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-orange-600/20 text-orange-400 hover:bg-orange-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                  className="flex-1 bg-orange-600/20 hover:bg-orange-600 text-orange-400 hover:text-white border border-orange-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
                 >
-                  ایتا
+                  <span>ایتا</span>
                 </a>
                 <a
                   href="https://t.me"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-sky-600/20 text-sky-400 hover:bg-sky-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                  className="flex-1 bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white border border-sky-500/30 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs"
                 >
-                  تلگرام
+                  <span>تلگرام</span>
                 </a>
               </div>
             </div>

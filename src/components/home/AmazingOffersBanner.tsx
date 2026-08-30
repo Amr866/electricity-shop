@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Heart,
   ShoppingCart,
+  Check,
   Star,
   ChevronLeft,
   ChevronRight,
@@ -23,6 +24,26 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [timeLeft, setTimeLeft] = React.useState({ hours: 8, minutes: 24, seconds: 15 });
+  const [addedDealId, setAddedDealId] = React.useState<string | null>(null);
+
+  const handleAddDeal = (deal: any) => {
+    addToCart(deal, 1);
+    setAddedDealId(deal.id);
+    setTimeout(() => setAddedDealId(null), 1800);
+  };
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
+        if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        return { hours: 12, minutes: 0, seconds: 0 };
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -119,9 +140,15 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
         {/* Right: Amazing Offers Title */}
         <div className="flex items-center gap-2.5 sm:gap-3 text-right">
           <div>
-            <span className="inline-block bg-white/20 dark:bg-rose-500/30 text-white text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full backdrop-blur-md mb-0.5 sm:mb-1">
-              • فروش ویژه امروز
-            </span>
+            <div className="flex items-center gap-1.5 mb-1 justify-end">
+              <span className="inline-flex items-center gap-1 bg-white/20 dark:bg-rose-500/30 text-white text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded-full backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-ping shrink-0" />
+                <span>پیشنهاد ویژه امروز</span>
+              </span>
+              <span className="bg-slate-950/40 text-amber-300 font-mono text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-400/30" dir="ltr">
+                {String(timeLeft.hours).padStart(2, "0")}:{String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+              </span>
+            </div>
             <h3 className="font-black text-base sm:text-2xl text-white">
               پیشنهادهای شگفت‌انگیز
             </h3>
@@ -153,7 +180,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
           return (
             <div
               key={deal.id}
-              className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-slate-900 dark:text-white border border-white/40 dark:border-slate-800 shadow-md flex flex-col justify-between space-y-2 hover:-translate-y-1 transition-all duration-300 min-w-[160px] max-w-[175px] sm:min-w-[210px] sm:max-w-[220px] shrink-0 snap-start"
+              className="group bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 text-slate-900 dark:text-white border border-white/40 dark:border-slate-800 shadow-md flex flex-col justify-between space-y-2 hover:-translate-y-1 transition-all duration-300 w-[145px] sm:w-[210px] min-w-[145px] sm:min-w-[210px] shrink-0 snap-start"
             >
               <div>
                 {/* Top Badges: Discount pill + Heart */}
@@ -165,13 +192,13 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                   <button
                     onClick={() => toggleWishlist(deal)}
                     aria-label="افزودن به علاقه‌مندی‌ها"
-                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 active:scale-75 ${
                       isFav
-                        ? "text-rose-500 bg-rose-50 dark:bg-rose-950/60"
-                        : "text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        ? "text-rose-500 bg-rose-50 dark:bg-rose-950/60 scale-105 shadow-sm shadow-rose-500/20"
+                        : "text-slate-400 hover:text-rose-500 hover:scale-110 hover:bg-slate-100 dark:hover:bg-slate-800"
                     }`}
                   >
-                    <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-rose-500" : ""}`} />
+                    <Heart className={`w-3.5 h-3.5 transition-all duration-300 ${isFav ? "fill-rose-500 animate-in zoom-in-75" : ""}`} />
                   </button>
                 </div>
 
@@ -215,11 +242,19 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
               {/* Bottom: Cart button & Price in Toman */}
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-1">
                 <button
-                  onClick={() => addToCart(deal, 1)}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-amber-400 dark:hover:text-slate-950 flex items-center justify-center transition-all shadow-sm shrink-0"
+                  onClick={() => handleAddDeal(deal)}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center shadow-sm shrink-0 active:scale-85 ${
+                    addedDealId === deal.id
+                      ? "bg-emerald-600 text-white scale-110 shadow-emerald-600/30"
+                      : "bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-amber-400 dark:hover:text-slate-950 hover:scale-105"
+                  }`}
                   title="افزودن به سبد"
                 >
-                  <ShoppingCart className="w-3.5 h-3.5" />
+                  {addedDealId === deal.id ? (
+                    <Check className="w-3.5 h-3.5 animate-in zoom-in spin-in-12" />
+                  ) : (
+                    <ShoppingCart className="w-3.5 h-3.5" />
+                  )}
                 </button>
 
                 <div className="text-left leading-tight">

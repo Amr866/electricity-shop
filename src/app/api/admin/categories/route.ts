@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         description: description || null,
         icon: icon || "Zap",
         image: image || null,
-        sortOrder: sortOrder ? parseInt(sortOrder, 10) : 0,
+        sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : 0,
       },
     });
 
@@ -30,6 +30,43 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("Error creating category:", error);
     return NextResponse.json({ message: error.message || "خطا در ایجاد دسته‌بندی." }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  const { isAdmin, response } = await checkAdminSession();
+  if (!isAdmin) return response!;
+
+  try {
+    const { id, name, slug, description, icon, image, sortOrder } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ message: "شناسه دسته‌بندی الزامی است." }, { status: 400 });
+    }
+
+    const cleanSlug = slug ? slug.trim().toLowerCase().replace(/\s+/g, "-") : undefined;
+
+    const category = await prisma.category.update({
+      where: { id },
+      data: {
+        name: name !== undefined ? name : undefined,
+        slug: cleanSlug,
+        description: description !== undefined ? description : undefined,
+        icon: icon !== undefined ? icon : undefined,
+        image: image !== undefined ? image : undefined,
+        sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : undefined,
+      },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
+    });
+
+    return NextResponse.json({ success: true, category });
+  } catch (error: any) {
+    console.error("Error updating category:", error);
+    return NextResponse.json({ message: error.message || "خطا در به‌روزرسانی دسته‌بندی." }, { status: 500 });
   }
 }
 

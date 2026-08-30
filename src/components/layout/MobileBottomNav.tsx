@@ -16,7 +16,7 @@ import {
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const { itemCount } = useCart();
+  const { itemCount, openCartDrawer } = useCart();
   const { wishlistCount } = useWishlist();
   const [badgeBump, setBadgeBump] = useState(false);
 
@@ -94,6 +94,12 @@ export function MobileBottomNav() {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={(e) => {
+                  if (item.label === "سبد خرید" && pathname !== "/cart") {
+                    e.preventDefault();
+                    openCartDrawer();
+                  }
+                }}
                 className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 py-1 px-1 rounded-xl transition-all duration-200 active:scale-90 ${
                   isActive
                     ? "text-amber-600 dark:text-amber-400 font-black scale-105"

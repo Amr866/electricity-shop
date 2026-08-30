@@ -41,7 +41,7 @@ import {
 
 export function Header() {
   const { data: session } = useSession();
-  const { itemCount, subtotal } = useCart();
+  const { itemCount, subtotal, openCartDrawer } = useCart();
   const { wishlistCount } = useWishlist();
   const { brand } = useBrand();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -242,9 +242,10 @@ export function Header() {
               </Link>
 
               {/* Desktop Cart Button with Dynamic Pulse Bump */}
-              <Link
-                href="/cart"
-                className={`hidden md:flex items-center gap-1.5 sm:gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-700/60 shadow-xs transition-all duration-300 active:scale-95 shrink-0 ${
+              <button
+                type="button"
+                onClick={openCartDrawer}
+                className={`hidden md:flex items-center gap-1.5 sm:gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-700/60 shadow-xs transition-all duration-300 active:scale-95 shrink-0 cursor-pointer ${
                   cartBump ? "scale-105 ring-2 ring-amber-400 shadow-md shadow-amber-500/20" : ""
                 }`}
               >
@@ -262,7 +263,7 @@ export function Header() {
                     {subtotal > 0 ? formatToman(subtotal) : "۰ تومان"}
                   </span>
                 </div>
-              </Link>
+              </button>
 
               {/* Mobile Menu Toggle Button (Guaranteed Visible and Accessible) */}
               <button

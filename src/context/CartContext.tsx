@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 export interface CartItem {
   id: string; // Product ID
@@ -29,6 +29,10 @@ interface CartContextType {
   discount: number;
   total: number;
   appliedCoupon: CouponData | null;
+  isCartDrawerOpen: boolean;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
+  toggleCartDrawer: () => void;
   addToCart: (product: {
     id: string;
     name: string;
@@ -62,7 +66,12 @@ function computeTieredUnitPrice(basePrice: number, qty: number): number {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<CouponData | null>(null);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const openCartDrawer = useCallback(() => setIsCartDrawerOpen(true), []);
+  const closeCartDrawer = useCallback(() => setIsCartDrawerOpen(false), []);
+  const toggleCartDrawer = useCallback(() => setIsCartDrawerOpen((prev) => !prev), []);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -142,6 +151,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         },
       ];
     });
+
+    // Automatically reveal the Slide-over Cart Drawer upon addition
+    setIsCartDrawerOpen(true);
   };
 
   const removeFromCart = (productId: string) => {
@@ -202,6 +214,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         discount,
         total,
         appliedCoupon,
+        isCartDrawerOpen,
+        openCartDrawer,
+        closeCartDrawer,
+        toggleCartDrawer,
         addToCart,
         removeFromCart,
         updateQuantity,

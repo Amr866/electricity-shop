@@ -28,12 +28,12 @@ async function main() {
     { name: 'دینام کولر آبی ۳/۴ اسب دو سرعته موتوژن اصل با پایه فلزی', brand: 'موتوژن تبریز (Motogen)', price: 4250000, img: '/images/products/موتور-کولر-موتوژن-3-4.jpg' },
     
     // Cooler Pumps & Parts
-    { name: 'پمپ آب کولر آبی الکتروژن مدل البرز تمام مس ضدآب', brand: 'الکتروژن (Electrogen)', price: 420000, img: '/images/products/7500-general.jpg' },
-    { name: 'پمپ آب کولر موتوژن تبریز مدل پرقدرت با بدنه مقاوم', brand: 'موتوژن تبریز (Motogen)', price: 540000, img: '/images/products/7500-general.jpg' },
-    { name: 'پمپ آب کولر آبی شیراز مدل آکواریومی کم‌مصرف ضدسوختگی', brand: 'شیراز (Shiraz Pump)', price: 360000, img: '/images/products/7500-general.jpg' },
-    { name: 'شناور کولر آبی برنجی ضدچکه و ضدزنگ شیاسی', brand: 'شیاسی (Shiasi)', price: 75000, img: '/images/products/7500-general.jpg' },
-    { name: 'تسمه کولر آبی دانگیل کره‌ای اصل سایز A68 ضدسایش', brand: 'دانگیل (Dongil)', price: 95000, img: '/images/products/7500-general.jpg' },
-    { name: 'یاتاقان بلبرینگی کولر آبی سایز ۳/۴ صنعتی گریس‌خور', brand: 'موتوژن تبریز (Motogen)', price: 125000, img: '/images/products/7500-general.jpg' },
+    { name: 'پمپ آب کولر آبی الکتروژن مدل البرز تمام مس ضدآب', brand: 'الکتروژن (Electrogen)', price: 420000, img: '/images/products/adonyig-machine-3098797_1920.jpg' },
+    { name: 'پمپ آب کولر موتوژن تبریز مدل پرقدرت با بدنه مقاوم', brand: 'موتوژن تبریز (Motogen)', price: 540000, img: '/images/products/is463940-generator-5476642_1920.jpg' },
+    { name: 'پمپ آب کولر آبی شیراز مدل آکواریومی کم‌مصرف ضدسوختگی', brand: 'شیراز (Shiraz Pump)', price: 360000, img: '/images/products/adonyig-machine-3098797_1920.jpg' },
+    { name: 'شناور کولر آبی برنجی ضدچکه و ضدزنگ شیاسی', brand: 'شیاسی (Shiasi)', price: 75000, img: '/images/products/richard_ssmid-equipment-3111880_1920.jpg' },
+    { name: 'تسمه کولر آبی دانگیل کره‌ای اصل سایز A68 ضدسایش', brand: 'دانگیل (Dongil)', price: 95000, img: '/images/products/republica-wire-732209_1920.jpg' },
+    { name: 'یاتاقان بلبرینگی کولر آبی سایز ۳/۴ صنعتی گریس‌خور', brand: 'موتوژن تبریز (Motogen)', price: 125000, img: '/images/products/richard_ssmid-equipment-3111880_1920.jpg' },
     
     // Polymer Coolers
     { name: 'کولر آبی پلیمری سلولزی ۸۰۰۰ اینورتر ایرومکس با پد ضدشوره', brand: 'ایرومکس (Airomax)', price: 18900000, img: '/images/products/AIromax-polymer-water-cooler-8000.webp' },

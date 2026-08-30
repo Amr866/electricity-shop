@@ -13,6 +13,7 @@ import {
   MapPin,
   PhoneCall,
   Plug,
+  MessageCircle,
 } from "lucide-react";
 
 // 1. Static Services Data (Defined outside render function to eliminate GC memory allocation)
@@ -80,13 +81,15 @@ const WORKSHOP_SERVICES = [
 ];
 
 export function RepairWorkshopSection() {
+  const whatsappUrl = `https://wa.me/989162665884?text=${encodeURIComponent("سلام، درخواست راهنمایی و استعلام هزینه تعمیر دستگاه در کارگاه فنی شیاسی را دارم.")}`;
+
   return (
-    <section id="workshop" className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200 scroll-mt-28">
+    <section id="workshop" className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200 scroll-mt-28">
       {/* Ambient background glow */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
         <div className="space-y-2 max-w-2xl text-right">
           <span className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-400 text-xs font-bold bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full">
             <Wrench className="w-4 h-4" />
@@ -100,26 +103,38 @@ export function RepairWorkshopSection() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        {/* CTA Buttons (Mobile Responsive Flex Grid) */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-4 py-3 rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center gap-1.5 active:scale-95"
+            title="ارسال پیام و عکس خرابی در واتساپ"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>استعلام واتساپ</span>
+          </a>
+
           <Link
             href="/repair-service"
-            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-5 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center gap-2 hover-glow active:scale-95"
+            className="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-5 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 hover-glow active:scale-95"
           >
-            <span>ثبت آنلاین درخواست تعمیر</span>
+            <span>ثبت آنلاین درخواست</span>
             <ArrowLeft className="w-4 h-4" />
           </Link>
         </div>
       </div>
 
-      {/* 5 Interactive Repair Service Cards (Links to online request) */}
-      <div className="relative z-10 flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+      {/* 5 Interactive Repair Service Cards (Horizontal Touch Carousel on Mobile, 5-col Grid on Desktop) */}
+      <div className="relative z-10 flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 -mx-1 px-1">
         {WORKSHOP_SERVICES.map((item) => {
           const Icon = item.icon;
           return (
             <Link
               key={item.id}
               href={`/repair-service?service=${item.id}`}
-              className={`group relative bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 transition-all duration-300 flex flex-col justify-between space-y-3 shadow-sm min-w-[240px] max-w-[260px] sm:min-w-0 sm:max-w-none shrink-0 snap-center hover:-translate-y-1.5 overflow-hidden ${item.hoverBorder} ${item.hoverShadow}`}
+              className={`group relative bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 transition-all duration-300 flex flex-col justify-between space-y-3 shadow-sm min-w-[220px] max-w-[260px] sm:min-w-0 sm:max-w-none shrink-0 snap-center hover:-translate-y-1.5 overflow-hidden active:scale-98 ${item.hoverBorder} ${item.hoverShadow}`}
             >
               {/* Dynamic Aura Glow on Hover */}
               <div className={`absolute top-0 right-0 w-48 h-32 bg-gradient-to-br ${item.glowBg} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-tr-2xl blur-xl`} />
@@ -157,7 +172,7 @@ export function RepairWorkshopSection() {
       </div>
 
       {/* Footer Info */}
-      <div className="relative z-10 pt-2 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 dark:text-slate-300 gap-3 border-t border-slate-100 dark:border-slate-800">
+      <div className="relative z-10 pt-2 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 dark:text-slate-300 gap-3 border-t border-slate-100 dark:border-slate-800 text-center sm:text-right">
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span className="font-medium">پذیرش حضوری در فروشگاه نجف‌آباد + امکان ارسال با پیک اسنپ</span>

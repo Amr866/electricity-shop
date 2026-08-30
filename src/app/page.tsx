@@ -50,22 +50,16 @@ const FALLBACK_REVIEWS = [
 
 async function getHomeData() {
   try {
-    const [categories, featuredProducts, bestSellers, discountedProducts, dbReviews] =
+    const [categories, featuredProducts, discountedProducts, dbReviews] =
       await Promise.all([
         prisma.category.findMany({
           take: 6,
           include: { _count: { select: { products: true } } },
         }),
         prisma.product.findMany({
-          where: { isFeatured: true },
-          include: {
-            category: true,
-            images: true,
+          where: {
+            OR: [{ isFeatured: true }, { isBestSeller: true }],
           },
-          take: 8,
-        }),
-        prisma.product.findMany({
-          where: { isBestSeller: true },
           include: {
             category: true,
             images: true,
@@ -99,7 +93,6 @@ async function getHomeData() {
     return {
       categories,
       featuredProducts,
-      bestSellers,
       discountedProducts,
       reviews: finalReviews,
     };
@@ -108,7 +101,6 @@ async function getHomeData() {
     return {
       categories: [],
       featuredProducts: [],
-      bestSellers: [],
       discountedProducts: [],
       reviews: FALLBACK_REVIEWS,
     };
@@ -119,7 +111,6 @@ export default async function HomePage() {
   const {
     categories,
     featuredProducts,
-    bestSellers,
     discountedProducts,
     reviews,
   } = await getHomeData();
@@ -141,7 +132,7 @@ export default async function HomePage() {
         {/* 4. Browse by Visual Category Grid */}
         <CategoryGrid categories={categories} />
 
-        {/* 5. Featured / Best Seller Products Grid */}
+        {/* 5. Unified Featured & Best Selling Products Grid */}
         {featuredProducts.length > 0 && (
           <section className="space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -150,12 +141,12 @@ export default async function HomePage() {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white">
-                  محصولات منتخب و پرفروش
+                  محصولات منتخب و پرفروش شیاسی
                 </h2>
               </div>
               <Link
                 href="/products"
-                className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1"
+                className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 transition-colors"
               >
                 <span>مشاهده همه محصولات</span>
                 <ArrowLeft className="w-3.5 h-3.5" />
@@ -172,35 +163,6 @@ export default async function HomePage() {
 
         {/* 6. Special Najafabad Electrical Repair Workshop Section */}
         <RepairWorkshopSection />
-
-        {/* 6.5. Best Selling Items Grid */}
-        {bestSellers.length > 0 && (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4" />
-                </div>
-                <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white">
-                  پرفروش‌ترین‌های این هفته
-                </h2>
-              </div>
-              <Link
-                href="/products?sort=bestselling"
-                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1"
-              >
-                <span>مشاهده لیست کامل</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-stretch">
-              {bestSellers.map((prod) => (
-                <ProductCard key={prod.id} product={prod} />
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* 7. Interactive Engineering Cable & Wire Calculator Tool */}
         <ElectricalCableCalculator />

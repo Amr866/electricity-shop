@@ -81,6 +81,11 @@ model Product {
   orderItems      OrderItem[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+
+  @@index([isFeatured, isBestSeller])
+  @@index([categoryId])
+  @@index([brand])
+  @@index([createdAt])
 }
 
 model ProductImage {
@@ -110,6 +115,8 @@ model Review {
   productId  String
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
+
+  @@index([productId])
 }
 
 model Order {
@@ -143,6 +150,10 @@ model Order {
   items          OrderItem[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+
+  @@index([customerPhone])
+  @@index([orderStatus])
+  @@index([createdAt])
 }
 
 model OrderItem {
@@ -175,6 +186,9 @@ model RepairRequest {
   adminNotes    String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([customerPhone])
+  @@index([status])
 }
 
 model Coupon {

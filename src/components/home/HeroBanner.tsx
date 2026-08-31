@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Sparkles,
@@ -194,17 +195,18 @@ export function HeroBanner() {
                   </div>
                 </div>
 
-                {/* Center: Image Frame with Depth & Soft Eager Loading */}
+                {/* Center: Image Frame with Depth & Next.js Sharp Auto-Optimization */}
                 <div className="relative aspect-[4/3] w-full rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200/80 dark:from-slate-800/80 dark:to-slate-850/80 overflow-hidden p-1 mb-2.5 border border-slate-100 dark:border-slate-800/60 shadow-inner">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    loading="eager"
-                    decoding="async"
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
+                    fill
+                    sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
+                    priority
+                    className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}
-                  <span className="absolute bottom-1.5 right-1.5 text-[9px] font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
+                  <span className="absolute bottom-1.5 right-1.5 z-10 text-[9px] font-semibold bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 shadow-sm">
                     {item.tag}
                   </span>
                 </div>

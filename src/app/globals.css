@@ -121,6 +121,10 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   width: max-content;
   animation: marquee-rtl 35s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 .animate-marquee-rtl:hover {

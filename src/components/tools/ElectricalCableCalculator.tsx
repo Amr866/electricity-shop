@@ -87,6 +87,35 @@ export function ElectricalCableCalculator() {
   const [phaseType, setPhaseType] = useState<"single" | "three">("single");
   const [isAddedToCart, setIsAddedToCart] = useState(false);
 
+  // Bulletproof cross-page & hash scroll listener
+  React.useEffect(() => {
+    const triggerSmoothScroll = () => {
+      if (typeof window === "undefined") return;
+      const isHash = window.location.hash === "#calculator";
+      const isQuery = window.location.search.includes("scroll=calculator");
+
+      if (isHash || isQuery) {
+        let attempts = 0;
+        const interval = setInterval(() => {
+          const el = document.getElementById("calculator");
+          if (el) {
+            clearInterval(interval);
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (isQuery) {
+              window.history.replaceState(null, "", "/#calculator");
+            }
+          }
+          attempts++;
+          if (attempts > 30) clearInterval(interval);
+        }, 100);
+      }
+    };
+
+    triggerSmoothScroll();
+    window.addEventListener("hashchange", triggerSmoothScroll);
+    return () => window.removeEventListener("hashchange", triggerSmoothScroll);
+  }, []);
+
   const handleSelectPreset = (presetId: string) => {
     setSelectedPresetId(presetId);
     const preset = PRESETS.find((p) => p.id === presetId);
@@ -217,7 +246,10 @@ export function ElectricalCableCalculator() {
   };
 
   return (
-    <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200">
+    <section
+      id="calculator"
+      className="scroll-mt-24 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200"
+    >
       {/* Glow */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 

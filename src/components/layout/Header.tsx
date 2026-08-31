@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -46,17 +46,13 @@ export function Header() {
   const { itemCount, subtotal, openCartDrawer } = useCart();
   const { wishlistCount } = useWishlist();
   const { brand } = useBrand();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [cartBump, setCartBump] = useState(false);
-
-  // Suppress public store header in admin panel
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
 
   // Trigger bounce effect on desktop cart button when items added
   useEffect(() => {
@@ -73,15 +69,11 @@ export function Header() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY;
-          
-          // Collapse only when scrolling down past 110px
-          // Expand ONLY when user returns to top of page (scrollY <= 10px) to prevent height-shift loop
           if (currentY > 110) {
             setIsScrolled(true);
           } else if (currentY <= 10) {
             setIsScrolled(false);
           }
-          
           ticking = false;
         });
         ticking = true;
@@ -91,7 +83,7 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 2. Debounced Mega Menu hover handlers
+  // Debounced Mega Menu hover handlers
   const handleMouseEnterMega = () => {
     if (megaMenuTimeoutRef.current) {
       clearTimeout(megaMenuTimeoutRef.current);
@@ -133,6 +125,25 @@ export function Header() {
       document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
+
+  // Smooth scroll handler for calculator (in-page or cross-page)
+  const handleCalculatorClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (pathname === "/") {
+      const el = document.getElementById("calculator");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.pushState(null, "", "/#calculator");
+      }
+    } else {
+      router.push("/?scroll=calculator");
+    }
+  };
+
+  // Suppress public store header in admin panel (Placed AFTER all hooks to obey React Rules of Hooks)
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <>
@@ -442,6 +453,7 @@ export function Header() {
               </Link>
               <Link
                 href="/#calculator"
+                onClick={handleCalculatorClick}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
                 <Calculator className="w-3.5 h-3.5 text-slate-400" />
@@ -601,7 +613,10 @@ export function Header() {
 
                   <Link
                     href="/#calculator"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => {
+                      setMobileMenuOpen(false);
+                      handleCalculatorClick(e);
+                    }}
                     className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-blue-950/30 border border-slate-200 dark:border-slate-700 flex items-center gap-2 active:scale-98"
                   >
                     <Calculator className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />

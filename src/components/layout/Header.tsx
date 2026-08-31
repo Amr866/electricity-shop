@@ -211,14 +211,28 @@ export function Header() {
               
               {/* Desktop User Account / Login Button */}
               {session?.user ? (
-                <Link
-                  href="/account"
-                  className="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
-                  title="حساب کاربری من"
-                >
-                  <User className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
-                  <span className="hidden xl:inline">{session.user.name || "حساب من"}</span>
-                </Link>
+                <div className="hidden md:flex items-center gap-1.5">
+                  <Link
+                    href="/account"
+                    className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700/80 transition-colors"
+                    title="حساب کاربری من"
+                  >
+                    <User className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                    <span className="hidden xl:inline">{session.user.name || "حساب من"}</span>
+                  </Link>
+
+                  {/* Conditionally rendered ONLY for authenticated ADMIN */}
+                  {session.user.role === "ADMIN" && (
+                    <Link
+                      href="/admin"
+                      className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-3 py-2 rounded-xl border border-amber-400 shadow-sm shadow-amber-500/20 transition-all active:scale-95"
+                      title="پنل مدیریت فروشگاه"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>پنل مدیریت</span>
+                    </Link>
+                  )}
+                </div>
               ) : (
                 <Link
                   href="/auth/login"
@@ -514,22 +528,39 @@ export function Header() {
               
               {/* User Account / Auth Banner */}
               {session?.user ? (
-                <Link
-                  href="/account"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between text-xs font-bold active:scale-98"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-xs">
-                      <User className="w-4 h-4" />
+                <div className="space-y-2">
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-750 flex items-center justify-between text-xs font-bold active:scale-98"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-xs">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="block font-black text-slate-900 dark:text-slate-100">{session.user.name || "حساب کاربری من"}</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">مشاهده پروفایل و سفارش‌ها</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="block font-black text-amber-950 dark:text-amber-200">{session.user.name || "حساب کاربری من"}</span>
-                      <span className="text-[10px] text-amber-700 dark:text-amber-400 font-normal">مشاهده پروفایل و سفارش‌ها</span>
-                    </div>
-                  </div>
-                  <ChevronLeft className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                </Link>
+                    <ChevronLeft className="w-4 h-4 text-slate-400" />
+                  </Link>
+
+                  {/* Mobile Admin Link ONLY for authenticated ADMIN */}
+                  {session.user.role === "ADMIN" && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="p-3 rounded-2xl bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-between shadow-md shadow-amber-500/20 active:scale-98"
+                    >
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>ورود به پنل مدیریت کارگاه</span>
+                      </div>
+                      <ChevronLeft className="w-4 h-4" />
+                    </Link>
+                  )}
+                </div>
               ) : (
                 <Link
                   href="/auth/login"

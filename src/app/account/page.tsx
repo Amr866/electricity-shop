@@ -190,10 +190,20 @@ export default function CustomerAccountPage() {
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto">
+            {session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="flex-1 md:flex-initial text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl border border-amber-400 shadow-sm shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>ورود به پنل مدیریت</span>
+              </Link>
+            )}
+
             <button
               type="button"
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex-1 md:flex-initial text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 font-bold px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-colors active:scale-95"
+              className="flex-1 md:flex-initial text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 font-bold px-4 py-2.5 rounded-xl border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-colors active:scale-95 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>خروج از حساب</span>

@@ -17,6 +17,7 @@ import {
   Menu,
   X,
   Store,
+  Database,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -66,6 +67,12 @@ export function AdminSidebar() {
       label: "تنظیمات فروشگاه",
       icon: Settings,
       color: "text-amber-300",
+    },
+    {
+      href: "/admin/backup",
+      label: "پشتیبان‌گیری دیتابیس",
+      icon: Database,
+      color: "text-emerald-400",
     },
   ];
 

@@ -37,33 +37,23 @@ export function BackupAdminClient({ metrics }: BackupAdminClientProps) {
   const [lastBackupTime, setLastBackupTime] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  const handleDownloadBackup = async () => {
+  const handleDownloadBackup = () => {
     setDownloading(true);
     setDownloadSuccess(false);
 
     try {
-      // Trigger browser file download directly from server
-      const res = await fetch("/api/admin/backup?download=true");
-      if (!res.ok) throw new Error("خطا در دریافت پشتیبان");
+      // Trigger native browser file download directly
+      window.location.href = "/api/admin/backup?download=true";
 
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      const dateStr = new Date().toLocaleDateString("fa-IR").replace(/\//g, "-");
-      a.download = `shiasi-electric-database-backup-${dateStr}.json`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      setLastBackupTime(new Date().toLocaleTimeString("fa-IR"));
-      setDownloadSuccess(true);
-      setTimeout(() => setDownloadSuccess(false), 4000);
+      setTimeout(() => {
+        setLastBackupTime(new Date().toLocaleTimeString("fa-IR"));
+        setDownloadSuccess(true);
+        setDownloading(false);
+        setTimeout(() => setDownloadSuccess(false), 5000);
+      }, 1000);
     } catch (err) {
       console.error(err);
       alert("خطا در ایجاد فایل پشتیبان. لطفاً مجدداً تلاش نمایید.");
-    } finally {
       setDownloading(false);
     }
   };

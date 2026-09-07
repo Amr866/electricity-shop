@@ -68,9 +68,7 @@ export async function GET(req: NextRequest) {
     ]);
 
     const timestamp = new Date().toISOString();
-    const formattedDate = new Date()
-      .toLocaleDateString("fa-IR")
-      .replace(/\//g, "-");
+    const dateSlug = timestamp.slice(0, 10); // YYYY-MM-DD ASCII safe
 
     const backupPayload = {
       metadata: {
@@ -105,7 +103,7 @@ export async function GET(req: NextRequest) {
     // If download requested: return as downloadable file attachment
     if (isDownload) {
       const jsonString = JSON.stringify(backupPayload, null, 2);
-      const filename = `shiasi-electric-backup-${formattedDate}.json`;
+      const filename = `shiasi-electric-backup-${dateSlug}.json`;
 
       return new NextResponse(jsonString, {
         status: 200,

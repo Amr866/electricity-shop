@@ -93,10 +93,10 @@ export function HeroBanner() {
           {/* Right Column: Hero Content & Clear CTA Hierarchy */}
           <div className="lg:col-span-6 space-y-3.5 sm:space-y-5 text-right">
             
-            {/* Location & Authenticity Badge */}
+            {/* Location & Authenticity Value Proposition Badge */}
             <div className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-              <span>فروشگاه و کارگاه تخصصی شیاسی (نجف‌آباد)</span>
+              <span>تأمین مستقیم قطعات با ضمانت تست و اصالت</span>
             </div>
 
             {/* Main Headline: Perfectly Balanced Symmetrical Lines */}
@@ -107,8 +107,8 @@ export function HeroBanner() {
               </span>
             </h1>
 
-            {/* Sub-text: High Contrast & Concise */}
-            <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl text-justify font-medium">
+            {/* Sub-text: High Contrast & Concise (Clamped to 2 lines on mobile) */}
+            <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl text-justify font-medium line-clamp-2 sm:line-clamp-none">
               تأمین مستقیم انواع پنکه ریموت‌دار، موتور کولر آبی، بخاری برقی، سیم و کابل استاندارد تمام مس، به همراه کارگاه پذیرش و عیب‌یابی تخصصی در نجف‌آباد.
             </p>
 
@@ -141,7 +141,7 @@ export function HeroBanner() {
 
               <Link
                 href="/repair-service"
-                className="bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
+                className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
               >
                 <Wrench className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>پذیرش تعمیرات</span>
@@ -161,7 +161,7 @@ export function HeroBanner() {
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-4 rounded-full bg-amber-500 shrink-0" />
                 <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
-                  دسته‌بندی‌های برگزیده
+                  برندها و دسته‌های برگزیده
                 </span>
               </div>
               <Link
@@ -174,25 +174,22 @@ export function HeroBanner() {
             </div>
 
             <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
-            {SHOWCASE_CATEGORIES.map((item) => (
+            {SHOWCASE_CATEGORIES.map((item, index) => (
               <Link
                 key={item.id}
                 href={item.link}
-                className={`group relative bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3 flex flex-col justify-between transition-all duration-500 hover:-translate-y-1.5 ${item.hoverBorder} ${item.hoverShadow}`}
+                className={`group relative bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3 flex flex-col justify-between transition-all duration-300 active:scale-[0.98] hover:-translate-y-1 ${item.hoverBorder} ${item.hoverShadow}`}
               >
                 {/* Dynamic Ambient Hover Aura */}
                 <div
                   className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${item.glowBg} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
                 />
 
-                {/* Top: Header Badges & Arrow */}
+                {/* Top: Header Badges */}
                 <div className="relative z-10 flex items-center justify-between gap-1 mb-2">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border shadow-sm ${item.badgeStyle}`}>
                     {item.badge}
                   </span>
-                  <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors">
-                    <ChevronLeft className="w-3.5 h-3.5 text-slate-400 group-hover:-translate-x-0.5 transition-transform" />
-                  </div>
                 </div>
 
                 {/* Center: Image Frame with Depth & Next.js Sharp Auto-Optimization */}
@@ -202,7 +199,8 @@ export function HeroBanner() {
                     alt={item.title}
                     fill
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
-                    priority
+                    priority={index === 0}
+                    loading={index === 0 ? "eager" : "lazy"}
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}

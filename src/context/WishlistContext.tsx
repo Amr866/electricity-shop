@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 
 interface WishlistContextType {
   wishlist: any[];
@@ -22,42 +22,53 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         setWishlist(JSON.parse(saved));
       }
     } catch (e) {
-      console.error(e);
+      console.error("Failed to load wishlist from storage", e);
     }
   }, []);
 
-  const save = (items: any[]) => {
+  const save = useCallback((items: any[]) => {
     setWishlist(items);
-    localStorage.setItem("shiasi_wishlist", JSON.stringify(items));
-  };
-
-  const toggleWishlist = (product: any) => {
-    const exists = wishlist.some((p) => p.id === product.id);
-    if (exists) {
-      save(wishlist.filter((p) => p.id !== product.id));
-    } else {
-      save([product, ...wishlist]);
+    try {
+      localStorage.setItem("shiasi_wishlist", JSON.stringify(items));
+    } catch (e) {
+      console.error("Failed to save wishlist to storage", e);
     }
-  };
+  }, []);
 
-  const isInWishlist = (productId: string) => {
+  const toggleWishlist = useCallback((product: any) => {
+    setWishlist((prev) => {
+      const exists = prev.some((p) => p.id === product.id);
+      const next = exists ? prev.filter((p) => p.id !== product.id) : [product, ...prev];
+      try {
+        localStorage.setItem("shiasi_wishlist", JSON.stringify(next));
+      } catch (e) {
+        console.error("Failed to save wishlist", e);
+      }
+      return next;
+    });
+  }, []);
+
+  const isInWishlist = useCallback((productId: string) => {
     return wishlist.some((p) => p.id === productId);
-  };
+  }, [wishlist]);
 
-  const clearWishlist = () => {
+  const clearWishlist = useCallback(() => {
     save([]);
-  };
+  }, [save]);
+
+  const value = useMemo(
+    () => ({
+      wishlist,
+      wishlistCount: wishlist.length,
+      toggleWishlist,
+      isInWishlist,
+      clearWishlist,
+    }),
+    [wishlist, toggleWishlist, isInWishlist, clearWishlist]
+  );
 
   return (
-    <WishlistContext.Provider
-      value={{
-        wishlist,
-        wishlistCount: wishlist.length,
-        toggleWishlist,
-        isInWishlist,
-        clearWishlist,
-      }}
-    >
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );

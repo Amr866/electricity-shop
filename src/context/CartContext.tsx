@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 
 export interface CartItem {
   id: string; // Product ID
@@ -73,11 +73,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeCartDrawer = useCallback(() => setIsCartDrawerOpen(false), []);
   const toggleCartDrawer = useCallback(() => setIsCartDrawerOpen((prev) => !prev), []);
 
+  // Storage keys with fallback to legacy keys
+  const CART_KEY = "shiasi_cart_v1";
+  const COUPON_KEY = "shiasi_coupon_v1";
+  const LEGACY_CART_KEY = "naghsh_jahan_cart";
+  const LEGACY_COUPON_KEY = "naghsh_jahan_coupon";
+
   // Load cart from localStorage on mount
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem("naghsh_jahan_cart");
-      const savedCoupon = localStorage.getItem("naghsh_jahan_coupon");
+      const savedCart = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY);
+      const savedCoupon = localStorage.getItem(COUPON_KEY) || localStorage.getItem(LEGACY_COUPON_KEY);
       if (savedCart) {
         const parsed = JSON.parse(savedCart);
         // Ensure basePrice exists and prices are dynamically adjusted
@@ -103,18 +109,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isLoaded) return;
     try {
-      localStorage.setItem("naghsh_jahan_cart", JSON.stringify(items));
+      localStorage.setItem(CART_KEY, JSON.stringify(items));
       if (appliedCoupon) {
-        localStorage.setItem("naghsh_jahan_coupon", JSON.stringify(appliedCoupon));
+        localStorage.setItem(COUPON_KEY, JSON.stringify(appliedCoupon));
       } else {
-        localStorage.removeItem("naghsh_jahan_coupon");
+        localStorage.removeItem(COUPON_KEY);
+        localStorage.removeItem(LEGACY_COUPON_KEY);
       }
     } catch (e) {
       console.error("Failed to save cart to storage", e);
     }
   }, [items, appliedCoupon, isLoaded]);
 
-  const addToCart = (product: any, qty = 1) => {
+  const addToCart = useCallback((product: any, qty = 1) => {
     setItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       const primaryImg = product.images?.find((img: any) => img.isPrimary)?.url || product.images?.[0]?.url || product.image || "/images/placeholder.jpg";
@@ -154,15 +161,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     // Automatically reveal the Slide-over Cart Drawer upon addition
     setIsCartDrawerOpen(true);
-  };
+  }, []);
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = useCallback((productId: string) => {
     setItems((prev) => prev.filter((item) => item.id !== productId));
-  };
+  }, []);
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      setItems((prev) => prev.filter((item) => item.id !== productId));
       return;
     }
     setItems((prev) =>
@@ -175,57 +182,78 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return item;
       })
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setItems([]);
     setAppliedCoupon(null);
-  };
+  }, []);
 
-  const applyCoupon = (coupon: CouponData) => {
+  const applyCoupon = useCallback((coupon: CouponData) => {
     setAppliedCoupon(coupon);
-  };
+  }, []);
 
-  const removeCoupon = () => {
+  const removeCoupon = useCallback(() => {
     setAppliedCoupon(null);
-  };
+  }, []);
 
   // Calculations
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const itemCount = useMemo(() => items.reduce((acc, item) => acc + item.quantity, 0), [items]);
+  const subtotal = useMemo(() => items.reduce((acc, item) => acc + item.price * item.quantity, 0), [items]);
 
-  let discount = 0;
-  if (appliedCoupon) {
+  const discount = useMemo(() => {
+    if (!appliedCoupon) return 0;
     if (appliedCoupon.discountPercent) {
-      discount = Math.round((subtotal * appliedCoupon.discountPercent) / 100);
+      return Math.round((subtotal * appliedCoupon.discountPercent) / 100);
     } else if (appliedCoupon.discountAmount) {
-      discount = Math.min(appliedCoupon.discountAmount, subtotal);
+      return Math.min(appliedCoupon.discountAmount, subtotal);
     }
-  }
+    return 0;
+  }, [appliedCoupon, subtotal]);
 
-  const total = Math.max(0, subtotal - discount);
+  const total = useMemo(() => Math.max(0, subtotal - discount), [subtotal, discount]);
+
+  const contextValue = useMemo(
+    () => ({
+      items,
+      itemCount,
+      subtotal,
+      discount,
+      total,
+      appliedCoupon,
+      isCartDrawerOpen,
+      openCartDrawer,
+      closeCartDrawer,
+      toggleCartDrawer,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      applyCoupon,
+      removeCoupon,
+    }),
+    [
+      items,
+      itemCount,
+      subtotal,
+      discount,
+      total,
+      appliedCoupon,
+      isCartDrawerOpen,
+      openCartDrawer,
+      closeCartDrawer,
+      toggleCartDrawer,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      applyCoupon,
+      removeCoupon,
+    ]
+  );
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        itemCount,
-        subtotal,
-        discount,
-        total,
-        appliedCoupon,
-        isCartDrawerOpen,
-        openCartDrawer,
-        closeCartDrawer,
-        toggleCartDrawer,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        applyCoupon,
-        removeCoupon,
-      }}
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

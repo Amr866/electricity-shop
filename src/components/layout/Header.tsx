@@ -65,14 +65,15 @@ export function Header() {
 
   useEffect(() => {
     let ticking = false;
+    let lastScrolled = false;
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY;
-          if (currentY > 110) {
-            setIsScrolled(true);
-          } else if (currentY <= 10) {
-            setIsScrolled(false);
+          const shouldBeScrolled = currentY > 110;
+          if (shouldBeScrolled !== lastScrolled) {
+            setIsScrolled(shouldBeScrolled);
+            lastScrolled = shouldBeScrolled;
           }
           ticking = false;
         });
@@ -80,7 +81,10 @@ export function Header() {
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (megaMenuTimeoutRef.current) clearTimeout(megaMenuTimeoutRef.current);
+    };
   }, []);
 
   // Debounced Mega Menu hover handlers
@@ -151,8 +155,8 @@ export function Header() {
         isScrolled ? "shadow-md shadow-slate-900/5 dark:shadow-black/30" : "shadow-xs"
       }`}>
         
-        {/* 1. Super Top Utility Bar (Hidden when scrolling) */}
-        <div className={`bg-slate-100/90 dark:bg-slate-950 text-slate-700 dark:text-slate-300 text-[11px] px-4 transition-all duration-300 overflow-hidden ${
+        {/* 1. Super Top Utility Bar (Hidden on mobile to save 36px vertical real-estate) */}
+        <div className={`hidden sm:block bg-slate-100/90 dark:bg-slate-950 text-slate-700 dark:text-slate-300 text-[11px] px-4 transition-all duration-300 overflow-hidden ${
           isScrolled ? "max-h-0 opacity-0 py-0 border-none" : "max-h-12 opacity-100 py-1.5 border-b border-slate-200/80 dark:border-slate-800/80"
         }`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -206,7 +210,7 @@ export function Header() {
                     {brand.badge}
                   </span>
                 </div>
-                <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
+                <span className="hidden sm:block text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
                   {brand.tagline}
                 </span>
               </div>

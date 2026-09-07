@@ -65,13 +65,17 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
     };
   }, []);
 
-  // Global '/' (Forward Slash) shortcut to instantly focus search bar
+  // Global '/' (Forward Slash) shortcut to instantly focus search bar (checks element visibility)
   useEffect(() => {
     function handleGlobalSlash(event: KeyboardEvent) {
       if (
         event.key === "/" &&
         !["INPUT", "TEXTAREA", "SELECT"].includes((document.activeElement?.tagName || ""))
       ) {
+        // Only focus if this specific search bar instance is currently visible on screen
+        const isVisible = inputRef.current && inputRef.current.offsetParent !== null;
+        if (!isVisible) return;
+
         event.preventDefault();
         inputRef.current?.focus();
         inputRef.current?.select();
@@ -99,11 +103,13 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
         });
         const data = await res.json();
         setResults(data);
+        setLoading(false);
       } catch (e: any) {
-        if (e.name !== "AbortError") {
-          console.error("Live search failed", e);
+        if (e.name === "AbortError") {
+          // If aborted by a newer keystroke, do not prematurely turn off loading
+          return;
         }
-      } finally {
+        console.error("Live search failed", e);
         setLoading(false);
       }
     }, 200);
@@ -140,14 +146,14 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
         document.body
       )}
 
-      <div ref={wrapperRef} className={`relative w-full ${isOpen ? "z-40" : "z-10"}`}>
-        {/* Search Input Form (RTL Natural Alignment) */}
+      <div ref={wrapperRef} className="relative w-full">
+        {/* Search Input Box */}
         <form onSubmit={handleSubmit} className="relative w-full">
           <div
-            className={`relative flex items-center transition-all duration-200 rounded-xl ${
+            className={`flex items-center rounded-2xl transition-all duration-200 ${
               isOpen
-                ? "bg-white dark:bg-slate-900 border-2 border-amber-500/80 dark:border-amber-400/80 shadow-xl shadow-amber-500/10 ring-4 ring-amber-500/10"
-                : "bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                ? "bg-white dark:bg-slate-900 border-2 border-amber-500 shadow-md shadow-amber-500/10 ring-2 ring-amber-500/20"
+                : "bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 focus-within:ring-2 focus-within:ring-amber-500/25"
             }`}
           >
             {/* Right: Search Icon */}
@@ -179,7 +185,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                   ? "جستجوی کالا یا برند..."
                   : "جستجوی نام کالا، برند یا قطعه (مثال: موتوژن، سیم مس)..."
               }
-              className="w-full bg-transparent text-xs sm:text-sm py-2 sm:py-2.5 px-2 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium text-slate-900 dark:text-white text-right"
+              className="w-full bg-transparent text-xs sm:text-sm py-2 sm:py-2.5 px-2 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-400 font-medium text-slate-900 dark:text-white text-right"
             />
 
             {/* Left: Keyboard shortcut hint, Clear (X) and Search Button */}

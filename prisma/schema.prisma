@@ -208,3 +208,24 @@ model StoreSetting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  summary     String   @db.Text
+  content     String   @db.Text
+  category    String   // e.g. "نورپردازی و روشنایی", "طراحی لاین نوری", "سرویس و تعمیرات"
+  tags        String   // Comma-separated tags, e.g. "روشنایی_مدرن, چراغ_سقفی, پنل_SMD"
+  readTime    String   // e.g. "۴ دقیقه مطالعه"
+  image       String   // Feature image URL
+  authorName  String   @default("کارشناس فنی فروشگاه شیاسی")
+  isPublished Boolean  @default(true)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublished])
+  @@index([createdAt])
+}

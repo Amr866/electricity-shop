@@ -38,6 +38,7 @@ import {
   Clock,
   ExternalLink,
   LayoutGrid,
+  BookOpen,
 } from "lucide-react";
 
 export function Header() {
@@ -476,6 +477,13 @@ export function Header() {
                 <FileText className="w-3.5 h-3.5 text-slate-400" />
                 <span>لیست قیمت</span>
               </Link>
+              <Link
+                href="/blog"
+                className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+                <span>وبلاگ و دانستنی‌ها</span>
+              </Link>
             </div>
 
             {/* Left Utility Links with whitespace-nowrap */}
@@ -711,6 +719,18 @@ export function Header() {
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-amber-500" />
                     <span>دانلود لیست قیمت رسمی کارخانجات</span>
+                  </div>
+                  <ChevronLeft className="w-3.5 h-3.5 text-slate-400" />
+                </Link>
+
+                <Link
+                  href="/blog"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                >
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-amber-500" />
+                    <span>مجله دانستنی‌ها و مقالات</span>
                   </div>
                   <ChevronLeft className="w-3.5 h-3.5 text-slate-400" />
                 </Link>

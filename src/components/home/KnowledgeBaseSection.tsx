@@ -5,40 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, ArrowLeft, Lightbulb } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
-
-// 1. Modular Blog Articles Data (Extracted outside render function)
-const BLOG_ARTICLES = [
-  {
-    id: 1,
-    title: "چراغ سقفی ارزان و مدرن مناسب نورپردازی منازل و دفاتر",
-    category: "نورپردازی و روشنایی",
-    readTime: "۴ دقیقه مطالعه",
-    date: "۱۴۰۳/۰۶/۱۵",
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=600&q=80",
-    slug: "modern-ceiling-lights-guide",
-    badgeColor: "bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-  },
-  {
-    id: 2,
-    title: "چه مکان‌هایی را در خانه و نما می‌توان نور مخفی و لاین نوری کار کرد؟",
-    category: "طراحی لاین نوری",
-    readTime: "۳ دقیقه مطالعه",
-    date: "۱۴۰۳/۰۶/۱۰",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
-    slug: "hidden-lighting-places",
-    badgeColor: "bg-cyan-100 dark:bg-cyan-950/80 text-cyan-900 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800",
-  },
-  {
-    id: 3,
-    title: "راهنمای عیب‌یابی و سرویس دوره‌ای الکتروموتور و پمپ کولر آبی",
-    category: "سرویس و تعمیرات",
-    readTime: "۵ دقیقه مطالعه",
-    date: "۱۴۰۳/۰۶/۰۲",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
-    slug: "cooler-motor-service-guide",
-    badgeColor: "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-  },
-];
+import { INITIAL_ARTICLES } from "@/data/articles";
 
 export function KnowledgeBaseSection() {
   return (
@@ -70,7 +37,7 @@ export function KnowledgeBaseSection() {
 
       {/* 3 Articles Grid (Locked Vertical Alignment & 60fps Image Zoom) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-5 items-stretch">
-        {BLOG_ARTICLES.map((art) => (
+        {INITIAL_ARTICLES.map((art) => (
           <Link
             key={art.id}
             href={`/blog/${art.slug}`}

@@ -21,6 +21,7 @@ import {
   Scale,
   Sparkles,
   ChevronLeft,
+  BookOpen,
 } from "lucide-react";
 
 export function Footer() {
@@ -216,6 +217,12 @@ export function Footer() {
                   <Link href="/faq" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <HelpCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
                     <span>سوالات متداول مشتریان</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                    <BookOpen className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                    <span>مجله دانستنی‌ها و مقالات</span>
                   </Link>
                 </li>
                 <li>

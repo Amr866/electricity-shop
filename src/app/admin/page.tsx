@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Check,
   Copy,
+  BookOpen,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -88,6 +89,13 @@ export default async function AdminDashboardPage() {
             className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 active:scale-95 hover-glow"
           >
             <span>+ افزودن کالای جدید</span>
+          </Link>
+          <Link
+            href="/admin/articles"
+            className="bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-700 transition-colors flex items-center gap-1.5 active:scale-95"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>مدیریت وبلاگ</span>
           </Link>
           <Link
             href="/admin/orders"

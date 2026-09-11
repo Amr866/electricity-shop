@@ -18,6 +18,7 @@ import {
   X,
   Store,
   Database,
+  BookOpen,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -61,6 +62,12 @@ export function AdminSidebar() {
       label: "تصاویر و رسانه",
       icon: UploadCloud,
       color: "text-cyan-400",
+    },
+    {
+      href: "/admin/articles",
+      label: "مقالات و وبلاگ",
+      icon: BookOpen,
+      color: "text-amber-400",
     },
     {
       href: "/admin/settings",

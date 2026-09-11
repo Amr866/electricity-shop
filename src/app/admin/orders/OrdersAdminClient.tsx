@@ -823,9 +823,9 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
                     <Zap className="w-6 h-6 fill-slate-950" />
                   </div>
                   <div>
-                    <h2 className="font-black text-base text-slate-950">فروشگاه و کارگاه تخصصی برق شیاسی</h2>
+                    <h2 className="font-black text-base text-slate-950">فروشگاه شیاسی</h2>
                     <span className="text-xs text-slate-600 block">
-                      اصفهان، نجف‌آباد، خیابان قدس | تلفن مرکزی: ۰۳۱-۴۲۶۲۴۵۶۷ | کارگاه: ۰۹۱۶۲۶۶۵۸۸۴
+                      اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس | تلفن: ۰۳۱-۴۲۶۲۶۱۱۶ - ۰۳۱-۴۲۶۲۶۱۰۷ | همراه: ۰۹۱۳۶۲۶۰۰۷۲
                     </span>
                   </div>
                 </div>

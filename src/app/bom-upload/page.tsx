@@ -291,7 +291,7 @@ export default function BomUploadPage() {
     });
     msg += `\n💰 مجموع برآورد تقریبی: ${formatToman(totalBomPrice)}\nلطفاً موجودی نهایی و پیش‌فاکتور رسمی را تأیید بفرمایید.`;
 
-    window.open(`https://wa.me/989162665884?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/989136260072?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (

@@ -12,12 +12,17 @@ export interface BrandConfig {
   tagline: string;
   address: string;
   googleMapsUrl: string;
+  neshanUrl: string;
+  baladUrl: string;
   phone: string;
+  phoneAlt: string;
   mobile: string;
   repairPhone: string;
   rawPhone: string;
+  rawPhoneAlt: string;
   rawMobile: string;
   rawRepairPhone: string;
+  workingHours: string;
   city: string;
   province: string;
   logoIcon: "zap" | "circuit" | "sun";
@@ -28,17 +33,22 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
   shiasi_appliances: {
     key: "shiasi_appliances",
     nameFa: "فروشگاه شیاسی",
-    nameEn: "Shiasi Electrical & Home Appliances",
+    nameEn: "Shiasi Store",
     badge: "لوازم برقی و خانگی نجف‌آباد",
-    tagline: "فروش و تعمیرات تخصصی پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل",
-    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)",
-    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
-    mobile: "۰۹۱۳۱۱۱۲۲۳۳",
-    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
-    rawPhone: "03142624567",
-    rawMobile: "09131112233",
-    rawRepairPhone: "09162665884",
+    tagline: "مرکز پخش، خرید و تعمیرات تخصصی پنکه، موتور کولر آبی، بخاری برقی، آنتن، سیم و کابل",
+    address: "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)",
+    googleMapsUrl: "https://maps.app.goo.gl/cXf7MouMBVSPUKDo9",
+    neshanUrl: "https://neshan.org/maps/places/vbZnI32x4clP",
+    baladUrl: "https://balad.ir/location?latitude=32.6365457&longitude=51.3551911",
+    phone: "۰۳۱-۴۲۶۲۶۱۱۶",
+    phoneAlt: "۰۳۱-۴۲۶۲۶۱۰۷",
+    mobile: "۰۹۱۳۶۲۶۰۰۷۲",
+    repairPhone: "۰۹۱۳۶۲۶۰۰۷۲",
+    rawPhone: "03142626116",
+    rawPhoneAlt: "03142626107",
+    rawMobile: "09136260072",
+    rawRepairPhone: "09136260072",
+    workingHours: "شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنج‌شنبه: ۸:۳۰ الی ۱۳:۰۰ | جمعه: تعطیل",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",
@@ -50,14 +60,19 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     nameEn: "Shiasi Store",
     badge: "شعبه نجف‌آباد",
     tagline: "مرکز خرید و تعمیرات تخصصی پنکه، کولر، بخاری، آنتن و تجهیزات برقی",
-    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)",
-    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
-    mobile: "۰۹۱۳۱۱۱۲۲۳۳",
-    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
-    rawPhone: "03142624567",
-    rawMobile: "09131112233",
-    rawRepairPhone: "09162665884",
+    address: "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)",
+    googleMapsUrl: "https://maps.app.goo.gl/cXf7MouMBVSPUKDo9",
+    neshanUrl: "https://neshan.org/maps/places/vbZnI32x4clP",
+    baladUrl: "https://balad.ir/location?latitude=32.6365457&longitude=51.3551911",
+    phone: "۰۳۱-۴۲۶۲۶۱۱۶",
+    phoneAlt: "۰۳۱-۴۲۶۲۶۱۰۷",
+    mobile: "۰۹۱۳۶۲۶۰۰۷۲",
+    repairPhone: "۰۹۱۳۶۲۶۰۰۷۲",
+    rawPhone: "03142626116",
+    rawPhoneAlt: "03142626107",
+    rawMobile: "09136260072",
+    rawRepairPhone: "09136260072",
+    workingHours: "شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنج‌شنبه: ۸:۳۰ الی ۱۳:۰۰ | جمعه: تعطیل",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",
@@ -69,14 +84,19 @@ export const BRANDS: Record<BrandKey, BrandConfig> = {
     nameEn: "Shiasi Workshop & Services",
     badge: "کارگاه تعمیرات تخصصی",
     tagline: "مرکز عیب‌یابی و تعمیر انواع پنکه، موتور کولر آبی، بخاری برقی و آنتن",
-    address: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی",
-    googleMapsUrl: "https://maps.app.goo.gl/u9UVuUA5cAyGQMcJ6",
-    phone: "۰۳۱-۴۲۶۲۴۵۶۷",
-    mobile: "۰۹۱۶۲۶۶۵۸۸۴",
-    repairPhone: "۰۹۱۶۲۶۶۵۸۸۴",
-    rawPhone: "03142624567",
-    rawMobile: "09162665884",
-    rawRepairPhone: "09162665884",
+    address: "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)",
+    googleMapsUrl: "https://maps.app.goo.gl/cXf7MouMBVSPUKDo9",
+    neshanUrl: "https://neshan.org/maps/places/vbZnI32x4clP",
+    baladUrl: "https://balad.ir/location?latitude=32.6365457&longitude=51.3551911",
+    phone: "۰۳۱-۴۲۶۲۶۱۱۶",
+    phoneAlt: "۰۳۱-۴۲۶۲۶۱۰۷",
+    mobile: "۰۹۱۳۶۲۶۰۰۷۲",
+    repairPhone: "۰۹۱۳۶۲۶۰۰۷۲",
+    rawPhone: "03142626116",
+    rawPhoneAlt: "03142626107",
+    rawMobile: "09136260072",
+    rawRepairPhone: "09136260072",
+    workingHours: "شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنج‌شنبه: ۸:۳۰ الی ۱۳:۰۰ | جمعه: تعطیل",
     city: "نجف‌آباد",
     province: "اصفهان",
     logoIcon: "zap",

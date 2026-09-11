@@ -27,7 +27,7 @@ export function ConsultationBanner() {
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           {/* WhatsApp Button */}
           <a
-            href="https://wa.me/989162665884?text=سلام،%20برای%20مشاوره%20تخصصی%20و%20استعلام%20قیمت%20پیام%20می‌دهم."
+            href="https://wa.me/989136260072?text=سلام،%20برای%20مشاوره%20تخصصی%20و%20استعلام%20قیمت%20پیام%20می‌دهم."
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 sm:flex-initial bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-5 py-3 rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2"
@@ -39,20 +39,28 @@ export function ConsultationBanner() {
           {/* Direct Phone Lines */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
             <a
-              href="tel:03142624567"
-              aria-label="تلفن ثابت فروشگاه: ۰۳۱-۴۲۶۲۴۵۶۷"
-              className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
+              href="tel:03142626116"
+              aria-label="تلفن ۱ فروشگاه: ۰۳۱-۴۲۶۲۶۱۱۶"
+              className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
+              <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
             </a>
             <a
-              href="tel:09162665884"
-              aria-label="تلفن همراه کارگاه و تعمیرات: ۰۹۱۶-۲۶۶-۵۸۸۴"
-              className="bg-slate-800/80 hover:bg-slate-800 text-emerald-400 font-bold px-3.5 py-3 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-emerald-400/80 transition-all"
+              href="tel:03142626107"
+              aria-label="تلفن ۲ فروشگاه: ۰۳۱-۴۲۶۲۶۱۰۷"
+              className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
+            >
+              <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <span>۰۳۱-۴۲۶۲۶۱۰۷</span>
+            </a>
+            <a
+              href="tel:09136260072"
+              aria-label="همراه و پذیرش کارگاه: ۰۹۱۳-۶۲۶-۰۰۷۲"
+              className="bg-slate-800/80 hover:bg-slate-800 text-emerald-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-emerald-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>۰۹۱۶-۲۶۶-۵۸۸۴</span>
+              <span>۰۹۱۳-۶۲۶-۰۰۷۲</span>
             </a>
           </div>
         </div>

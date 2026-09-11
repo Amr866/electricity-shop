@@ -30,8 +30,8 @@ const TRUST_FEATURES = [
     id: "support-phone",
     icon: PhoneCall,
     title: "مشاوره و پشتیبانی",
-    subtitle: "تلفن: ۰۳۱-۴۲۶۲۴۵۶۷",
-    phoneHref: "tel:03142624567",
+    subtitle: "تلفن: ۰۳۱-۴۲۶۲۶۱۱۶",
+    phoneHref: "tel:03142626116",
     badgeGlow: "group-hover:bg-orange-500/20 group-hover:border-orange-500/40",
   },
 ];

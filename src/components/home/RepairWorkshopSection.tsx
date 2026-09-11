@@ -81,7 +81,7 @@ const WORKSHOP_SERVICES = [
 ];
 
 export function RepairWorkshopSection() {
-  const whatsappUrl = `https://wa.me/989162665884?text=${encodeURIComponent("سلام، درخواست راهنمایی و استعلام هزینه تعمیر دستگاه در کارگاه فنی شیاسی را دارم.")}`;
+  const whatsappUrl = `https://wa.me/989136260072?text=${encodeURIComponent("سلام، درخواست راهنمایی و استعلام هزینه تعمیر دستگاه در کارگاه فنی شیاسی را دارم.")}`;
 
   return (
     <section id="workshop" className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-8 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-6 relative overflow-hidden transition-colors duration-200 scroll-mt-28">
@@ -178,11 +178,11 @@ export function RepairWorkshopSection() {
           <span className="font-medium">پذیرش حضوری در فروشگاه نجف‌آباد + امکان ارسال با پیک اسنپ</span>
         </div>
         <a
-          href="tel:09162665884"
+          href="tel:09136260072"
           className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1.5 font-mono"
         >
           <PhoneCall className="w-3.5 h-3.5" />
-          <span>تماس مستقیم کارگاه: ۰۹۱۶-۲۶۶-۵۸۸۴</span>
+          <span>تماس مستقیم کارگاه: ۰۹۱۳-۶۲۶-۰۰۷۲</span>
         </a>
       </div>
     </section>

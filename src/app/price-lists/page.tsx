@@ -221,13 +221,13 @@ export default function PriceListsPage() {
             </div>
 
             <a
-              href="https://wa.me/989162665884?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D8%A7%D8%B3%D8%AA%D8%B9%D9%84%D8%A7%D9%85%20%D9%82%DB%8C%D9%85%D8%AA%20%D9%87%D9%85%DA%A9%D8%A7%D8%B1%DB%8C%20%D9%88%20%D8%B5%D8%AF%D9%88%D8%B1%20%D9%BE%DB%8C%D8%B4%E2%80%8C%D9%81%D8%A7%DA%A9%D8%AA%D9%88%D8%B1%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85."
+              href="https://wa.me/989136260072?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D8%A7%D8%B3%D8%AA%D8%B9%D9%84%D8%A7%D9%85%20%D9%82%DB%8C%D9%85%D8%AA%20%D9%87%D9%85%DA%A9%D8%A7%D8%B1%DB%8C%20%D9%88%20%D8%B5%D8%AF%D9%88%D8%B1%20%D9%BE%DB%8C%D8%B4%E2%80%8C%D9%81%D8%A7%DA%A9%D8%AA%D9%88%D8%B1%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85."
               target="_blank"
               rel="noopener noreferrer"
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 shrink-0 transition-all active:scale-95 hover-glow"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>استعلام قیمت همکار در واتساپ (۰۹۱۶۲۶۶۵۸۸۴)</span>
+              <span>استعلام قیمت همکار در واتساپ (۰۹۱۳۶۲۶۰۰۷۲)</span>
             </a>
           </div>
 
@@ -351,7 +351,7 @@ export default function PriceListsPage() {
                     </button>
 
                     <a
-                      href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                      href={`https://wa.me/989136260072?text=${encodeURIComponent(
                         `سلام، جهت استعلام درصد تخفیف همکاری و موجودی لیست قیمت ${item.brand} پیام می‌دهم.`
                       )}`}
                       target="_blank"
@@ -387,10 +387,10 @@ export default function PriceListsPage() {
               بارگذاری فایل اقلام (BOM)
             </Link>
             <a
-              href="tel:03142624567"
+              href="tel:03142626116"
               className="flex-1 sm:flex-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold px-4 py-3 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-center"
             >
-              تماس: ۰۳۱-۴۲۶۲۴۵۶۷
+              تماس: ۰۳۱-۴۲۶۲۶۱۱۶
             </a>
           </div>
         </div>
@@ -468,7 +468,7 @@ export default function PriceListsPage() {
               </button>
 
               <a
-                href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                href={`https://wa.me/989136260072?text=${encodeURIComponent(
                   `سلام، استعلام قیمت همکاری برای لیست ${activePreviewCatalog.brand}`
                 )}`}
                 target="_blank"

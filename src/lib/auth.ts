@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 
-const ADMIN_PHONES = ["09162665884", "09131112233", "09132334455"];
+const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
 
 export const authOptions: NextAuthOptions = {
   session: {

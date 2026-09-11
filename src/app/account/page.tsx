@@ -330,7 +330,7 @@ export default function CustomerAccountPage() {
 
                         <div className="flex items-center gap-1.5">
                           <a
-                            href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                            href={`https://wa.me/989136260072?text=${encodeURIComponent(
                               `سلام، پیگیری سفارش شماره ${order.orderNumber} در فروشگاه شیاسی`
                             )}`}
                             target="_blank"
@@ -434,7 +434,7 @@ export default function CustomerAccountPage() {
                         </span>
 
                         <a
-                          href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                          href={`https://wa.me/989136260072?text=${encodeURIComponent(
                             `سلام، پیگیری وضعیت تیکت تعمیر ${rep.trackingCode} (${rep.applianceType}) در کارگاه شیاسی`
                           )}`}
                           target="_blank"

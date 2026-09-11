@@ -62,8 +62,8 @@ export default function Error({
         {/* Support Note */}
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500">
           پشتیبانی تلفنی نجف‌آباد:{" "}
-          <a href="tel:03142624567" className="text-amber-600 dark:text-amber-400 font-bold font-mono">
-            ۰۳۱-۴۲۶۲۴۵۶۷
+          <a href="tel:03142626116" className="text-amber-600 dark:text-amber-400 font-bold font-mono">
+            ۰۳۱-۴۲۶۲۶۱۱۶
           </a>
         </div>
 

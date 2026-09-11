@@ -271,11 +271,11 @@ export default function FAQPage() {
 
           <div className="flex items-center gap-3">
             <a
-              href="tel:03142624567"
+              href="tel:03142626116"
               className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
+              <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
             </a>
 
             <Link

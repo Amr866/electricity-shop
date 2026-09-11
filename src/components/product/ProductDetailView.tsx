@@ -359,11 +359,11 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const technicalSpecs = getProductTechnicalSpecs(product);
   const wiringSchematic = getCategoryWiringSchematic(product);
 
-  // Official Contractor WhatsApp Inquiry URL with Official Line 09162665884
+  // Official Contractor WhatsApp Inquiry URL with Official Line 09136260072
   const contractorWhatsAppMessage = encodeURIComponent(
     `سلام وقت بخیر، جهت استعلام قیمت همکاری و خرید عمده کالا «${product.name}» (کد فنی: ${product.sku || product.id} - قیمت واحد: ${effectiveUnitPrice.toLocaleString("fa-IR")} تومان) از فروشگاه شیاسی پیام می‌دهم.`
   );
-  const contractorWhatsAppUrl = `https://wa.me/989162665884?text=${contractorWhatsAppMessage}`;
+  const contractorWhatsAppUrl = `https://wa.me/989136260072?text=${contractorWhatsAppMessage}`;
 
   return (
     <div className="space-y-8">
@@ -436,7 +436,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
 
         {/* Workshop Seal & Address */}
         <div className="border-t border-gray-300 pt-4 flex items-center justify-between text-xs text-gray-600">
-          <div>آدرس: اصفهان، نجف‌آباد، خیابان قدس، فروشگاه و کارگاه تخصصی برق شیاسی</div>
+          <div>آدرس: اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)</div>
           <div className="font-bold">مهر و تاییدیه اصالت کارگاه فنی شیاسی</div>
         </div>
       </div>
@@ -744,12 +744,12 @@ export function ProductDetailView({ product }: ProductDetailProps) {
               </span>
 
               <a
-                href="tel:03142624567"
-                aria-label="تماس تلفنی با فروشگاه شیاسی: ۰۳۱-۴۲۶۲۴۵۶۷"
+                href="tel:03142626116"
+                aria-label="تماس تلفنی با فروشگاه شیاسی: ۰۳۱-۴۲۶۲۶۱۱۶"
                 className="text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 font-bold font-mono flex items-center gap-1 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <bdi dir="ltr">۰۳۱-۴۲۶۲۴۵۶۷</bdi>
+                <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
               </a>
             </div>
           </div>
@@ -1212,7 +1212,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                     تحویل حضوری در فروشگاه
                   </strong>
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    امکان مراجعه مستقیم به شعبه مرکزی نجف‌آباد (خیابان قدس) با امکان تست سلامت کالا قبل از تحویل.
+                    امکان مراجعه مستقیم به شعبه مرکزی نجف‌آباد (۱۵ خرداد مرکزی، نبش بن‌بست نرگس) با امکان تست سلامت کالا قبل از تحویل.
                   </p>
                 </div>
 

@@ -272,8 +272,8 @@ function LoginForm() {
 
         {/* Footer info */}
         <div className="relative z-10 pt-2 border-t border-slate-950/20 text-[11px] text-slate-900/80 font-medium flex items-center justify-between">
-          <span>پشتیبانی: ۰۳۱-۴۲۶۲۴۵۶۷</span>
-          <span>شعبه قدس نجف‌آباد</span>
+          <span>پشتیبانی: ۰۳۱-۴۲۶۲۶۱۱۶</span>
+          <span>شعبه ۱۵ خرداد مرکزی نجف‌آباد</span>
         </div>
 
       </div>

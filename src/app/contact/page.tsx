@@ -33,15 +33,17 @@ function toEnglishDigits(str: string): string {
 const STORE_GEO = {
   lat: 32.6365457,
   lng: 51.3551911,
-  addressFa: "اصفهان، نجف‌آباد، خیابان قدس / شریعتی، فروشگاه و کارگاه فنی شیاسی",
-  phoneLandline: "۰۳۱-۴۲۶۲۴۵۶۷",
-  rawLandline: "03142624567",
-  mobileWorkshop: "۰۹۱۶-۲۶۶-۵۸۸۴",
-  rawMobile: "09162665884",
+  addressFa: "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)",
+  phoneLandline: "۰۳۱-۴۲۶۲۶۱۱۶",
+  rawLandline: "03142626116",
+  phoneLandline2: "۰۳۱-۴۲۶۲۶۱۰۷",
+  rawLandline2: "03142626107",
+  mobileWorkshop: "۰۹۱۳-۶۲۶-۰۰۷۲",
+  rawMobile: "09136260072",
   // Map App Deep Links
-  neshanUrl: "https://nshn.ir/r/32.6365457,51.3551911",
+  neshanUrl: "https://neshan.org/maps/places/vbZnI32x4clP",
   baladUrl: "https://balad.ir/location?latitude=32.6365457&longitude=51.3551911",
-  googleMapsUrl: "https://maps.google.com/?q=32.6365457,51.3551911",
+  googleMapsUrl: "https://maps.app.goo.gl/cXf7MouMBVSPUKDo9",
   snappUrl: "https://app.snapp.taxi",
 };
 
@@ -57,27 +59,27 @@ export default function ContactPage() {
   const [isOpenNow, setIsOpenNow] = useState(true);
 
   // Calculate live store open/closed status (Tehran Time)
+  // شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنجشنبه: ۸:۳۰ الی ۱۳:۰۰ | جمعه: تعطیل
   useEffect(() => {
     const checkStoreStatus = () => {
       const now = new Date();
-      // Iran timezone offset approx +3.5
       const utc = now.getTime() + now.getTimezoneOffset() * 60000;
       const iranTime = new Date(utc + 3600000 * 3.5);
-      const day = iranTime.getDay(); // 0 is Sunday, 5 is Friday, 6 is Saturday
+      const day = iranTime.getDay(); // 0: Sunday, 4: Thursday, 5: Friday, 6: Saturday
       const hour = iranTime.getHours() + iranTime.getMinutes() / 60;
 
-      // Friday closed
+      // جمعه تعطیل
       if (day === 5) {
         setIsOpenNow(false);
         return;
       }
-      // Thursday 8:30 - 18:00
+      // پنجشنبه فقط شیفت صبح: ۸:۳۰ الی ۱۳:۰۰
       if (day === 4) {
-        setIsOpenNow(hour >= 8.5 && hour < 18);
+        setIsOpenNow(hour >= 8.5 && hour < 13);
         return;
       }
-      // Sat - Wed 8:30 - 21:00
-      setIsOpenNow(hour >= 8.5 && hour < 21);
+      // شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰
+      setIsOpenNow((hour >= 8.5 && hour < 13) || (hour >= 16.5 && hour < 21));
     };
 
     checkStoreStatus();
@@ -116,7 +118,7 @@ export default function ContactPage() {
     const cleanPhone = toEnglishDigits(phone);
     const msg = `سلام و احترام، پیام استعلام از سایت فروشگاه شیاسی:\n\n👤 فرستنده: ${name}\n📞 شماره تماس: ${cleanPhone || "ثبت نشده"}\n📌 موضوع: ${subject}\n\n📝 متن پیام:\n${message}`;
 
-    window.open(`https://wa.me/989162665884?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/989136260072?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (
@@ -197,11 +199,11 @@ export default function ContactPage() {
                   </p>
                 </div>
 
-                {/* 2 Phone Cards with 1-Click Copy & Direct Calling */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-750">
+                {/* 3 Phone Cards with 1-Click Copy & Direct Calling */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-755">
                     <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1">
-                      <span>تلفن فروشگاه:</span>
+                      <span>تلفن ۱ فروشگاه:</span>
                       <button
                         type="button"
                         onClick={() => handleCopyText(STORE_GEO.rawLandline, "phone")}
@@ -217,15 +219,39 @@ export default function ContactPage() {
                     </div>
                     <a
                       href={`tel:${STORE_GEO.rawLandline}`}
-                      className="font-black text-slate-900 dark:text-amber-400 text-sm font-mono hover:text-amber-600 block dir-ltr text-right"
+                      className="font-black text-slate-900 dark:text-amber-400 text-xs sm:text-sm font-mono hover:text-amber-600 block dir-ltr text-right"
                     >
                       {STORE_GEO.phoneLandline}
                     </a>
                   </div>
 
-                  <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-750">
+                  <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-755">
                     <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1">
-                      <span>همراه پذیرش و کارگاه:</span>
+                      <span>تلفن ۲ فروشگاه:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyText(STORE_GEO.rawLandline2, "phone2")}
+                        className="text-slate-400 hover:text-amber-600"
+                        title="کپی شماره"
+                      >
+                        {copiedField === "phone2" ? (
+                          <Check className="w-3 h-3 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+                    <a
+                      href={`tel:${STORE_GEO.rawLandline2}`}
+                      className="font-black text-slate-900 dark:text-amber-400 text-xs sm:text-sm font-mono hover:text-amber-600 block dir-ltr text-right"
+                    >
+                      {STORE_GEO.phoneLandline2}
+                    </a>
+                  </div>
+
+                  <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-755">
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1">
+                      <span>همراه و واتساپ:</span>
                       <button
                         type="button"
                         onClick={() => handleCopyText(STORE_GEO.rawMobile, "mobile")}
@@ -241,7 +267,7 @@ export default function ContactPage() {
                     </div>
                     <a
                       href={`tel:${STORE_GEO.rawMobile}`}
-                      className="font-black text-emerald-700 dark:text-emerald-400 text-sm font-mono hover:text-emerald-500 block dir-ltr text-right"
+                      className="font-black text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm font-mono hover:text-emerald-500 block dir-ltr text-right"
                     >
                       {STORE_GEO.mobileWorkshop}
                     </a>
@@ -249,12 +275,15 @@ export default function ContactPage() {
                 </div>
 
                 {/* Business Hours */}
-                <div className="bg-slate-50 dark:bg-slate-850 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-750 flex items-center gap-2.5">
-                  <Clock className="w-4 h-4 text-blue-500 shrink-0" />
-                  <div>
-                    <strong className="text-slate-900 dark:text-white block font-bold">ساعات کاری فروشگاه و کارگاه:</strong>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                      شنبه تا چهارشنبه ۸:۳۰ الی ۲۱:۰۰ | پنجشنبه‌ها ۸:۳۰ الی ۱۸:۰۰
+                <div className="bg-slate-50 dark:bg-slate-850 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-750 flex items-start gap-2.5">
+                  <Clock className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <strong className="text-slate-900 dark:text-white block font-bold text-xs">ساعات کاری فروشگاه و کارگاه:</strong>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-300 block leading-relaxed font-medium">
+                      شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                      پنج‌شنبه‌ها: ۸:۳۰ الی ۱۳:۰۰ (شیفت عصر تعطیل) • جمعه‌ها: تعطیل
                     </span>
                   </div>
                 </div>
@@ -299,13 +328,13 @@ export default function ContactPage() {
                 </div>
 
                 <a
-                  href={`https://wa.me/989162665884?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D9%88%20%D8%A7%D8%B3%D8%AA%D8%B9%D9%84%D8%A7%D9%85%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85`}
+                  href={`https://wa.me/989136260072?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D9%88%20%D8%A7%D8%B3%D8%AA%D8%B9%D9%84%D8%A7%D9%85%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3 rounded-xl text-center flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all active:scale-98 hover-glow"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>گفتگو و استعلام قیمت در واتساپ (۰۹۱۶۲۶۶۵۸۸۴)</span>
+                  <span>گفتگو و استعلام قیمت در واتساپ (۰۹۱۳۶۲۶۰۰۷۲)</span>
                 </a>
               </div>
             </div>

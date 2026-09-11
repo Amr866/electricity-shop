@@ -180,12 +180,12 @@ export function Header() {
             {/* Phone Number & Direct Support */}
             <div className="flex items-center gap-3">
               <a
-                href="tel:03142624567"
+                href="tel:03142626116"
                 dir="ltr"
                 className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold font-mono text-left"
               >
                 <Phone className="w-3 h-3 shrink-0" />
-                <span>۰۳۱-۴۲۶۲۴۵۶۷</span>
+                <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
               </a>
             </div>
 
@@ -753,11 +753,11 @@ export function Header() {
             {/* Fixed Drawer Bottom Phone Button */}
             <div className="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 shrink-0">
               <a
-                href="tel:03142624567"
+                href="tel:03142626116"
                 className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm active:scale-98"
               >
                 <Phone className="w-4 h-4" />
-                <span>تماس مستقیم: ۰۳۱-۴۲۶۲۴۵۶۷</span>
+                <span>تماس مستقیم: ۰۳۱-۴۲۶۲۶۱۱۶</span>
               </a>
             </div>
 

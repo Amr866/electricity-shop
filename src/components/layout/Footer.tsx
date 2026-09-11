@@ -32,9 +32,13 @@ export function Footer() {
     return null;
   }
 
-  const rawPhone = brand.rawPhone || "03142624567";
-  const displayPhone = brand.phone || "۰۳۱-۴۲۶۲۴۵۶۷";
-  const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9162665884";
+  const rawPhone = brand.rawPhone || "03142626116";
+  const displayPhone = brand.phone || "۰۳۱-۴۲۶۲۶۱۱۶";
+  const rawPhoneAlt = brand.rawPhoneAlt || "03142626107";
+  const displayPhoneAlt = brand.phoneAlt || "۰۳۱-۴۲۶۲۶۱۰۷";
+  const rawMobile = brand.rawMobile || "09136260072";
+  const displayMobile = brand.mobile || "۰۹۱۳-۶۲۶-۰۰۷۲";
+  const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9136260072";
   const whatsappUrl = `https://wa.me/98${cleanMobile}`;
   const eitaaUrl = "https://eitaa.com/shiasi_electric";
   const telegramUrl = "https://t.me/shiasi_electric";
@@ -74,21 +78,45 @@ export function Footer() {
                 <span>{brand.address}</span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>تلفن فروشگاه و کارگاه: </span>
-                <a
-                  href={`tel:${rawPhone}`}
-                  aria-label={`تماس تلفنی با فروشگاه شیاسی: ${displayPhone}`}
-                  className="text-amber-400 hover:text-amber-300 font-mono font-bold hover:underline inline-block transition-colors"
-                >
-                  <bdi dir="ltr">{displayPhone}</bdi>
-                </a>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <div className="flex items-center gap-1.5">
+                  <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>تلفن: </span>
+                  <a
+                    href={`tel:${rawPhone}`}
+                    aria-label={`تماس با تلفن ۱ فروشگاه شیاسی: ${displayPhone}`}
+                    className="text-amber-400 hover:text-amber-300 font-mono font-bold hover:underline inline-block transition-colors"
+                  >
+                    <bdi dir="ltr">{displayPhone}</bdi>
+                  </a>
+                  <span className="text-slate-500">|</span>
+                  <a
+                    href={`tel:${rawPhoneAlt}`}
+                    aria-label={`تماس با تلفن ۲ فروشگاه شیاسی: ${displayPhoneAlt}`}
+                    className="text-amber-400 hover:text-amber-300 font-mono font-bold hover:underline inline-block transition-colors"
+                  >
+                    <bdi dir="ltr">{displayPhoneAlt}</bdi>
+                  </a>
+                </div>
+                
+                <div className="flex items-center gap-1 text-[11px] text-slate-400">
+                  <span>(همراه: </span>
+                  <a
+                    href={`tel:${rawMobile}`}
+                    className="text-emerald-400 hover:underline font-mono font-bold"
+                  >
+                    {displayMobile}
+                  </a>
+                  <span>)</span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-400 shrink-0" />
-                <span>شنبه تا چهارشنبه ۸:۳۰ الی ۲۱:۰۰ | پنجشنبه‌ها ۸:۳۰ الی ۱۸:۰۰</span>
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span>شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰</span>
+                  <span className="block text-[11px] text-slate-400">پنج‌شنبه: ۸:۳۰ الی ۱۳:۰۰ | جمعه: تعطیل</span>
+                </div>
               </div>
             </div>
 

@@ -669,7 +669,7 @@ export default function RepairServicePage() {
                         <div>
                           <strong className="text-xs block font-bold">تحویل حضوری در شعبه</strong>
                           <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">
-                            اصفهان، نجف‌آباد، خیابان قدس
+                            اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس
                           </span>
                         </div>
                       </button>
@@ -695,24 +695,32 @@ export default function RepairServicePage() {
 
                     {/* Navigation Map Action */}
                     {deliveryType === "in_person" && (
-                      <div className="bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs animate-in fade-in">
+                      <div className="bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs animate-in fade-in">
                         <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">مسیریابی به فروشگاه و کارگاه:</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <a
-                            href="https://nshn.ir"
+                            href="https://neshan.org/maps/places/vbZnI32x4clP"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[10px] px-2.5 py-1 rounded-lg transition-all"
                           >
-                            مسیریابی در نشان ↗
+                            نشان ↗
                           </a>
                           <a
-                            href="https://balad.ir"
+                            href="https://balad.ir/location?latitude=32.6365457&longitude=51.3551911"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all"
                           >
                             بلد ↗
+                          </a>
+                          <a
+                            href="https://maps.app.goo.gl/cXf7MouMBVSPUKDo9"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold text-[10px] px-2.5 py-1 rounded-lg transition-all"
+                          >
+                            گوگل‌مپ ↗
                           </a>
                         </div>
                       </div>
@@ -894,7 +902,7 @@ export default function RepairServicePage() {
 
                     {/* Direct WhatsApp Follow-up */}
                     <a
-                      href={`https://wa.me/989162665884?text=${encodeURIComponent(
+                      href={`https://wa.me/989136260072?text=${encodeURIComponent(
                         `سلام، پیگیری وضعیت تعمیر دستگاه ${trackResult.applianceType} با کد رهگیری ${trackResult.trackingCode}`
                       )}`}
                       target="_blank"
@@ -919,36 +927,46 @@ export default function RepairServicePage() {
                 جهت هماهنگی ارسال با اسنپ یا مشاوره فنی رایگان می‌توانید با شماره‌های کارگاه تماس بگیرید:
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <a
-                  href="tel:03142624567"
-                  className="bg-white/10 hover:bg-white/15 p-3 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                  href="tel:03142626116"
+                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
                 >
-                  <span className="text-[10px] text-slate-400 block font-medium">تلفن کارگاه نجف‌آباد</span>
+                  <span className="text-[10px] text-slate-400 block font-medium">تلفن ۱ کارگاه</span>
                   <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
-                    ۰۳۱-۴۲۶۲۴۵۶۷
+                    ۰۳۱-۴۲۶۲۶۱۱۶
                   </strong>
                 </a>
 
                 <a
-                  href="tel:09162665884"
-                  className="bg-white/10 hover:bg-white/15 p-3 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                  href="tel:03142626107"
+                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
                 >
-                  <span className="text-[10px] text-slate-400 block font-medium">همراه پذیرش مستقیم</span>
+                  <span className="text-[10px] text-slate-400 block font-medium">تلفن ۲ کارگاه</span>
+                  <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
+                    ۰۳۱-۴۲۶۲۶۱۰۷
+                  </strong>
+                </a>
+
+                <a
+                  href="tel:09136260072"
+                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                >
+                  <span className="text-[10px] text-slate-400 block font-medium">همراه پذیرش</span>
                   <strong className="text-xs font-mono font-bold text-emerald-400 block mt-0.5">
-                    ۰۹۱۶-۲۶۶-۵۸۸۴
+                    ۰۹۱۳-۶۲۶-۰۰۷۲
                   </strong>
                 </a>
               </div>
 
               <a
-                href="https://wa.me/989162665884?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D8%AA%D8%B9%D9%85%DB%8C%D8%B1%D8%A7%D8%AA%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85"
+                href="https://wa.me/989136260072?text=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%AC%D9%87%D8%AA%20%D9%85%D8%B4%D8%A7%D9%88%D8%B1%D9%87%20%D8%AA%D8%B9%D9%85%DB%8C%D8%B1%D8%A7%D8%AA%20%D9%BE%DB%8C%D8%A7%D9%85%20%D9%85%DB%8C%E2%80%8C%D8%AF%D9%87%D9%85"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 active:scale-98 hover-glow"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>پیام در واتساپ واحد تعمیرات</span>
+                <span>پیام در واتساپ واحد تعمیرات (۰۹۱۳۶۲۶۰۰۷۲)</span>
               </a>
             </div>
 

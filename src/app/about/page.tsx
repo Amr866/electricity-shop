@@ -81,7 +81,7 @@ export default function AboutPage() {
         <div className="bg-slate-900 dark:bg-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 border border-slate-800">
           <div className="space-y-1 text-center sm:text-right">
             <h3 className="font-extrabold text-base text-amber-400">مشتاق دیدار شما در فروشگاه شیاسی هستیم</h3>
-            <p className="text-xs text-slate-400">اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)</p>
+            <p className="text-xs text-slate-400">اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)</p>
           </div>
           <Link
             href="/contact"

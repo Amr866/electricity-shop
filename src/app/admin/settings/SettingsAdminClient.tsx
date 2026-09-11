@@ -27,13 +27,13 @@ interface SettingsAdminClientProps {
 
 export function SettingsAdminClient({ initialSettings }: SettingsAdminClientProps) {
   const [settings, setSettings] = useState<Record<string, string>>({
-    store_name: "فروشگاه و کارگاه تخصصی برق شیاسی",
-    store_slogan: "مرکز خرید و تعمیرات تخصصی لوازم برقی خانگی، صنعتی، پنکه، کولر و سیم‌کشی",
-    store_address: "اصفهان، نجف‌آباد، خیابان قدس (شریعتی)، فروشگاه و کارگاه شیاسی",
-    store_phone: "03142624567",
-    store_mobile: "09162665884",
+    store_name: "فروشگاه شیاسی",
+    store_slogan: "مرکز خرید و تعمیرات تخصصی لوازم برقی خانگی، صنعتی، پنکه، کولر، بخاری و سیم‌کشی",
+    store_address: "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)",
+    store_phone: "03142626116",
+    store_mobile: "09136260072",
     store_eitaa: "@shiasi_electric",
-    store_hours: "شنبه تا پنج‌شنبه: ۸:۳۰ الی ۱۳:۳۰ و ۱۶:۳۰ الی ۲۱:۰۰",
+    store_hours: "شنبه تا چهارشنبه: ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنج‌شنبه‌ها: ۸:۳۰ الی ۱۳:۰۰ | جمعه‌ها: تعطیل",
     store_card_number: "6037997512345678",
     store_card_owner: "فروشگاه تخصصی برق شیاسی",
     store_card_bank: "بانک ملی ایران - شعبه مرکزی نجف‌آباد",
@@ -41,7 +41,7 @@ export function SettingsAdminClient({ initialSettings }: SettingsAdminClientProp
     shipping_peyk_price: "45000",
     shipping_tipax_price: "65000",
     free_shipping_threshold: "2000000",
-    store_map_link: "https://nshn.ir/shiasi-electric-najafabad",
+    store_map_link: "https://neshan.org/maps/places/vbZnI32x4clP",
     ...initialSettings,
   });
 

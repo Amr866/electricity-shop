@@ -67,17 +67,17 @@ const STORE_ADVANTAGES = [
 const NAVIGATION_APPS = [
   {
     name: "مسیریاب نشان",
-    url: "https://neshan.org/maps/@32.6346,51.3657,17z",
+    url: "https://neshan.org/maps/places/vbZnI32x4clP",
     badge: "ایرانی • دقیق",
   },
   {
     name: "مسیریاب بلد",
-    url: "https://balad.ir/location?latitude=32.6346&longitude=51.3657",
+    url: "https://balad.ir/location?latitude=32.6365457&longitude=51.3551911",
     badge: "سریع • پرسرعت",
   },
   {
     name: "Google Maps",
-    url: "https://maps.google.com/?q=32.6346,51.3657",
+    url: "https://maps.app.goo.gl/cXf7MouMBVSPUKDo9",
     badge: "بین‌المللی",
   },
 ];
@@ -87,11 +87,13 @@ export function IsfahanBanner() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showNavDropdown, setShowNavDropdown] = useState(false);
 
-  const storePhone = brand.phone || "۰۳۱-۴۲۶۲۴۵۶۷";
-  const storeRawPhone = brand.rawPhone || "03142624567";
-  const repairPhone = "۰۹۱۶-۲۶۶-۵۸۸۴";
-  const repairRawPhone = "09162665884";
-  const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9162665884";
+  const storePhone = brand.phone || "۰۳۱-۴۲۶۲۶۱۱۶";
+  const storeRawPhone = brand.rawPhone || "03142626116";
+  const storePhoneAlt = brand.phoneAlt || "۰۳۱-۴۲۶۲۶۱۰۷";
+  const storeRawPhoneAlt = brand.rawPhoneAlt || "03142626107";
+  const repairPhone = "۰۹۱۳-۶۲۶-۰۰۷۲";
+  const repairRawPhone = "09136260072";
+  const cleanMobile = brand.rawMobile ? brand.rawMobile.replace(/^0/, "") : "9136260072";
   const whatsappUrl = `https://wa.me/98${cleanMobile}?text=${encodeURIComponent("سلام، درخواست راهنمایی و مشاوره خرید از فروشگاه شیاسی را دارم.")}`;
 
   const handleCopy = (text: string, id: string, e: React.MouseEvent) => {
@@ -179,14 +181,14 @@ export function IsfahanBanner() {
                 <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 mt-3">
                   {/* Address Pill with 1-Click Copy */}
                   <div
-                    onClick={(e) => handleCopy(brand.address || "اصفهان، نجف‌آباد، خیابان قدس / شریعتی (فروشگاه شیاسی)", "address", e)}
+                    onClick={(e) => handleCopy(brand.address || "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)", "address", e)}
                     className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between gap-2 cursor-pointer hover:border-amber-400/70 transition-all group"
                     title="کلیک جهت کپی نشانی دقیق"
                   >
                     <div>
                       <span className="text-slate-500 dark:text-slate-400 block text-[10px] mb-1 font-medium">آدرس فروشگاه و کارگاه:</span>
                       <span className="font-bold text-slate-900 dark:text-white text-xs leading-relaxed block">
-                        {brand.address}
+                        {brand.address || "اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)"}
                       </span>
                     </div>
                     <button
@@ -202,28 +204,28 @@ export function IsfahanBanner() {
                     </button>
                   </div>
 
-                  {/* Direct Phone Numbers Grid with 1-Click Call & Copy */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="relative bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-2xs hover:border-amber-400/80 transition-all group">
+                  {/* Direct Phone Numbers Grid with 1-Click Call & Copy (3 Lines) */}
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                    <div className="relative bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-2xs hover:border-amber-400/80 transition-all group">
                       <a
                         href={`tel:${storeRawPhone}`}
-                        aria-label={`تماس مستقیم با تلفن ثابت فروشگاه: ${storePhone}`}
+                        aria-label={`تماس مستقیم با تلفن فروشگاه: ${storePhone}`}
                         className="block"
                       >
-                        <span className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 text-[10px] mb-0.5 font-medium">
+                        <span className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 text-[9px] mb-0.5 font-medium">
                           <Phone className="w-2.5 h-2.5 text-amber-500" />
-                          <span>تلفن فروشگاه:</span>
+                          <span>تلفن ۱:</span>
                         </span>
-                        <span className="font-bold text-amber-600 dark:text-amber-400 text-xs font-mono group-hover:underline">
+                        <span className="font-bold text-amber-600 dark:text-amber-400 text-[11px] font-mono group-hover:underline">
                           {storePhone}
                         </span>
                       </a>
                       <button
                         type="button"
                         onClick={(e) => handleCopy(storeRawPhone, "storePhone", e)}
-                        title="کپی شماره تلفن"
-                        aria-label="کپی شماره تلفن فروشگاه"
-                        className="absolute top-1.5 left-1.5 p-1 rounded text-slate-400 hover:text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="کپی شماره تلفن ۱"
+                        aria-label="کپی شماره تلفن ۱"
+                        className="absolute top-1 left-1 p-0.5 rounded text-slate-400 hover:text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         {copiedId === "storePhone" ? (
                           <Check className="w-3 h-3 text-emerald-600" />
@@ -233,26 +235,55 @@ export function IsfahanBanner() {
                       </button>
                     </div>
 
-                    <div className="relative bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-2xs hover:border-emerald-400/80 transition-all group">
+                    <div className="relative bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-2xs hover:border-amber-400/80 transition-all group">
                       <a
-                        href={`tel:${repairRawPhone}`}
-                        aria-label={`تماس مستقیم با واحد فنی و تعمیرات: ${repairPhone}`}
+                        href={`tel:${storeRawPhoneAlt}`}
+                        aria-label={`تماس مستقیم با تلفن ۲: ${storePhoneAlt}`}
                         className="block"
                       >
-                        <span className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 text-[10px] mb-0.5 font-medium">
-                          <Wrench className="w-2.5 h-2.5 text-emerald-500" />
-                          <span>واحد تعمیرات:</span>
+                        <span className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 text-[9px] mb-0.5 font-medium">
+                          <Phone className="w-2.5 h-2.5 text-amber-500" />
+                          <span>تلفن ۲:</span>
                         </span>
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs font-mono group-hover:underline">
+                        <span className="font-bold text-amber-600 dark:text-amber-400 text-[11px] font-mono group-hover:underline">
+                          {storePhoneAlt}
+                        </span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => handleCopy(storeRawPhoneAlt, "storePhoneAlt", e)}
+                        title="کپی شماره تلفن ۲"
+                        aria-label="کپی شماره تلفن ۲"
+                        className="absolute top-1 left-1 p-0.5 rounded text-slate-400 hover:text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        {copiedId === "storePhoneAlt" ? (
+                          <Check className="w-3 h-3 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="relative bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center shadow-2xs hover:border-emerald-400/80 transition-all group">
+                      <a
+                        href={`tel:${repairRawPhone}`}
+                        aria-label={`تماس با همراه و واتساپ: ${repairPhone}`}
+                        className="block"
+                      >
+                        <span className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 text-[9px] mb-0.5 font-medium">
+                          <Wrench className="w-2.5 h-2.5 text-emerald-500" />
+                          <span>همراه:</span>
+                        </span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 text-[11px] font-mono group-hover:underline">
                           {repairPhone}
                         </span>
                       </a>
                       <button
                         type="button"
                         onClick={(e) => handleCopy(repairRawPhone, "repairPhone", e)}
-                        title="کپی شماره همراه تعمیرات"
-                        aria-label="کپی شماره واحد تعمیرات"
-                        className="absolute top-1.5 left-1.5 p-1 rounded text-slate-400 hover:text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="کپی شماره همراه"
+                        aria-label="کپی شماره همراه"
+                        className="absolute top-1 left-1 p-0.5 rounded text-slate-400 hover:text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         {copiedId === "repairPhone" ? (
                           <Check className="w-3 h-3 text-emerald-600" />
@@ -264,9 +295,14 @@ export function IsfahanBanner() {
                   </div>
 
                   {/* Operating Hours Pill */}
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-2 text-[11px] text-slate-600 dark:text-slate-300 shadow-2xs">
-                    <Clock className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                    <span>ساعت کاری: ۸:۳۰ الی ۲۱:۰۰ (پنجشنبه‌ها تا ۱۸:۰۰)</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-300 shadow-2xs">
+                    <Clock className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span>شنبه تا چهارشنبه ۸:۳۰ تا ۱۳:۰۰ و ۱۶:۳۰ تا ۲۱:۰۰</span>
+                      <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        پنج‌شنبه‌ها: ۸:۳۰ تا ۱۳:۰۰ (شیفت عصر تعطیل) • جمعه‌ها: تعطیل
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

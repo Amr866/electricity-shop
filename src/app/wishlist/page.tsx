@@ -86,7 +86,7 @@ export default function WishlistPage() {
     });
     msg += `\n💰 جمع کل پیش‌فاکتور: ${formatToman(totalPayable)} تومان`;
 
-    window.open(`https://wa.me/989162665884?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/989136260072?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   if (wishlistCount === 0) {

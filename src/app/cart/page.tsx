@@ -216,7 +216,7 @@ export default function CartPage() {
     msg += `\n💰 جمع کل فاکتور: ${formatToman(total)} تومان`;
     msg += `\n📍 شهر مقصد: نجف‌آباد / اصفهان`;
 
-    window.open(`https://wa.me/989162665884?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/989136260072?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   if (items.length === 0) {

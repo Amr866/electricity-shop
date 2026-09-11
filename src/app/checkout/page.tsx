@@ -84,7 +84,7 @@ export default function CheckoutPage() {
     // 2. Phone validation (Iranian 11 digits: 09xxxxxxxxx)
     const cleanPhone = normalizeIranianPhone(customerPhone);
     if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
-      setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۶۲۶۰۰۷۲).");
+      setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۲۴۵۶۷۸۹).");
       return;
     }
 
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                       maxLength={16}
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="۰۹۱۳۱۲۳۴۵۶۷"
+                      placeholder="۰۹۱۳۲۴۵۶۷۸۹"
                       className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 text-left font-mono"
                     />
                   </div>

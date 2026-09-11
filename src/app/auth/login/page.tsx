@@ -71,7 +71,7 @@ function LoginForm() {
     const cleanPhone = normalizeIranianPhone(phone);
 
     if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
-      setErrorMsg("لطفاً شماره موبایل ۱۱ رقمی معتبر وارد نمایید (مثال: 09131112233)");
+      setErrorMsg("لطفاً شماره موبایل ۱۱ رقمی معتبر وارد نمایید (مثال: 09132456789)");
       return;
     }
 
@@ -361,7 +361,7 @@ function LoginForm() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="۰۹۱۳۱۲۳۴۵۶۷"
+                    placeholder="۰۹۱۳۲۴۵۶۷۸۹"
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono tracking-wider focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 transition-colors"
                   />
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />

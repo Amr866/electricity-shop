@@ -10,7 +10,7 @@ datasource db {
 model User {
   id            String          @id @default(cuid())
   name          String?
-  phone         String          @unique // Mobile number (e.g. 09131112233)
+  phone         String          @unique // Mobile number (e.g. 09132456789)
   email         String?         @unique
   password      String?
   role          String          @default("CUSTOMER") // CUSTOMER, ADMIN

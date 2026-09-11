@@ -79,7 +79,7 @@ export default function OrderLookupPage() {
     const cleanPhone = toEnglishDigits(phoneNumber.trim()).replace(/[^\d]/g, "");
 
     if (!cleanPhone || cleanPhone.length < 10) {
-      setPhoneError("لطفاً شماره موبایل معتبر ۱۱ رقمی وارد نمایید (مثال: ۰۹۱۳۱۲۳۴۵۶۷).");
+      setPhoneError("لطفاً شماره موبایل معتبر ۱۱ رقمی وارد نمایید (مثال: ۰۹۱۳۲۴۵۶۷۸۹).");
       return;
     }
 
@@ -274,7 +274,7 @@ export default function OrderLookupPage() {
                           setPhoneNumber(e.target.value);
                           setPhoneError("");
                         }}
-                        placeholder="۰۹۱۳..."
+                        placeholder="۰۹۱۳۲۴۵۶۷۸۹"
                         className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono rounded-xl pr-10 pl-4 py-3.5 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all text-left"
                         dir="ltr"
                       />

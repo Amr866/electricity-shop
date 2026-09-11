@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
       return NextResponse.json(
-        { error: "شماره موبایل وارد شده معتبر نمی‌باشد (مثال: 09131112233)" },
+        { error: "شماره موبایل وارد شده معتبر نمی‌باشد (مثال: 09132456789)" },
         { status: 400 }
       );
     }

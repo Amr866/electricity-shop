@@ -487,7 +487,7 @@ export default function RepairServicePage() {
                         required
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
-                        placeholder="۰۹۱۳..."
+                        placeholder="۰۹۱۳۲۴۵۶۷۸۹"
                         className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
                       />
                     </div>
@@ -764,7 +764,7 @@ export default function RepairServicePage() {
                     required
                     value={trackCode}
                     onChange={(e) => setTrackCode(e.target.value)}
-                    placeholder="مثال: 0913... یا REP-1403..."
+                    placeholder="مثال: 09132456789 یا REP-1403..."
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
                   />
                   <button

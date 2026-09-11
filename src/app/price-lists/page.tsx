@@ -227,7 +227,7 @@ export default function PriceListsPage() {
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 shrink-0 transition-all active:scale-95 hover-glow"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>استعلام قیمت همکار در واتساپ (۰۹۱۳۶۲۶۰۰۷۲)</span>
+              <span>استعلام قیمت همکار در واتساپ (<bdi dir="ltr">۰۹۱۳۶۲۶۰۰۷۲</bdi>)</span>
             </a>
           </div>
 
@@ -390,7 +390,8 @@ export default function PriceListsPage() {
               href="tel:03142626116"
               className="flex-1 sm:flex-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold px-4 py-3 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-center"
             >
-              تماس: ۰۳۱-۴۲۶۲۶۱۱۶
+              <span>تماس: </span>
+              <bdi dir="ltr" className="font-mono font-bold">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
             </a>
           </div>
         </div>

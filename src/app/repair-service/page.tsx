@@ -934,7 +934,7 @@ export default function RepairServicePage() {
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">تلفن ۱ کارگاه</span>
                   <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
-                    ۰۳۱-۴۲۶۲۶۱۱۶
+                    <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
                   </strong>
                 </a>
 
@@ -944,7 +944,7 @@ export default function RepairServicePage() {
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">تلفن ۲ کارگاه</span>
                   <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
-                    ۰۳۱-۴۲۶۲۶۱۰۷
+                    <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۰۷</bdi>
                   </strong>
                 </a>
 
@@ -954,7 +954,7 @@ export default function RepairServicePage() {
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">همراه پذیرش</span>
                   <strong className="text-xs font-mono font-bold text-emerald-400 block mt-0.5">
-                    ۰۹۱۳-۶۲۶-۰۰۷۲
+                    <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi>
                   </strong>
                 </a>
               </div>
@@ -966,7 +966,7 @@ export default function RepairServicePage() {
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 active:scale-98 hover-glow"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>پیام در واتساپ واحد تعمیرات (۰۹۱۳۶۲۶۰۰۷۲)</span>
+                <span>پیام در واتساپ واحد تعمیرات (<bdi dir="ltr">۰۹۱۳۶۲۶۰۰۷۲</bdi>)</span>
               </a>
             </div>
 

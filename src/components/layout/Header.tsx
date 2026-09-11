@@ -181,11 +181,10 @@ export function Header() {
             <div className="flex items-center gap-3">
               <a
                 href="tel:03142626116"
-                dir="ltr"
-                className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold font-mono text-left"
+                className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold font-mono"
               >
                 <Phone className="w-3 h-3 shrink-0" />
-                <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
+                <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
               </a>
             </div>
 
@@ -757,7 +756,8 @@ export function Header() {
                 className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm active:scale-98"
               >
                 <Phone className="w-4 h-4" />
-                <span>تماس مستقیم: ۰۳۱-۴۲۶۲۶۱۱۶</span>
+                <span>تماس مستقیم: </span>
+                <bdi dir="ltr" className="font-mono font-bold">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
               </a>
             </div>
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 
 function toEnglishDigits(str: string): string {
   if (!str) return "";
@@ -15,24 +16,23 @@ function toEnglishDigits(str: string): string {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const rawQuery = searchParams.get("phone") || searchParams.get("trackingCode") || searchParams.get("q");
+    const rawQuery = searchParams.get("q") || "";
 
-    const session = await getServerSession(authOptions);
-    const isAdmin = session?.user?.role === "ADMIN";
-
-    if (!rawQuery && !isAdmin) {
-      return NextResponse.json({ error: "کد پیگیری یا شماره تماس الزامی است." }, { status: 400 });
+    if (!rawQuery.trim()) {
+      return NextResponse.json({ repairs: [] });
     }
 
     let where: any = {};
     if (rawQuery) {
       const cleanQuery = rawQuery.trim();
-      const englishQuery = toEnglishDigits(cleanQuery);
+      const englishQuery = toAsciiDigits(cleanQuery);
+      const normalizedPhone = normalizeIranianPhone(cleanQuery);
       
       where = {
         OR: [
           { customerPhone: cleanQuery },
           { customerPhone: englishQuery },
+          { customerPhone: normalizedPhone },
           { trackingCode: cleanQuery.toUpperCase() },
           { trackingCode: englishQuery.toUpperCase() },
         ],
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "اطلاعات ضروری تکمیل نشده است." }, { status: 400 });
     }
 
-    const normalizedPhone = toEnglishDigits(customerPhone);
+    const normalizedPhone = normalizeIranianPhone(customerPhone) || toAsciiDigits(customerPhone).trim();
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || null;
 

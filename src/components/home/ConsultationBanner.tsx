@@ -44,7 +44,7 @@ export function ConsultationBanner() {
               className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
+              <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
             </a>
             <a
               href="tel:03142626107"
@@ -52,7 +52,7 @@ export function ConsultationBanner() {
               className="bg-slate-800/80 hover:bg-slate-800 text-amber-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-amber-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>۰۳۱-۴۲۶۲۶۱۰۷</span>
+              <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۰۷</bdi>
             </a>
             <a
               href="tel:09136260072"
@@ -60,7 +60,7 @@ export function ConsultationBanner() {
               className="bg-slate-800/80 hover:bg-slate-800 text-emerald-400 font-bold px-3 py-2.5 rounded-xl border border-slate-700 flex items-center gap-1.5 hover:border-emerald-400/80 transition-all"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>۰۹۱۳-۶۲۶-۰۰۷۲</span>
+              <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi>
             </a>
           </div>
         </div>
@@ -70,7 +70,7 @@ export function ConsultationBanner() {
       <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
         <span className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-amber-400" />
-          <span>ساعات پاسخگویی مهندسین فنی: شنبه تا پنج‌شنبه از ساعت ۸:۳۰ الی ۲۱:۰۰</span>
+          <span>ساعات پاسخگویی: شنبه تا چهارشنبه ۸:۳۰ الی ۱۳:۰۰ و ۱۶:۳۰ الی ۲۱:۰۰ | پنج‌شنبه ۸:۳۰ الی ۱۳:۰۰</span>
         </span>
         <span className="text-amber-400 font-bold hidden sm:inline-block">
           پشتیبانی سریع پروژه‌های ساختمانی و صنعتی

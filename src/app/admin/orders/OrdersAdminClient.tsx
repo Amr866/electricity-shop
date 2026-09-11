@@ -580,7 +580,7 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
                               : ord.orderStatus === "SHIPPED"
                               ? "ارسال شده با پیک/پست"
                               : "در حال آماده‌سازی انبار"
-                          }${ord.trackingCode ? `\nکد رهگیری: ${ord.trackingCode}` : ""}\nتلفن واحد پشتیبانی: ۰۳۱۴۲۶۲۴۵۶۷`
+                          }${ord.trackingCode ? `\nکد رهگیری: ${ord.trackingCode}` : ""}\nتلفن واحد پشتیبانی: ۰۳۱-۴۲۶۲۶۱۱۶`
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -825,7 +825,7 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
                   <div>
                     <h2 className="font-black text-base text-slate-950">فروشگاه شیاسی</h2>
                     <span className="text-xs text-slate-600 block">
-                      اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس | تلفن: ۰۳۱-۴۲۶۲۶۱۱۶ - ۰۳۱-۴۲۶۲۶۱۰۷ | همراه: ۰۹۱۳۶۲۶۰۰۷۲
+                      اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس | تلفن: <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi> - <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۰۷</bdi> | همراه: <bdi dir="ltr">۰۹۱۳۶۲۶۰۰۷۲</bdi>
                     </span>
                   </div>
                 </div>

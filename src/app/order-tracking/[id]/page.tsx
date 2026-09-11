@@ -397,9 +397,9 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 fill-slate-950 print:text-black" />
               </div>
               <div className="text-right">
-                <h2 className="text-sm sm:text-base font-black text-slate-950 dark:text-white print:text-black">فروشگاه تخصصی شیاسی</h2>
+                <h2 className="text-sm sm:text-base font-black text-slate-950 dark:text-white print:text-black">فروشگاه شیاسی</h2>
                 <span className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 print:text-black block">
-                  شعبه نجف‌آباد | تلفن: ۰۳۱-۴۲۶۲۴۵۶۷ | فنی: ۰۹۱۶۲۶۶۵۸۸۴
+                  اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس | تلفن: <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi> - <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۰۷</bdi> | همراه: <bdi dir="ltr">۰۹۱۳۶۲۶۰۰۷۲</bdi>
                 </span>
               </div>
             </div>

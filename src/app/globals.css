@@ -46,6 +46,24 @@ code, kbd, samp, pre, .font-mono {
   font-family: 'Vazirmatn FD', 'Vazirmatn', sans-serif !important;
 }
 
+/* Directional & BiDi isolation helpers to prevent reversed digits */
+.dir-ltr {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  text-align: left;
+}
+
+.dir-rtl {
+  direction: rtl !important;
+  unicode-bidi: isolate !important;
+  text-align: right;
+}
+
+bdi[dir="ltr"], span[dir="ltr"] {
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

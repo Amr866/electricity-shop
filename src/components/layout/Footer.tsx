@@ -105,7 +105,7 @@ export function Footer() {
                     href={`tel:${rawMobile}`}
                     className="text-emerald-400 hover:underline font-mono font-bold"
                   >
-                    {displayMobile}
+                    <bdi dir="ltr">{displayMobile}</bdi>
                   </a>
                   <span>)</span>
                 </div>

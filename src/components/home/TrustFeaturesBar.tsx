@@ -58,7 +58,7 @@ export function TrustFeaturesBar() {
                   {item.id === "support-phone" ? (
                     <p className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-0.5 whitespace-nowrap">
                       <span>تلفن: </span>
-                      <bdi dir="ltr" className="font-mono font-bold tracking-tight">۰۳۱-۴۲۶۲۴۵۶۷</bdi>
+                      <bdi dir="ltr" className="font-mono font-bold tracking-tight">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
                     </p>
                   ) : (
                     <p className="text-[10px] sm:text-[11px] font-medium text-slate-500 dark:text-slate-300 mt-0.5 truncate">
@@ -74,7 +74,7 @@ export function TrustFeaturesBar() {
                 <a
                   key={item.id}
                   href={item.phoneHref}
-                  aria-label="تماس مستقیم با واحد مشاوره و پشتیبانی شیاسی: ۰۳۱-۴۲۶۲۴۵۶۷"
+                  aria-label="تماس مستقیم با واحد مشاوره و پشتیبانی شیاسی: ۰۳۱-۴۲۶۲۶۱۱۶"
                   className={`group flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-2xl transition-all duration-300 hover:bg-amber-50/60 dark:hover:bg-slate-750 active:scale-98 ${
                     idx > 1 ? "pt-2.5 sm:pt-2" : ""
                   }`}

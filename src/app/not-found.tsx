@@ -85,8 +85,10 @@ export default function NotFound() {
         {/* Support Note */}
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
           <span>نیاز به راهنمایی دارید؟</span>
-          <Link href="/contact" className="text-amber-600 dark:text-amber-400 font-bold hover:underline">
-            تماس با پشتیبانی فروشگاه شیاسی (۰۳۱-۴۲۶۲۴۵۶۷)
+          <Link href="/contact" className="text-amber-600 dark:text-amber-400 font-bold hover:underline inline-flex items-center gap-1">
+            <span>تماس با پشتیبانی فروشگاه شیاسی (</span>
+            <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
+            <span>)</span>
           </Link>
         </div>
 

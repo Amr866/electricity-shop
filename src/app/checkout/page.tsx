@@ -9,6 +9,7 @@ import {
   formatToman,
   toPersianDigits,
   toAsciiDigits,
+  normalizeIranianPhone,
   SHIPPING_METHODS,
   PAYMENT_METHODS,
   ISFAHAN_DISTRICTS,
@@ -81,9 +82,9 @@ export default function CheckoutPage() {
     }
 
     // 2. Phone validation (Iranian 11 digits: 09xxxxxxxxx)
-    const cleanPhone = toAsciiDigits(customerPhone).replace(/\D/g, "");
-    if (cleanPhone.length !== 11 || !cleanPhone.startsWith("09")) {
-      setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۱۱۱۲۲۳۳).");
+    const cleanPhone = normalizeIranianPhone(customerPhone);
+    if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
+      setErrorMsg("شماره همراه باید ۱۱ رقم بوده و با ۰۹ شروع شود (مانند ۰۹۱۳۶۲۶۰۰۷۲).");
       return;
     }
 
@@ -221,11 +222,12 @@ export default function CheckoutPage() {
                     </label>
                     <input
                       type="tel"
+                      dir="ltr"
                       required
-                      maxLength={11}
+                      maxLength={16}
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      placeholder="۰۹۱۳۱۱۱۲۲۳۳"
+                      placeholder="۰۹۱۳۱۲۳۴۵۶۷"
                       className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 text-left font-mono"
                     />
                   </div>

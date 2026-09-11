@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { calculateTieredUnitPrice } from "@/lib/utils";
+import { calculateTieredUnitPrice, normalizeIranianPhone } from "@/lib/utils";
 
 // Server-enforced shipping method rates
 const SHIPPING_RATES: Record<string, number> = {
@@ -183,7 +183,7 @@ export async function POST(req: NextRequest) {
         data: {
           orderNumber,
           customerName: customerName.trim(),
-          customerPhone: customerPhone.trim(),
+          customerPhone: normalizeIranianPhone(customerPhone) || customerPhone.trim(),
           customerEmail: customerEmail ? customerEmail.trim() : null,
           userId,
           province: province || "اصفهان",

@@ -382,8 +382,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
           </div>
           <div className="text-left text-xs font-mono">
             <div>تاریخ صدور: {new Date().toLocaleDateString("fa-IR")}</div>
-            <div>تلفن کارگاه: ۰۳۱-۴۲۶۲۴۵۶۷</div>
-            <div>همراه فنی: ۰۹۱۶-۲۶۶-۵۸۸۴</div>
+            <div>تلفن کارگاه: <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi></div>
+            <div>همراه فنی: <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi></div>
           </div>
         </div>
 

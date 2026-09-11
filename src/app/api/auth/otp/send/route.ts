@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { normalizeIranianPhone } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,14 +9,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { phone } = body;
 
-    if (!phone || !/^09\d{9}$/.test(phone.trim())) {
+    const cleanPhone = normalizeIranianPhone(phone);
+
+    if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
       return NextResponse.json(
         { error: "شماره موبایل وارد شده معتبر نمی‌باشد (مثال: 09131112233)" },
         { status: 400 }
       );
     }
-
-    const cleanPhone = phone.trim();
 
     // 1. Rate limiting by IP (max 5 requests per 2 minutes)
     const ipLimit = checkRateLimit(`ip_otp_${ip}`, 5, 120);

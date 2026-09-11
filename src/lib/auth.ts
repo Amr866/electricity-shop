@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 
 const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
 
@@ -22,7 +23,8 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.phone) return null;
 
-        const phone = credentials.phone.trim();
+        const phone = normalizeIranianPhone(credentials.phone);
+        if (!phone) return null;
 
         // 1. Password-based authentication (Admin / Back-office)
         if (credentials.password) {
@@ -64,7 +66,7 @@ export const authOptions: NextAuthOptions = {
 
         // 2. OTP-based authentication (Customer & Admin via Phone Code)
         if (credentials.otpCode) {
-          const inputCode = credentials.otpCode.trim();
+          const inputCode = toAsciiDigits(credentials.otpCode.trim());
           const validToken = await prisma.verificationToken.findFirst({
             where: {
               phone,

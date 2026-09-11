@@ -182,7 +182,8 @@ export function RepairWorkshopSection() {
           className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-bold flex items-center gap-1.5 font-mono"
         >
           <PhoneCall className="w-3.5 h-3.5" />
-          <span>تماس مستقیم کارگاه: ۰۹۱۳-۶۲۶-۰۰۷۲</span>
+          <span>تماس مستقیم کارگاه: </span>
+          <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi>
         </a>
       </div>
     </section>

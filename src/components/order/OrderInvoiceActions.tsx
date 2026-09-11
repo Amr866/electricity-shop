@@ -17,7 +17,7 @@ export function OrderInvoiceActions({
   const { brand } = useBrand();
   const [copied, setCopied] = useState(false);
 
-  const whatsappNumber = brand.mobile ? `98${brand.mobile.replace(/^0/, "")}` : "989136260072";
+  const whatsappNumber = brand.rawMobile ? `98${brand.rawMobile.replace(/^0/, "")}` : "989136260072";
 
   const whatsappShareText = encodeURIComponent(
     `سلام، سفارش من در فروشگاه تخصصی شیاسی با شماره فاکتور ${orderNumber} به مبلغ ${formatToman(

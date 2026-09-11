@@ -19,10 +19,30 @@ export function toAsciiDigits(str: string | undefined | null): string {
 
 export const toEnglishDigits = toAsciiDigits;
 
-// Clean phone number for tel: or wa.me: links
+// Clean phone number for tel: or wa.me: links (pure ASCII digits)
 export function cleanPhoneNumber(phone: string | undefined | null): string {
   if (!phone) return "";
   return toAsciiDigits(phone).replace(/\D/g, "");
+}
+
+// Robust Iranian phone number normalizer (handles +98, 0098, Persian digits, spaces, hyphens)
+export function normalizeIranianPhone(input: string | undefined | null): string {
+  if (!input) return "";
+  let digits = toAsciiDigits(input).replace(/\D/g, "");
+  if (digits.startsWith("0098")) {
+    digits = "0" + digits.slice(4);
+  } else if (digits.startsWith("98") && (digits.length === 12 || digits.length === 11)) {
+    digits = "0" + digits.slice(2);
+  } else if (digits.startsWith("9") && digits.length === 10) {
+    digits = "0" + digits;
+  }
+  return digits;
+}
+
+// Verify if phone is a valid Iranian 11-digit mobile (09xxxxxxxxx)
+export function isValidIranianMobile(phone: string | undefined | null): boolean {
+  const normalized = normalizeIranianPhone(phone);
+  return /^09\d{9}$/.test(normalized);
 }
 
 // Convert English digits to Persian digits
@@ -33,16 +53,18 @@ export function toPersianDigits(n: number | string | undefined | null): string {
   return str.replace(/\d/g, (x) => persianDigits[parseInt(x, 10)]);
 }
 
-// Format numbers with thousands separators and Persian digits
-export function formatNumber(num: number | string): string {
-  if (!num && num !== 0) return "۰";
-  const parts = Number(num).toLocaleString("en-US").split(".");
+// Format numbers with thousands separators and Persian digits safely without NaN or gibberish
+export function formatNumber(num: number | string | undefined | null): string {
+  if (num === undefined || num === null || num === "") return "۰";
+  const n = typeof num === "number" ? num : Number(toAsciiDigits(String(num)).replace(/[^\d.-]/g, ""));
+  if (isNaN(n)) return "۰";
+  const parts = Math.round(n).toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return toPersianDigits(parts.join("."));
 }
 
 // Format price in Toman (تومان)
-export function formatToman(price: number): string {
+export function formatToman(price: number | string | undefined | null): string {
   return `${formatNumber(price)} تومان`;
 }
 

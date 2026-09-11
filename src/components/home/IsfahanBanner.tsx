@@ -217,7 +217,7 @@ export function IsfahanBanner() {
                           <span>تلفن ۱:</span>
                         </span>
                         <span className="font-bold text-amber-600 dark:text-amber-400 text-[11px] font-mono group-hover:underline">
-                          {storePhone}
+                          <bdi dir="ltr">{storePhone}</bdi>
                         </span>
                       </a>
                       <button
@@ -246,7 +246,7 @@ export function IsfahanBanner() {
                           <span>تلفن ۲:</span>
                         </span>
                         <span className="font-bold text-amber-600 dark:text-amber-400 text-[11px] font-mono group-hover:underline">
-                          {storePhoneAlt}
+                          <bdi dir="ltr">{storePhoneAlt}</bdi>
                         </span>
                       </a>
                       <button
@@ -275,7 +275,7 @@ export function IsfahanBanner() {
                           <span>همراه:</span>
                         </span>
                         <span className="font-bold text-emerald-600 dark:text-emerald-400 text-[11px] font-mono group-hover:underline">
-                          {repairPhone}
+                          <bdi dir="ltr">{repairPhone}</bdi>
                         </span>
                       </a>
                       <button

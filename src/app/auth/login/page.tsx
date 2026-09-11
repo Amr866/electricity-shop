@@ -26,7 +26,7 @@ import {
   X,
   ExternalLink,
 } from "lucide-react";
-import { toPersianDigits, toAsciiDigits } from "@/lib/utils";
+import { toPersianDigits, toAsciiDigits, normalizeIranianPhone } from "@/lib/utils";
 
 function LoginForm() {
   const router = useRouter();
@@ -68,7 +68,7 @@ function LoginForm() {
   // Step 1: Request OTP
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const cleanPhone = toAsciiDigits(phone.trim());
+    const cleanPhone = normalizeIranianPhone(phone);
 
     if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
       setErrorMsg("لطفاً شماره موبایل ۱۱ رقمی معتبر وارد نمایید (مثال: 09131112233)");
@@ -116,7 +116,7 @@ function LoginForm() {
       return;
     }
 
-    const cleanPhone = toAsciiDigits(phone.trim());
+    const cleanPhone = normalizeIranianPhone(phone);
     setLoading(true);
     setErrorMsg("");
 
@@ -195,7 +195,7 @@ function LoginForm() {
   // Admin Password Login
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanPhone = toAsciiDigits(phone.trim());
+    const cleanPhone = normalizeIranianPhone(phone);
     setLoading(true);
     setErrorMsg("");
 
@@ -272,7 +272,10 @@ function LoginForm() {
 
         {/* Footer info */}
         <div className="relative z-10 pt-2 border-t border-slate-950/20 text-[11px] text-slate-900/80 font-medium flex items-center justify-between">
-          <span>پشتیبانی: ۰۳۱-۴۲۶۲۶۱۱۶</span>
+          <div>
+            <span>پشتیبانی: </span>
+            <bdi dir="ltr" className="font-mono font-bold">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
+          </div>
           <span>شعبه ۱۵ خرداد مرکزی نجف‌آباد</span>
         </div>
 
@@ -354,6 +357,7 @@ function LoginForm() {
                 <div className="relative">
                   <input
                     type="tel"
+                    dir="ltr"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -478,10 +482,11 @@ function LoginForm() {
                 <div className="relative">
                   <input
                     type="tel"
+                    dir="ltr"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="09131112233"
+                    placeholder="09136260072"
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500"
                   />
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
@@ -512,7 +517,7 @@ function LoginForm() {
               </div>
 
               <div className="bg-slate-100 dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                همراه مدیر: <code>09131112233</code> | رمز: <code>admin123</code>
+                همراه مدیر: <code>09136260072</code> | رمز: <code>admin123</code>
               </div>
 
               <button

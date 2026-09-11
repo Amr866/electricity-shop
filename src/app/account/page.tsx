@@ -161,7 +161,7 @@ export default function CustomerAccountPage() {
     );
   }
 
-  const userPhone = (session?.user as any)?.phone || "۰۹۱۶۲۶۶۵۸۸۴";
+  const userPhone = (session?.user as any)?.phone || "۰۹۱۳۶۲۶۰۰۷۲";
   const userName = session?.user?.name || "مشتری محترم";
 
   return (

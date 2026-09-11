@@ -275,7 +275,7 @@ export default function FAQPage() {
               className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>۰۳۱-۴۲۶۲۶۱۱۶</span>
+              <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
             </a>
 
             <Link

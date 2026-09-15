@@ -28,13 +28,16 @@ model User {
 }
 
 model VerificationToken {
-  id        String   @id @default(cuid())
-  phone     String
-  code      String   // 5-digit OTP code (e.g. 84219)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id             String    @id @default(cuid())
+  phone          String
+  code           String   // 5-digit OTP code (e.g. 84219)
+  expiresAt      DateTime
+  resendAttempts Int       @default(0)
+  cooldownUntil  DateTime?
+  createdAt      DateTime  @default(now())
 
   @@index([phone, code])
+  @@index([phone, createdAt])
 }
 
 model Category {
@@ -146,6 +149,7 @@ model Order {
   totalAmount    Int         // In Toman
   paymentRefId   String?     // Zarinpal/Bank reference id
   receiptImage   String?     // Card-to-card proof
+  reservedUntil  DateTime?   // 8-hour Card-to-Card reservation expiration window
   notes          String?
   items          OrderItem[]
   createdAt      DateTime    @default(now())
@@ -157,35 +161,39 @@ model Order {
 }
 
 model OrderItem {
-  id           String   @id @default(cuid())
-  productId    String?
-  productName  String
-  productImage String?
-  price        Int      // Price at time of purchase in Toman
-  quantity     Int
-  total        Int
-  orderId      String
-  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  id              String   @id @default(cuid())
+  productId       String?
+  productName     String
+  productImage    String?
+  price           Int      // Price at time of purchase in Toman
+  quantity        Int
+  discountPercent Int      @default(0) // Tiered wholesale discount (0, 5, or 10%)
+  total           Int
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 }
 
 model RepairRequest {
-  id            String   @id @default(cuid())
-  trackingCode  String   @unique // e.g. REP-1403-082
-  customerName  String
-  customerPhone String
-  userId        String?
-  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  applianceType String   // پنکه، کولر آبی، بخاری برقی، آنتن، چای‌ساز، برد الکترونیکی، سایر
-  brandModel    String?  // مثلا: پارس خزر، موتوژن، اخوان، هانی
-  issueDesc     String   // شرح خرابی
-  deliveryType  String   @default("in_person") // in_person (تحویل حضوری در شعبه نجف‌آباد), courier (پیک نجف‌آباد)
-  status        String   @default("SUBMITTED") // SUBMITTED, IN_PROGRESS, READY, DELIVERED, CANCELLED
-  estimatedCost Int?     // In Toman
-  finalCost     Int?     // In Toman
-  adminNotes    String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                 String    @id @default(cuid())
+  trackingCode       String    @unique // e.g. REP-1403-082
+  customerName       String
+  customerPhone      String
+  userId             String?
+  user               User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  applianceType      String    // پنکه، کولر آبی، بخاری برقی، آنتن، چای‌ساز، برد الکترونیکی، سایر
+  brandModel         String?   // مثلا: پارس خزر، موتوژن، اخوان، هانی
+  issueDesc          String    // شرح خرابی
+  deliveryType       String    @default("in_person") // in_person (تحویل حضوری در شعبه نجف‌آباد), courier (پیک نجف‌آباد)
+  status             String    @default("SUBMITTED") // SUBMITTED, RECEIVED, INSPECTING, COST_ESTIMATED, REPAIRING, READY, DELIVERED, CANCELLED
+  costApprovalStatus String?   @default("PENDING") // PENDING, APPROVED, DECLINED
+  approvalChannel    String?   // PORTAL, SMS, PHONE
+  approvalTimestamp  DateTime?
+  estimatedCost      Int?      // In Toman
+  finalCost          Int?      // In Toman
+  adminNotes         String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   @@index([customerPhone])
   @@index([status])
@@ -229,3 +237,41 @@ model Article {
   @@index([isPublished])
   @@index([createdAt])
 }
+
+model BOMSubmission {
+  id              String   @id @default(cuid())
+  trackingCode    String   @unique // e.g. BOM-YYMMDD-XXX
+  contractorName  String
+  contractorPhone String
+  projectCity     String?
+  companyName     String?
+  content         String?  @db.Text
+  fileUrl         String?
+  fileType        String?
+  status          String   @default("PENDING") // PENDING, QUOTED, CONTACTED, ARCHIVED
+  adminNotes      String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([contractorPhone])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ManufacturerPriceList {
+  id                String   @id @default(cuid())
+  brand             String   // e.g. "سیم و کابل البرز", "موتوژن", "الکتروژن"
+  title             String
+  category          String?
+  fileUrl           String
+  fileSize          String?
+  discountCoeff     Float?
+  publishDateJalali String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([brand])
+  @@index([isActive])
+}
+

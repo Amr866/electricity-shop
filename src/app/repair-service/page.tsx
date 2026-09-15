@@ -71,7 +71,10 @@ export interface RepairTrackData {
   issueDesc: string;
   deliveryType: string;
   status: string;
+  costApprovalStatus?: string | null;
+  approvalChannel?: string | null;
   estimatedCost?: number | null;
+  finalCost?: number | null;
   adminNotes?: string | null;
   photoUrl?: string | null;
   createdAt: string;
@@ -286,6 +289,44 @@ export default function RepairServicePage() {
     }
   };
 
+  const [approvingCost, setApprovingCost] = useState(false);
+  const [approvalFeedback, setApprovalFeedback] = useState<string | null>(null);
+
+  const handleCustomerCostApproval = async (action: "APPROVE" | "DECLINE") => {
+    if (!trackResult) return;
+    setApprovingCost(true);
+    setApprovalFeedback(null);
+    try {
+      const res = await fetch("/api/repairs/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          trackingCode: trackResult.trackingCode,
+          action,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTrackResult((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: data.newStatus,
+                costApprovalStatus: data.costApprovalStatus,
+              }
+            : null
+        );
+        setApprovalFeedback(data.message);
+      } else {
+        alert(data.error || "خطا در ثبت درخواست.");
+      }
+    } catch {
+      alert("خطا در ارتباط با سرور.");
+    } finally {
+      setApprovingCost(false);
+    }
+  };
+
   const applianceOptions = [
     { label: "پنکه (ایستاده، رومیزی، سقفی)", value: "پنکه", icon: Fan },
     { label: "موتور یا پمپ کولر آبی", value: "کولر آبی", icon: Sun },
@@ -295,22 +336,24 @@ export default function RepairServicePage() {
     { label: "سایر وسایل برقی و صنعتی (غیره)", value: "سایر وسایل برقی (غیره)", icon: Plug },
   ];
 
-  // Helper for Stepper stages
+  // Helper for Stepper stages (7-stage lifecycle)
   const getStepIndex = (status: string) => {
     switch (status) {
       case "SUBMITTED":
         return 0;
       case "RECEIVED":
-      case "IN_PROGRESS":
         return 1;
       case "INSPECTING":
         return 2;
-      case "REPAIRING":
+      case "COST_ESTIMATED":
         return 3;
+      case "REPAIRING":
+        return 4;
       case "COMPLETED":
       case "READY":
+        return 5;
       case "DELIVERED":
-        return 4;
+        return 6;
       default:
         return 0;
     }
@@ -319,9 +362,11 @@ export default function RepairServicePage() {
   const stepsList = [
     { label: "ثبت درخواست", icon: FileCheck2 },
     { label: "پذیرش کارگاه", icon: Wrench },
-    { label: "بررسی و عیب‌یابی", icon: Cog },
-    { label: "در حال تعمیر", icon: Sparkles },
+    { label: "عیب‌یابی", icon: Cog },
+    { label: "برآورد هزینه", icon: Clock },
+    { label: "تعمیرات", icon: Sparkles },
     { label: "آماده تحویل", icon: PackageCheck },
+    { label: "تحویل شد", icon: CheckCircle2 },
   ];
 
   const currentSymptomTags = COMMON_ISSUE_TAGS[applianceType] || COMMON_ISSUE_TAGS["سایر وسایل برقی (غیره)"];
@@ -864,9 +909,12 @@ export default function RepairServicePage() {
                         {trackResult.status === "SUBMITTED" && "درخواست ثبت شد - در نوبت تحویل"}
                         {trackResult.status === "RECEIVED" && "پذیرش شد - در نوبت عیب‌یابی"}
                         {trackResult.status === "INSPECTING" && "در حال بررسی فنی و کارشناسی"}
+                        {trackResult.status === "COST_ESTIMATED" && "برآورد هزینه شد - در انتظار تایید شما"}
                         {trackResult.status === "REPAIRING" && "در حال تعمیر و تعویض قطعه"}
                         {trackResult.status === "COMPLETED" && "تعمیر تکمیل شد - آماده تحویل"}
+                        {trackResult.status === "READY" && "تعمیر تکمیل شد - آماده تحویل"}
                         {trackResult.status === "DELIVERED" && "تحویل به مشتری گردید"}
+                        {trackResult.status === "CANCELLED" && "تعمیر لغو شد"}
                       </span>
                     </div>
 
@@ -876,6 +924,43 @@ export default function RepairServicePage() {
                         <span className="font-bold text-slate-950 dark:text-amber-400 font-mono">
                           {formatToman(trackResult.estimatedCost)}
                         </span>
+                      </div>
+                    )}
+
+                    {/* 1-Click Customer Cost Approval / Decline Box */}
+                    {trackResult.status === "COST_ESTIMATED" && trackResult.costApprovalStatus === "PENDING" && (
+                      <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-3.5 space-y-2.5 animate-in fade-in">
+                        <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
+                          <Clock className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                          <span>برآورد هزینه توسط کارشناس کارگاه آماده است. جهت شروع تعمیر، تایید فرمایید:</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <button
+                            type="button"
+                            disabled={approvingCost}
+                            onClick={() => handleCustomerCostApproval("APPROVE")}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                          >
+                            <Check className="w-4 h-4" />
+                            <span>تایید هزینه و شروع تعمیر</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={approvingCost}
+                            onClick={() => handleCustomerCostApproval("DECLINE")}
+                            className="bg-rose-100 dark:bg-rose-950/60 hover:bg-rose-200 text-rose-800 dark:text-rose-300 font-bold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all border border-rose-300 dark:border-rose-800 active:scale-95 disabled:opacity-50"
+                          >
+                            <X className="w-4 h-4" />
+                            <span>انصراف از تعمیر</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {approvalFeedback && (
+                      <div className="bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs font-bold p-3 rounded-xl flex items-center gap-2 animate-in fade-in">
+                        <CheckCircle2 className="w-4 h-4 shrink-0" />
+                        <span>{approvalFeedback}</span>
                       </div>
                     )}
 

@@ -19,6 +19,8 @@ import {
   Store,
   Database,
   BookOpen,
+  Wrench,
+  FileSpreadsheet,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -44,6 +46,18 @@ export function AdminSidebar() {
       label: "سفارشات و ارسال",
       icon: ShoppingBag,
       color: "text-emerald-400",
+    },
+    {
+      href: "/admin/repairs",
+      label: "تعمیرات و کارگاه",
+      icon: Wrench,
+      color: "text-amber-400",
+    },
+    {
+      href: "/admin/bom",
+      label: "استعلام‌های BOM",
+      icon: FileSpreadsheet,
+      color: "text-cyan-400",
     },
     {
       href: "/admin/categories",

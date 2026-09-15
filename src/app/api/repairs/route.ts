@@ -3,31 +3,26 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 
-function toEnglishDigits(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
-    .trim();
-}
-
-// GET: Search repair requests by exact phone or tracking code
+// GET: Search repair requests by exact phone or tracking code, or return list for admin
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const rawQuery = searchParams.get("q") || "";
+    const code = searchParams.get("code") || "";
+    const phone = searchParams.get("phone") || "";
 
-    if (!rawQuery.trim()) {
-      return NextResponse.json({ repairs: [] });
-    }
+    logger.info("Inbound GET repairs request", { rawQuery, code, phone });
 
     let where: any = {};
-    if (rawQuery) {
-      const cleanQuery = rawQuery.trim();
+    const query = (code || phone || rawQuery).trim();
+
+    if (query) {
+      const cleanQuery = query.trim();
       const englishQuery = toAsciiDigits(cleanQuery);
       const normalizedPhone = normalizeIranianPhone(cleanQuery);
-      
+
       where = {
         OR: [
           { customerPhone: cleanQuery },
@@ -44,9 +39,9 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ success: true, repairs });
+    return NextResponse.json({ success: true, repairs, ticket: repairs[0] || null });
   } catch (error) {
-    console.error("Error fetching repairs:", error);
+    logger.error("Error fetching repairs", error);
     return NextResponse.json({ error: "Failed to fetch repairs" }, { status: 500 });
   }
 }
@@ -64,6 +59,8 @@ export async function POST(req: NextRequest) {
       deliveryType,
       photoUrl,
     } = body;
+
+    logger.info("Inbound POST new repair request", { customerName, applianceType });
 
     if (!customerName || !customerPhone || !applianceType || !issueDesc) {
       return NextResponse.json({ error: "اطلاعات ضروری تکمیل نشده است." }, { status: 400 });
@@ -92,13 +89,60 @@ export async function POST(req: NextRequest) {
         issueDesc: issueDesc.trim(),
         deliveryType: deliveryType || "in_person",
         status: "SUBMITTED",
+        costApprovalStatus: "PENDING",
         adminNotes: initialNotes,
       },
     });
 
+    logger.info("New repair ticket created", { trackingCode });
+
     return NextResponse.json({ success: true, repair, trackingCode }, { status: 201 });
   } catch (error) {
-    console.error("Error submitting repair request:", error);
+    logger.error("Error submitting repair request", error);
     return NextResponse.json({ error: "خطا در ثبت درخواست تعمیر." }, { status: 500 });
+  }
+}
+
+// PATCH: Update repair status, costs, notes, or verbal phone approval (Admin/Technician)
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    const isMasterAdmin = session?.user?.role === "ADMIN";
+
+    if (!isMasterAdmin) {
+      return NextResponse.json({ error: "دسترسی غیرمجاز. فقط مدیران یا تکنسین‌ها مجاز هستند." }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { id, status, estimatedCost, finalCost, adminNotes, costApprovalStatus, approvalChannel } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: "شناسه درخواست تعمیر الزامی است." }, { status: 400 });
+    }
+
+    const updateData: any = {};
+    if (status !== undefined) updateData.status = status;
+    if (estimatedCost !== undefined) updateData.estimatedCost = estimatedCost ? parseInt(estimatedCost, 10) : null;
+    if (finalCost !== undefined) updateData.finalCost = finalCost ? parseInt(finalCost, 10) : null;
+    if (adminNotes !== undefined) updateData.adminNotes = adminNotes;
+    if (costApprovalStatus !== undefined) {
+      updateData.costApprovalStatus = costApprovalStatus;
+      if (costApprovalStatus === "APPROVED") {
+        updateData.approvalTimestamp = new Date();
+      }
+    }
+    if (approvalChannel !== undefined) updateData.approvalChannel = approvalChannel;
+
+    const updated = await prisma.repairRequest.update({
+      where: { id },
+      data: updateData,
+    });
+
+    logger.info("Repair ticket updated by admin", { id, status, costApprovalStatus });
+
+    return NextResponse.json({ success: true, repair: updated });
+  } catch (error) {
+    logger.error("Error updating repair request", error);
+    return NextResponse.json({ error: "خطا در به‌روزرسانی وضعیت تعمیر." }, { status: 500 });
   }
 }

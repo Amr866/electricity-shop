@@ -79,7 +79,7 @@ The platform MUST enforce structured, level-appropriate logging across all serve
 ## Quality Gates, Admin Governance & Operational Resilience
 Development, deployments, and administrative management MUST adhere to strict verification gates:
 - **Zero TypeScript Errors**: All source code MUST compile cleanly with zero TypeScript errors (`tsc --noEmit`) prior to commit.
-- **Full Production Route Build**: All 53 application routes MUST compile cleanly during `next build`, maintaining static pre-rendering (SSG/ISR) for blog posts and catalog pages.
+- **Full Production Route Build**: All 55 application routes MUST compile cleanly during `next build`, maintaining static pre-rendering (SSG/ISR) for blog posts and catalog pages.
 - **Database Schema Parity**: Prisma schemas MUST remain synchronized with PostgreSQL (`prisma db push` / `prisma generate`).
 - **Executive Administration (`/admin`)**: Centralized dashboard monitoring gross revenue, order volume, low-stock threshold alerts (≤ 5 units), and active repair tickets.
 - **Disaster Recovery & Backups (`/admin/backup`)**: Single-click manual PostgreSQL backup dumps and documented restore procedures.

@@ -24,7 +24,7 @@ The technical architecture leverages **Next.js 15 App Router** with **React 19 S
 **Project Type**: Full-Stack Web Application (Next.js 15 App Router with hybrid RSC and Client Components)  
 **Performance Goals**: Catalog search queries < 400ms; repair tracking queries < 500ms; checkout completion < 90s; database backup export < 5s; 100% Lighthouse SEO audit compliance  
 **Constraints**: Zero-crash static fallbacks (`src/data/`) for critical routes; Persian RTL layout with Vazirmatn font; explicit bidirectional isolation (`<bdi dir="ltr">`); National Building Code Chapter 13 (\(\Delta V\% < 3.0\%\)); Constitution v1.1.0 tiered logging  
-**Scale/Scope**: 9 core platform feature domains, 53 application routes, dual B2C/B2B invoicing, single-store multi-channel operations  
+**Scale/Scope**: 9 core platform feature domains, 55 application routes, dual B2C/B2B invoicing, single-store multi-channel operations  
 
 ---
 

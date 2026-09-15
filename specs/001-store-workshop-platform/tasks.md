@@ -28,9 +28,9 @@
 
 **Purpose**: Verify dependencies, environment configurations, and core Next.js/Prisma runtime prerequisites.
 
-- [ ] T001 Verify project environment dependencies and npm packages in `package.json`
-- [ ] T002 Configure database connection string and connection pooling in `.env`
-- [ ] T003 [P] Verify Tailwind CSS RTL layout and Vazirmatn Persian typography in `tailwind.config.ts`
+- [x] T001 Verify project environment dependencies and npm packages in `package.json`
+- [x] T002 Configure database connection string and connection pooling in `.env`
+- [x] T003 [P] Verify Tailwind CSS RTL layout and Vazirmatn Persian typography in `tailwind.config.ts`
 
 ---
 
@@ -40,11 +40,11 @@
 
 **⚠️ CRITICAL**: Must be completed before user story implementation begins.
 
-- [ ] T004 Enhance Prisma schema with Card-to-Card reservation, repair approval fields, BOM, and price list models in `prisma/schema.prisma`
-- [ ] T005 [P] Implement Constitution v1.1.0 structured logging utility (`info` requests, `error` failures, `debug` actions) in `src/lib/logger.ts`
-- [ ] T006 [P] Verify Persian character and phone normalization utilities (`normalizeIranianPhone`, `normalizePersianText`, `<bdi>` helpers) in `src/lib/utils.ts`
-- [ ] T007 Synchronize PostgreSQL database schema and compile Prisma Client types via `prisma db push` and `prisma generate`
-- [ ] T008 [P] Configure global root layout with RTL directionality, Vazirmatn font subsets, and zero-hydration-flash theme provider in `src/app/layout.tsx`
+- [x] T004 Enhance Prisma schema with Card-to-Card reservation, repair approval fields, BOM, and price list models in `prisma/schema.prisma`
+- [x] T005 [P] Implement Constitution v1.1.0 structured logging utility (`info` requests, `error` failures, `debug` actions) in `src/lib/logger.ts`
+- [x] T006 [P] Verify Persian character and phone normalization utilities (`normalizeIranianPhone`, `normalizePersianText`, `<bdi>` helpers) in `src/lib/utils.ts`
+- [x] T007 Synchronize PostgreSQL database schema and compile Prisma Client types via `prisma db push` and `prisma generate`
+- [x] T008 [P] Configure global root layout with RTL directionality, Vazirmatn font subsets, and zero-hydration-flash theme provider in `src/app/layout.tsx`
 
 ---
 
@@ -54,11 +54,11 @@
 
 **Independent Test**: Focus search with `/`, query `"موتور موتوژن ۳/۴"`, receive results in < 400ms, and view technical specs on `/products/[slug]`.
 
-- [ ] T009 [P] [US1] Implement multi-token Persian keyword search and scoring engine with static fallback in `src/lib/search.ts`
-- [ ] T010 [P] [US1] Create search API route with request/error logging in `src/app/api/search/route.ts`
-- [ ] T011 [US1] Implement global search bar with `/` keyboard shortcut and instant dropdown results in `src/components/Header.tsx`
-- [ ] T012 [P] [US1] Build category filtering, brand filters, and stock badge indicators in `src/app/products/page.tsx`
-- [ ] T013 [US1] Build product detail page with structured technical specification table and datasheet download in `src/app/products/[slug]/page.tsx`
+- [x] T009 [P] [US1] Implement multi-token Persian keyword search and scoring engine with static fallback in `src/app/api/search/route.ts`
+- [x] T010 [P] [US1] Create search API route with request/error logging in `src/app/api/search/route.ts`
+- [x] T011 [US1] Implement global search bar with `/` keyboard shortcut and instant dropdown results in `src/components/search/LiveSearchBar.tsx`
+- [x] T012 [P] [US1] Build category filtering, brand filters, and stock badge indicators in `src/app/products/page.tsx`
+- [x] T013 [US1] Build product detail page with structured technical specification table and datasheet download in `src/app/products/[slug]/page.tsx`
 
 ---
 
@@ -68,12 +68,12 @@
 
 **Independent Test**: Add 12 items to cart to verify 5% discount, select Legal Corporate invoice with Economic Code, submit via Card-to-Card, and verify 8-hour reservation timestamp.
 
-- [ ] T014 [P] [US2] Implement client-side cart calculation with automatic tiered wholesale discounts in `src/context/CartContext.tsx`
-- [ ] T015 [US2] Build cart review view showing tiered discount savings and localized shipping options in `src/app/cart/page.tsx`
-- [ ] T016 [US2] Build checkout view with Individual vs Corporate invoice toggle and Iranian tax field validation in `src/app/checkout/page.tsx`
-- [ ] T017 [US2] Implement server-authoritative checkout route with atomic `$transaction`, price re-verification, and 8-hour Card-to-Card reservation in `src/app/api/checkout/route.ts`
-- [ ] T018 [P] [US2] Create Ministry of Finance compliant printable A4 legal tax invoice component in `src/components/InvoicePrint.tsx`
-- [ ] T019 [US2] Implement order confirmation and Card-to-Card receipt upload view in `src/app/order-tracking/page.tsx`
+- [x] T014 [P] [US2] Implement client-side cart calculation with automatic tiered wholesale discounts in `src/context/CartContext.tsx`
+- [x] T015 [US2] Build cart review view showing tiered discount savings and localized shipping options in `src/app/cart/page.tsx`
+- [x] T016 [US2] Build checkout view with Individual vs Corporate invoice toggle and Iranian tax field validation in `src/app/checkout/page.tsx`
+- [x] T017 [US2] Implement server-authoritative checkout route with atomic `$transaction`, price re-verification, and 8-hour Card-to-Card reservation in `src/app/api/checkout/route.ts`
+- [x] T018 [P] [US2] Create Ministry of Finance compliant printable A4 legal tax invoice layout in `src/app/order-tracking/[id]/page.tsx`
+- [x] T019 [US2] Implement order confirmation and Card-to-Card receipt upload view in `src/app/order-tracking/page.tsx`
 
 ---
 
@@ -83,11 +83,11 @@
 
 **Independent Test**: Register a repair ticket, receive `REP-YYMMDD-XXXX`, lookup status, simulate quote generation, and trigger 1-click cost approval.
 
-- [ ] T020 [P] [US3] Build online repair intake form for 6 appliance groups with drop-off/courier options in `src/app/repair-service/page.tsx`
-- [ ] T021 [US3] Implement repair ticket registration endpoint generating bidirectional-isolated `REP-YYMMDD-XXXX` codes in `src/app/api/repairs/route.ts`
-- [ ] T022 [P] [US3] Build customer repair tracking page with 7-stage visual timeline and direct workshop contacts in `src/app/repair-service/track/page.tsx`
-- [ ] T023 [US3] Implement customer 1-click "Approve Cost" and "Decline Repair" action endpoint in `src/app/api/repairs/approve/route.ts`
-- [ ] T024 [US3] Build admin workshop workbench for diagnostics logging, cost estimation, and phone approval entry in `src/app/admin/repairs/page.tsx`
+- [x] T020 [P] [US3] Build online repair intake form for 6 appliance groups with drop-off/courier options in `src/app/repair-service/page.tsx`
+- [x] T021 [US3] Implement repair ticket registration endpoint generating bidirectional-isolated `REP-YYMMDD-XXXX` codes in `src/app/api/repairs/route.ts`
+- [x] T022 [P] [US3] Build customer repair tracking page with 7-stage visual timeline and direct workshop contacts in `src/app/repair-service/page.tsx`
+- [x] T023 [US3] Implement customer 1-click "Approve Cost" and "Decline Repair" action endpoint in `src/app/api/repairs/approve/route.ts`
+- [x] T024 [US3] Build admin workshop workbench for diagnostics logging, cost estimation, and phone approval entry in `src/app/admin/repairs/page.tsx`
 
 ---
 
@@ -97,10 +97,10 @@
 
 **Independent Test**: Input 5 kW over 45 meters single-phase; verify nominal current 26.7A, 6mm² copper conductor, 1.8% voltage drop, C32 breaker, and 1-click cart addition.
 
-- [ ] T025 [P] [US4] Implement Chapter 13 mathematical calculation engine (\(I\), \(\Delta V\%\), pure copper ladder, and MCB curves) in `src/lib/cableCalculator.ts`
-- [ ] T026 [US4] Build interactive Cable Calculator UI with sliders, voltage drop safety indicators, and MCB recommendations in `src/components/CableCalculator.tsx`
-- [ ] T027 [US4] Implement 1-click bundle purchase dispatching exact cable length and matching breaker to cart in `src/components/CableCalculator.tsx`
-- [ ] T028 [US4] Integrate Chapter 13 Cable Calculator module into storefront homepage in `src/app/page.tsx`
+- [x] T025 [P] [US4] Implement Chapter 13 mathematical calculation engine (\(I\), \(\Delta V\%\), pure copper ladder, and MCB curves) in `src/lib/cableCalculator.ts`
+- [x] T026 [US4] Build interactive Cable Calculator UI with sliders, voltage drop safety indicators, and MCB recommendations in `src/components/tools/ElectricalCableCalculator.tsx`
+- [x] T027 [US4] Implement 1-click bundle purchase dispatching exact cable length and matching breaker to cart in `src/components/tools/ElectricalCableCalculator.tsx`
+- [x] T028 [US4] Integrate Chapter 13 Cable Calculator module into storefront homepage in `src/app/page.tsx`
 
 ---
 
@@ -110,10 +110,10 @@
 
 **Independent Test**: Submit phone with Persian digits, receive 5-digit OTP with 60s countdown, verify throttling on repeated attempts, and log in to inspect order history.
 
-- [ ] T029 [P] [US5] Implement SMS OTP dispatch endpoint with 60s cooldown and 3-attempt/15min rate limiting in `src/app/api/auth/otp/send/route.ts`
-- [ ] T030 [US5] Implement OTP verification and JWT session creation in `src/app/api/auth/otp/verify/route.ts`
-- [ ] T031 [P] [US5] Build customer login page supporting OTP flow with countdown timer and password fallback in `src/app/auth/login/page.tsx`
-- [ ] T032 [US5] Build authenticated customer account dashboard displaying order history and repair tickets in `src/app/account/page.tsx`
+- [x] T029 [P] [US5] Implement SMS OTP dispatch endpoint with 60s cooldown and 3-attempt/15min rate limiting in `src/app/api/auth/otp/send/route.ts`
+- [x] T030 [US5] Implement OTP verification and JWT session creation in `src/lib/auth.ts`
+- [x] T031 [P] [US5] Build customer login page supporting OTP flow with countdown timer and password fallback in `src/app/auth/login/page.tsx`
+- [x] T032 [US5] Build authenticated customer account dashboard displaying order history and repair tickets in `src/app/account/page.tsx`
 
 ---
 
@@ -123,9 +123,9 @@
 
 **Independent Test**: Paste a 15-item materials list and upload a PDF; verify inquiry receipt code and admin triage visibility.
 
-- [ ] T033 [P] [US6] Build contractor BOM submission portal supporting text paste and binary file uploads in `src/app/bom-upload/page.tsx`
-- [ ] T034 [US6] Implement BOM inquiry ingestion endpoint with file validation (max 10MB) in `src/app/api/bom/route.ts`
-- [ ] T035 [US6] Build admin BOM inquiry management view with contractor contact and WhatsApp quote actions in `src/app/admin/bom/page.tsx`
+- [x] T033 [P] [US6] Build contractor BOM submission portal supporting text paste and binary file uploads in `src/app/bom-upload/page.tsx`
+- [x] T034 [US6] Implement BOM inquiry ingestion endpoint with file validation (max 10MB) in `src/app/api/bom/route.ts`
+- [x] T035 [US6] Build admin BOM inquiry management view with contractor contact and WhatsApp quote actions in `src/app/admin/bom/page.tsx`
 
 ---
 
@@ -135,8 +135,8 @@
 
 **Independent Test**: Browse `/price-lists`, filter by brand (Alborz Cable, Motogen, etc.), and download verified PDF with 0 broken links.
 
-- [ ] T036 [P] [US7] Create static verified manufacturer price list registry in `src/data/priceLists.ts`
-- [ ] T037 [US7] Build public Price Lists Hub with brand filtering, Jalali dates, and direct download buttons in `src/app/price-lists/page.tsx`
+- [x] T036 [P] [US7] Create static verified manufacturer price list registry in `src/data/priceLists.ts`
+- [x] T037 [US7] Build public Price Lists Hub with brand filtering, Jalali dates, and direct download buttons in `src/app/price-lists/page.tsx`
 
 ---
 
@@ -146,10 +146,10 @@
 
 **Independent Test**: Open guide to verify `[!TIP]` and `[!WARNING]` styling; in `/admin/articles`, draft article, click "تولید از عنوان", toggle live preview, and publish.
 
-- [ ] T038 [P] [US8] Build public educational article reader with custom callout styling and JSON-LD metadata in `src/app/blog/[slug]/page.tsx`
-- [ ] T039 [US8] Implement administrative Markdown authoring studio with toolbar shortcuts and Persian auto-slug generator in `src/app/admin/articles/page.tsx`
-- [ ] T040 [US8] Build real-time side-by-side public preview component in `src/app/admin/articles/components/LivePreview.tsx`
-- [ ] T041 [US8] Implement article CRUD API routes with slug uniqueness enforcement in `src/app/api/admin/articles/route.ts`
+- [x] T038 [P] [US8] Build public educational article reader with custom callout styling and JSON-LD metadata in `src/app/blog/[slug]/page.tsx`
+- [x] T039 [US8] Implement administrative Markdown authoring studio with toolbar shortcuts and Persian auto-slug generator in `src/app/admin/articles/page.tsx`
+- [x] T040 [US8] Build real-time side-by-side public preview component in `src/app/admin/articles/ArticlesAdminClient.tsx`
+- [x] T041 [US8] Implement article CRUD API routes with slug uniqueness enforcement in `src/app/api/admin/articles/route.ts`
 
 ---
 
@@ -159,12 +159,12 @@
 
 **Independent Test**: View `/admin` metrics, identify flagged low-stock items, attach postal tracking numbers, and trigger a database backup in < 5s.
 
-- [ ] T042 [P] [US9] Implement administrative aggregate analytics endpoint (revenue, orders, stock, repairs) in `src/app/api/admin/stats/route.ts`
-- [ ] T043 [US9] Build executive admin dashboard view with metric cards and low-stock alerts table in `src/app/admin/page.tsx`
-- [ ] T044 [US9] Build product inventory and technical specifications management table in `src/app/admin/products/page.tsx`
-- [ ] T045 [US9] Build order fulfillment management view with postal tracking code inputs in `src/app/admin/orders/page.tsx`
-- [ ] T046 [US9] Implement single-click database backup export endpoint generating snapshot in `src/app/api/admin/backup/route.ts`
-- [ ] T047 [US9] Build database backup management UI with download action in `src/app/admin/backup/page.tsx`
+- [x] T042 [P] [US9] Implement administrative aggregate analytics endpoint (revenue, orders, stock, repairs) in `src/app/api/admin/backup/route.ts` and stats
+- [x] T043 [US9] Build executive admin dashboard view with metric cards and low-stock alerts table in `src/app/admin/page.tsx`
+- [x] T044 [US9] Build product inventory and technical specifications management table in `src/app/admin/products/page.tsx`
+- [x] T045 [US9] Build order fulfillment management view with postal tracking code inputs in `src/app/admin/orders/page.tsx`
+- [x] T046 [US9] Implement single-click database backup export endpoint generating snapshot in `src/app/api/admin/backup/route.ts`
+- [x] T047 [US9] Build database backup management UI with download action in `src/app/admin/backup/page.tsx`
 
 ---
 
@@ -172,10 +172,10 @@
 
 **Purpose**: Execute end-to-end verification, type checks, route compilation, and zero-crash fallback validations.
 
-- [ ] T048 [P] Run static type analysis to ensure zero TypeScript errors (`tsc --noEmit`)
-- [ ] T049 Test zero-crash static fallbacks by verifying public route rendering during simulated database disconnection in `src/data/products.ts`
-- [ ] T050 Execute full Next.js production route build (`next build`) to ensure all 53 application routes compile cleanly
-- [ ] T051 Execute end-to-end verification scenarios per `specs/001-store-workshop-platform/quickstart.md`
+- [x] T048 [P] Run static type analysis to ensure zero TypeScript errors (`tsc --noEmit`)
+- [x] T049 Test zero-crash static fallbacks by verifying public route rendering during simulated database disconnection in `src/data/products.ts`
+- [x] T050 Execute full Next.js production route build (`next build`) to ensure all 55 application routes compile cleanly
+- [x] T051 Execute end-to-end verification scenarios per `specs/001-store-workshop-platform/quickstart.md`
 
 ---
 

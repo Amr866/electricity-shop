@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Technical Repair Workshop API Contract",
+  "description": "API endpoints for repair request registration, real-time status tracking, and 1-click customer cost approval/decline.",
+  "endpoints": [
+    {
+      "path": "/api/repairs",
+      "method": "POST",
+      "description": "Register a new repair ticket",
+      "request": {
+        "type": "object",
+        "required": ["customerName", "customerPhone", "applianceType", "issueDesc", "deliveryType"],
+        "properties": {
+          "customerName": { "type": "string" },
+          "customerPhone": { "type": "string", "pattern": "^09[0-9]{9}$" },
+          "applianceType": {
+            "type": "string",
+            "enum": ["cooler_motor", "submersible_pump", "electric_fan", "quartz_heater", "antenna", "electronic_board", "other"]
+          },
+          "brandModel": { "type": "string" },
+          "issueDesc": { "type": "string", "minLength": 5 },
+          "deliveryType": { "type": "string", "enum": ["in_person", "courier"] }
+        }
+      },
+      "response": {
+        "201": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "trackingCode": { "type": "string", "example": "REP-260914-0418" },
+            "status": { "type": "string", "enum": ["SUBMITTED"] },
+            "workshopAddress": { "type": "string" }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/repairs/track",
+      "method": "GET",
+      "description": "Lookup repair ticket by tracking code or phone number",
+      "parameters": {
+        "code": { "type": "string", "description": "Tracking code e.g. REP-260914-0418" },
+        "phone": { "type": "string", "description": "Customer mobile phone" }
+      },
+      "response": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "trackingCode": { "type": "string" },
+            "customerName": { "type": "string" },
+            "applianceType": { "type": "string" },
+            "brandModel": { "type": "string" },
+            "status": {
+              "type": "string",
+              "enum": ["SUBMITTED", "RECEIVED", "INSPECTING", "COST_ESTIMATED", "REPAIRING", "READY", "DELIVERED", "CANCELLED"]
+            },
+            "costApprovalStatus": {
+              "type": "string",
+              "enum": ["PENDING", "APPROVED", "DECLINED"]
+            },
+            "estimatedCost": { "type": "integer" },
+            "finalCost": { "type": "integer" },
+            "adminNotes": { "type": "string" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/repairs/approve",
+      "method": "POST",
+      "description": "Customer 1-click approval or rejection of estimated repair cost",
+      "request": {
+        "type": "object",
+        "required": ["trackingCode", "action"],
+        "properties": {
+          "trackingCode": { "type": "string" },
+          "action": { "type": "string", "enum": ["APPROVE", "DECLINE"] }
+        }
+      },
+      "response": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean" },
+            "newStatus": { "type": "string", "enum": ["REPAIRING", "CANCELLED"] },
+            "costApprovalStatus": { "type": "string", "enum": ["APPROVED", "DECLINED"] },
+            "message": { "type": "string" }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "National Building Code Chapter 13 Cable Sizer Contract",
+  "description": "Calculation and cart bundling interface for electrical cable sizing and MCB curve matching per Chapter 13.",
+  "interface": {
+    "calculate": {
+      "input": {
+        "powerWatts": { "type": "number", "minimum": 100, "maximum": 500000 },
+        "distanceMeters": { "type": "number", "minimum": 1, "maximum": 2000 },
+        "phase": { "type": "string", "enum": ["single_phase_220v", "three_phase_380v"] },
+        "powerFactor": { "type": "number", "default": 0.85 },
+        "loadType": { "type": "string", "enum": ["motor_inductive", "lighting_resistive"] }
+      },
+      "output": {
+        "currentAmperes": { "type": "number", "description": "Calculated nominal current in Amperes" },
+        "recommendedGaugeMm2": { "type": "number", "enum": [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120] },
+        "voltageDropPercent": { "type": "number", "description": "Strictly < 3.0%" },
+        "isCompliant": { "type": "boolean", "enum": [true] },
+        "recommendedMcb": {
+          "type": "object",
+          "properties": {
+            "curve": { "type": "string", "enum": ["B", "C"] },
+            "ratingAmperes": { "type": "integer", "enum": [10, 16, 25, 32, 40, 50, 63] },
+            "productId": { "type": "string" }
+          }
+        },
+        "matchedCableProductId": { "type": "string" }
+      }
+    },
+    "bundleCartAction": {
+      "request": {
+        "cableProductId": { "type": "string" },
+        "lengthMeters": { "type": "integer", "minimum": 1 },
+        "mcbProductId": { "type": "string" },
+        "mcbQuantity": { "type": "integer", "default": 1 }
+      }
+    }
+  }
+}

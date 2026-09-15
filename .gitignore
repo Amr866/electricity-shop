@@ -36,3 +36,7 @@ next-env.d.ts
 # prisma sqlite database
 /prisma/dev.db
 /prisma/dev.db-journal
+
+# spec-kit local runtime state
+.specify/feature.json
+

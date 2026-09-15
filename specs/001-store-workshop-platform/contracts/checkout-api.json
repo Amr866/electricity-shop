@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Checkout & Dual Invoicing API Contract",
+  "description": "API contract for /api/checkout supporting server-authoritative tiered discounts, dual B2C/B2B tax invoicing, and 8-hour Card-to-Card inventory reservation.",
+  "type": "object",
+  "required": [
+    "customerName",
+    "customerPhone",
+    "address",
+    "province",
+    "city",
+    "shippingMethod",
+    "paymentMethod",
+    "items"
+  ],
+  "properties": {
+    "customerName": {
+      "type": "string",
+      "minLength": 2,
+      "description": "Customer full name in Persian"
+    },
+    "customerPhone": {
+      "type": "string",
+      "pattern": "^09[0-9]{9}$",
+      "description": "Normalized Iranian mobile phone number (11 digits, e.g. 09132456789)"
+    },
+    "customerEmail": {
+      "type": "string",
+      "format": "email"
+    },
+    "address": {
+      "type": "string",
+      "minLength": 5
+    },
+    "province": {
+      "type": "string",
+      "default": "اصفهان"
+    },
+    "city": {
+      "type": "string",
+      "default": "نجف‌آباد"
+    },
+    "postalCode": {
+      "type": "string",
+      "pattern": "^[0-9]{10}$"
+    },
+    "isCorporate": {
+      "type": "boolean",
+      "description": "Flag indicating tax-compliant corporate invoice (فاکتور رسمی حقوقی)"
+    },
+    "companyName": {
+      "type": "string",
+      "description": "Mandatory if isCorporate is true"
+    },
+    "nationalCode": {
+      "type": "string",
+      "pattern": "^[0-9]{10,11}$",
+      "description": "National ID (شناسه ملی / کد ملی) mandatory if isCorporate is true"
+    },
+    "economicCode": {
+      "type": "string",
+      "pattern": "^[0-9]{12}$",
+      "description": "12-digit Economic Code (کد اقتصادی) mandatory if isCorporate is true"
+    },
+    "shippingMethod": {
+      "type": "string",
+      "enum": [
+        "najafabad_pickup",
+        "isfahan_express",
+        "tipax",
+        "post_pishtaz"
+      ]
+    },
+    "paymentMethod": {
+      "type": "string",
+      "enum": [
+        "zarinpal",
+        "cod_isfahan",
+        "card_to_card"
+      ]
+    },
+    "couponCode": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["productId", "quantity"],
+        "properties": {
+          "productId": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 1 }
+        }
+      }
+    }
+  },
+  "response": {
+    "200": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean", "enum": [true] },
+        "orderNumber": { "type": "string", "example": "SH-260914-102" },
+        "subtotal": { "type": "integer", "description": "Server-recalculated subtotal in Toman" },
+        "discount": { "type": "integer", "description": "Tiered discounts (5% for >=10, 10% for >=50) + coupon" },
+        "shippingCost": { "type": "integer" },
+        "totalAmount": { "type": "integer", "description": "Final payable amount in Toman" },
+        "paymentMethod": { "type": "string" },
+        "reservedUntil": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Populated for card_to_card orders (8-hour reservation window)"
+        },
+        "paymentUrl": {
+          "type": "string",
+          "description": "Redirect URL for Zarinpal online gateway"
+        }
+      }
+    }
+  }
+}

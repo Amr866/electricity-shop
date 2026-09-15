@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Iranian Mobile OTP Authentication API Contract",
+  "description": "API endpoints for mobile phone normalization, SMS OTP token generation, 60s cooldown, 3-attempt throttling, and verification.",
+  "endpoints": [
+    {
+      "path": "/api/auth/otp/send",
+      "method": "POST",
+      "description": "Request a 5-digit verification code to an Iranian mobile number",
+      "request": {
+        "type": "object",
+        "required": ["phone"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Raw phone number in Persian/Arabic/Latin digits (e.g. ۰۹۱۳۲۴۵۶۷۸۹ or 09132456789)"
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "phone": { "type": "string", "example": "09132456789" },
+            "cooldownSeconds": { "type": "integer", "example": 60 },
+            "message": { "type": "string" }
+          }
+        },
+        "429": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "TOO_MANY_REQUESTS" },
+            "message": { "type": "string", "example": "تعداد درخواست بیش از حد مجاز است. لطفاً ۱۵ دقیقه دیگر تلاش کنید یا با رمز عبور وارد شوید." },
+            "hasPassword": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/auth/otp/verify",
+      "method": "POST",
+      "description": "Verify 5-digit OTP code and establish user session",
+      "request": {
+        "type": "object",
+        "required": ["phone", "code"],
+        "properties": {
+          "phone": { "type": "string", "pattern": "^09[0-9]{9}$" },
+          "code": { "type": "string", "pattern": "^[0-9]{5}$" }
+        }
+      },
+      "responses": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "user": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "phone": { "type": "string" },
+                "role": { "type": "string", "enum": ["CUSTOMER", "ADMIN"] }
+              }
+            }
+          }
+        },
+        "400": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "INVALID_OR_EXPIRED_CODE" },
+            "message": { "type": "string" }
+          }
+        }
+      }
+    }
+  ]
+}

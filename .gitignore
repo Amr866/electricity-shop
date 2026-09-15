@@ -40,3 +40,6 @@ next-env.d.ts
 # spec-kit local runtime state
 .specify/feature.json
 
+# ai agent assistant skills & workflows
+.agents/
+

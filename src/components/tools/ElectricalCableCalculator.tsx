@@ -4,6 +4,10 @@ import React, { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import { toPersianDigits, formatToman } from "@/lib/utils";
 import {
+  calculateCableRequirements,
+  CopperGauge,
+} from "@/lib/cableCalculator";
+import {
   Calculator,
   CheckCircle2,
   AlertTriangle,
@@ -36,6 +40,13 @@ const WIRE_PRICING: Record<number, { name: string; pricePerMeter: number; produc
   4: { name: "سیم افشان ۴ تمام مس البرز", pricePerMeter: 46000, productId: "cable-alborz-4-0" },
   6: { name: "سیم افشان ۶ تمام مس البرز", pricePerMeter: 68000, productId: "cable-alborz-6-0" },
   10: { name: "سیم افشان ۱۰ تمام مس البرز", pricePerMeter: 112000, productId: "cable-alborz-10-0" },
+  16: { name: "سیم افشان ۱۶ تمام مس البرز", pricePerMeter: 175000, productId: "cable-alborz-16-0" },
+  25: { name: "کابل افشان ۲۵ تمام مس البرز", pricePerMeter: 275000, productId: "cable-alborz-25-0" },
+  35: { name: "کابل افشان ۳۵ تمام مس البرز", pricePerMeter: 385000, productId: "cable-alborz-35-0" },
+  50: { name: "کابل افشان ۵۰ تمام مس البرز", pricePerMeter: 540000, productId: "cable-alborz-50-0" },
+  70: { name: "کابل افشان ۷۰ تمام مس البرز", pricePerMeter: 760000, productId: "cable-alborz-70-0" },
+  95: { name: "کابل افشان ۹۵ تمام مس البرز", pricePerMeter: 1050000, productId: "cable-alborz-95-0" },
+  120: { name: "کابل افشان ۱۲۰ تمام مس البرز", pricePerMeter: 1320000, productId: "cable-alborz-120-0" },
 };
 
 const FUSE_PRICING: Record<string, { name: string; price: number; productId: string }> = {
@@ -43,7 +54,12 @@ const FUSE_PRICING: Record<string, { name: string; price: number; productId: str
   B16: { name: "کلید مینیاتوری ۱۶ آمپر دنا الکتریک", price: 120000, productId: "fuse-b16" },
   C25: { name: "کلید مینیاتوری ۲۵ آمپر دنا الکتریک", price: 135000, productId: "fuse-c25" },
   C32: { name: "کلید مینیاتوری ۳۲ آمپر دنا الکتریک", price: 145000, productId: "fuse-c32" },
+  C40: { name: "کلید مینیاتوری ۴۰ آمپر دنا الکتریک", price: 165000, productId: "fuse-c40" },
   C50: { name: "کلید مینیاتوری ۵۰ آمپر دنا الکتریک", price: 185000, productId: "fuse-c50" },
+  C63: { name: "کلید مینیاتوری ۶۳ آمپر دنا الکتریک", price: 215000, productId: "fuse-c63" },
+  C80: { name: "کلید مینیاتوری ۸۰ آمپر دنا الکتریک", price: 290000, productId: "fuse-c80" },
+  C100: { name: "کلید اتوماتیک ۱۰۰ آمپر دنا الکتریک", price: 420000, productId: "fuse-c100" },
+  C125: { name: "کلید اتوماتیک ۱۲۵ آمپر دنا الکتریک", price: 560000, productId: "fuse-c125" },
 };
 
 // 3. Smooth Number Ticker Interpolation Hook (60fps requestAnimationFrame)
@@ -135,77 +151,29 @@ export function ElectricalCableCalculator() {
     wireItemName,
     fuseItemName,
   } = useMemo(() => {
-    const powerFactor = 0.85;
-    const rho = 0.0175;
+    const calcResult = calculateCableRequirements({
+      powerWatts: loadPowerWatts,
+      distanceMeters,
+      phase: phaseType === "single" ? "single_phase_220v" : "three_phase_380v",
+      powerFactor: 0.85,
+      loadType: "motor_inductive",
+    });
 
-    let amps = 0;
-    if (phaseType === "single") {
-      amps = loadPowerWatts / (220 * powerFactor);
-    } else {
-      amps = loadPowerWatts / (Math.sqrt(3) * 380 * powerFactor);
-    }
+    const gauge = calcResult.recommendedGaugeMm2;
+    const fuseKey = `${calcResult.recommendedMcb.curve}${calcResult.recommendedMcb.ratingAmperes}`;
 
-    let gauge = 1.5;
-    let fuse = "B10";
-
-    if (amps <= 10) {
-      gauge = 1.5;
-      fuse = "B10";
-    } else if (amps <= 16) {
-      gauge = 2.5;
-      fuse = "B16";
-    } else if (amps <= 25) {
-      gauge = 4;
-      fuse = "C25";
-    } else if (amps <= 32) {
-      gauge = 6;
-      fuse = "C32";
-    } else {
-      gauge = 10;
-      fuse = "C50";
-    }
-
-    let vDrop = 0;
-    if (phaseType === "single") {
-      vDrop = (2 * distanceMeters * amps * rho) / gauge;
-    } else {
-      vDrop = (Math.sqrt(3) * distanceMeters * amps * rho) / gauge;
-    }
-
-    const maxAcceptableDrop = phaseType === "single" ? 6.6 : 11.4; // 3% of 220V or 380V
-    let dropPercent = (vDrop / (phaseType === "single" ? 220 : 380)) * 100;
-    let acceptable = vDrop <= maxAcceptableDrop;
-
-    // Auto-upsize gauge if voltage drop exceeds standard
-    if (!acceptable) {
-      const gauges = [1.5, 2.5, 4, 6, 10];
-      const currentIdx = gauges.indexOf(gauge);
-      for (let i = currentIdx + 1; i < gauges.length; i++) {
-        const testGauge = gauges[i];
-        const testVDrop = phaseType === "single"
-          ? (2 * distanceMeters * amps * rho) / testGauge
-          : (Math.sqrt(3) * distanceMeters * amps * rho) / testGauge;
-        if (testVDrop <= maxAcceptableDrop) {
-          gauge = testGauge;
-          dropPercent = (testVDrop / (phaseType === "single" ? 220 : 380)) * 100;
-          acceptable = true;
-          break;
-        }
-      }
-    }
-
-    const wireInfo = WIRE_PRICING[gauge] || WIRE_PRICING[4];
-    const fuseInfo = FUSE_PRICING[fuse] || FUSE_PRICING["C25"];
+    const wireInfo = WIRE_PRICING[gauge] || WIRE_PRICING[10];
+    const fuseInfo = FUSE_PRICING[fuseKey] || FUSE_PRICING["C32"];
     const wireCost = wireInfo.pricePerMeter * distanceMeters;
     const fuseCost = fuseInfo.price;
     const pkgPrice = wireCost + fuseCost;
 
     return {
-      currentAmps: amps,
+      currentAmps: calcResult.currentAmps,
       recommendedGauge: gauge,
-      recommendedFuse: fuse,
-      voltageDropPercent: dropPercent,
-      isDropAcceptable: acceptable,
+      recommendedFuse: fuseKey,
+      voltageDropPercent: calcResult.voltageDropPercent,
+      isDropAcceptable: calcResult.isCompliant,
       totalPackagePrice: pkgPrice,
       wireItemName: `${toPersianDigits(distanceMeters)} متر ${wireInfo.name}`,
       fuseItemName: fuseInfo.name,

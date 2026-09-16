@@ -201,8 +201,54 @@ export default function BomUploadPage() {
     }
   };
 
-  // Handle File Upload (CSV or Text)
+  // Handle File Upload (Excel .xlsx, .xls, CSV or Text)
   const handleFileUpload = (file: File) => {
+    const isExcelOrCsv =
+      file.name.endsWith(".xlsx") || file.name.endsWith(".xls") || file.name.endsWith(".csv");
+
+    if (isExcelOrCsv) {
+      setIsProcessing(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      fetch("/api/bom/parse", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.items && data.items.length > 0) {
+            const converted: BomItem[] = data.items.map((it: any) => ({
+              id: generateUniqueId(),
+              query: it.originalQuery,
+              qty: it.requestedQty,
+              matchedProduct: it.matchedProduct
+                ? {
+                    id: it.matchedProduct.id,
+                    name: it.matchedProduct.name,
+                    price: it.matchedProduct.unitPrice,
+                    slug: it.matchedProduct.slug,
+                    stock: it.matchedProduct.stock,
+                    images: it.matchedProduct.image,
+                  }
+                : null,
+              status: it.matchConfidence !== "UNMATCHED" ? "matched" : "not_found",
+            }));
+            setItems(converted);
+          } else {
+            alert(data.error || "خطایی در تحلیل فایل اکسل رخ داد.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error parsing BOM excel:", err);
+          alert("خطا در ارسال و پردازش فایل اکسل.");
+        })
+        .finally(() => {
+          setIsProcessing(false);
+        });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
@@ -222,14 +268,11 @@ export default function BomUploadPage() {
     }
   };
 
-  // Download Sample Template CSV
+  // Download Sample Contractor BOM Excel Template
   const handleDownloadSampleTemplate = () => {
-    const csvContent = "نام کالا یا پارت نامبر,تعداد\nسیم افشان ۱.۵ خراسان,۵\nموتور کولر موتوژن تبریز ۳/۴,۱\nپمپ آب کولر الکتروژن,۲\nآنتن برقی هانی,۳\n";
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "sample-bom-electricity-shop.csv");
+    link.href = "/templates/sample-contractor-bom.xlsx";
+    link.download = "sample-contractor-bom.xlsx";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

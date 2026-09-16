@@ -101,8 +101,8 @@ export default function CheckoutPage() {
     }
 
     // 4. Corporate fields validation
-    if (isCorporate && (!companyName.trim() || !nationalCode.trim())) {
-      setErrorMsg("برای صدور فاکتور رسمی حقوقی، وارد کردن نام شرکت و شناسه ملی الزامی است.");
+    if (isCorporate && (!companyName.trim() || !nationalCode.trim() || !economicCode.trim())) {
+      setErrorMsg("برای صدور فاکتور رسمی حقوقی، وارد کردن نام شرکت، شناسه ملی و کد اقتصادی الزامی است.");
       return;
     }
 
@@ -358,13 +358,14 @@ export default function CheckoutPage() {
                       </div>
                       <div>
                         <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                          کد اقتصادی ۱۲ رقمی:
+                          کد اقتصادی ۱۲ رقمی: <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
+                          required={isCorporate}
                           value={economicCode}
                           onChange={(e) => setEconomicCode(e.target.value)}
-                          placeholder="کد اقتصادی"
+                          placeholder="کد اقتصادی ۱۲ رقمی"
                           className="w-full bg-white border border-slate-200 text-xs rounded-xl p-2 font-mono text-left"
                         />
                       </div>

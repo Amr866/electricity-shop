@@ -435,6 +435,12 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                 <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{order.nationalCode}</strong>
               </div>
             )}
+            {order.economicCode && (
+              <div>
+                <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">کد اقتصادی: </span>
+                <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{order.economicCode}</strong>
+              </div>
+            )}
             <div className="sm:col-span-2">
               <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">نشانی: </span>
               <span className="text-slate-800 dark:text-slate-200 print:text-black text-[11px] leading-snug">{order.address}</span>

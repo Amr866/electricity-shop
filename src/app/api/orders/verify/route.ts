@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logPaymentTransaction } from "@/lib/paymentLogger";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,13 +20,16 @@ export async function POST(req: NextRequest) {
 
     // Only update if currently pending
     if (order.paymentStatus === "PENDING") {
-      if (status === "SUCCESS") {
+      const isSuccess = status === "SUCCESS";
+      const resolvedRefId = refId || (isSuccess ? `ZP-${Date.now()}` : null);
+
+      if (isSuccess) {
         await prisma.order.update({
           where: { orderNumber },
           data: {
             paymentStatus: "PAID",
             orderStatus: "PROCESSING",
-            paymentRefId: refId || `ZP-${Date.now()}`,
+            paymentRefId: resolvedRefId,
           },
         });
       } else {
@@ -36,6 +40,19 @@ export async function POST(req: NextRequest) {
           },
         });
       }
+
+      await logPaymentTransaction({
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        gateway: order.paymentMethod,
+        transactionType: "VERIFY",
+        status: isSuccess ? "SUCCESS" : "FAILED",
+        amount: order.totalAmount,
+        referenceId: resolvedRefId,
+        statusCode: status,
+        ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+        userAgent: req.headers.get("user-agent"),
+      });
     }
 
     return NextResponse.json({ success: true });

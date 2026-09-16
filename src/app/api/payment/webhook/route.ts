@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/logger";
+import { logPaymentTransaction } from "@/lib/paymentLogger";
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +51,22 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      console.log(`✅ [Payment Webhook] Order ${orderNumber} successfully marked as PAID with ref: ${refId}`);
+      logger.info(`[Payment Webhook] Order ${orderNumber} marked as PAID with ref: ${refId}`);
+
+      await logPaymentTransaction({
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        gateway: "zarinpal",
+        transactionType: "WEBHOOK",
+        status: "SUCCESS",
+        amount: order.totalAmount,
+        authority: Authority,
+        referenceId: refId,
+        statusCode: Status,
+        metadata: body,
+        ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+        userAgent: req.headers.get("user-agent"),
+      });
 
       return NextResponse.json({
         success: true,
@@ -62,6 +79,21 @@ export async function POST(req: NextRequest) {
         data: {
           paymentStatus: "FAILED",
         },
+      });
+
+      await logPaymentTransaction({
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        gateway: "zarinpal",
+        transactionType: "WEBHOOK",
+        status: "FAILED",
+        amount: order.totalAmount,
+        authority: Authority,
+        statusCode: Status,
+        errorMessage: "Payment failed or was canceled by user/gateway",
+        metadata: body,
+        ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+        userAgent: req.headers.get("user-agent"),
       });
 
       return NextResponse.json({ success: false, message: "Payment failed or was canceled" });

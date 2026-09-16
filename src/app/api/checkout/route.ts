@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { calculateTieredUnitPrice, normalizeIranianPhone } from "@/lib/utils";
 import { logger } from "@/lib/logger";
+import { logPaymentTransaction } from "@/lib/paymentLogger";
 
 // Server-enforced shipping method rates
 const SHIPPING_RATES: Record<string, number> = {
@@ -286,6 +287,22 @@ export async function POST(req: NextRequest) {
       orderNumber: order.orderNumber,
       totalAmount: finalTotalAmount,
       reservedUntil,
+    });
+
+    // Record initial transaction audit log
+    await logPaymentTransaction({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      gateway: order.paymentMethod,
+      transactionType: "INITIATE",
+      status: "PENDING",
+      amount: order.totalAmount,
+      metadata: {
+        shippingMethod: order.shippingMethod,
+        isCorporate: order.isCorporate,
+      },
+      ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+      userAgent: req.headers.get("user-agent"),
     });
 
     let redirectUrl = `/order-tracking/${order.orderNumber}`;

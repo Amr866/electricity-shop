@@ -156,6 +156,7 @@ model Order {
   reservedUntil  DateTime?   // 8-hour Card-to-Card reservation expiration window
   notes          String?
   items          OrderItem[]
+  paymentLogs    PaymentTransactionLog[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
@@ -283,5 +284,33 @@ model ManufacturerPriceList {
 
   @@index([brand])
   @@index([isActive])
+}
+
+model PaymentTransactionLog {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderNumber     String   // Denormalized snapshot for audit preservation
+  gateway         String   // zarinpal, card_to_card, cod_isfahan
+  transactionType String   // INITIATE, VERIFY, WEBHOOK, ADMIN_CONFIRM, REVERT
+  status          String   // PENDING, SUCCESS, FAILED, CANCELLED
+  amount          Int      // In Toman
+  authority       String?  // Gateway tracking token / authority code
+  referenceId     String?  // Gateway / Bank transaction reference number
+  cardPan         String?  // Masked card number (e.g. 6037-99**-****-1234)
+  cardHash        String?  // Secure hash of card number
+  statusCode      String?  // Raw gateway response code (e.g. "100", "101", "-9")
+  errorMessage    String?  // Detailed error explanation if failed
+  metadata        String?  @db.Text // Raw JSON string of payload / gateway response
+  ipAddress       String?  // Client or gateway IP address
+  userAgent       String?  // Client User-Agent string
+  createdAt       DateTime @default(now())
+
+  @@index([orderId])
+  @@index([orderNumber])
+  @@index([authority])
+  @@index([referenceId])
+  @@index([status])
+  @@index([createdAt])
 }
 

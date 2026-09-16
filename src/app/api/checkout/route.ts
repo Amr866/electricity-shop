@@ -75,48 +75,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Auto-release any expired Card-to-Card reservations (> 8h unverified)
-    try {
-      const expiredOrders = await prisma.order.findMany({
-        where: {
-          paymentMethod: "card_to_card",
-          paymentStatus: "PENDING",
-          orderStatus: "PENDING",
-          reservedUntil: { lt: new Date() },
-        },
-        include: { items: true },
-      });
-
-      if (expiredOrders.length > 0) {
-        for (const expOrder of expiredOrders) {
-          await prisma.$transaction(async (tx) => {
-            for (const it of expOrder.items) {
-              if (it.productId) {
-                await tx.product.update({
-                  where: { id: it.productId },
-                  data: { stock: { increment: it.quantity } },
-                });
-              }
-            }
-            await tx.order.update({
-              where: { id: expOrder.id },
-              data: { orderStatus: "EXPIRED" },
-            });
-          });
-          logger.info("Expired Card-to-Card order auto-released stock", {
-            orderNumber: expOrder.orderNumber,
-          });
-        }
-      }
-    } catch (cleanupErr) {
-      logger.error("Error running auto-expiry stock cleanup", cleanupErr);
-    }
-
     // Authenticated user linking
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || null;
 
-    // 1. Validate items, recalculate tiered volume discounts server-authoritatively
+    // 1. Batch fetch all products in 1 query to eliminate N+1 roundtrips
+    const requestedProductIds: string[] = Array.from(
+      new Set<string>(
+        items
+          .map((item: any) => item.productId || item.id)
+          .filter((id: any): id is string => typeof id === "string" && Boolean(id.trim()))
+      )
+    );
+
+    const dbProducts = await prisma.product.findMany({
+      where: { id: { in: requestedProductIds } },
+      include: { images: true },
+    });
+
+    type ProductWithImages = (typeof dbProducts)[number];
+    const productMap = new Map<string, ProductWithImages>(
+      dbProducts.map((p) => [p.id, p])
+    );
+
     let serverSubtotal = 0;
     let totalWholesaleDiscountSavings = 0;
     const validatedItems: Array<{
@@ -141,10 +122,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const dbProduct = await prisma.product.findUnique({
-        where: { id: productId },
-        include: { images: true },
-      });
+      const dbProduct = productMap.get(productId);
 
       if (!dbProduct) {
         return NextResponse.json(
@@ -177,8 +155,8 @@ export async function POST(req: NextRequest) {
       serverSubtotal += itemTotal;
 
       const primaryImg =
-        dbProduct.images.find((img) => img.isPrimary)?.url ||
-        dbProduct.images[0]?.url ||
+        dbProduct.images?.find((img: any) => img.isPrimary)?.url ||
+        dbProduct.images?.[0]?.url ||
         item.image ||
         item.productImage ||
         null;
@@ -247,8 +225,13 @@ export async function POST(req: NextRequest) {
     const reservedUntil = isCardToCard ? new Date(Date.now() + 8 * 60 * 60 * 1000) : null;
 
     // 5. Create Order & Atomically Decrement Stock within Prisma $transaction
+    // CRITICAL: Sort items deterministically by productId to prevent PostgreSQL 40P01 deadlocks
+    const sortedItemsToLock = [...validatedItems].sort((a, b) =>
+      a.productId.localeCompare(b.productId)
+    );
+
     const order = await prisma.$transaction(async (tx) => {
-      for (const item of validatedItems) {
+      for (const item of sortedItemsToLock) {
         const updateResult = await tx.product.updateMany({
           where: {
             id: item.productId,

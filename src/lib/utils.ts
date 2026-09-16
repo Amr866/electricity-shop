@@ -74,14 +74,11 @@ export function calculateDiscount(originalPrice: number, discountedPrice: number
   return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
 }
 
-// Unified tiered quantity discount pricing calculation
+import { calculateTieredUnitPrice as engineCalculateTieredUnitPrice } from "./checkoutEngine.ts";
+
+// Unified tiered quantity discount pricing calculation (delegated to core checkoutEngine)
 export function calculateTieredUnitPrice(basePrice: number, quantity: number): number {
-  if (quantity >= 50) {
-    return Math.round(basePrice * 0.9); // 10% wholesale discount
-  } else if (quantity >= 10) {
-    return Math.round(basePrice * 0.95); // 5% pack discount
-  }
-  return basePrice;
+  return engineCalculateTieredUnitPrice(basePrice, quantity).unitPrice;
 }
 
 // Format Shamsi date

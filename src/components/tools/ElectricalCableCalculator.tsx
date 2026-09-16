@@ -7,6 +7,7 @@ import {
   calculateCableRequirements,
   CopperGauge,
 } from "@/lib/cableCalculator";
+import { calculateTieredUnitPrice } from "@/lib/checkoutEngine";
 import {
   Calculator,
   CheckCircle2,
@@ -151,6 +152,7 @@ export function ElectricalCableCalculator() {
     isDropAcceptable,
     totalPackagePrice,
     wireItemName,
+    wireDiscountPercent,
     fuseItemName,
   } = useMemo(() => {
     const calcResult = calculateCableRequirements({
@@ -166,7 +168,8 @@ export function ElectricalCableCalculator() {
 
     const wireInfo = WIRE_PRICING[gauge] || WIRE_PRICING[10];
     const fuseInfo = FUSE_PRICING[fuseKey] || FUSE_PRICING["C32"];
-    const wireCost = wireInfo.pricePerMeter * distanceMeters;
+    const wireTier = calculateTieredUnitPrice(wireInfo.pricePerMeter, distanceMeters);
+    const wireCost = wireTier.unitPrice * distanceMeters;
     const fuseCost = fuseInfo.price;
     const pkgPrice = wireCost + fuseCost;
 
@@ -178,6 +181,7 @@ export function ElectricalCableCalculator() {
       isDropAcceptable: calcResult.isCompliant,
       totalPackagePrice: pkgPrice,
       wireItemName: `${toPersianDigits(distanceMeters)} متر ${wireInfo.name}`,
+      wireDiscountPercent: wireTier.discountPercent,
       fuseItemName: fuseInfo.name,
     };
   }, [loadPowerWatts, distanceMeters, phaseType]);
@@ -193,11 +197,11 @@ export function ElectricalCableCalculator() {
       {
         id: wireInfo.productId,
         name: `${wireInfo.name} (${toPersianDigits(distanceMeters)} متر بر اساس محاسبه‌گر)`,
-        price: wireInfo.pricePerMeter * distanceMeters,
-        stock: 50,
+        price: wireInfo.pricePerMeter,
+        stock: 1000,
         slug: `wire-${recommendedGauge}`,
       },
-      1
+      distanceMeters
     );
 
     addToCart(
@@ -449,7 +453,14 @@ export function ElectricalCableCalculator() {
         <div className="lg:col-span-5 bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-2xs">
           <div className="space-y-1 text-right">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">پکیج کابل مس + فیوز محافظ:</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">پکیج کابل مس + فیوز محافظ:</span>
+                {wireDiscountPercent > 0 && (
+                  <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded-full">
+                    تخفیف متراژ: {toPersianDigits(wireDiscountPercent)}٪
+                  </span>
+                )}
+              </div>
               <span className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400 font-mono transition-all tabular-nums">
                 {formatToman(animatedPackagePrice)}
               </span>

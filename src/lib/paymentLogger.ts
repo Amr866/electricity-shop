@@ -63,7 +63,7 @@ export async function logPaymentTransaction(input: CreatePaymentLogInput) {
       },
     });
 
-    logger.info("Recorded payment transaction log", {
+    logger.debug("Recorded payment transaction log", {
       logId: logEntry.id,
       orderNumber: input.orderNumber,
       gateway: input.gateway,

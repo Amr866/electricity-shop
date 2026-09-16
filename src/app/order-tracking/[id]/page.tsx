@@ -163,6 +163,25 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           </div>
         )}
 
+        {order.orderStatus === "EXPIRED" && (
+          <div className="bg-rose-500 text-white rounded-2xl p-3.5 sm:p-5 shadow-md shadow-rose-500/20 flex items-center justify-between gap-3 print:hidden animate-in fade-in duration-300">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                <AlertCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="font-extrabold text-xs sm:text-sm">مهلت رزرو این سفارش به پایان رسیده است (منقضی شده).</h2>
+                <p className="text-[10px] sm:text-xs text-rose-100">
+                  با توجه به اتمام مهلت ۸ ساعته رزرو کارت‌به‌کارت، موجودی کالاها به انبار بازگردانده شد. در صورت واریز وجه، لطفاً با پشتیبانی تماس بگیرید.
+                </p>
+              </div>
+            </div>
+            <span className="hidden sm:inline-block bg-white text-rose-800 text-xs font-black px-2.5 py-1 rounded-lg">
+              منقضی شده
+            </span>
+          </div>
+        )}
+
         {paymentCallbackStatus === "failed" && (
           <div className="bg-rose-500 text-white rounded-2xl p-3.5 sm:p-5 shadow-md shadow-rose-500/20 flex items-center gap-3 print:hidden animate-in fade-in duration-300">
             <AlertCircle className="w-6 h-6 shrink-0" />
@@ -432,13 +451,17 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
             {order.nationalCode && (
               <div>
                 <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">شناسه ملی: </span>
-                <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{order.nationalCode}</strong>
+                <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">
+                  <bdi dir="ltr">{order.nationalCode}</bdi>
+                </strong>
               </div>
             )}
             {order.economicCode && (
               <div>
                 <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">کد اقتصادی: </span>
-                <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{order.economicCode}</strong>
+                <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">
+                  <bdi dir="ltr">{order.economicCode}</bdi>
+                </strong>
               </div>
             )}
             <div className="sm:col-span-2">

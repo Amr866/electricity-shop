@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logPaymentTransaction } from "@/lib/paymentLogger";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
+    logger.info("Inbound request to verify payment", {
+      method: "POST",
+      pathname: "/api/orders/verify",
+      ip,
+    });
+
     const { orderNumber, status, refId } = await req.json();
 
     if (!orderNumber) {
@@ -50,14 +58,14 @@ export async function POST(req: NextRequest) {
         amount: order.totalAmount,
         referenceId: resolvedRefId,
         statusCode: status,
-        ipAddress: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+        ipAddress: ip,
         userAgent: req.headers.get("user-agent"),
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error verifying payment:", error);
+    logger.error("Error verifying payment", { error: String(error) });
     return NextResponse.json({ message: "خطا در ثبت وضعیت پرداخت." }, { status: 500 });
   }
 }

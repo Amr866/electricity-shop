@@ -37,7 +37,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
     logger.info("Parsing contractor BOM Excel file", {
+      method: "POST",
+      pathname: "/api/bom/parse",
+      ip,
       fileName,
       sizeBytes: fileBuffer.length,
     });

@@ -8,6 +8,7 @@ import { logPaymentTransaction } from "@/lib/paymentLogger";
 import {
   SHIPPING_RATES,
   calculateTieredUnitPrice,
+  calculateOrderFinancials,
   sortItemsForDeterministicLock,
   generateOrderNumber,
   calculateReservationExpiry,
@@ -37,7 +38,11 @@ export async function POST(req: NextRequest) {
       couponCode,
     } = body;
 
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
     logger.info("Inbound checkout order creation request", {
+      method: "POST",
+      pathname: "/api/checkout",
+      ip,
       customerName,
       isCorporate,
       paymentMethod,
@@ -92,8 +97,6 @@ export async function POST(req: NextRequest) {
       dbProducts.map((p) => [p.id, p])
     );
 
-    let serverSubtotal = 0;
-    let totalWholesaleDiscountSavings = 0;
     const validatedItems: Array<{
       productId: string;
       productName: string;
@@ -120,7 +123,7 @@ export async function POST(req: NextRequest) {
 
       if (!dbProduct) {
         return NextResponse.json(
-          { message: `کالای «${item.name || "مورد نظر"}» در فروشگاه یافت نشد.` },
+          { message: `کالای «${item.name || item.productName || productId}» در سیستم یافت نشد.` },
           { status: 400 }
         );
       }
@@ -137,9 +140,6 @@ export async function POST(req: NextRequest) {
       // Server-authoritative quantity tiered discount calculation via checkoutEngine
       const { unitPrice, discountPercent } = calculateTieredUnitPrice(dbProduct.price, qty);
       const itemTotal = unitPrice * qty;
-      const rawItemTotal = dbProduct.price * qty;
-      totalWholesaleDiscountSavings += rawItemTotal - itemTotal;
-      serverSubtotal += itemTotal;
 
       const primaryImg =
         dbProduct.images?.find((img: any) => img.isPrimary)?.url ||
@@ -163,30 +163,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "سبد خرید خالی است." }, { status: 400 });
     }
 
-    // 2. Server-Side Coupon Verification (Using pre-fetched coupon from parallel batch)
-    let serverCouponDiscount = 0;
-    if (coupon && coupon.isActive) {
-      const notExpired = !coupon.expiresAt || new Date(coupon.expiresAt) >= new Date();
-      const meetsMin = !coupon.minOrderAmount || serverSubtotal >= coupon.minOrderAmount;
-
-      if (notExpired && meetsMin) {
-        if (coupon.discountPercent) {
-          serverCouponDiscount = Math.round((serverSubtotal * coupon.discountPercent) / 100);
-        } else if (coupon.discountAmount) {
-          serverCouponDiscount = Math.min(coupon.discountAmount, serverSubtotal);
-        }
-      }
-    }
-
-    // 3. Server-Calculated Shipping Rate
+    // 2. Server-Side Financials, Tiered Wholesale Discounts, Coupon & Shipping Calculation via checkoutEngine
     const selectedMethodKey = shippingMethod || "isfahan_express";
-    let serverShippingCost = SHIPPING_RATES[selectedMethodKey] ?? 45000;
-    if (serverSubtotal >= 2000000 && selectedMethodKey !== "in_person_pickup" && selectedMethodKey !== "najafabad_pickup") {
-      serverShippingCost = 0; // Free shipping over 2M Tomans
-    }
+    const rawItemsForEngine = validatedItems.map((it) => ({
+      productId: it.productId,
+      basePrice: productMap.get(it.productId)!.price,
+      quantity: it.quantity,
+      productName: it.productName,
+      productImage: it.productImage || undefined,
+    }));
 
+    const financials = calculateOrderFinancials(
+      rawItemsForEngine,
+      selectedMethodKey,
+      coupon,
+      { enableFreeShippingThreshold: true }
+    );
+
+    const totalWholesaleDiscountSavings = financials.wholesaleSavings;
+    const serverSubtotal = financials.netItemsTotal;
+    const serverCouponDiscount = financials.couponDiscount;
+    const serverShippingCost = financials.shippingCost;
     const totalDiscount = totalWholesaleDiscountSavings + serverCouponDiscount;
-    const finalTotalAmount = Math.max(0, serverSubtotal - serverCouponDiscount + serverShippingCost);
+    const finalTotalAmount = financials.finalTotalAmount;
 
     // 4. Generate unique alphanumeric order number: SH-YYMMDD-XXX
     const orderNumber = generateOrderNumber();

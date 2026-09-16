@@ -19,13 +19,12 @@ export async function releaseExpiredReservations(): Promise<ReleaseResult> {
   const now = new Date();
 
   // Find candidate expired orders using compound index: @@index([paymentMethod, orderStatus, reservedUntil])
-  // Protect orders that have uploaded payment proof from premature auto-expiration
+  // All unverified Card-to-Card orders past their 8-hour reservedUntil timestamp expire per spec line 13 & 178
   const expiredOrders = await prisma.order.findMany({
     where: {
       paymentMethod: "card_to_card",
       paymentStatus: "PENDING",
       orderStatus: "PENDING",
-      receiptImage: null,
       reservedUntil: { lt: now },
     },
     include: {
@@ -51,7 +50,7 @@ export async function releaseExpiredReservations(): Promise<ReleaseResult> {
             orderStatus: "PENDING",
           },
           data: {
-            orderStatus: "CANCELLED",
+            orderStatus: "EXPIRED",
             paymentStatus: "FAILED",
           },
         });
@@ -86,15 +85,18 @@ export async function releaseExpiredReservations(): Promise<ReleaseResult> {
         orderNumber: order.orderNumber,
         gateway: "card_to_card",
         transactionType: "INVENTORY_RELEASE",
-        status: "CANCELLED",
+        status: "EXPIRED",
         amount: order.totalAmount,
         metadata: {
-          reason: "8-hour Card-to-Card reservation expired without receipt upload",
+          reason: order.receiptImage
+            ? "8-hour Card-to-Card reservation expired without admin verification"
+            : "8-hour Card-to-Card reservation expired without receipt upload",
           itemsCount: order.items.length,
+          hadReceipt: !!order.receiptImage,
         },
       });
 
-      logger.info("Released expired order stock reservation", {
+      logger.debug("Released expired order stock reservation", {
         orderNumber: order.orderNumber,
         itemsCount: order.items.length,
       });

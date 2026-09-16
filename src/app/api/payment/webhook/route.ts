@@ -8,7 +8,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { Authority, Status, orderNumber } = body;
 
-    console.log(`💳 [Payment Webhook] Received webhook notification:`, { Authority, Status, orderNumber });
+    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
+    logger.info("Received payment webhook notification", {
+      method: "POST",
+      pathname: "/api/payment/webhook",
+      ip,
+      Authority,
+      Status,
+      orderNumber,
+    });
 
     if (!orderNumber || !Authority) {
       return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
@@ -99,7 +107,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: "Payment failed or was canceled" });
     }
   } catch (error) {
-    console.error("Error processing payment webhook:", error);
+    logger.error("Error processing payment webhook", { error: String(error) });
     return NextResponse.json({ error: "Internal webhook error" }, { status: 500 });
   }
 }

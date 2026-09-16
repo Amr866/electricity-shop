@@ -218,6 +218,19 @@ describe('Cable Calculator - Chapter 13 Compliance & Edge Cases', () => {
       assert.equal(bundle.mcbItem.quantity, 1);
       assert.equal(bundle.mcbItem.productName, calc.recommendedMcb.name);
 
+      // Verify wholesale tiered pricing in bundle
+      const bundledTier5 = createChapter13CartBundle(calc, 25, 100000);
+      assert.equal(bundledTier5.cableItem.discountPercent, 5);
+      assert.equal(bundledTier5.cableItem.unitPriceToman, 95000);
+
+      const bundledTier10 = createChapter13CartBundle(calc, 50, 100000);
+      assert.equal(bundledTier10.cableItem.discountPercent, 10);
+      assert.equal(bundledTier10.cableItem.unitPriceToman, 90000);
+
+      const bundledTier0 = createChapter13CartBundle(calc, 8, 100000);
+      assert.equal(bundledTier0.cableItem.discountPercent, 0);
+      assert.equal(bundledTier0.cableItem.unitPriceToman, 100000);
+
       // Safeguard for zero or negative length
       const zeroBundle = createChapter13CartBundle(calc, 0);
       assert.equal(zeroBundle.cableItem.quantity, 1);

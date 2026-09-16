@@ -39,8 +39,11 @@ export interface EvaluatedLineItem {
 export interface CouponDiscountInput {
   code: string;
   discountPercent?: number | null;
+  discountAmount?: number | null;
   maxDiscount?: number | null;
   minOrderAmount?: number | null;
+  expiresAt?: Date | string | null;
+  isActive?: boolean | null;
 }
 
 export interface OrderFinancialSummary {
@@ -117,7 +120,8 @@ export function evaluateLineItem(item: RawLineItem): EvaluatedLineItem {
 export function calculateOrderFinancials(
   items: RawLineItem[],
   shippingMethodKey: string,
-  coupon?: CouponDiscountInput | null
+  coupon?: CouponDiscountInput | null,
+  options?: { enableFreeShippingThreshold?: boolean }
 ): OrderFinancialSummary {
   const evaluatedItems = items.map(evaluateLineItem);
 
@@ -132,16 +136,31 @@ export function calculateOrderFinancials(
   }
 
   // Shipping fee
-  const shippingCost = SHIPPING_RATES[shippingMethodKey] ?? 45000;
+  let shippingCost = SHIPPING_RATES[shippingMethodKey] ?? 45000;
+  if (
+    options?.enableFreeShippingThreshold &&
+    netItemsTotal >= 2000000 &&
+    shippingMethodKey !== "in_person_pickup" &&
+    shippingMethodKey !== "najafabad_pickup"
+  ) {
+    shippingCost = 0; // Free shipping over 2M Tomans
+  }
 
   // Coupon evaluation
   let couponDiscount = 0;
-  if (coupon && coupon.discountPercent) {
+  if (coupon && coupon.isActive !== false) {
+    const notExpired = !coupon.expiresAt || new Date(coupon.expiresAt) >= new Date();
     const minAmount = coupon.minOrderAmount || 0;
-    if (netItemsTotal >= minAmount) {
-      const calcDiscount = Math.round((netItemsTotal * coupon.discountPercent) / 100);
-      const maxCap = coupon.maxDiscount || Infinity;
-      couponDiscount = Math.min(calcDiscount, maxCap);
+    const meetsMin = netItemsTotal >= minAmount;
+
+    if (notExpired && meetsMin) {
+      if (coupon.discountPercent) {
+        const calcDiscount = Math.round((netItemsTotal * coupon.discountPercent) / 100);
+        const maxCap = coupon.maxDiscount || Infinity;
+        couponDiscount = Math.min(calcDiscount, maxCap);
+      } else if (coupon.discountAmount) {
+        couponDiscount = Math.min(coupon.discountAmount, netItemsTotal);
+      }
     }
   }
 

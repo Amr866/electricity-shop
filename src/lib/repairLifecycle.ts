@@ -151,3 +151,45 @@ export function getRepairStageMetadata(stage: RepairStage): {
       return { labelPersian: "لغو شده / مرجوع", stepNumber: 0, badgeClass: "bg-red-900/60 text-red-300" };
   }
 }
+
+/**
+ * Checks if an unapproved repair cost estimate has exceeded the 5-business-day window (Spec Line 180).
+ */
+export function isCostEstimateExpired(
+  estimatedAt: Date | string,
+  now: Date = new Date(),
+  businessDaysThreshold: number = 5
+): boolean {
+  const estimateDate = new Date(estimatedAt);
+  const elapsedMs = now.getTime() - estimateDate.getTime();
+  // 5 business days accounts for ~7 calendar days
+  const thresholdMs = businessDaysThreshold * 24 * 60 * 60 * 1000 * (7 / 5);
+  return elapsedMs >= thresholdMs;
+}
+
+/**
+ * Sweeps and transitions stale unanswered repair estimates to CANCELLED per Spec line 180.
+ */
+export async function expireStaleRepairEstimates(prismaClient: any): Promise<number> {
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const stale = await prismaClient.repairRequest.findMany({
+    where: {
+      status: "COST_ESTIMATED",
+      costApprovalStatus: "PENDING",
+      updatedAt: { lt: cutoff },
+    },
+  });
+
+  for (const ticket of stale) {
+    await prismaClient.repairRequest.update({
+      where: { id: ticket.id },
+      data: {
+        status: "CANCELLED",
+        costApprovalStatus: "DECLINED",
+        notes: (ticket.notes ? ticket.notes + "\n" : "") + "[سیستم] لغو خودکار به دلیل عدم تایید هزینه پس از ۵ روز کاری.",
+      },
+    });
+  }
+
+  return stale.length;
+}

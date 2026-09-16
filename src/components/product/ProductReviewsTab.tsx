@@ -89,7 +89,7 @@ export function ProductReviewsTab({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 bg-slate-50 dark:bg-slate-850 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-750 items-center">
         <div className="text-center sm:text-right space-y-1 sm:border-l sm:border-slate-200 dark:sm:border-slate-700 sm:pl-5">
           <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-mono">
-            {toPersianDigits(averageRating)}
+            <bdi dir="ltr">{toPersianDigits(averageRating)}</bdi>
           </div>
           <div className="flex items-center justify-center sm:justify-start gap-1 text-amber-400">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -122,7 +122,9 @@ export function ProductReviewsTab({
                     style={{ width: `${percent}%` }}
                   />
                 </div>
-                <span className="w-8 text-[10px] font-mono text-left shrink-0">{toPersianDigits(percent)}٪</span>
+                <span className="w-8 text-[10px] font-mono text-left shrink-0">
+                  <bdi dir="ltr">{toPersianDigits(percent)}٪</bdi>
+                </span>
               </div>
             );
           })}

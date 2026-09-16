@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/logger";
 import { Prisma } from "@prisma/client";
 import { ProductCard } from "@/components/product/ProductCard";
 import { PriceFilterWidget } from "@/components/product/PriceFilterWidget";
@@ -176,7 +177,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       }),
     ]);
   } catch (dbErr) {
-    console.error("[Zero-Crash Fallback] Database query failed on /products, serving static fallback:", dbErr);
+    logger.error("[Zero-Crash Fallback] Database query failed on /products, serving static fallback", {
+      error: String(dbErr),
+    });
     const { FALLBACK_PRODUCTS } = await import("@/data/products");
     products = FALLBACK_PRODUCTS as any;
     totalCount = FALLBACK_PRODUCTS.length;

@@ -25,10 +25,29 @@ export function ProductWiringTab({ wiringSchematic }: ProductWiringTabProps) {
 
   const handleDownloadDatasheet = () => {
     setDownloadingPdf(true);
-    setTimeout(() => {
-      setDownloadingPdf(false);
-      window.print();
-    }, 400);
+    try {
+      const header = `====================================================\nفروشگاه و کارگاه فنی شیاسی (نجف‌آباد و اصفهان)\nبرگه اطلاعات فنی و نقشه سیم‌بندی محصول\n====================================================\n\n`;
+      const title = `عنوان تجهیز: ${wiringSchematic.title}\nشرح نقشه: ${wiringSchematic.diagramSubtitle}\n\n`;
+      const terminalHeader = `راهنمای پایه‌ها و ترمینال‌های الکتریکی:\n----------------------------------------------------\n`;
+      const terminals = wiringSchematic.terminals
+        .map((t, idx) => `${idx + 1}. پایه ${t.label} (رنگ: ${t.colorName}) -> کاربرد: ${t.functionDesc}`)
+        .join("\n");
+      const footer = `\n\n----------------------------------------------------\nکارگاه خدمات فنی و سیم‌پیچی شیاسی\nآدرس: نجف‌آباد، خیابان ۱۵ خرداد مرکزی، نبش بن‌بست نرگس\nتلفن واحد پشتیبانی: ۰۳۱۴۲۶۲۶۱۱۶ / ۰۹۱۳۶۲۶۰۰۷۲\nوب‌سایت: https://shiasi.ir\n====================================================`;
+
+      const blob = new Blob([header + title + terminalHeader + terminals + footer], {
+        type: "text/plain;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `datasheet-${wiringSchematic.title.replace(/[\\/:\*\?"<>\| ]+/g, "_")}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } finally {
+      setTimeout(() => setDownloadingPdf(false), 500);
+    }
   };
 
   return (

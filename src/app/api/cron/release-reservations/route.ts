@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { releaseExpiredReservations } from "@/lib/stockReservation";
+import { expireStaleRepairEstimates } from "@/lib/repairLifecycle";
 import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
@@ -14,12 +16,16 @@ async function handleCron(req: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const result = await releaseExpiredReservations();
+    const [stockResult, expiredRepairsCount] = await Promise.all([
+      releaseExpiredReservations(),
+      expireStaleRepairEstimates(prisma),
+    ]);
 
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),
-      ...result,
+      expiredRepairsCount,
+      ...stockResult,
     });
   } catch (error: any) {
     logger.error("Error in release-reservations cron handler", error);

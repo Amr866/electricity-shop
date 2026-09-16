@@ -3,6 +3,8 @@
  * Cable Sizer, Voltage Drop, and Miniature Circuit Breaker (MCB) Matching Engine.
  */
 
+import { calculateTieredUnitPrice } from "./checkoutEngine.ts";
+
 export const STANDARD_COPPER_GAUGES = [
   1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120,
 ] as const;
@@ -170,12 +172,15 @@ export function calculateCableRequirements(
  */
 export function createChapter13CartBundle(
   output: CableCalculationOutput,
-  lengthMeters: number
+  lengthMeters: number,
+  basePricePerMeter?: number
 ): {
   cableItem: {
     productId: string;
     productName: string;
     quantity: number;
+    unitPriceToman?: number;
+    discountPercent?: number;
   };
   mcbItem: {
     productId: string;
@@ -184,11 +189,21 @@ export function createChapter13CartBundle(
   };
 } {
   const safeQty = Math.max(1, Math.round(lengthMeters));
+  let unitPriceToman: number | undefined;
+  let discountPercent: number | undefined;
+
+  if (basePricePerMeter !== undefined) {
+    const tiered = calculateTieredUnitPrice(basePricePerMeter, safeQty);
+    unitPriceToman = tiered.unitPrice;
+    discountPercent = tiered.discountPercent;
+  }
+
   return {
     cableItem: {
       productId: output.matchedCableProductId,
       productName: `${output.cableName} (طول ${safeQty} متر)`,
       quantity: safeQty,
+      ...(unitPriceToman !== undefined ? { unitPriceToman, discountPercent } : {}),
     },
     mcbItem: {
       productId: output.recommendedMcb.productId,

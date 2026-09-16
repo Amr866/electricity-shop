@@ -81,7 +81,7 @@ export function calculateCableRequirements(
   }
 
   // 2. Determine initial gauge by thermal current carrying capacity
-  let selectedGauge: CopperGauge = 1.5;
+  let selectedGauge: CopperGauge = 120; // Default to max standard gauge if current exceeds all ratings
   for (const gauge of STANDARD_COPPER_GAUGES) {
     if (COPPER_AMPACITY[gauge] >= currentAmps) {
       selectedGauge = gauge;
@@ -133,7 +133,7 @@ export function calculateCableRequirements(
 
   // 4. MCB Curve & Rating Selection
   const curve: "B" | "C" = loadType === "lighting_resistive" ? "B" : "C";
-  let recommendedMcbRating: McbRating = 10;
+  let recommendedMcbRating: McbRating = 125; // Default to max standard rating if current exceeds all ratings
 
   for (const rating of STANDARD_MCB_RATINGS) {
     if (rating >= currentAmps) {
@@ -183,11 +183,12 @@ export function createChapter13CartBundle(
     quantity: number;
   };
 } {
+  const safeQty = Math.max(1, Math.round(lengthMeters));
   return {
     cableItem: {
       productId: output.matchedCableProductId,
-      productName: `${output.cableName} (طول ${lengthMeters} متر)`,
-      quantity: Math.max(1, Math.round(lengthMeters)),
+      productName: `${output.cableName} (طول ${safeQty} متر)`,
+      quantity: safeQty,
     },
     mcbItem: {
       productId: output.recommendedMcb.productId,
@@ -206,7 +207,7 @@ export function getFeederEngineeringAdvice(
 ): string[] {
   const notes: string[] = [];
 
-  if (output.voltageDropPercent > 3.0) {
+  if (!output.isCompliant || output.voltageDropPercent > 3.0) {
     notes.push(
       "هشدار مبحث ۱۳: افت ولتاژ از سقف مجاز ۳.۰ درصد فراتر است. کابل‌های موازی دوبل یا انتقال تابلو برق به نزدیکی بار توصیه می‌شود."
     );

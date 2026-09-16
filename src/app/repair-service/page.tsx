@@ -472,19 +472,19 @@ export default function RepairServicePage() {
                       کد رهگیری پذیرش تعمیرات شما:
                     </span>
                     <div className="flex items-center gap-2">
-                      <strong className="text-2xl font-mono font-black text-emerald-700 dark:text-amber-400 dir-ltr">
-                        {ticketResult.trackingCode}
+                      <strong className="text-2xl font-mono font-black text-emerald-700 dark:text-amber-400 tabular-nums">
+                        <bdi dir="ltr">{ticketResult.trackingCode}</bdi>
                       </strong>
                       <button
                         type="button"
                         onClick={() => handleCopyTrackingCode(ticketResult.trackingCode)}
-                        className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+                        className="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 shrink-0"
                         title="کپی کد رهگیری"
                       >
                         {copiedCode ? (
-                          <Check className="w-4 h-4 text-emerald-600" />
+                          <Check className="w-5 h-5 text-emerald-600" />
                         ) : (
-                          <Copy className="w-4 h-4" />
+                          <Copy className="w-5 h-5" />
                         )}
                       </button>
                     </div>
@@ -552,14 +552,14 @@ export default function RepairServicePage() {
                             key={opt.value}
                             type="button"
                             onClick={() => setApplianceType(opt.value)}
-                            className={`p-3 rounded-2xl border text-right transition-all flex items-center gap-2 active:scale-98 ${
+                            className={`min-h-[50px] p-3 rounded-2xl border text-right transition-all flex items-center gap-2.5 active:scale-98 ${
                               isSelected
                                 ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-950 dark:text-amber-300 font-bold shadow-sm shadow-amber-500/10 scale-102"
                                 : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
                             }`}
                           >
                             <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-amber-600 dark:text-amber-400" : "text-slate-400"}`} />
-                            <span className="text-[11px] leading-tight truncate font-bold">{opt.label}</span>
+                            <span className="text-[11px] leading-snug font-bold line-clamp-2">{opt.label}</span>
                           </button>
                         );
                       })}
@@ -604,19 +604,19 @@ export default function RepairServicePage() {
                     </label>
 
                     {/* Quick Symptom Tag Pills */}
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold block">
-                        انتخاب سریع علائم خرابی (کلیک جهت درج در متن):
+                    <div className="space-y-1.5">
+                      <span className="text-xs text-slate-600 dark:text-slate-400 font-bold block">
+                        انتخاب سریع علائم خرابی (لمس جهت افزودن به شرح مشکل):
                       </span>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {currentSymptomTags.map((tag) => (
                           <button
                             key={tag}
                             type="button"
                             onClick={() => handleToggleSymptomTag(tag)}
-                            className="bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-300 border border-amber-300/70 dark:border-amber-700/60 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all active:scale-95 hover-glow flex items-center gap-1"
+                            className="min-h-[36px] bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-300 border border-amber-300/70 dark:border-amber-700/60 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 hover-glow flex items-center gap-1.5"
                           >
-                            <span>+</span>
+                            <span className="text-amber-600 dark:text-amber-400 font-black">+</span>
                             <span>{tag}</span>
                           </button>
                         ))}
@@ -747,7 +747,7 @@ export default function RepairServicePage() {
                             href="https://neshan.org/maps/places/vbZnI32x4clP"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[10px] px-2.5 py-1 rounded-lg transition-all"
+                            className="bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-[10px] px-2.5 py-1 rounded-lg transition-all"
                           >
                             نشان ↗
                           </a>
@@ -776,7 +776,7 @@ export default function RepairServicePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 hover-glow"
+                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 hover-glow"
                   >
                     <Send className="w-4 h-4" />
                     <span>{submitting ? "در حال ثبت درخواست..." : "ثبت نهایی درخواست و دریافت کد رهگیری"}</span>
@@ -810,12 +810,12 @@ export default function RepairServicePage() {
                     value={trackCode}
                     onChange={(e) => setTrackCode(e.target.value)}
                     placeholder="مثال: 09132456789 یا REP-1403..."
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
+                    className="w-full min-h-[44px] bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono text-left"
                   />
                   <button
                     type="submit"
                     disabled={trackingLoading}
-                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shrink-0 transition-all disabled:opacity-50 active:scale-95 shadow-sm"
+                    className="min-h-[44px] bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs px-4 py-2.5 rounded-xl shrink-0 transition-all disabled:opacity-50 active:scale-95 shadow-sm flex items-center justify-center"
                   >
                     {trackingLoading ? "..." : "استعلام"}
                   </button>
@@ -830,7 +830,7 @@ export default function RepairServicePage() {
                     {isOrderCode && (
                       <Link
                         href={`/order-tracking/${encodeURIComponent(toEnglishDigits(trackCode.trim()).toUpperCase())}`}
-                        className="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-lg transition-all shadow-sm"
+                        className="inline-flex items-center gap-1 bg-amber-500 hover:bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-1 rounded-lg transition-all shadow-sm"
                       >
                         <span>انتقال به بخش پیگیری سفارشات کالا ↗</span>
                       </Link>
@@ -846,52 +846,124 @@ export default function RepairServicePage() {
                     <span className="text-xs font-bold text-slate-900 dark:text-white">
                       {trackResult.applianceType} {trackResult.brandModel ? `(${trackResult.brandModel})` : ""}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 dir-ltr font-bold">
-                      {trackResult.trackingCode}
+                    <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 tabular-nums">
+                      <bdi dir="ltr">{trackResult.trackingCode}</bdi>
                     </span>
                   </div>
 
                   {/* Visual Lifecycle Stepper */}
                   <div className="py-2">
-                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block mb-3">
-                      مراحل پیشرفت فرآیند تعمیر:
-                    </span>
-                    <div className="relative flex items-center justify-between">
-                      <div className="absolute top-1/2 left-4 right-4 -translate-y-1/2 h-1 bg-slate-200 dark:bg-slate-750 -z-0" />
-                      
-                      {stepsList.map((step, idx) => {
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        مراحل پیشرفت فرآیند تعمیر:
+                      </span>
+                      <span className="text-[11px] font-mono font-bold text-amber-600 dark:text-amber-400 tabular-nums">
+                        <bdi dir="ltr">{Math.round(((getStepIndex(trackResult.status) + 1) / stepsList.length) * 100)}%</bdi> تکمیل شده
+                      </span>
+                    </div>
+
+                    {/* Mobile Stepper Card (sm:hidden) */}
+                    <div className="sm:hidden bg-white dark:bg-slate-900 rounded-2xl p-3.5 border border-slate-200 dark:border-slate-750 space-y-3 shadow-2xs">
+                      {(() => {
                         const currentIdx = getStepIndex(trackResult.status);
-                        const isDone = idx < currentIdx;
-                        const isCurrent = idx === currentIdx;
-                        const StepIcon = step.icon;
+                        const currentStep = stepsList[currentIdx] || stepsList[0];
+                        const CurrentIcon = currentStep.icon;
 
                         return (
-                          <div key={step.label} className="relative z-10 flex flex-col items-center">
-                            <div
-                              className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm ${
-                                isDone
-                                  ? "bg-emerald-600 text-white"
-                                  : isCurrent
-                                  ? "bg-amber-500 text-slate-950 ring-4 ring-amber-500/20 font-black scale-110"
-                                  : "bg-slate-200 dark:bg-slate-750 text-slate-400"
-                              }`}
-                            >
-                              {isDone ? <Check className="w-3.5 h-3.5" /> : <StepIcon className="w-3.5 h-3.5" />}
+                          <>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-xl bg-amber-500 text-amber-950 flex items-center justify-center font-black shadow-sm ring-4 ring-amber-500/20 shrink-0">
+                                  <CurrentIcon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 block">
+                                    مرحله {toPersianDigits(currentIdx + 1)} از {toPersianDigits(stepsList.length)}
+                                  </span>
+                                  <strong className="text-xs font-black text-slate-900 dark:text-white block">
+                                    {currentStep.label}
+                                  </strong>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300">
+                                در حال انجام
+                              </span>
                             </div>
-                            <span
-                              className={`text-[9px] mt-1.5 text-center font-medium ${
-                                isCurrent
-                                  ? "text-amber-600 dark:text-amber-400 font-bold"
-                                  : isDone
-                                  ? "text-emerald-700 dark:text-emerald-400 font-medium"
-                                  : "text-slate-400"
-                              }`}
-                            >
-                              {step.label}
-                            </span>
-                          </div>
+
+                            {/* 7-Segment RTL Progress Bar */}
+                            <div className="space-y-1">
+                              <div className="grid grid-cols-7 gap-1">
+                                {stepsList.map((step, idx) => (
+                                  <div
+                                    key={step.label}
+                                    className={`h-2 rounded-full transition-all duration-300 ${
+                                      idx < currentIdx
+                                        ? "bg-emerald-500"
+                                        : idx === currentIdx
+                                        ? "bg-amber-500 ring-2 ring-amber-400/30"
+                                        : "bg-slate-200 dark:bg-slate-700"
+                                    }`}
+                                    title={step.label}
+                                  />
+                                ))}
+                              </div>
+                              <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-0.5">
+                                <span>شروع: {stepsList[0].label}</span>
+                                <span>پایان: {stepsList[stepsList.length - 1].label}</span>
+                              </div>
+                            </div>
+                          </>
                         );
-                      })}
+                      })()}
+                    </div>
+
+                    {/* Desktop & Tablet Milestone Stepper (hidden sm:block) */}
+                    <div className="hidden sm:block relative pt-2 pb-1">
+                      {/* RTL Connecting Progress Line */}
+                      <div className="absolute top-5 right-6 left-6 h-1 bg-slate-200 dark:bg-slate-750 -z-0 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-emerald-500 transition-all duration-500 rounded-full"
+                          style={{
+                            width: `${(getStepIndex(trackResult.status) / (stepsList.length - 1)) * 100}%`,
+                          }}
+                        />
+                      </div>
+
+                      <div className="relative flex items-center justify-between">
+                        {stepsList.map((step, idx) => {
+                          const currentIdx = getStepIndex(trackResult.status);
+                          const isDone = idx < currentIdx;
+                          const isCurrent = idx === currentIdx;
+                          const StepIcon = step.icon;
+
+                          return (
+                            <div key={step.label} className="relative z-10 flex flex-col items-center">
+                              <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold transition-all shadow-sm ${
+                                  isDone
+                                    ? "bg-emerald-600 text-white"
+                                    : isCurrent
+                                    ? "bg-amber-500 text-amber-950 ring-4 ring-amber-500/20 font-black scale-110"
+                                    : "bg-slate-200 dark:bg-slate-750 text-slate-400"
+                                }`}
+                              >
+                                {isDone ? <Check className="w-4 h-4" /> : <StepIcon className="w-4 h-4" />}
+                              </div>
+                              <span
+                                className={`text-[10px] mt-2 text-center font-medium ${
+                                  isCurrent
+                                    ? "text-amber-600 dark:text-amber-400 font-bold"
+                                    : isDone
+                                    ? "text-emerald-700 dark:text-emerald-400 font-medium"
+                                    : "text-slate-400"
+                                }`}
+                              >
+                                {step.label}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
@@ -921,7 +993,7 @@ export default function RepairServicePage() {
                     {trackResult.estimatedCost && (
                       <div className="flex items-center justify-between">
                         <span className="text-slate-500 dark:text-slate-400">برآورد هزینه:</span>
-                        <span className="font-bold text-slate-950 dark:text-amber-400 font-mono">
+                        <span className="font-bold text-slate-950 dark:text-amber-400 font-mono tabular-nums">
                           {formatToman(trackResult.estimatedCost)}
                         </span>
                       </div>
@@ -929,17 +1001,17 @@ export default function RepairServicePage() {
 
                     {/* 1-Click Customer Cost Approval / Decline Box */}
                     {trackResult.status === "COST_ESTIMATED" && trackResult.costApprovalStatus === "PENDING" && (
-                      <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-3.5 space-y-2.5 animate-in fade-in">
+                      <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-4 space-y-3 animate-in fade-in">
                         <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
                           <Clock className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
                           <span>برآورد هزینه توسط کارشناس کارگاه آماده است. جهت شروع تعمیر، تایید فرمایید:</span>
                         </div>
-                        <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
                           <button
                             type="button"
                             disabled={approvingCost}
                             onClick={() => handleCustomerCostApproval("APPROVE")}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                            className="flex-1 min-h-[44px] bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 disabled:opacity-50"
                           >
                             <Check className="w-4 h-4" />
                             <span>تایید هزینه و شروع تعمیر</span>
@@ -948,7 +1020,7 @@ export default function RepairServicePage() {
                             type="button"
                             disabled={approvingCost}
                             onClick={() => handleCustomerCostApproval("DECLINE")}
-                            className="bg-rose-100 dark:bg-rose-950/60 hover:bg-rose-200 text-rose-800 dark:text-rose-300 font-bold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all border border-rose-300 dark:border-rose-800 active:scale-95 disabled:opacity-50"
+                            className="sm:flex-initial min-h-[44px] bg-rose-100 dark:bg-rose-950/60 hover:bg-rose-200 text-rose-800 dark:text-rose-300 font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all border border-rose-300 dark:border-rose-800 active:scale-98 disabled:opacity-50"
                           >
                             <X className="w-4 h-4" />
                             <span>انصراف از تعمیر</span>
@@ -992,9 +1064,9 @@ export default function RepairServicePage() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 rounded-xl text-center flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      className="w-full min-h-[44px] mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl text-center flex items-center justify-center gap-2 transition-colors shadow-sm active:scale-98"
                     >
-                      <MessageCircle className="w-3.5 h-3.5" />
+                      <MessageCircle className="w-4 h-4" />
                       <span>پیگیری مستقیم این پرونده در واتساپ</span>
                     </a>
                   </div>
@@ -1015,30 +1087,30 @@ export default function RepairServicePage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <a
                   href="tel:03142626116"
-                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                  className="min-h-[54px] flex flex-col justify-center bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">تلفن ۱ کارگاه</span>
-                  <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
+                  <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5 tabular-nums">
                     <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi>
                   </strong>
                 </a>
 
                 <a
                   href="tel:03142626107"
-                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                  className="min-h-[54px] flex flex-col justify-center bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">تلفن ۲ کارگاه</span>
-                  <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5">
+                  <strong className="text-xs font-mono font-bold text-amber-300 block mt-0.5 tabular-nums">
                     <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۰۷</bdi>
                   </strong>
                 </a>
 
                 <a
                   href="tel:09136260072"
-                  className="bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
+                  className="min-h-[54px] flex flex-col justify-center bg-white/10 hover:bg-white/15 p-2.5 rounded-2xl border border-white/10 text-center transition-all active:scale-95"
                 >
                   <span className="text-[10px] text-slate-400 block font-medium">همراه پذیرش</span>
-                  <strong className="text-xs font-mono font-bold text-emerald-400 block mt-0.5">
+                  <strong className="text-xs font-mono font-bold text-emerald-400 block mt-0.5 tabular-nums">
                     <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi>
                   </strong>
                 </a>

@@ -15,6 +15,8 @@ import {
   Check,
   ChevronDown,
   Sparkles,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 interface DevicePreset {
@@ -242,7 +244,7 @@ export function ElectricalCableCalculator() {
             <select
               value={selectedPresetId}
               onChange={(e) => handleSelectPreset(e.target.value)}
-              className="w-full md:w-64 bg-slate-100 dark:bg-slate-850 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-amber-500 appearance-none cursor-pointer transition-colors shadow-xs"
+              className="w-full md:w-64 bg-slate-100 dark:bg-slate-850 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold py-2.5 pr-3.5 pl-10 rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-amber-500 appearance-none cursor-pointer transition-colors shadow-xs text-right"
             >
               {PRESETS.map((preset) => (
                 <option key={preset.id} value={preset.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
@@ -266,9 +268,9 @@ export function ElectricalCableCalculator() {
             <button
               type="button"
               onClick={() => setPhaseType("single")}
-              className={`py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 ${
+              className={`min-h-[44px] py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 flex items-center justify-center text-center ${
                 phaseType === "single"
-                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md font-black scale-102"
+                  ? "bg-amber-500 text-amber-950 border-amber-400 shadow-md font-black scale-102"
                   : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -277,9 +279,9 @@ export function ElectricalCableCalculator() {
             <button
               type="button"
               onClick={() => setPhaseType("three")}
-              className={`py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 ${
+              className={`min-h-[44px] py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 flex items-center justify-center text-center ${
                 phaseType === "three"
-                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md font-black scale-102"
+                  ? "bg-amber-500 text-amber-950 border-amber-400 shadow-md font-black scale-102"
                   : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -289,60 +291,100 @@ export function ElectricalCableCalculator() {
         </div>
 
         {/* Input 2: Load Power */}
-        <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2">
+        <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-3">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-700 dark:text-slate-300">توان مصرفی:</span>
-            <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
-              {toPersianDigits(loadPowerWatts)} وات ({(loadPowerWatts / 1000).toFixed(1)} kW)
+            <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20 tabular-nums">
+              <bdi dir="ltr">{toPersianDigits(loadPowerWatts)} W</bdi> ({(loadPowerWatts / 1000).toFixed(1)} kW)
             </span>
           </div>
-          <input
-            type="range"
-            min="200"
-            max="15000"
-            step="100"
-            value={loadPowerWatts}
-            aria-label="تنظیم توان مصرفی بر حسب وات"
-            aria-valuemin={200}
-            aria-valuemax={15000}
-            aria-valuenow={loadPowerWatts}
-            aria-valuetext={`${toPersianDigits(loadPowerWatts)} وات`}
-            onChange={(e) => setLoadPowerWatts(Number(e.target.value))}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 transition-all hover:bg-slate-300 dark:hover:bg-slate-700"
-          />
-          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium">
-            <span>۲۰۰W</span>
-            <span>۵kW</span>
-            <span>۱۵kW</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setLoadPowerWatts((prev) => Math.max(200, prev - 100))}
+              className="w-10 h-10 shrink-0 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-500 hover:text-amber-950 transition-colors active:scale-95 shadow-2xs font-bold"
+              aria-label="کاهش توان ۱۰۰ وات"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            <div className="flex-1 space-y-1.5" dir="ltr">
+              <input
+                type="range"
+                min="200"
+                max="15000"
+                step="100"
+                value={loadPowerWatts}
+                aria-label="تنظیم توان مصرفی بر حسب وات"
+                aria-valuemin={200}
+                aria-valuemax={15000}
+                aria-valuenow={loadPowerWatts}
+                aria-valuetext={`${toPersianDigits(loadPowerWatts)} وات`}
+                onChange={(e) => setLoadPowerWatts(Number(e.target.value))}
+                className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 transition-all hover:bg-slate-300 dark:hover:bg-slate-700"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium" dir="ltr">
+                <span>200W</span>
+                <span>7.5kW</span>
+                <span>15kW</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLoadPowerWatts((prev) => Math.min(15000, prev + 100))}
+              className="w-10 h-10 shrink-0 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-500 hover:text-amber-950 transition-colors active:scale-95 shadow-2xs font-bold"
+              aria-label="افزایش توان ۱۰۰ وات"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
         {/* Input 3: Distance */}
-        <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2">
+        <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-3">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-700 dark:text-slate-300">طول مسیر سیم‌کشی:</span>
-            <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
-              {toPersianDigits(distanceMeters)} متر
+            <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20 tabular-nums">
+              <bdi dir="ltr">{toPersianDigits(distanceMeters)} m</bdi>
             </span>
           </div>
-          <input
-            type="range"
-            min="5"
-            max="150"
-            step="5"
-            value={distanceMeters}
-            aria-label="تنظیم طول مسیر سیم‌کشی بر حسب متر"
-            aria-valuemin={5}
-            aria-valuemax={150}
-            aria-valuenow={distanceMeters}
-            aria-valuetext={`${toPersianDigits(distanceMeters)} متر`}
-            onChange={(e) => setDistanceMeters(Number(e.target.value))}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 transition-all hover:bg-slate-300 dark:hover:bg-slate-700"
-          />
-          <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium">
-            <span>۵ متر</span>
-            <span>۷۵ متر</span>
-            <span>۱۵۰ متر</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setDistanceMeters((prev) => Math.max(5, prev - 5))}
+              className="w-10 h-10 shrink-0 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-500 hover:text-amber-950 transition-colors active:scale-95 shadow-2xs font-bold"
+              aria-label="کاهش طول ۵ متر"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            <div className="flex-1 space-y-1.5" dir="ltr">
+              <input
+                type="range"
+                min="5"
+                max="150"
+                step="5"
+                value={distanceMeters}
+                aria-label="تنظیم طول مسیر سیم‌کشی بر حسب متر"
+                aria-valuemin={5}
+                aria-valuemax={150}
+                aria-valuenow={distanceMeters}
+                aria-valuetext={`${toPersianDigits(distanceMeters)} متر`}
+                onChange={(e) => setDistanceMeters(Number(e.target.value))}
+                className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500 transition-all hover:bg-slate-300 dark:hover:bg-slate-700"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium" dir="ltr">
+                <span>5m</span>
+                <span>75m</span>
+                <span>150m</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDistanceMeters((prev) => Math.min(150, prev + 5))}
+              className="w-10 h-10 shrink-0 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-amber-500 hover:text-amber-950 transition-colors active:scale-95 shadow-2xs font-bold"
+              aria-label="افزایش طول ۵ متر"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
@@ -355,8 +397,8 @@ export function ElectricalCableCalculator() {
             {/* Box 1: Amps */}
             <div className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1 font-medium">جریان نامی مصرفی</span>
-              <strong className="text-slate-900 dark:text-slate-100 font-mono text-sm sm:text-base font-bold transition-all">
-                {animatedAmps.toFixed(1)} A
+              <strong className="text-slate-900 dark:text-slate-100 font-mono text-sm sm:text-base font-bold transition-all tabular-nums inline-block">
+                <bdi dir="ltr">{animatedAmps.toFixed(1)} A</bdi>
               </strong>
             </div>
 
@@ -366,16 +408,16 @@ export function ElectricalCableCalculator() {
                 <Sparkles className="w-3 h-3 text-amber-500" />
               </div>
               <span className="text-[11px] text-amber-900 dark:text-amber-300 block mb-0.5 font-bold">سایز سیم پیشنهادی</span>
-              <strong className="text-amber-600 dark:text-amber-400 font-mono text-lg sm:text-2xl font-black block tracking-tight">
-                {recommendedGauge} <span className="text-xs font-normal">mm²</span>
+              <strong className="text-amber-600 dark:text-amber-400 font-mono text-lg sm:text-2xl font-black block tracking-tight tabular-nums">
+                <bdi dir="ltr">{recommendedGauge} <span className="text-xs font-normal">mm²</span></bdi>
               </strong>
             </div>
 
             {/* Box 3: Fuse */}
             <div className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
               <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1 font-medium">فیوز مینیاتوری</span>
-              <strong className="text-emerald-600 dark:text-emerald-400 font-mono text-sm sm:text-base font-bold">
-                {recommendedFuse}
+              <strong className="text-emerald-600 dark:text-emerald-400 font-mono text-sm sm:text-base font-bold tabular-nums inline-block">
+                <bdi dir="ltr">{recommendedFuse}</bdi>
               </strong>
             </div>
           </div>
@@ -408,7 +450,7 @@ export function ElectricalCableCalculator() {
           <div className="space-y-1 text-right">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">پکیج کابل مس + فیوز محافظ:</span>
-              <span className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400 font-mono transition-all">
+              <span className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400 font-mono transition-all tabular-nums">
                 {formatToman(animatedPackagePrice)}
               </span>
             </div>
@@ -421,10 +463,10 @@ export function ElectricalCableCalculator() {
           <button
             type="button"
             onClick={handleAddPackageToCart}
-            className={`w-full py-3 rounded-xl font-black text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-md active:scale-95 ${
+            className={`w-full min-h-[48px] py-3 rounded-xl font-black text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-md active:scale-95 ${
               isAddedToCart
                 ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-102"
-                : "bg-amber-500 hover:bg-amber-400 text-slate-950 hover-glow"
+                : "bg-amber-500 hover:bg-amber-400 text-amber-950 hover-glow"
             }`}
           >
             {isAddedToCart ? (

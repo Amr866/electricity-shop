@@ -98,6 +98,8 @@ model ProductImage {
   isPrimary Boolean  @default(false)
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 model ProductSpec {
@@ -106,6 +108,8 @@ model ProductSpec {
   value     String   // e.g. "220 ولت", "مس خالص", "50 وات"
   productId String
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 model Review {
@@ -158,6 +162,8 @@ model Order {
   @@index([customerPhone])
   @@index([orderStatus])
   @@index([createdAt])
+  @@index([userId])
+  @@index([paymentMethod, orderStatus, reservedUntil])
 }
 
 model OrderItem {
@@ -172,6 +178,9 @@ model OrderItem {
   orderId         String
   order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model RepairRequest {
@@ -197,6 +206,7 @@ model RepairRequest {
 
   @@index([customerPhone])
   @@index([status])
+  @@index([userId])
 }
 
 model Coupon {

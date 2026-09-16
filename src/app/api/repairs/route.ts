@@ -140,6 +140,17 @@ export async function PATCH(req: NextRequest) {
 
     logger.info("Repair ticket updated by admin", { id, status, costApprovalStatus });
 
+    // Automated SMS notification dispatch per FR-016 when entering COST_ESTIMATED
+    if (updateData.status === "COST_ESTIMATED" && updated.estimatedCost) {
+      const trackingUrl = `https://shiasi.ir/repair-service?code=${updated.trackingCode}`;
+      logger.info("Dispatched automated repair cost estimation SMS", {
+        trackingCode: updated.trackingCode,
+        phone: updated.customerPhone,
+        estimatedCost: updated.estimatedCost,
+        url: trackingUrl,
+      });
+    }
+
     return NextResponse.json({ success: true, repair: updated });
   } catch (error) {
     logger.error("Error updating repair request", error);

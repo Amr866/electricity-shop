@@ -92,23 +92,32 @@ src/
 │   ├── price-lists/              # Official factory price lists hub
 │   ├── products/                 # Catalog browsing, filtering, and technical spec views
 │   └── repair-service/           # Workshop intake and real-time lifecycle tracking portal
+├── middleware.ts                 # NextAuth Edge JWT Role-Based Access Control (/admin/*)
 ├── components/
-│   ├── CableCalculator.tsx       # Chapter 13 Cable Sizer with 1-click cart bundling
-│   ├── Header.tsx                # Navigation, search shortcut (/), and cart badge
-│   ├── Footer.tsx                # Workshop geolocation, contact numbers, hours, and credentials
-│   ├── InvoicePrint.tsx          # Ministry of Finance compliant A4 tax invoice component
-│   └── RepairTracker.tsx         # 7-stage interactive timeline with 1-click approval buttons
+│   ├── tools/
+│   │   └── ElectricalCableCalculator.tsx  # Chapter 13 Cable Sizer with 1-click cart bundling
+│   ├── layout/
+│   │   ├── Header.tsx                     # Navigation, search shortcut (/), and cart badge
+│   │   └── Footer.tsx                     # Workshop geolocation, contact numbers, hours, credentials
+│   ├── product/
+│   │   ├── ProductCard.tsx                # Catalog item card with badges
+│   │   └── MobileSearchFilterBar.tsx      # Responsive mobile filtering
+│   └── search/
+│       └── LiveSearchBar.tsx              # Quick search with / shortcut
 ├── lib/
-│   ├── auth.ts                   # NextAuth configuration and JWT session handlers
-│   ├── cableCalculator.ts        # Chapter 13 physics and building code calculation engine
-│   ├── logger.ts                 # Constitution v1.1.0 structured logger (info, error, debug)
-│   ├── prisma.ts                 # Global Prisma client instance
-│   ├── search.ts                 # Persian letterform normalization and multi-field scoring
-│   └── utils.ts                  # normalizeIranianPhone, Toman currency formatting, Jalali date helpers
-└── data/                         # Zero-crash static fallbacks
-    ├── articles.ts               # Pre-rendered educational guides
-    ├── products.ts               # Static catalog fallback dataset
-    └── priceLists.ts             # Partner manufacturer price sheets
+│   ├── auth.ts                            # NextAuth configuration and JWT session handlers
+│   ├── cableCalculator.ts                 # Chapter 13 physics and building code calculation engine
+│   ├── logger.ts                          # Constitution v1.1.0 structured logger (info, error, debug)
+│   ├── paymentLogger.ts                   # Centralized payment transaction audit logging service
+│   ├── prisma.ts                          # Global Prisma client instance
+│   ├── search.ts                          # Persian letterform normalization and multi-field scoring
+│   ├── stockReservation.ts                # Atomic race-free 8h Card-to-Card auto-release service
+│   └── utils.ts                           # normalizeIranianPhone, Toman currency formatting, Jalali helpers
+└── data/                                  # Zero-crash static fallbacks (Constitution Principle II)
+    ├── articles.ts                        # Pre-rendered educational guides
+    ├── products.ts                        # Static catalog fallback dataset
+    ├── priceLists.ts                      # Partner manufacturer price sheets
+    └── repairFallback.ts                  # Static appliance repair definitions & workshop telemetry
 ```
 
 ---

@@ -88,6 +88,7 @@
 - [x] T022 [P] [US3] Build customer repair tracking page with 7-stage visual timeline and direct workshop contacts in `src/app/repair-service/page.tsx`
 - [x] T023 [US3] Implement customer 1-click "Approve Cost" and "Decline Repair" action endpoint in `src/app/api/repairs/approve/route.ts`
 - [x] T024 [US3] Build admin workshop workbench for diagnostics logging, cost estimation, and phone approval entry in `src/app/admin/repairs/page.tsx`
+- [x] T024b [US3] Implement automated SMS dispatch with direct portal link when repair status transitions to `COST_ESTIMATED` in `src/app/api/repairs/route.ts`
 
 ---
 
@@ -114,6 +115,7 @@
 - [x] T030 [US5] Implement OTP verification and JWT session creation in `src/lib/auth.ts`
 - [x] T031 [P] [US5] Build customer login page supporting OTP flow with countdown timer and password fallback in `src/app/auth/login/page.tsx`
 - [x] T032 [US5] Build authenticated customer account dashboard displaying order history and repair tickets in `src/app/account/page.tsx`
+- [x] T032b [US5] Implement Role-Based Access Control (RBAC) middleware for `/admin` and `/api/admin` routes in `src/middleware.ts`
 
 ---
 

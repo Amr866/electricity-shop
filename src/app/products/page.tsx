@@ -132,31 +132,48 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   else if (sortBy === "bestseller") orderBy = { isBestSeller: "desc" };
   else if (sortBy === "rating") orderBy = { rating: "desc" };
 
-  // Fetch count, products, categories, and unique brands concurrently
-  const [totalCount, products, categories, allProductsForBrands] = await Promise.all([
-    prisma.product.count({ where }),
-    prisma.product.findMany({
-      where,
-      orderBy,
-      skip,
-      take,
-      include: {
-        category: true,
-        images: true,
-      },
-    }),
-    prisma.category.findMany({
-      orderBy: { sortOrder: "asc" },
-      include: {
-        _count: { select: { products: true } },
-      },
-    }),
-    prisma.product.findMany({
-      select: { brand: true },
-      where: { brand: { not: null } },
-      distinct: ["brand"],
-    }),
-  ]);
+  // Fetch count, products, categories, and unique brands concurrently with Zero-Crash fallback
+  let totalCount = 0;
+  let products: any[] = [];
+  let categories: any[] = [];
+  let allProductsForBrands: any[] = [];
+
+  try {
+    [totalCount, products, categories, allProductsForBrands] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+        include: {
+          category: true,
+          images: true,
+        },
+      }),
+      prisma.category.findMany({
+        orderBy: { sortOrder: "asc" },
+        include: {
+          _count: { select: { products: true } },
+        },
+      }),
+      prisma.product.findMany({
+        select: { brand: true },
+        where: { brand: { not: null } },
+        distinct: ["brand"],
+      }),
+    ]);
+  } catch (dbErr) {
+    console.error("[Zero-Crash Fallback] Database query failed on /products, serving static fallback:", dbErr);
+    const { FALLBACK_PRODUCTS } = await import("@/data/products");
+    products = FALLBACK_PRODUCTS as any;
+    totalCount = FALLBACK_PRODUCTS.length;
+    categories = [
+      { id: "cat-cooling", name: "سرمایشی و گرمایشی", slug: "cooling-heating", _count: { products: 2 } },
+      { id: "cat-wiring", name: "سیم، کابل و لوله", slug: "wiring-building", _count: { products: 2 } },
+    ] as any;
+    allProductsForBrands = [{ brand: "موتوژن" }, { brand: "البرز الکتریک نور" }, { brand: "هیوندای" }, { brand: "الکتروژن" }];
+  }
 
   const uniqueBrands = allProductsForBrands
     .map((p) => p.brand)

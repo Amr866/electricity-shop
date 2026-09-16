@@ -18,12 +18,11 @@ This guide details the step-by-step verification procedures to validate the comp
 # 1. Install dependencies
 npm install
 
-# 2. Synchronize Prisma Schema and generate types
-npx prisma generate
-npx prisma db push
+# 2. Synchronize Prisma Schema and seed initial data
+npm run db:setup
 
-# 3. Seed initial categories, sample products, price lists, and admin accounts
-node prisma/seed.js
+# 3. (Optional) Inspect and manage database with Prisma Studio GUI
+npm run db:studio   # Accessible at http://localhost:5555
 
 # 4. Start Next.js development server
 npm run dev

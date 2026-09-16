@@ -164,3 +164,74 @@ export function calculateCableRequirements(
     cableName,
   };
 }
+
+/**
+ * Creates 1-click cart bundle payload for the calculated cable and matching breaker.
+ */
+export function createChapter13CartBundle(
+  output: CableCalculationOutput,
+  lengthMeters: number
+): {
+  cableItem: {
+    productId: string;
+    productName: string;
+    quantity: number;
+  };
+  mcbItem: {
+    productId: string;
+    productName: string;
+    quantity: number;
+  };
+} {
+  return {
+    cableItem: {
+      productId: output.matchedCableProductId,
+      productName: `${output.cableName} (طول ${lengthMeters} متر)`,
+      quantity: Math.max(1, Math.round(lengthMeters)),
+    },
+    mcbItem: {
+      productId: output.recommendedMcb.productId,
+      productName: output.recommendedMcb.name,
+      quantity: 1,
+    },
+  };
+}
+
+/**
+ * Provides Chapter 13 regulatory and engineering advice based on calculation metrics.
+ */
+export function getFeederEngineeringAdvice(
+  output: CableCalculationOutput,
+  distanceMeters: number
+): string[] {
+  const notes: string[] = [];
+
+  if (output.voltageDropPercent > 3.0) {
+    notes.push(
+      "هشدار مبحث ۱۳: افت ولتاژ از سقف مجاز ۳.۰ درصد فراتر است. کابل‌های موازی دوبل یا انتقال تابلو برق به نزدیکی بار توصیه می‌شود."
+    );
+  } else if (output.voltageDropPercent > 2.5) {
+    notes.push(
+      "توجه: افت ولتاژ نزدیک به آستانه حداکثری ۳.۰ درصد است. در صورت امکان ارتقا به مقطع بزرگتر جهت کاهش تلفات اهمی پیشنهاد می‌گردد."
+    );
+  }
+
+  if (distanceMeters > 200) {
+    notes.push(
+      "مسافت طولانی: برای فواصل بالای ۲۰۰ متر، مقاومت مکانیکی کابل در برابر کشش و لوله‌گذاری صلب عایق بررسی گردد."
+    );
+  }
+
+  if (output.recommendedMcb.curve === "C") {
+    notes.push(
+      "کلید تیپ C: با ضریب قطع مغناطیسی ۵ الی ۱۰ برابر جریان نامی، مناسب حفاظت بارهای سلفی و الکتروموتورهای کولری و پمپ."
+    );
+  } else {
+    notes.push(
+      "کلید تیپ B: با ضریب قطع مغناطیسی ۳ الی ۵ برابر جریان نامی، مناسب مدارهای روشنایی و بارهای فاقد جریان هجومی."
+    );
+  }
+
+  return notes;
+}
+

@@ -4,6 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 import { logger } from "@/lib/logger";
+import {
+  generateRepairTrackingCode,
+  getCostEstimationSmsPayload,
+} from "@/lib/repairLifecycle";
 
 // GET: Search repair requests by exact phone or tracking code, or return list for admin
 export async function GET(req: NextRequest) {
@@ -71,9 +75,7 @@ export async function POST(req: NextRequest) {
     const userId = session?.user?.id || null;
 
     // Generate collision-safe repair tracking code: REP-YYMMDD-XXXX
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const datePrefix = new Date().toISOString().slice(2, 10).replace(/-/g, "");
-    const trackingCode = `REP-${datePrefix}-${randomSuffix}`;
+    const trackingCode = generateRepairTrackingCode();
 
     // Format admin notes with photo attachment if present
     const initialNotes = photoUrl ? `[تصویر ضمیمه]: ${photoUrl}` : null;
@@ -142,13 +144,12 @@ export async function PATCH(req: NextRequest) {
 
     // Automated SMS notification dispatch per FR-016 when entering COST_ESTIMATED
     if (updateData.status === "COST_ESTIMATED" && updated.estimatedCost) {
-      const trackingUrl = `https://shiasi.ir/repair-service?code=${updated.trackingCode}`;
-      logger.info("Dispatched automated repair cost estimation SMS", {
+      const smsPayload = getCostEstimationSmsPayload({
         trackingCode: updated.trackingCode,
-        phone: updated.customerPhone,
+        customerPhone: updated.customerPhone,
         estimatedCost: updated.estimatedCost,
-        url: trackingUrl,
       });
+      logger.info("Dispatched automated repair cost estimation SMS", smsPayload);
     }
 
     return NextResponse.json({ success: true, repair: updated });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { toAsciiDigits } from "@/lib/utils";
+import { evaluateCostApprovalDecision } from "@/lib/repairLifecycle";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,10 +38,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (existingRepair.status !== "COST_ESTIMATED" && existingRepair.costApprovalStatus !== "PENDING") {
+    const decisionResult = evaluateCostApprovalDecision(
+      existingRepair.status,
+      existingRepair.costApprovalStatus,
+      action,
+      "PORTAL"
+    );
+
+    if (!decisionResult.isValid) {
       return NextResponse.json(
         {
-          error: "این درخواست در وضعیت انتظار برای تایید هزینه قرار ندارد.",
+          error: decisionResult.error,
           currentStatus: existingRepair.status,
           currentApproval: existingRepair.costApprovalStatus,
         },
@@ -49,32 +57,30 @@ export async function POST(req: NextRequest) {
     }
 
     const isApproved = action === "APPROVE";
-    const newStatus = isApproved ? "REPAIRING" : "CANCELLED";
-    const costApprovalStatus = isApproved ? "APPROVED" : "DECLINED";
 
     const updatedRepair = await prisma.repairRequest.update({
       where: { trackingCode: cleanCode },
       data: {
-        status: newStatus,
-        costApprovalStatus,
-        approvalChannel: "PORTAL",
-        approvalTimestamp: new Date(),
+        status: decisionResult.nextStatus,
+        costApprovalStatus: decisionResult.nextApprovalStatus,
+        approvalChannel: decisionResult.approvalChannel,
+        approvalTimestamp: decisionResult.timestamp,
         adminNotes: existingRepair.adminNotes
-          ? `${existingRepair.adminNotes}\n[سیستم]: هزینه تعمیر توسط مشتری از طریق پرتال آنلاین در تاریخ ${new Date().toLocaleDateString("fa-IR")} ${isApproved ? "تایید شد" : "رد شد"}.`
-          : `[سیستم]: هزینه تعمیر توسط مشتری از طریق پرتال آنلاین ${isApproved ? "تایید شد" : "رد شد"}.`,
+          ? `${existingRepair.adminNotes}\n${decisionResult.noteAppend}`
+          : decisionResult.noteAppend,
       },
     });
 
     logger.info("Repair cost approval updated successfully", {
       trackingCode: cleanCode,
-      newStatus,
-      costApprovalStatus,
+      newStatus: decisionResult.nextStatus,
+      costApprovalStatus: decisionResult.nextApprovalStatus,
     });
 
     return NextResponse.json({
       success: true,
-      newStatus,
-      costApprovalStatus,
+      newStatus: decisionResult.nextStatus,
+      costApprovalStatus: decisionResult.nextApprovalStatus,
       message: isApproved
         ? "هزینه تعمیر با موفقیت تایید شد و دستگاه وارد مرحله تعمیر گردید."
         : "انصراف از تعمیر ثبت شد. دستگاه بدون تعمیر جهت تحویل آماده خواهد شد.",

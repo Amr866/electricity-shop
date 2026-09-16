@@ -2,20 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { calculateTieredUnitPrice, normalizeIranianPhone } from "@/lib/utils";
+import { normalizeIranianPhone } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import { logPaymentTransaction } from "@/lib/paymentLogger";
-
-// Server-enforced shipping method rates
-const SHIPPING_RATES: Record<string, number> = {
-  isfahan_express: 45000,
-  isfahan_pickup: 0,
-  najafabad_pickup: 0,
-  in_person_pickup: 0,
-  post_pishtaz: 55000,
-  tipax: 75000,
-  najafabad_local: 35000,
-};
+import {
+  SHIPPING_RATES,
+  calculateTieredUnitPrice,
+  sortItemsForDeterministicLock,
+  generateOrderNumber,
+  calculateReservationExpiry,
+  validateCorporateInvoice,
+} from "@/lib/checkoutEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,25 +52,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Corporate tax invoice validation per Iranian Ministry of Finance standard
-    if (isCorporate) {
-      if (!companyName || !companyName.trim()) {
-        return NextResponse.json(
-          { message: "برای فاکتور رسمی حقوقی، نام شرکت / سازمان الزامی است." },
-          { status: 400 }
-        );
-      }
-      if (!nationalCode || nationalCode.trim().length < 10) {
-        return NextResponse.json(
-          { message: "شناسه ملی شرکت جهت صدور فاکتور رسمی نامعتبر است (حداقل ۱۰ رقم)." },
-          { status: 400 }
-        );
-      }
-      if (!economicCode || economicCode.trim().length < 11) {
-        return NextResponse.json(
-          { message: "کد اقتصادی ۱۲ رقمی شرکت جهت صدور فاکتور رسمی الزامی و نامعتبر است." },
-          { status: 400 }
-        );
-      }
+    const corpCheck = validateCorporateInvoice({
+      isCorporate: Boolean(isCorporate),
+      companyName,
+      nationalCode,
+      economicCode,
+    });
+    if (!corpCheck.isValid) {
+      const firstError = Object.values(corpCheck.errors)[0];
+      return NextResponse.json({ message: firstError }, { status: 400 });
     }
 
     // Authenticated user linking
@@ -141,15 +128,8 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Quantity tiered discount calculation (5% at >= 10 units, 10% at >= 50 units)
-      let discountPercent = 0;
-      if (qty >= 50) {
-        discountPercent = 10;
-      } else if (qty >= 10) {
-        discountPercent = 5;
-      }
-
-      const unitPrice = calculateTieredUnitPrice(dbProduct.price, qty);
+      // Server-authoritative quantity tiered discount calculation via checkoutEngine
+      const { unitPrice, discountPercent } = calculateTieredUnitPrice(dbProduct.price, qty);
       const itemTotal = unitPrice * qty;
       const rawItemTotal = dbProduct.price * qty;
       totalWholesaleDiscountSavings += rawItemTotal - itemTotal;
@@ -208,10 +188,8 @@ export async function POST(req: NextRequest) {
     const totalDiscount = totalWholesaleDiscountSavings + serverCouponDiscount;
     const finalTotalAmount = Math.max(0, serverSubtotal - serverCouponDiscount + serverShippingCost);
 
-    // 4. Generate unique alphanumeric order number: SH-YYMMDD-XXXX
-    const datePrefix = new Date().toISOString().slice(2, 10).replace(/-/g, "");
-    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const orderNumber = `SH-${datePrefix}-${randomSuffix}`;
+    // 4. Generate unique alphanumeric order number: SH-YYMMDD-XXX
+    const orderNumber = generateOrderNumber();
 
     let paymentStatus = "PENDING";
     let orderStatus = "PENDING";
@@ -222,14 +200,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Card-to-Card 8-Hour Inventory Hold Window
-    const isCardToCard = paymentMethod === "card_to_card";
-    const reservedUntil = isCardToCard ? new Date(Date.now() + 8 * 60 * 60 * 1000) : null;
+    const reservedUntil = calculateReservationExpiry(paymentMethod);
 
     // 5. Create Order & Atomically Decrement Stock within Prisma $transaction
     // CRITICAL: Sort items deterministically by productId to prevent PostgreSQL 40P01 deadlocks
-    const sortedItemsToLock = [...validatedItems].sort((a, b) =>
-      a.productId.localeCompare(b.productId)
-    );
+    const sortedItemsToLock = sortItemsForDeterministicLock(validatedItems);
 
     const order = await prisma.$transaction(async (tx) => {
       for (const item of sortedItemsToLock) {

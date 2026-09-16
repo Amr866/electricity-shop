@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
-import { prisma } from "./prisma.ts";
-import { toAsciiDigits } from "./utils.ts";
+import { prisma } from "./prisma";
+import { toAsciiDigits } from "./utils";
 
 export interface ParsedBomRow {
   rowNumber: number;

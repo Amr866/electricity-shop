@@ -5,9 +5,15 @@ import { expireStaleRepairEstimates } from "@/lib/repairLifecycle";
 import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
-
 async function handleCron(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+    logger.info("Inbound cron invocation for releasing reservations and stale repairs", {
+      method: req.method,
+      pathname: "/api/cron/release-reservations",
+      ip,
+    });
+
     const authHeader = req.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
 

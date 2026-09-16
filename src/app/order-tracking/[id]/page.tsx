@@ -130,7 +130,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
               پیگیری سفارش
             </Link>
             <span className="text-slate-300 dark:text-slate-700">/</span>
-            <span className="text-slate-900 dark:text-white font-mono font-bold">{order.orderNumber}</span>
+            <span className="text-slate-900 dark:text-white font-mono font-bold"><bdi dir="ltr">{order.orderNumber}</bdi></span>
           </nav>
 
           <Link
@@ -202,7 +202,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
             <div>
               <div className="flex flex-wrap items-center gap-1.5">
                 <h1 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
-                  سفارش: <span className="text-amber-600 dark:text-amber-400 font-mono">{order.orderNumber}</span>
+                  سفارش: <span className="text-amber-600 dark:text-amber-400 font-mono"><bdi dir="ltr">{order.orderNumber}</bdi></span>
                 </h1>
                 
                 {/* Status Badge */}
@@ -426,7 +426,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
             <div className="text-center sm:text-left space-y-0.5 text-xs w-full sm:w-auto flex flex-col items-center sm:items-end">
               <div className="bg-slate-100 dark:bg-slate-800 print:bg-white print:border print:border-black px-2.5 py-1 rounded-lg">
                 <span className="print:text-black text-[11px]">شماره فاکتور: </span>
-                <strong className="font-mono text-slate-950 dark:text-amber-400 print:text-black text-xs">{order.orderNumber}</strong>
+                <strong className="font-mono text-slate-950 dark:text-amber-400 print:text-black text-xs"><bdi dir="ltr">{order.orderNumber}</bdi></strong>
               </div>
               <p className="text-slate-500 dark:text-slate-400 print:text-black text-[10px]">تاریخ: {formatJalaliDateTime(order.createdAt)}</p>
             </div>

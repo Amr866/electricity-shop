@@ -74,7 +74,7 @@ export function calculateDiscount(originalPrice: number, discountedPrice: number
   return Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
 }
 
-import { calculateTieredUnitPrice as engineCalculateTieredUnitPrice } from "./checkoutEngine.ts";
+import { calculateTieredUnitPrice as engineCalculateTieredUnitPrice } from "./checkoutEngine";
 
 // Unified tiered quantity discount pricing calculation (delegated to core checkoutEngine)
 export function calculateTieredUnitPrice(basePrice: number, quantity: number): number {

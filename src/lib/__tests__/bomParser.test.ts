@@ -7,7 +7,7 @@ import {
   scoreProductMatch,
   parseAndMatchContractorBom,
   type ParsedBomRow,
-} from "../bomParser.ts";
+} from "../bomParser";
 
 describe("Contractor BOM Excel Parser & Product Matcher", () => {
   it("normalizes Persian/Arabic digits, characters and spaces correctly", () => {

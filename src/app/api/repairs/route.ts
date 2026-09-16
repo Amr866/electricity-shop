@@ -149,7 +149,6 @@ export async function PATCH(req: NextRequest) {
         customerPhone: updated.customerPhone,
         estimatedCost: updated.estimatedCost,
       });
-      console.log(`📱 [SMS Gateway] Repair cost estimation notification to ${smsPayload.recipient}: ${smsPayload.message}`);
       logger.info("Dispatched automated repair cost estimation SMS", smsPayload);
     }
 

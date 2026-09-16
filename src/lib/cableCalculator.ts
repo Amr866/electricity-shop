@@ -3,7 +3,7 @@
  * Cable Sizer, Voltage Drop, and Miniature Circuit Breaker (MCB) Matching Engine.
  */
 
-import { calculateTieredUnitPrice } from "./checkoutEngine.ts";
+import { calculateTieredUnitPrice } from "./checkoutEngine";
 
 export const STANDARD_COPPER_GAUGES = [
   1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120,

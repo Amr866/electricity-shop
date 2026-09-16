@@ -40,6 +40,27 @@ next-env.d.ts
 # spec-kit local runtime state
 .specify/feature.json
 
-# ai agent assistant skills & workflows
+# ai agent assistant skills, scratch & SDD runtimes
 .agents/
+.superpowers/
+
+# python runtime & test cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+env/
+venv/
+
+# e2e & playwright test artifacts
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# ide & os metadata
+.idea/
+.vscode/
+Thumbs.db
 

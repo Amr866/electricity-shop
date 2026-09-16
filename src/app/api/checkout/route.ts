@@ -63,11 +63,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: firstError }, { status: 400 });
     }
 
-    // Authenticated user linking
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id || null;
-
-    // 1. Batch fetch all products in 1 query to eliminate N+1 roundtrips
+    // 1. Batch fetch products, auth session, and coupon concurrently (Vercel async-parallel pattern)
     const requestedProductIds: string[] = Array.from(
       new Set<string>(
         items
@@ -76,10 +72,20 @@ export async function POST(req: NextRequest) {
       )
     );
 
-    const dbProducts = await prisma.product.findMany({
-      where: { id: { in: requestedProductIds } },
-      include: { images: true },
-    });
+    const [session, dbProducts, coupon] = await Promise.all([
+      getServerSession(authOptions),
+      prisma.product.findMany({
+        where: { id: { in: requestedProductIds } },
+        include: { images: true },
+      }),
+      couponCode
+        ? prisma.coupon.findUnique({
+            where: { code: couponCode.trim().toUpperCase() },
+          })
+        : Promise.resolve(null),
+    ]);
+
+    const userId = session?.user?.id || null;
 
     type ProductWithImages = (typeof dbProducts)[number];
     const productMap = new Map<string, ProductWithImages>(
@@ -157,23 +163,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "سبد خرید خالی است." }, { status: 400 });
     }
 
-    // 2. Server-Side Coupon Verification
+    // 2. Server-Side Coupon Verification (Using pre-fetched coupon from parallel batch)
     let serverCouponDiscount = 0;
-    if (couponCode) {
-      const coupon = await prisma.coupon.findUnique({
-        where: { code: couponCode.trim().toUpperCase() },
-      });
+    if (coupon && coupon.isActive) {
+      const notExpired = !coupon.expiresAt || new Date(coupon.expiresAt) >= new Date();
+      const meetsMin = !coupon.minOrderAmount || serverSubtotal >= coupon.minOrderAmount;
 
-      if (coupon && coupon.isActive) {
-        const notExpired = !coupon.expiresAt || new Date(coupon.expiresAt) >= new Date();
-        const meetsMin = !coupon.minOrderAmount || serverSubtotal >= coupon.minOrderAmount;
-
-        if (notExpired && meetsMin) {
-          if (coupon.discountPercent) {
-            serverCouponDiscount = Math.round((serverSubtotal * coupon.discountPercent) / 100);
-          } else if (coupon.discountAmount) {
-            serverCouponDiscount = Math.min(coupon.discountAmount, serverSubtotal);
-          }
+      if (notExpired && meetsMin) {
+        if (coupon.discountPercent) {
+          serverCouponDiscount = Math.round((serverSubtotal * coupon.discountPercent) / 100);
+        } else if (coupon.discountAmount) {
+          serverCouponDiscount = Math.min(coupon.discountAmount, serverSubtotal);
         }
       }
     }

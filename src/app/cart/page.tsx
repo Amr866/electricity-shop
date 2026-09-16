@@ -34,7 +34,11 @@ interface CartItemRowProps {
   removeFromCart: (id: string) => void;
 }
 
-function CartItemRow({ item, updateQuantity, removeFromCart }: CartItemRowProps) {
+const CartItemRow = React.memo(function CartItemRow({
+  item,
+  updateQuantity,
+  removeFromCart,
+}: CartItemRowProps) {
   const [imgError, setImgError] = useState(false);
   const displayImage = imgError
     ? "/images/products/wal_172619-fans-7995865_1920.jpg"
@@ -133,7 +137,7 @@ function CartItemRow({ item, updateQuantity, removeFromCart }: CartItemRowProps)
       </div>
     </div>
   );
-}
+});
 
 export default function CartPage() {
   const {

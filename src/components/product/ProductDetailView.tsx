@@ -1,11 +1,34 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits, calculateTieredUnitPrice } from "@/lib/utils";
+
+const ProductWiringTab = dynamic(
+  () => import("./ProductWiringTab").then((mod) => mod.ProductWiringTab),
+  {
+    loading: () => (
+      <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse flex items-center justify-center text-xs text-slate-400">
+        در حال بارگذاری نقشه سیم‌بندی...
+      </div>
+    ),
+  }
+);
+
+const ProductReviewsTab = dynamic(
+  () => import("./ProductReviewsTab").then((mod) => mod.ProductReviewsTab),
+  {
+    loading: () => (
+      <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse flex items-center justify-center text-xs text-slate-400">
+        در حال بارگذاری نظرات خریداران...
+      </div>
+    ),
+  }
+);
 import {
   ShoppingCart,
   Check,
@@ -266,17 +289,6 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const [activeTab, setActiveTab] = useState<"specs" | "wiring" | "desc" | "reviews" | "isfahan">("specs");
   const [addedToCart, setAddedToCart] = useState(false);
   const [copiedSku, setCopiedSku] = useState(false);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
-
-  // Review Form State
-  const [reviewerName, setReviewerName] = useState("");
-  const [reviewerCity, setReviewerCity] = useState("نجف‌آباد");
-  const [reviewerRating, setReviewerRating] = useState(5);
-  const [reviewerComment, setReviewerComment] = useState("");
-  const [submittingReview, setSubmittingReview] = useState(false);
-  const [reviewSuccess, setReviewSuccess] = useState(false);
-  const [reviewsList, setReviewsList] = useState<ProductReviewItem[]>(product.reviews || []);
-
   const isFavorited = isInWishlist(product.id);
 
   // Calculate tiered bulk discount unit prices
@@ -287,18 +299,9 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const effectiveUnitPrice = calculateTieredUnitPrice(product.price, quantity);
   const totalSavings = (product.price - effectiveUnitPrice) * quantity;
 
-  // Real-time Rating Analytics Calculation
-  const totalReviews = reviewsList.length;
-  const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-  let ratingSum = 0;
-
-  reviewsList.forEach((rev) => {
-    const r = Math.min(Math.max(rev.rating || 5, 1), 5) as 1 | 2 | 3 | 4 | 5;
-    ratingCounts[r] = (ratingCounts[r] || 0) + 1;
-    ratingSum += r;
-  });
-
-  const averageRating = totalReviews > 0 ? (ratingSum / totalReviews).toFixed(1) : (product.rating || 4.9).toFixed(1);
+  // Rating Analytics
+  const totalReviews = product.reviews?.length || product.reviewCount || 0;
+  const averageRating = (product.rating || 4.9).toFixed(1);
 
   const handleAddToCart = () => {
     if (product.stock <= 0) return;
@@ -312,47 +315,6 @@ export function ProductDetailView({ product }: ProductDetailProps) {
     navigator.clipboard.writeText(textToCopy);
     setCopiedSku(true);
     setTimeout(() => setCopiedSku(false), 2500);
-  };
-
-  const handleDownloadDatasheet = () => {
-    setDownloadingPdf(true);
-    setTimeout(() => {
-      setDownloadingPdf(false);
-      window.print();
-    }, 400);
-  };
-
-  const handleSubmitReview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reviewerName.trim() || !reviewerComment.trim()) return;
-
-    setSubmittingReview(true);
-    try {
-      const res = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product.id,
-          authorName: reviewerName,
-          city: reviewerCity,
-          rating: reviewerRating,
-          comment: reviewerComment,
-        }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setReviewsList([data.review, ...reviewsList]);
-        setReviewSuccess(true);
-        setReviewerName("");
-        setReviewerComment("");
-        setTimeout(() => setReviewSuccess(false), 3000);
-      }
-    } catch {
-      alert("خطا در ارسال نظر.");
-    } finally {
-      setSubmittingReview(false);
-    }
   };
 
   const isOutOfStock = product.stock <= 0;
@@ -875,71 +837,9 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             </div>
           )}
 
-          {/* Tab 2: Visual Wiring Diagram & Schematics */}
+          {/* Tab 2: Visual Wiring Diagram & Schematics (Lazy-loaded) */}
           {activeTab === "wiring" && (
-            <div id="panel-wiring" role="tabpanel" aria-labelledby="tab-wiring" className="space-y-6 max-w-4xl animate-in fade-in zoom-in-98 duration-200">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <div>
-                  <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                    <Cpu className="w-5 h-5 text-amber-500" />
-                    <span>{wiringSchematic.title}</span>
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                    {wiringSchematic.diagramSubtitle}
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleDownloadDatasheet}
-                  disabled={downloadingPdf}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 shrink-0 active:scale-95 hover-glow"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>{downloadingPdf ? "در حال آماده‌سازی پرینت..." : "چاپ شناسنامه فنی (Datasheet)"}</span>
-                </button>
-              </div>
-
-              {/* Interactive Visual Color-Coded Terminal Block Diagram */}
-              <div className="bg-slate-50 dark:bg-slate-850 p-4 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-750 space-y-4">
-                <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-emerald-500" />
-                  <span>راهنمای رنگ‌بندی و پین‌های ترمینال اتصال:</span>
-                </h4>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {wiringSchematic.terminals.map((term, i) => (
-                    <div
-                      key={i}
-                      className="group bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-start gap-3 hover:border-amber-400/80 transition-all shadow-2xs hover:-translate-y-0.5"
-                    >
-                      <div className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold shrink-0 shadow-2xs border ${term.color}`}>
-                        {term.colorName}
-                      </div>
-                      <div className="min-w-0">
-                        <strong className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                          {term.label}
-                        </strong>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed block mt-0.5 font-medium">
-                          {term.functionDesc}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Safety Alert Box */}
-              <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 p-4 rounded-2xl flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div className="space-y-1 text-xs text-amber-950 dark:text-amber-300 leading-relaxed font-medium">
-                  <strong className="block font-bold">نکته ایمنی و نصب تخصصی کارگاه شیاسی:</strong>
-                  <p>
-                    قبل از هرگونه اقدام به اتصال، سیم‌کشی یا تعویض قطعه، جریان برق اصلی را از فیوز یا کلید مینیاتوری قطع نمایید. در صورت نیاز به راهنمایی در نقشه سیم‌بندی، کارشناسان کارگاه فنی شیاسی نجف‌آباد آماده پاسخگویی هستند.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ProductWiringTab wiringSchematic={wiringSchematic} />
           )}
 
           {/* Tab 3: Structured 3-Card Description */}
@@ -994,181 +894,13 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             </div>
           )}
 
-          {/* Tab 4: Reviews with Analytics Summary */}
+          {/* Tab 4: Reviews with Analytics Summary (Lazy-loaded) */}
           {activeTab === "reviews" && (
-            <div id="panel-reviews" role="tabpanel" aria-labelledby="tab-reviews" className="space-y-6 max-w-4xl animate-in fade-in zoom-in-98 duration-200">
-              
-              {/* Rating Analytics Summary Bar */}
-              <div className="bg-slate-50 dark:bg-slate-850 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-750 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-                <div className="sm:col-span-4 text-center sm:border-l sm:border-slate-200 dark:sm:border-slate-750 sm:pl-6 space-y-1">
-                  <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-mono block">
-                    {toPersianDigits(averageRating)}
-                  </span>
-                  <div className="flex items-center justify-center gap-1 text-amber-400">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                    بر اساس {toPersianDigits(totalReviews)} نظر ثبت‌شده
-                  </span>
-                </div>
-
-                {/* Rating breakdown bars */}
-                <div className="sm:col-span-8 space-y-1.5">
-                  {[5, 4, 3, 2, 1].map((stars) => {
-                    const count = ratingCounts[stars as keyof typeof ratingCounts] || 0;
-                    const percent = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : stars === 5 ? 90 : 10;
-                    return (
-                      <div key={stars} className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400">
-                        <span className="w-12 text-[11px] font-bold shrink-0">{toPersianDigits(stars)} ستاره</span>
-                        <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-750 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-amber-400 rounded-full transition-all duration-700 ease-out"
-                            style={{ width: `${percent}%` }}
-                          />
-                        </div>
-                        <span className="w-8 text-[10px] font-mono text-left shrink-0">{toPersianDigits(percent)}٪</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Form */}
-              <div className="bg-slate-50 dark:bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-750">
-                <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white mb-3 flex items-center gap-1.5">
-                  <Star className="w-4 h-4 text-amber-500" />
-                  <span>ثبت دیدگاه یا پرسش درباره این کالا</span>
-                </h4>
-
-                {reviewSuccess ? (
-                  <div className="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 p-3 rounded-xl text-xs font-bold flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>دیدگاه شما با موفقیت ثبت شد و پس از تایید نمایش داده می‌شود.</span>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmitReview} className="space-y-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          نام و نام خانوادگی
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={reviewerName}
-                          onChange={(e) => setReviewerName(e.target.value)}
-                          placeholder="مثال: علی رضایی"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          شهر محل سکونت
-                        </label>
-                        <input
-                          type="text"
-                          value={reviewerCity}
-                          onChange={(e) => setReviewerCity(e.target.value)}
-                          placeholder="نجف‌آباد"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          امتیاز شما به کالا
-                        </label>
-                        <select
-                          value={reviewerRating}
-                          onChange={(e) => setReviewerRating(Number(e.target.value))}
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold"
-                        >
-                          <option value={5}>⭐⭐⭐⭐⭐ (عالی - ۵ از ۵)</option>
-                          <option value={4}>⭐⭐⭐⭐ (خوب - ۴ از ۵)</option>
-                          <option value={3}>⭐⭐⭐ (متوسط - ۳ از ۵)</option>
-                          <option value={2}>⭐⭐ (ضعیف - ۲ از ۵)</option>
-                          <option value={1}>⭐ (خیلی ضعیف - ۱ از ۵)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        متن دیدگاه یا نقد و بررسی
-                      </label>
-                      <textarea
-                        required
-                        rows={3}
-                        value={reviewerComment}
-                        onChange={(e) => setReviewerComment(e.target.value)}
-                        placeholder="کیفیت ساخت، سهولت در استفاده و عملکرد کالا را بنویسید..."
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed font-medium"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={submittingReview}
-                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 hover-glow active:scale-95"
-                    >
-                      <Send className="w-3.5 h-3.5" />
-                      <span>{submittingReview ? "در حال ارسال..." : "ثبت دیدگاه"}</span>
-                    </button>
-                  </form>
-                )}
-              </div>
-
-              {/* Reviews List */}
-              <div className="space-y-3">
-                {reviewsList.length > 0 ? (
-                  reviewsList.map((rev, idx) => (
-                    <div
-                      key={rev.id || idx}
-                      className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 space-y-2 shadow-2xs"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-xs">
-                            {rev.authorName?.slice(0, 1) || "ک"}
-                          </div>
-                          <div>
-                            <strong className="text-xs font-bold text-slate-900 dark:text-white block">
-                              {rev.authorName}
-                            </strong>
-                            <span className="text-[10px] text-slate-400 font-medium">
-                              {rev.city || "نجف‌آباد"}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-0.5 text-amber-400">
-                          {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-amber-400" />
-                          ))}
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed text-justify font-medium">
-                        {rev.comment}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-6 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 text-center space-y-2 bg-slate-50/50 dark:bg-slate-850/50">
-                    <HelpCircle className="w-8 h-8 text-amber-500 mx-auto" />
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      هنوز دیدگاهی برای این محصول ثبت نشده است.
-                    </p>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
-                      تجربه نصب یا سوال فنی خود را در فرم بالا بنویسید تا کارشناسان کارگاه شیاسی پاسخ دهند.
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
+            <ProductReviewsTab
+              productId={product.id}
+              initialReviews={product.reviews || []}
+              defaultRating={product.rating || 4.9}
+            />
           )}
 
           {/* Tab 5: 3-Step Illustrated Delivery Timeline */}

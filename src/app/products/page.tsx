@@ -1,14 +1,26 @@
 import React from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { ProductCard } from "@/components/product/ProductCard";
-import { MobileSearchFilterBar } from "@/components/product/MobileSearchFilterBar";
 import { PriceFilterWidget } from "@/components/product/PriceFilterWidget";
 import { BrandFilterWidget } from "@/components/product/BrandFilterWidget";
 import { CategoryFilterWidget } from "@/components/product/CategoryFilterWidget";
 import { DeliveryFilterWidget } from "@/components/product/DeliveryFilterWidget";
 import { Pagination } from "@/components/product/Pagination";
+
+const MobileSearchFilterBar = dynamic(
+  () =>
+    import("@/components/product/MobileSearchFilterBar").then(
+      (mod) => mod.MobileSearchFilterBar
+    ),
+  {
+    loading: () => (
+      <div className="lg:hidden mb-4 h-12 bg-slate-100 dark:bg-slate-900 rounded-2xl animate-pulse" />
+    ),
+  }
+);
 import {
   SlidersHorizontal,
   Search,

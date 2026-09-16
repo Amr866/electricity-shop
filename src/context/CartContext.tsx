@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { calculateTieredUnitPrice } from "@/lib/checkoutEngine";
 
 export interface CartItem {
   id: string; // Product ID
@@ -53,14 +54,9 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Helper to compute unit price based on tiered quantity
+// Helper to compute unit price based on tiered quantity via central checkout engine
 function computeTieredUnitPrice(basePrice: number, qty: number): number {
-  if (qty >= 50) {
-    return Math.round(basePrice * 0.9); // 10% wholesale discount
-  } else if (qty >= 10) {
-    return Math.round(basePrice * 0.95); // 5% pack discount
-  }
-  return basePrice;
+  return calculateTieredUnitPrice(basePrice, qty).unitPrice;
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {

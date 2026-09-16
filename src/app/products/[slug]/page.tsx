@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cache, Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -13,11 +13,24 @@ interface ProductPageProps {
   }>;
 }
 
+// React.cache for request-scoped deduplication across metadata & page rendering
+const getCachedProduct = cache(async (slug: string) => {
+  return prisma.product.findUnique({
+    where: { slug },
+    include: {
+      category: true,
+      images: true,
+      specs: true,
+      reviews: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+});
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-  });
+  const product = await getCachedProduct(slug);
 
   if (!product) {
     return {
@@ -39,30 +52,19 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-  const { slug } = await params;
-
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      category: true,
-      images: true,
-      specs: true,
-      reviews: {
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
-
-  if (!product) {
-    notFound();
-  }
-
-  // Fetch related products from the same category
+async function RelatedProductsSection({
+  categoryId,
+  currentProductId,
+  categorySlug,
+}: {
+  categoryId: string;
+  currentProductId: string;
+  categorySlug: string;
+}) {
   const relatedProducts = await prisma.product.findMany({
     where: {
-      categoryId: product.categoryId,
-      id: { not: product.id },
+      categoryId,
+      id: { not: currentProductId },
     },
     take: 4,
     include: {
@@ -70,6 +72,53 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       images: true,
     },
   });
+
+  if (relatedProducts.length === 0) return null;
+
+  return (
+    <div className="pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <Zap className="w-5 h-5 text-amber-500" />
+          <span>کالاهای مرتبط و مکمل</span>
+        </h2>
+        <Link
+          href={`/products?category=${categorySlug}`}
+          className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
+        >
+          مشاهده همه موارد این دسته
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-stretch">
+        {relatedProducts.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RelatedProductsSkeleton() {
+  return (
+    <div className="pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-800 animate-pulse space-y-4">
+      <div className="h-6 bg-slate-200 dark:bg-slate-850 rounded-md w-48" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-64 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  const { slug } = await params;
+  const product = await getCachedProduct(slug);
+
+  if (!product) {
+    notFound();
+  }
 
   // Schema.org JSON-LD Structured Data for Google Rich Snippets
   const primaryImage =
@@ -147,29 +196,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         {/* Main Product Component */}
         <ProductDetailView product={product as ProductDetailData} />
 
-        {/* Related Products Grid */}
-        {relatedProducts.length > 0 && (
-          <div className="pt-6 sm:pt-8 border-t border-slate-200 dark:border-slate-800">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-500" />
-                <span>کالاهای مرتبط و مکمل</span>
-              </h2>
-              <Link
-                href={`/products?category=${product.category.slug}`}
-                className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
-              >
-                مشاهده همه موارد این دسته
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 items-stretch">
-              {relatedProducts.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Streaming Related Products Section */}
+        <Suspense fallback={<RelatedProductsSkeleton />}>
+          <RelatedProductsSection
+            categoryId={product.categoryId}
+            currentProductId={product.id}
+            categorySlug={product.category.slug}
+          />
+        </Suspense>
 
       </div>
     </div>

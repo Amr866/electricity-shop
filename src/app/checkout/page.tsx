@@ -131,8 +131,11 @@ export default function CheckoutPage() {
           shippingCost,
           paymentMethod: selectedPayment,
           receiptImage: cardReceiptProof || null,
-          notes,
-          items,
+          items: items.map((i) => ({
+            productId: i.id,
+            name: i.name,
+            quantity: i.quantity,
+          })),
           subtotal,
           discount,
           totalAmount: grandTotal,

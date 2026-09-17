@@ -112,7 +112,7 @@ export function ProductReviewsTab({
         <div className="sm:col-span-2 space-y-1.5">
           {[5, 4, 3, 2, 1].map((stars) => {
             const count = ratingCounts[stars as keyof typeof ratingCounts] || 0;
-            const percent = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : stars === 5 ? 90 : 10;
+            const percent = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
             return (
               <div key={stars} className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                 <span className="w-12 text-[11px] font-bold shrink-0">{toPersianDigits(stars)} ستاره</span>

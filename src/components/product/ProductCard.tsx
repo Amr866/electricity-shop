@@ -22,9 +22,22 @@ function formatBrandName(brand?: string | null): string {
   return brand.replace(/\s*\(.*?\)/g, "").trim();
 }
 
-function getPriceUnit(name: string): string | null {
+function getPriceUnit(name: string, categorySlug?: string): string | null {
   if (name.includes("کلاف")) return "/کلاف";
-  if (name.includes("سیم") || name.includes("کابل")) return "/متر";
+  // Exclude motor winding, motors, and accessories
+  if (name.includes("سیم‌پیچ") || name.includes("موتور") || name.includes("پمپ")) return null;
+
+  const isCableOrWireName =
+    (name.includes("کابل") && !name.includes("کولر")) ||
+    name.startsWith("سیم ") ||
+    name.includes("سیم نایلون") ||
+    name.includes("سیم افشان") ||
+    name.includes("سیم مفتول") ||
+    name.includes("سیم ارت");
+
+  if (isCableOrWireName) {
+    return "/متر";
+  }
   return null;
 }
 
@@ -84,7 +97,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const isOutOfStock = product.stock <= 0;
   const brandLabel = formatBrandName(product.brand);
-  const priceUnit = getPriceUnit(product.name);
+  const priceUnit = getPriceUnit(product.name, product.category?.slug);
 
   return (
     <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15 transition-all duration-300 flex flex-col justify-between h-full overflow-hidden">
@@ -166,8 +179,8 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
 
           {/* Rating & Warranty / Delivery Badge */}
-          <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 pt-1">
-            <div className="flex items-center gap-1 text-amber-500">
+          <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 pt-1 min-h-[22px] gap-1">
+            <div className="flex items-center gap-1 text-amber-500 shrink-0">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span className="font-bold text-slate-700 dark:text-slate-300 text-[10px] sm:text-[11px]">
                 {toPersianDigits(product.rating || 4.9)}
@@ -175,12 +188,12 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {product.warranty ? (
-              <span className="text-[9px] sm:text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800 shrink-0 flex items-center gap-0.5">
-                <ShieldCheck className="w-2.5 h-2.5" />
-                <span className="truncate max-w-[120px]">{product.warranty}</span>
+              <span className="text-[9px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200/60 dark:border-emerald-800 shrink-0 flex items-center gap-0.5 max-w-[95px] sm:max-w-[130px]">
+                <ShieldCheck className="w-2.5 h-2.5 shrink-0" />
+                <span className="truncate">{product.warranty}</span>
               </span>
             ) : product.isIsfahanFast ? (
-              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 font-bold">
+              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 font-bold shrink-0">
                 <Truck className="w-2.5 h-2.5" />
                 <span>ارسال فوری</span>
               </span>

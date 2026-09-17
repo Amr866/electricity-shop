@@ -162,7 +162,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-8 transition-colors duration-200">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-8 pb-32 sm:pb-12 transition-colors duration-200">
       {/* Inject JSON-LD Schema.org markup for Search Engines */}
       <script
         type="application/ld+json"
@@ -188,9 +188,9 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             {product.category.name}
           </Link>
           <ChevronLeft className="w-3.5 h-3.5 shrink-0" />
-          <span className="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-xs">
+          <bdi dir="rtl" className="text-slate-900 dark:text-white font-bold shrink-0">
             {product.name}
-          </span>
+          </bdi>
         </nav>
 
         {/* Main Product Component */}

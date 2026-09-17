@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
@@ -77,14 +77,8 @@ export interface ProductSpecItem {
   group?: string | null;
 }
 
-export interface ProductReviewItem {
-  id?: string;
-  authorName: string;
-  rating: number;
-  comment: string;
-  city?: string | null;
-  createdAt?: Date;
-}
+import type { ProductReviewItem } from "./ProductReviewsTab";
+export type { ProductReviewItem };
 
 export interface ProductImageItem {
   id?: string;
@@ -291,6 +285,48 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const [copiedSku, setCopiedSku] = useState(false);
   const isFavorited = isInWishlist(product.id);
 
+  const buyCardRef = useRef<HTMLDivElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const target = buyCardRef.current;
+    if (!target) return;
+
+    const checkVisibility = () => {
+      const rect = target.getBoundingClientRect();
+      // Show sticky bar ONLY when main buy card has scrolled off the top of the screen
+      setShowStickyBar(rect.bottom < 0);
+    };
+
+    window.addEventListener("scroll", checkVisibility, { passive: true });
+
+    const observer = new IntersectionObserver(
+      () => {
+        checkVisibility();
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+    observer.observe(target);
+
+    checkVisibility();
+
+    return () => {
+      window.removeEventListener("scroll", checkVisibility);
+      observer.disconnect();
+    };
+  }, []);
+
+  const isWiring =
+    product.category?.slug === "wiring" ||
+    product.category?.slug === "cable" ||
+    product.category?.slug === "wiring-building" ||
+    (product.name.includes("کابل") && !product.name.includes("کولر"));
+
+  const unitLabel = isWiring ? "متر" : "عدد";
+  const tierTitle = isWiring
+    ? "تخفیف پله‌ای خرید عمده و متراژ بالا:"
+    : "تخفیف پله‌ای خرید عمده و تعداد بالا:";
+
   // Calculate tiered bulk discount unit prices
   const tier1Price = calculateTieredUnitPrice(product.price, 1);
   const tier2Price = calculateTieredUnitPrice(product.price, 10);
@@ -328,7 +364,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const contractorWhatsAppUrl = `https://wa.me/989136260072?text=${contractorWhatsAppMessage}`;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-32 sm:pb-12">
       
       {/* ========================================================================= */}
       {/* 0. DEDICATED OFFICIAL PRINT-ONLY ENGINEERING DATASHEET (Visible only on print) */}
@@ -553,7 +589,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
               <div className="flex items-center justify-between text-[11px] font-extrabold text-amber-900 dark:text-amber-300">
                 <span className="flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                  <span>تخفیف پله‌ای خرید عمده و متراژ بالا:</span>
+                  <span>{tierTitle}</span>
                 </span>
                 {totalSavings > 0 && (
                   <span className="text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700 animate-pulse">
@@ -570,7 +606,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                       : "bg-white/50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
                   }`}
                 >
-                  <span className="text-[10px] block font-medium mb-0.5">۱ تا ۹ عدد</span>
+                  <span className="text-[10px] block font-medium mb-0.5">۱ تا ۹ {unitLabel}</span>
                   <strong className="text-slate-900 dark:text-slate-100 text-xs font-mono">{formatToman(tier1Price)}</strong>
                 </div>
 
@@ -581,7 +617,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                       : "bg-white/50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
                   }`}
                 >
-                  <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block font-bold mb-0.5">۱۰ تا ۴۹ عدد (۵٪)</span>
+                  <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block font-bold mb-0.5">۱۰ تا ۴۹ {unitLabel} (۵٪)</span>
                   <strong className="text-slate-900 dark:text-slate-100 text-xs font-mono">{formatToman(tier2Price)}</strong>
                 </div>
 
@@ -592,7 +628,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                       : "bg-white/50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400"
                   }`}
                 >
-                  <span className="text-[10px] text-rose-700 dark:text-rose-400 block font-bold mb-0.5">۵۰+ عدد (۱۰٪)</span>
+                  <span className="text-[10px] text-rose-700 dark:text-rose-400 block font-bold mb-0.5">۵۰+ {unitLabel} (۱۰٪)</span>
                   <strong className="text-slate-900 dark:text-slate-100 text-xs font-mono">{formatToman(tier3Price)}</strong>
                 </div>
               </div>
@@ -609,7 +645,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
           </div>
 
           {/* Pricing & Checkout Box */}
-          <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 space-y-3.5 shadow-sm">
+          <div ref={buyCardRef} className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 space-y-3.5 shadow-sm">
             <div className="flex items-baseline justify-between">
               <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">مبلغ کل قابل پرداخت:</span>
               <div className="flex flex-col items-end">
@@ -973,9 +1009,15 @@ export function ProductDetailView({ product }: ProductDetailProps) {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. Mobile Sticky Bottom Buy Bar (Shows on Mobile for Quick Action) */}
+      {/* 3. Mobile Sticky Bottom Buy Bar (Only visible when scrolled past main buy box) */}
       {/* ========================================================================= */}
-      <div className="print:hidden sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 border-t border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-300">
+      <div
+        className={`print:hidden sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 border-t border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-between gap-3 transition-all duration-300 ${
+          showStickyBar
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "translate-y-full opacity-0 pointer-events-none"
+        }`}
+      >
         <div className="flex flex-col">
           <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">قیمت واحد:</span>
           <span className="text-sm font-black text-slate-950 dark:text-amber-400 font-mono">

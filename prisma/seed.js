@@ -154,7 +154,7 @@ async function main() {
       warranty: '۲ سال ضمانت طلایی تعویض موتوژن',
       madeIn: 'ایران (تبریز اصل)',
       rating: 4.9,
-      reviewCount: 52,
+      reviewCount: 3,
       images: [
         { url: '/images/products/موتور-کولر-موتوژن-3-4.jpg', isPrimary: true, alt: 'موتور کولر آبی موتوژن تبریز' },
         { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: false, alt: 'الکتروموتور سیم‌پیچی مس' },
@@ -163,6 +163,29 @@ async function main() {
         { label: 'قدرت موتور', value: '۱/۲ اسب بخار (1/2 HP)' },
         { label: 'جنس سیم‌پیچ', value: '۱۰۰٪ مس استاندارد' },
         { label: 'سرعت', value: 'دو دور (کند ۹۵۰ دور / تند ۱۴۲۵ دور)' },
+      ],
+      reviews: [
+        {
+          authorName: 'مهندس احمد رضایی',
+          city: 'نجف‌آباد',
+          rating: 5,
+          comment: 'برای کولر ۴۵۰۰ نصب کردیم، بسیار کم‌صدا و پرقدرت هست. سیم‌پیچ تمام مس با خازن روغنی استاندارد.',
+          isVerified: true
+        },
+        {
+          authorName: 'کریم مرادی',
+          city: 'اصفهان',
+          rating: 5,
+          comment: 'گارانتی طلایی موتوژن تبریز همراه با فاکتور معتبر فروشگاه شیاسی ارسال شد. عالی.',
+          isVerified: true
+        },
+        {
+          authorName: 'حسین صادقی',
+          city: 'یزدانشهر',
+          rating: 5,
+          comment: 'تحویل سریع با پیک فروشگاه کمتر از ۳ ساعت. کیفیت قطعات و سلامت فیزیکی عالی بود.',
+          isVerified: true
+        }
       ]
     },
 
@@ -186,15 +209,45 @@ async function main() {
       warranty: '۲۴ ماه گارانتی شرکتی موتوژن',
       madeIn: 'ایران',
       rating: 5.0,
-      reviewCount: 40,
+      reviewCount: 4,
       images: [
         { url: '/images/products/موتور-کولر-موتوژن-3-4.jpg', isPrimary: true, alt: 'موتور کولر ۳/۴ موتوژن' },
-        { url: '/images/products/is463940-generator-5476642_1920.jpg', isPrimary: false, alt: 'دینام کولر آبی موتوژن' }
+        { url: '/images/products/adonyig-machine-3098797_1920.jpg', isPrimary: false, alt: 'دینام کولر آبی سیم‌پیچی مس موتوژن' }
       ],
       specs: [
         { label: 'توان', value: '۳/۴ اسب بخار' },
         { label: 'مناسب کولر', value: 'کولر آبی ۶۰۰۰، ۶۵۰۰ و ۷۰۰۰' },
         { label: 'سیم‌پیچ', value: 'مس خالص' }
+      ],
+      reviews: [
+        {
+          authorName: 'مهندس رضا کریمی',
+          city: 'نجف‌آباد',
+          rating: 5,
+          comment: 'دینام موتوژن تبریز اصل هست، سیم‌پیچی تمام مس با خازن روغنی باکیفیت. روی کولر ۷۰۰۰ نصب کردیم باددهی و پرتاب باد عالیه بدون لرزش و صدا.',
+          isVerified: true
+        },
+        {
+          authorName: 'حاج علی قاسم‌پور',
+          city: 'اصفهان',
+          rating: 5,
+          comment: 'از کارگاه شیاسی خرید حضوری کردم و همونجا برام تست دور کند و تند گرفتن. خیلی راضی‌ام، گارانتی شرکتی موتوژن هم داره.',
+          isVerified: true
+        },
+        {
+          authorName: 'مهرداد نادری',
+          city: 'شاهین‌شهر',
+          rating: 5,
+          comment: 'کیفیت ساخت عالی و گشتاور راه‌اندازی بالا. برای کولر ۶۵۰۰ استفاده کردیم تو اوج گرمای تابستون اصلا داغ نکرد.',
+          isVerified: true
+        },
+        {
+          authorName: 'علیرضا اسماعیلی',
+          city: 'ویلاشهر',
+          rating: 5,
+          comment: 'تحویل فوری با اسنپ‌باکس کمتر از ۲ ساعت دستم رسید. بسته‌بندی عالی بود و سلامت فیزیکی کاملا تضمین شده.',
+          isVerified: true
+        }
       ]
     },
 
@@ -511,6 +564,29 @@ async function main() {
     await prisma.repairRequest.create({ data: r });
   }
   console.log(`  ✓ Seeded sample repair requests.`);
+
+  // 7. Seed Default Admin Accounts with scrypt-hashed passwords
+  const crypto = require("crypto");
+  function hashPassword(password) {
+    const salt = crypto.randomBytes(16).toString("hex");
+    const derivedKey = crypto.scryptSync(password, salt, 64);
+    return `${salt}:${derivedKey.toString("hex")}`;
+  }
+
+  const defaultAdminPass = hashPassword("admin123");
+  await prisma.user.upsert({
+    where: { phone: "09136260072" },
+    update: { role: "ADMIN", password: defaultAdminPass, isVerified: true },
+    create: {
+      phone: "09136260072",
+      name: "مهندس شیاسی",
+      role: "ADMIN",
+      password: defaultAdminPass,
+      isVerified: true,
+      city: "نجف‌آباد",
+    },
+  });
+  console.log(`  ✓ Seeded default admin account (09136260072).`);
 
   console.log('✅ Seeding completed successfully!');
 }

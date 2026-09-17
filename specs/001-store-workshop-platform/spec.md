@@ -14,6 +14,12 @@
 - Q: What retry throttling and fallback mechanism should apply when a customer requests an SMS OTP verification code? → A: Enforce a 60-second resend cooldown, maximum 3 OTP requests per 15 minutes per phone number, with optional password login fallback if an account password has been configured.
 - Q: How should customer cost approval be recorded when a technical repair ticket reaches the Cost Estimated stage? → A: Hybrid online & SMS workflow: dispatch an automated SMS with direct tracking link upon cost estimation, provide 1-click "Approve Cost" and "Decline Repair" buttons on the customer tracking portal, and permit technicians to log verbal phone approvals in the admin console.
 
+### Session 2026-09-17
+- Q: When a customer submits a new product review or rating on the website, should it be published immediately or held in an admin moderation queue for approval? → A: Admin Moderation Queue: Reviews are saved as pending (`isVerified: false`) and only appear on the product page and update the average rating once approved by an admin.
+- Q: How should administrators be defined and managed for the website? → A: CLI Command-Line Only: Admins are created or promoted via a secure server-side script (`node scripts/create-admin.js`) for maximum security isolation.
+- Q: Should Cash on Delivery (COD / پرداخت در محل) be strictly restricted to local deliveries in Najafabad and Isfahan, or enabled nationwide? → A: Strictly Local Only: COD is available only for Najafabad courier, Isfahan express (SnappBox), and in-store pickup; it is automatically disabled for Post and Tipax.
+- Q: When a new customer verifies their SMS OTP for the first time, how should their full name be collected? → A: Immediate Inline Name Step: An inline prompt for full name is presented right after 5-digit OTP verification before redirecting.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Digital Catalog Browsing & Multi-Keyword Persian Search (Priority: P1)

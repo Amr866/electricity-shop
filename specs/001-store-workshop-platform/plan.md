@@ -122,6 +122,42 @@ src/
 
 ---
 
+## Plan Extension: UI/UX Fixes, Product Architecture, Checkout & Unified Authentication (2026-09-17)
+
+### Technical Architecture & Decisions
+
+1. **Desktop Header Jitter Elimination**:
+   - Introduce scroll threshold hysteresis (`hide > 160px`, `show < 80px`) in `Header.tsx`.
+   - Ensure sticky header wrapper isolates height collapse from document scroll offset, preventing the 60fps flicker loop.
+   - Remove `max-w-[210px]` on the mobile brand container to prevent "فروشگ..." brand title truncation.
+
+2. **Catalog & Mobile Detail View Refinements**:
+   - In `ProductCard.tsx`, update `getPriceUnit` to bind `/متر` strictly to `category.slug === 'cable' || category.slug === 'wiring'`, explicitly excluding motor winding descriptions (`"سیم‌پیچ"`, `"سیم‌پیچی"`).
+   - Rebalance card visual hierarchy: separate rating stars and warranty badges on 2-column mobile grids to eliminate horizontal collision.
+   - In `ProductDetailView.tsx`, implement `IntersectionObserver` to trigger the mobile sticky buy bar only when the main purchase box scrolls out of view.
+   - Add `pb-32 sm:pb-12` bottom clearance so floating sticky bars never occlude form inputs, submit buttons, or card details.
+   - In `ProductReviewsTab.tsx`, fix the 130% distribution bar math bug for 0-review products.
+
+3. **Checkout Validation & Cash on Delivery (COD)**:
+   - Make 10-digit postal code (`postalCode`) strictly mandatory across client and server (`/api/checkout`), with real-time Persian helper error messages.
+   - Restrict Cash on Delivery (`cod_isfahan`) to local delivery options (Najafabad courier, Isfahan express, store pickup). Automatically disable COD when Post or Tipax is selected.
+   - Update checkout submit button dynamically to "ثبت سفارش با پرداخت در محل" with truck icon when COD is selected.
+   - On `/order-tracking/[id]`, display an unambiguous reassurance banner confirming that no online payment is required and settlement occurs upon delivery via mobile POS or cash.
+
+4. **Unified Authentication Architecture**:
+   - Unify customer and admin authentication into a single step-based phone entry flow on `/auth/login`.
+   - Query `/api/auth/check-user` to inspect account capabilities:
+     - Admin / password-enabled accounts can toggle between **"ورود با رمز عبور"** (Password) and **"ارسال کد یکبار مصرف (SMS OTP)"**.
+     - Standard customer accounts receive a 5-digit SMS OTP with 120s countdown.
+     - New phone numbers are automatically registered in PostgreSQL upon OTP verification, with an immediate inline prompt for their full name.
+   - Admin accounts are strictly managed via the server-side CLI tool `scripts/create-admin.js` for security isolation.
+
+5. **Admin Orders Management**:
+   - Add `DELETE /api/admin/orders` supporting single and bulk test-order deletion with Prisma transaction cascade cleanup.
+   - Add interactive confirmation modal in `OrdersAdminClient.tsx` with a one-click "حذف سفارش‌های تستی / نمونه" feature.
+
+---
+
 ## Complexity Tracking
 
 > No constitutional violations or unwarranted complexities detected. The architecture preserves direct Prisma database access, Next.js route handlers, and in-memory static fallbacks without unnecessary third-party microservices.

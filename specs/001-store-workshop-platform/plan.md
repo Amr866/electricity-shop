@@ -158,6 +158,61 @@ src/
 
 ---
 
+## Plan Extension: Media Assets Migration & Smart Guarded Admin Deletions (2026-09-17)
+
+### Technical Architecture & Decisions
+
+1. **Product Media Assets Consolidation & Next.js Rewrites (FR-042)**:
+   - Create a dedicated migration script `scripts/migrate-images.js`:
+     - Inspect files in root `/Images/` and `/public/images/products/`.
+     - Move/copy all unique product image files to `/public/uploads/products/` with UTF-8 safe filename handling.
+     - Update all `ProductImage.url` and `Category.image` database rows to point to `/uploads/products/<filename>`.
+     - Update `prisma/seed.js` to reference `/uploads/products/...` directly.
+     - Remove redundant source folders after successful migration.
+   - Configure transparent URL rewriting in `next.config.ts`:
+     - Map `/images/products/:path*` to `/uploads/products/:path*` in `async rewrites()` to prevent broken 404 image errors on client caches.
+
+2. **Products Smart Guarded Deletion Architecture (FR-041)**:
+   - Database schema enhancement: add `isArchived Boolean @default(false)` to `Product` model in `prisma/schema.prisma`.
+   - Implement `DELETE /api/admin/products/[id]` and `DELETE /api/admin/products` (bulk):
+     - Query `OrderItem` count for target product IDs.
+     - **For products with 0 orders**: execute full cascade deletion of `ProductSpec`, `ProductImage`, and `Review` records within a `$transaction`, unlinking local image files.
+     - **For products with >= 1 orders**: prevent hard deletion; update `isArchived: true` and `stock: 0`, preserving invoice history and foreign key constraints.
+   - Update storefront catalog queries (`src/app/products/page.tsx`, `src/app/products/[slug]/page.tsx`, `src/app/api/search/route.ts`) to filter `where: { isArchived: false }`.
+   - Update `ProductsAdminClient.tsx`:
+     - Add single and bulk delete buttons.
+     - Add segmented view tabs: **"کاتالوگ فعال"** vs **"آرشیو شده‌ها"**.
+     - Display a summary badge on deletion: *"X کالا به طور کامل حذف شد و Y کالا به دلیل داشتن سابقه فاکتور به بایگانی منتقل شد"*.
+
+3. **BOM Inquiries Two-Stage Archival & Purge (FR-043)**:
+   - Database schema enhancement: add `isArchived Boolean @default(false)` to `BOMSubmission` model.
+   - Implement `PATCH /api/admin/boms/[id]/archive` to toggle archive/restore state.
+   - Implement `DELETE /api/admin/boms/[id]` and bulk delete for permanent purge:
+     - Unlink physical uploaded file (`.xlsx`, `.xls`, `.pdf`) from disk (`public/uploads/boms/`).
+     - Delete database record.
+   - Update `BomsAdminClient.tsx`:
+     - Add segmented view tabs: **"استعلام‌های جاری"** vs **"بایگانی‌شده‌ها"**.
+     - In active view: action button is "انتقال به بایگانی" (Archive).
+     - In archive view: action buttons are "بازگردانی" (Restore) and "حذف قطعی" (Permanent Purge).
+
+4. **Workshop Repairs Hybrid Safety-Locked Archival (FR-044)**:
+   - Database schema enhancement: add `isArchived Boolean @default(false)` to `RepairRequest` model.
+   - Implement `DELETE /api/admin/repairs/[id]` and bulk delete:
+     - Guard check: if `status` is in `['SUBMITTED', 'RECEIVED', 'INSPECTING', 'COST_ESTIMATED', 'REPAIRING', 'READY']`, reject with status 400 (*"دستگاه‌های فعال و در حال انجام کار در کارگاه قابل حذف نیستند"*).
+     - If `status` is `COMPLETED` or `CANCELLED`, permit deletion.
+   - Update `RepairsAdminClient.tsx`:
+     - Disable delete button on in-progress rows with clear tooltip explanation.
+     - Add **"بایگانی سوابق فنی کارگاه"** tab for completed and cancelled tickets.
+     - Permit permanent purge modal exclusively from within the archive view.
+
+5. **Universal Smart Friction Deletion Modal (FR-045)**:
+   - Implement reusable component `src/components/admin/ConfirmDeleteModal.tsx`:
+     - Small batches (1-3 items): displays item titles, affected count, cancel button, and red action button.
+     - Large batches (>3 items or "حذف همه"): requires typing the word **"حذف"** in a confirmation text input before enabling the red action button.
+     - Fully accessible: `role="alertdialog"`, `aria-modal="true"`, focus trap on open, dismiss on `Escape` key, Vazirmatn Persian typography.
+
+---
+
 ## Complexity Tracking
 
 > No constitutional violations or unwarranted complexities detected. The architecture preserves direct Prisma database access, Next.js route handlers, and in-memory static fallbacks without unnecessary third-party microservices.

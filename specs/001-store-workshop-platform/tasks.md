@@ -17,6 +17,12 @@
 | **Phase 6** | Admin Orders Management & Sample Deletion | P2 | Single & bulk test order deletion with confirmation modal |
 | **Phase 7** | Unified Single-Flow Authentication UI | P2 | Single phone entry, password vs. OTP toggle for admins, auto-registration for customers |
 | **Phase 8** | Polish, Build & End-to-End Playwright Verification | Final | TypeScript typecheck, build validation, and Playwright verification across mobile/desktop |
+| **Phase 9** | Product Media Assets Consolidation & Next.js Rewrites | Foundational | Single uploads folder, seed URL updates, and Next.js backward-compatible rewrites |
+| **Phase 10** | Products Smart Guarded Deletion | P2 | Safe order-history check, archive transition vs hard delete, and admin catalog tabs |
+| **Phase 11** | BOM Inquiries Two-Stage Archival & Purge | P2 | Inquiries archive toggle, restore action, and permanent disk purge with Excel unlinking |
+| **Phase 12** | Workshop Repairs Safety-Locked Archival | P2 | Active repair protection, technical history archive, and terminal ticket deletion |
+| **Phase 13** | Universal Smart Friction Deletion Modal & WCAG | P2 | Count-aware friction modal (type "حذف" >3 items), keyboard trap, and accessible alerts |
+| **Phase 14** | Automated Verification & Full Test Suite | Final | End-to-end integration tests for image routing, guarded deletion, and full system typecheck |
 
 ---
 
@@ -122,6 +128,76 @@
 
 ---
 
+## Phase 9: Product Media Assets Consolidation & Next.js Rewrites (Foundational)
+
+**Goal**: Consolidate product image assets into `/public/uploads/products/` as the single source of truth, update database seed references, and configure transparent Next.js rewrites for zero broken images.
+
+**Independent Test**: Request `/images/products/alborz-cable-1.jpg` and `/uploads/products/alborz-cable-1.jpg` in browser/curl, verify both return HTTP 200 and identical image bytes.
+
+- [ ] T032 [P] Create migration script `scripts/migrate-images.js` to copy/move images from root `/Images` and `/public/images/products` into `/public/uploads/products/`
+- [ ] T033 [P] Update image references in `prisma/seed.js` and database rows (`ProductImage.url`, `Category.image`) to use `/uploads/products/...`
+- [ ] T034 [P] Configure transparent Next.js URL rewrite in `next.config.ts` mapping `/images/products/:path*` to `/uploads/products/:path*`
+- [ ] T035 Execute image migration script `scripts/migrate-images.js` and clean up empty redundant source directories
+
+---
+
+## Phase 10: Products Smart Guarded Deletion (Priority: P2)
+
+**Goal**: Implement smart guarded deletion for products: permanently delete products with zero orders along with disk images; archive products with historical order items (`isArchived: true`) to preserve financial/order integrity.
+
+**Independent Test**: Attempt deleting a zero-order product (verify hard delete from DB); attempt deleting a product with 1+ orders (verify status transitions to `isArchived: true` and stock becomes 0); query public catalog (verify archived item is excluded); view admin catalog (verify item appears under "آرشیو شده‌ها").
+
+- [ ] T036 [P] Add `isArchived Boolean @default(false)` to `Product` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [ ] T037 [US9] Implement `DELETE /api/admin/products` and `DELETE /api/admin/products/[id]` with `OrderItem` count check (hard delete + image unlink if 0 orders; `isArchived: true` if >=1 orders) in `src/app/api/admin/products/route.ts` and `src/app/api/admin/products/[id]/route.ts`
+- [ ] T038 [US9] Update public catalog queries in `src/app/products/page.tsx`, `src/app/products/[slug]/page.tsx`, and `src/app/api/search/route.ts` to filter `where: { isArchived: false }`
+- [ ] T039 [US9] Update `src/app/admin/products/ProductsAdminClient.tsx` with single/bulk deletion actions, summary badge feedback, and active vs. archived catalog view tabs
+
+---
+
+## Phase 11: BOM Inquiries Two-Stage Archival & Purge (Priority: P2)
+
+**Goal**: Provide a two-stage archival and purge workflow for contractor Bill of Materials (BOM) inquiries, protecting active submissions while permitting permanent purging of physical Excel/PDF files.
+
+**Independent Test**: Move an inquiry to archive (verify `isArchived: true` and file preserved on disk); click restore (verify `isArchived: false`); click permanent purge in archive tab (verify DB row deleted and uploaded file deleted from disk).
+
+- [ ] T040 [P] Add `isArchived Boolean @default(false)` to `BOMSubmission` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [ ] T041 [US9] Implement `PATCH /api/admin/boms/[id]/archive` (toggle archive) and `DELETE /api/admin/boms/[id]` (permanent purge with physical Excel file unlinking from `public/uploads/boms/`) in `src/app/api/admin/boms/[id]/archive/route.ts` and `src/app/api/admin/boms/[id]/route.ts`
+- [ ] T042 [US9] Update `src/app/admin/boms/BomsAdminClient.tsx` with segmented tabs (active vs. archived), 1-click restore action, and permanent purge confirmation modal
+
+---
+
+## Phase 12: Workshop Repairs Safety-Locked Archival (Priority: P2)
+
+**Goal**: Safeguard active workshop repair jobs from deletion, while routing completed and cancelled tickets to a searchable technical history archive with restricted permanent purge.
+
+**Independent Test**: Attempt deleting a repair ticket in `INSPECTING` status (verify HTTP 400 error and rejection); complete the ticket and delete (verify transition to `isArchived: true` in technical archive); purge terminal ticket from archive view (verify record removed).
+
+- [ ] T043 [P] Add `isArchived Boolean @default(false)` to `RepairRequest` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [ ] T044 [US9] Implement `DELETE /api/admin/repairs/[id]` in `src/app/api/admin/repairs/[id]/route.ts` and bulk delete in `src/app/api/admin/repairs/route.ts` rejecting in-progress stages (`INSPECTING`, `COST_ESTIMATED`, `REPAIRING`, `READY`) and allowing deletion only for terminal states (`COMPLETED`, `CANCELLED`)
+- [ ] T045 [US9] Update `src/app/admin/repairs/RepairsAdminClient.tsx` with disabled delete tooltip on active repairs, a dedicated "بایگانی سوابق فنی کارگاه" tab, and permanent purge modal
+
+---
+
+## Phase 13: Universal Smart Friction Deletion Modal & WCAG (Priority: P2)
+
+**Goal**: Deliver a WCAG-compliant, Persian-friction confirmation modal across all admin views (Orders, Products, BOMs, Repairs) requiring text confirmation ("حذف") for large batches or "Delete All".
+
+**Independent Test**: Select 2 items for deletion (verify standard red confirmation modal); select 5 items or "Delete All" (verify button is disabled until typing "حذف"); press `Escape` or tab through (verify focus trap and clean dismissal).
+
+- [ ] T046 [P] [US9] Create reusable component `src/components/admin/ConfirmDeleteModal.tsx` with count-aware friction (standard confirmation for 1-3 items; type "حذف" for >3 items or "Delete All"), Escape dismiss, and focus trap
+- [ ] T047 [US9] Integrate `ConfirmDeleteModal` into Orders, Products, BOMs, and Repairs admin client views in `src/app/admin/orders/OrdersAdminClient.tsx`, `src/app/admin/products/ProductsAdminClient.tsx`, `src/app/admin/boms/BomsAdminClient.tsx`, and `src/app/admin/repairs/RepairsAdminClient.tsx`
+
+---
+
+## Phase 14: Automated Verification & Full Test Suite (Final)
+
+**Purpose**: Execute end-to-end integration tests for media migration rewrites, guarded deletions across entities, and full system typecheck.
+
+- [ ] T048 Create integration test suite in `tests/phase9-guarded-deletion.test.mjs` covering image rewrites, product order-guard checks, BOM file deletion, and repair status protection
+- [ ] T049 Execute `npm run typecheck`, `npm test`, and `npx tsx tests/phase9-guarded-deletion.test.mjs` to verify zero errors across all phases
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid
@@ -183,6 +259,54 @@ flowchart TD
         T031["T031: Verification Capture"]
     end
 
+    subgraph Phase9["Phase 9: Media Consolidation"]
+        T032["T032: Migration Script"]
+        T033["T033: Seed & DB URLs"]
+        T034["T034: Next.js Rewrites"]
+        T035["T035: Execute Migration"]
+        T032 --> T035
+        T033 --> T035
+        T034 --> T035
+    end
+
+    subgraph Phase10["Phase 10: Products Guarded Deletion"]
+        T036["T036: Schema isArchived (Product)"]
+        T037["T037: Product DELETE API"]
+        T038["T038: Storefront Filter isArchived"]
+        T039["T039: Products Admin UI Tabs"]
+        T036 --> T037
+        T036 --> T038
+        T037 --> T039
+    end
+
+    subgraph Phase11["Phase 11: BOMs Archival & Purge"]
+        T040["T040: Schema isArchived (BOM)"]
+        T041["T041: BOM Archive & Purge API"]
+        T042["T042: BOMs Admin UI Tabs"]
+        T040 --> T041
+        T041 --> T042
+    end
+
+    subgraph Phase12["Phase 12: Repairs Safety-Lock"]
+        T043["T043: Schema isArchived (Repair)"]
+        T044["T044: Repairs Guarded DELETE API"]
+        T045["T045: Repairs Admin Archive UI"]
+        T043 --> T044
+        T044 --> T045
+    end
+
+    subgraph Phase13["Phase 13: Universal Friction Modal"]
+        T046["T046: ConfirmDeleteModal Component"]
+        T047["T047: Admin Views Integration"]
+        T046 --> T047
+    end
+
+    subgraph Phase14["Phase 14: Verification"]
+        T048["T048: Guarded Deletion Test Suite"]
+        T049["T049: Typecheck & Full Test Run"]
+        T048 --> T049
+    end
+
     Phase1 --> Phase4
     Phase2 --> Phase5
     Phase2 --> Phase6
@@ -192,4 +316,9 @@ flowchart TD
     Phase5 --> Phase8
     Phase6 --> Phase8
     Phase7 --> Phase8
+    Phase9 --> Phase14
+    Phase10 --> Phase13
+    Phase11 --> Phase13
+    Phase12 --> Phase13
+    Phase13 --> Phase14
 ```

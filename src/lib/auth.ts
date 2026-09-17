@@ -2,8 +2,9 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
+import { verifyPassword } from "@/lib/password";
 
-const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
+export const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -19,6 +20,7 @@ export const authOptions: NextAuthOptions = {
         phone: { label: "شماره موبایل", type: "text" },
         otpCode: { label: "کد تایید", type: "text" },
         password: { label: "کلمه عبور (ادمین)", type: "password" },
+        name: { label: "نام خریدار", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.phone) return null;
@@ -29,36 +31,28 @@ export const authOptions: NextAuthOptions = {
         // 1. Password-based authentication (Admin / Back-office)
         if (credentials.password) {
           const inputPass = credentials.password.trim();
-          const adminUser = await prisma.user.findUnique({
+          let adminUser = await prisma.user.findUnique({
             where: { phone },
           });
 
-          // Check credentials
-          const isMasterAdmin = ADMIN_PHONES.includes(phone) && inputPass === "admin123";
-          
-          if (isMasterAdmin) {
-            let admin = adminUser;
-            if (!admin) {
-              admin = await prisma.user.create({
-                data: {
-                  phone,
-                  name: "مدیریت کارگاه و فروشگاه شیاسی",
-                  role: "ADMIN",
-                  isVerified: true,
-                },
-              });
-            } else if (admin.role !== "ADMIN") {
-              admin = await prisma.user.update({
-                where: { id: admin.id },
+          const isDbAdminMatch =
+            Boolean(adminUser) &&
+            (adminUser!.role === "ADMIN" || ADMIN_PHONES.includes(phone)) &&
+            verifyPassword(inputPass, adminUser!.password);
+
+          if (isDbAdminMatch && adminUser) {
+            if (adminUser.role !== "ADMIN") {
+              adminUser = await prisma.user.update({
+                where: { id: adminUser.id },
                 data: { role: "ADMIN", isVerified: true },
               });
             }
 
             return {
-              id: admin.id,
-              name: admin.name || "مدیر ارشد فروشگاه",
-              phone: admin.phone,
-              role: (admin.role as "ADMIN" | "CUSTOMER") || "ADMIN",
+              id: adminUser.id,
+              name: adminUser.name || "مدیر ارشد فروشگاه",
+              phone: adminUser.phone,
+              role: "ADMIN" as const,
             };
           }
           return null;
@@ -84,30 +78,40 @@ export const authOptions: NextAuthOptions = {
 
           // Resolve user record strictly from PostgreSQL database
           let user = await prisma.user.findUnique({ where: { phone } });
-          const shouldBeAdmin = ADMIN_PHONES.includes(phone);
+          const shouldBeAdmin = ADMIN_PHONES.includes(phone) || user?.role === "ADMIN";
 
           if (!user) {
             user = await prisma.user.create({
               data: {
                 phone,
-                name: shouldBeAdmin ? "مدیریت کارگاه شیاسی" : "مشتری گرامی",
+                name: credentials.name?.trim() || (shouldBeAdmin ? "مدیریت کارگاه شیاسی" : "مشتری گرامی"),
                 role: shouldBeAdmin ? "ADMIN" : "CUSTOMER",
                 isVerified: true,
                 city: "نجف‌آباد",
               },
             });
-          } else if (shouldBeAdmin && user.role !== "ADMIN") {
-            user = await prisma.user.update({
-              where: { id: user.id },
-              data: { role: "ADMIN", isVerified: true },
-            });
+          } else {
+            const updateData: { role?: "ADMIN"; isVerified?: boolean; name?: string } = {};
+            if (shouldBeAdmin && user.role !== "ADMIN") {
+              updateData.role = "ADMIN";
+              updateData.isVerified = true;
+            }
+            if (credentials.name?.trim() && (!user.name || user.name === "مشتری گرامی")) {
+              updateData.name = credentials.name.trim();
+            }
+            if (Object.keys(updateData).length > 0) {
+              user = await prisma.user.update({
+                where: { id: user.id },
+                data: updateData,
+              });
+            }
           }
 
           return {
             id: user.id,
-            name: user.name || (user.role === "ADMIN" ? "مدیر فروشگاه" : "مشتری گرامی"),
+            name: user.name || (shouldBeAdmin ? "مدیر فروشگاه" : "مشتری گرامی"),
             phone: user.phone,
-            role: (user.role as "ADMIN" | "CUSTOMER") || "CUSTOMER",
+            role: (shouldBeAdmin ? "ADMIN" : "CUSTOMER") as "ADMIN" | "CUSTOMER",
           };
         }
 
@@ -119,8 +123,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role || "CUSTOMER";
-        token.phone = (user as any).phone;
+        token.role = user.role || "CUSTOMER";
+        token.phone = user.phone;
       }
       return token;
     },

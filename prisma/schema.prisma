@@ -73,6 +73,7 @@ model Product {
   madeIn          String?        @default("ایران")
   rating          Float          @default(4.8)
   reviewCount     Int            @default(0)
+  isArchived      Boolean        @default(false)
   datasheetUrl    String?        // PDF Datasheet download link
   mpn             String?        // Manufacturer Part Number (e.g. ESP32-WROOM-32D, NE555)
   moq             Int            @default(1) // Minimum Order Quantity
@@ -88,6 +89,7 @@ model Product {
   @@index([isFeatured, isBestSeller])
   @@index([categoryId])
   @@index([brand])
+  @@index([isArchived])
   @@index([createdAt])
 }
 
@@ -202,11 +204,13 @@ model RepairRequest {
   estimatedCost      Int?      // In Toman
   finalCost          Int?      // In Toman
   adminNotes         String?
+  isArchived         Boolean   @default(false)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
   @@index([customerPhone])
   @@index([status])
+  @@index([isArchived])
   @@index([userId])
 }
 
@@ -261,11 +265,13 @@ model BOMSubmission {
   fileType        String?
   status          String   @default("PENDING") // PENDING, QUOTED, CONTACTED, ARCHIVED
   adminNotes      String?  @db.Text
+  isArchived      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   @@index([contractorPhone])
   @@index([status])
+  @@index([isArchived])
   @@index([createdAt])
 }
 

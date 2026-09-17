@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/images/products/:path*",
+        destination: "/uploads/products/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

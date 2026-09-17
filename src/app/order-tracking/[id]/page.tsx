@@ -194,6 +194,26 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           </div>
         )}
 
+        {/* COD Reassurance Notification Banner */}
+        {order.paymentMethod === "cod_isfahan" && (
+          <div className="bg-emerald-600 dark:bg-emerald-700 text-white rounded-2xl p-3.5 sm:p-5 shadow-md shadow-emerald-600/20 flex items-center justify-between gap-3 print:hidden animate-in fade-in duration-300">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                <Truck className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="font-extrabold text-xs sm:text-sm">سفارش شما با شیوه پرداخت در محل ثبت شد.</h2>
+                <p className="text-[10px] sm:text-xs text-emerald-100">
+                  مبلغ سفارش هنگام تحویل کالا با دستگاه کارتخوان سیار یا نقدی دریافت خواهد شد. سفارش شما در حال آماده‌سازی است.
+                </p>
+              </div>
+            </div>
+            <span className="hidden sm:inline-block bg-white text-emerald-800 text-xs font-black px-2.5 py-1 rounded-lg shrink-0">
+              پرداخت در محل
+            </span>
+          </div>
+        )}
+
         {/* 1. Live Order Tracker Timeline Card (Hidden in Print) */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-3.5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-900 dark:text-white transition-colors duration-200 print:hidden">
           

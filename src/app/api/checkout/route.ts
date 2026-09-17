@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { normalizeIranianPhone } from "@/lib/utils";
+import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import { logPaymentTransaction } from "@/lib/paymentLogger";
 import {
@@ -54,6 +54,34 @@ export async function POST(req: NextRequest) {
         { message: "لطفاً تمامی فیلدهای الزامی را تکمیل کنید." },
         { status: 400 }
       );
+    }
+
+    // Mandatory 10-digit postal code validation per national Iranian post standards
+    const cleanPostalCode = toAsciiDigits(String(postalCode || "").trim());
+    if (!cleanPostalCode || !/^\d{10}$/.test(cleanPostalCode)) {
+      return NextResponse.json(
+        { message: "کد پستی باید دقیقاً ۱۰ رقم عددی باشد." },
+        { status: 400 }
+      );
+    }
+
+    // Cash on delivery (COD) restricted strictly to local shipping methods
+    if (paymentMethod === "cod_isfahan") {
+      const allowedCodShipping = [
+        "najafabad_courier",
+        "isfahan_express",
+        "store_pickup",
+        "isfahan_pickup",
+        "in_person_pickup",
+        "fast_courier_najafabad",
+      ];
+      const selectedShipping = shippingMethod || "isfahan_express";
+      if (!allowedCodShipping.includes(selectedShipping)) {
+        return NextResponse.json(
+          { message: "پرداخت در محل فقط برای ارسال فوری در نجف‌آباد، اصفهان یا تحویل حضوری فعال است." },
+          { status: 400 }
+        );
+      }
     }
 
     // Corporate tax invoice validation per Iranian Ministry of Finance standard
@@ -233,7 +261,7 @@ export async function POST(req: NextRequest) {
           userId,
           province: province || "اصفهان",
           city: city || "نجف‌آباد",
-          postalCode: postalCode ? postalCode.trim() : null,
+          postalCode: cleanPostalCode,
           address: address.trim(),
           isCorporate: Boolean(isCorporate),
           companyName: companyName ? companyName.trim() : null,
@@ -296,10 +324,12 @@ export async function POST(req: NextRequest) {
       reservedUntil: reservedUntil ? reservedUntil.toISOString() : null,
       redirectUrl,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error("Checkout creation error", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "خطایی در ثبت سفارش رخ داد. لطفاً دوباره تلاش کنید.";
     return NextResponse.json(
-      { message: error.message || "خطایی در ثبت سفارش رخ داد. لطفاً دوباره تلاش کنید." },
+      { message: errorMessage },
       { status: 400 }
     );
   }

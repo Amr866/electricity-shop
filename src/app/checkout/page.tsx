@@ -35,7 +35,7 @@ export default function CheckoutPage() {
 
   // Form states
   const [customerName, setCustomerName] = useState(session?.user?.name || "");
-  const [customerPhone, setCustomerPhone] = useState((session?.user as any)?.phone || "");
+  const [customerPhone, setCustomerPhone] = useState(session?.user?.phone || "");
   const [customerEmail, setCustomerEmail] = useState("");
   const [province, setProvince] = useState("اصفهان");
   const [city, setCity] = useState("نجف‌آباد");
@@ -65,11 +65,29 @@ export default function CheckoutPage() {
     }
   }, [session]);
 
+  const isCodEligible =
+    selectedShipping === "najafabad_courier" ||
+    selectedShipping === "isfahan_express" ||
+    selectedShipping === "store_pickup" ||
+    selectedShipping === "isfahan_pickup" ||
+    selectedShipping === "in_person_pickup" ||
+    selectedShipping === "fast_courier_najafabad" ||
+    Boolean(SHIPPING_METHODS.find((m) => m.id === selectedShipping)?.isLocal);
+
+  // Auto-switch away from COD if user selects Post/Tipax
+  React.useEffect(() => {
+    if (!isCodEligible && selectedPayment === "cod_isfahan") {
+      setSelectedPayment("zarinpal");
+    }
+  }, [isCodEligible, selectedPayment]);
+
   // Calculate final shipping cost and grand total
   const shippingMethod =
     SHIPPING_METHODS.find((s) => s.id === selectedShipping) || SHIPPING_METHODS[0];
   const shippingCost = shippingMethod.cost;
   const grandTotal = total + shippingCost;
+
+  const cleanPostal = toAsciiDigits(postalCode).replace(/\D/g, "");
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,15 +106,9 @@ export default function CheckoutPage() {
       return;
     }
 
-    // 3. Postal Code validation (Strictly required for Post/Tipax and 10 digits)
-    const cleanPostal = toAsciiDigits(postalCode).replace(/\D/g, "");
-    if (selectedShipping === "post_pishtaz" || selectedShipping === "tipax") {
-      if (!cleanPostal || cleanPostal.length !== 10) {
-        setErrorMsg("برای ارسال با پست پیشتاز یا تیپاکس، وارد کردن کد پستی ۱۰ رقمی الزامی است.");
-        return;
-      }
-    } else if (cleanPostal && cleanPostal.length !== 10) {
-      setErrorMsg("کد پستی باید دقیقاً ۱۰ رقم باشد.");
+    // 3. Mandatory 10-digit Postal Code validation for 100% of orders
+    if (!cleanPostal || cleanPostal.length !== 10) {
+      setErrorMsg("کد پستی باید دقیقاً ۱۰ رقم عددی باشد.");
       return;
     }
 
@@ -118,7 +130,7 @@ export default function CheckoutPage() {
           customerName,
           customerPhone: cleanPhone,
           customerEmail,
-          userId: (session?.user as any)?.id || null,
+          userId: session?.user?.id || null,
           province,
           city,
           postalCode: cleanPostal || null,
@@ -285,21 +297,26 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                      کد پستی ۱۰ رقمی{" "}
-                      {selectedShipping === "post_pishtaz" || selectedShipping === "tipax" ? (
-                        <span className="text-rose-500 font-bold">(الزامی برای ارسال پستی)</span>
-                      ) : (
-                        <span className="text-slate-400 font-normal">(اختیاری)</span>
-                      )}
+                      کد پستی ۱۰ رقمی <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
+                      required
                       maxLength={10}
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
-                      placeholder="کد پستی ۱۰ رقمی"
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800 text-left font-mono"
+                      placeholder="کد پستی ۱۰ رقمی (مثال: ۸۴۱۵۶۱۲۳۴۵)"
+                      className={`w-full bg-slate-50 dark:bg-slate-800 border text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:bg-white dark:focus:bg-slate-800 text-left font-mono ${
+                        postalCode.length > 0 && cleanPostal.length !== 10
+                          ? "border-rose-400 dark:border-rose-600 focus:ring-rose-500"
+                          : "border-slate-200 dark:border-slate-700 focus:ring-amber-500"
+                      }`}
                     />
+                    {postalCode.length > 0 && cleanPostal.length !== 10 && (
+                      <p className="text-[10px] text-rose-500 font-bold mt-1">
+                        کد پستی باید دقیقاً ۱۰ رقم عددی باشد ({toPersianDigits(cleanPostal.length)} از ۱۰ رقم وارد شده).
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -429,42 +446,60 @@ export default function CheckoutPage() {
                 </h2>
 
                 <div className="space-y-3">
-                  {PAYMENT_METHODS.map((method) => (
-                    <label
-                      key={method.id}
-                      onClick={() => setSelectedPayment(method.id)}
-                      className={`cursor-pointer rounded-2xl p-4 border transition-all flex items-start justify-between gap-3 ${
-                        selectedPayment === method.id
-                          ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/20"
-                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center shrink-0 border ${
-                            selectedPayment === method.id
-                              ? "border-amber-600 bg-amber-500"
-                              : "border-slate-300 dark:border-slate-700"
-                          }`}
-                        >
-                          {selectedPayment === method.id && (
-                            <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />
-                          )}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs text-slate-900 dark:text-white">{method.title}</span>
-                            <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-semibold border border-slate-200 dark:border-slate-700">
-                              {method.badge}
-                            </span>
+                  {PAYMENT_METHODS.map((method) => {
+                    const isCod = method.id === "cod_isfahan";
+                    const isMethodDisabled = isCod && !isCodEligible;
+
+                    return (
+                      <label
+                        key={method.id}
+                        onClick={() => {
+                          if (!isMethodDisabled) {
+                            setSelectedPayment(method.id);
+                          }
+                        }}
+                        className={`rounded-2xl p-4 border transition-all flex items-start justify-between gap-3 ${
+                          isMethodDisabled
+                            ? "opacity-50 cursor-not-allowed bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800"
+                            : selectedPayment === method.id
+                            ? "cursor-pointer border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/20"
+                            : "cursor-pointer border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center shrink-0 border ${
+                              selectedPayment === method.id && !isMethodDisabled
+                                ? "border-amber-600 bg-amber-500"
+                                : "border-slate-300 dark:border-slate-700"
+                            }`}
+                          >
+                            {selectedPayment === method.id && !isMethodDisabled && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />
+                            )}
                           </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                            {method.description}
-                          </p>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xs text-slate-900 dark:text-white">{method.title}</span>
+                              <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-semibold border border-slate-200 dark:border-slate-700">
+                                {method.badge}
+                              </span>
+                              {isMethodDisabled && (
+                                <span className="text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 px-2 py-0.5 rounded font-bold">
+                                  فقط ارسال نجف‌آباد/اصفهان
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                              {isMethodDisabled
+                                ? "پرداخت در محل فقط برای ارسال فوری در نجف‌آباد، اصفهان یا تحویل حضوری فعال است."
+                                : method.description}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </label>
-                  ))}
+                      </label>
+                    );
+                  })}
                 </div>
 
                 {/* Conditional Card-to-Card Info Box */}
@@ -563,6 +598,11 @@ export default function CheckoutPage() {
                 >
                   {submitting ? (
                     <span>در حال پردازش سفارش...</span>
+                  ) : selectedPayment === "cod_isfahan" ? (
+                    <>
+                      <span>ثبت سفارش با پرداخت در محل</span>
+                      <Truck className="w-4 h-4" />
+                    </>
                   ) : selectedPayment === "zarinpal" ? (
                     <>
                       <span>پرداخت آنلاین با درگاه بانکی</span>

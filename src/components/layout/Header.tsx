@@ -71,7 +71,13 @@ export function Header() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY;
-          const shouldBeScrolled = currentY > 110;
+          let shouldBeScrolled = lastScrolled;
+          // Hysteresis: collapse top bar when scrolled past 160px, reveal when scrolled up past 80px
+          if (currentY > 160) {
+            shouldBeScrolled = true;
+          } else if (currentY < 80) {
+            shouldBeScrolled = false;
+          }
           if (shouldBeScrolled !== lastScrolled) {
             setIsScrolled(shouldBeScrolled);
             lastScrolled = shouldBeScrolled;
@@ -197,21 +203,24 @@ export function Header() {
           <div className="flex items-center justify-between gap-2.5 sm:gap-4 lg:gap-6">
             
             {/* Logo & Brand Identity */}
-            <Link href="/" className="flex items-center gap-2 group shrink-0 min-w-0 max-w-[210px] sm:max-w-none">
+            <Link href="/" className="flex items-center gap-2 group shrink-0 min-w-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow-xs shadow-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
                 <Zap className="w-5 h-5 fill-slate-950 text-slate-950" />
               </div>
               <div className="flex flex-col min-w-0">
-                <div className="flex items-center gap-1.5 truncate">
-                  <span className="font-extrabold text-sm sm:text-lg text-slate-900 dark:text-white tracking-tight truncate">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-sm sm:text-lg text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
                     {brand.nameFa}
                   </span>
-                  <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 shrink-0">
+                  <span className="hidden sm:inline-block bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 shrink-0">
                     {brand.badge}
                   </span>
                 </div>
                 <span className="hidden sm:block text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
                   {brand.tagline}
+                </span>
+                <span className="sm:hidden text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap">
+                  نجف‌آباد
                 </span>
               </div>
             </Link>

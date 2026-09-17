@@ -40,6 +40,7 @@ import {
   CheckCheck,
   Trash2,
 } from "lucide-react";
+import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
 
 export interface AdminOrderItem {
   id: string;
@@ -999,119 +1000,34 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
       )}
 
       {/* Modal 1: Single Order Deletion Confirmation */}
-      {orderToDelete && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-3 text-rose-400">
-              <div className="w-10 h-10 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0">
-                <AlertCircle className="w-5 h-5 text-rose-500" />
-              </div>
-              <div>
-                <h3 className="font-extrabold text-sm text-white">تایید حذف سفارش</h3>
-                <p className="text-[11px] text-slate-400">این عملیات غیرقابل بازگشت است</p>
-              </div>
-            </div>
-
-            <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700/80 space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-slate-400">شماره فاکتور:</span>
-                <span className="font-mono font-bold text-amber-400">{orderToDelete.orderNumber}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">نام خریدار:</span>
-                <span className="font-bold text-white">{orderToDelete.customerName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">مبلغ سفارش:</span>
-                <span className="font-mono font-bold text-white">{formatToman(orderToDelete.totalAmount)}</span>
-              </div>
-            </div>
-
-            <p className="text-xs text-rose-300/90 leading-relaxed bg-rose-950/40 p-3 rounded-xl border border-rose-900/60">
-              با حذف این سفارش، کلیه اقلام فاکتور و سوابق مالی مرتبط با آن به طور دائم از پایگاه داده حذف خواهند شد.
-            </p>
-
-            <div className="flex items-center justify-end gap-2.5 pt-2">
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={() => setOrderToDelete(null)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-              >
-                انصراف
-              </button>
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleDeleteOrder}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-lg shadow-rose-600/20"
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>در حال حذف...</span>
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>حذف دائمی سفارش</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDeleteModal
+        isOpen={Boolean(orderToDelete)}
+        onClose={() => setOrderToDelete(null)}
+        onConfirm={handleDeleteOrder}
+        title="تایید حذف دائمی سفارش"
+        description={
+          orderToDelete
+            ? `آیا از حذف دائمی سفارش شماره ${orderToDelete.orderNumber} مربوط به خریدار ${orderToDelete.customerName} به مبلغ ${formatToman(orderToDelete.totalAmount)} اطمینان دارید؟ کلیه اقلام فاکتور و سوابق مالی مرتبط به طور قطعی از پایگاه داده حذف خواهند شد.`
+            : undefined
+        }
+        itemCount={1}
+        itemType="سفارش خرید"
+        isPurge={true}
+        isLoading={isDeleting}
+      />
 
       {/* Modal 2: Bulk Sample Orders Deletion Confirmation */}
-      {showDeleteSampleModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-3 text-rose-400">
-              <div className="w-10 h-10 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0">
-                <Trash2 className="w-5 h-5 text-rose-500" />
-              </div>
-              <div>
-                <h3 className="font-extrabold text-sm text-white">حذف سفارش‌های تستی و نمونه</h3>
-                <p className="text-[11px] text-slate-400">پاکسازی داده‌های دمو از سیستم</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed">
-              آیا از پاکسازی تمامی سفارش‌های آزمایشی، نمونه و دمو اطمینان دارید؟ سفارش‌های مشتریان واقعی دست‌نخورده باقی خواهند ماند.
-            </p>
-
-            <div className="flex items-center justify-end gap-2.5 pt-2">
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={() => setShowDeleteSampleModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-              >
-                انصراف
-              </button>
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleDeleteSampleOrders}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-lg shadow-rose-600/20"
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>در حال پاکسازی...</span>
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>تایید و پاکسازی نمونه‌ها</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDeleteModal
+        isOpen={showDeleteSampleModal}
+        onClose={() => setShowDeleteSampleModal(false)}
+        onConfirm={handleDeleteSampleOrders}
+        title="حذف سفارش‌های تستی و نمونه"
+        description="آیا از پاکسازی تمامی سفارش‌های آزمایشی، نمونه و دمو اطمینان دارید؟ سفارش‌های مشتریان واقعی دست‌نخورده باقی خواهند ماند."
+        itemCount={10}
+        itemType="سفارش تستی"
+        isPurge={true}
+        isLoading={isDeleting}
+      />
 
     </div>
   );

@@ -27,6 +27,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { ProductExcelImportModal } from "@/components/admin/ProductExcelImportModal";
+import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
 
 const ITEMS_PER_PAGE = 15;
 const LOCAL_FALLBACK_IMAGE = "/images/products/wal_172619-fans-7995865_1920.jpg";
@@ -63,6 +64,7 @@ export interface AdminProduct {
   categoryId: string;
   category?: CategoryItem;
   images?: ProductImageItem[];
+  isArchived?: boolean;
 }
 
 interface ProductsAdminClientProps {
@@ -75,6 +77,10 @@ export function ProductsAdminClient({
   categories,
 }: ProductsAdminClientProps) {
   const [products, setProducts] = useState<AdminProduct[]>(initialProducts);
+  const [catalogTab, setCatalogTab] = useState<"active" | "archived">("active");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState("");
   const [stockFilter, setStockFilter] = useState<"all" | "in_stock" | "low_stock" | "out_of_stock">("all");
@@ -85,6 +91,8 @@ export function ProductsAdminClient({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
   const [excelModalOpen, setExcelModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<AdminProduct | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState("");
@@ -273,27 +281,101 @@ export function ProductsAdminClient({
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("آیا از حذف این کالا از دیتابیس اطمینان دارید؟")) return;
+  const openDeleteModal = (prod: AdminProduct) => {
+    setProductToDelete(prod);
+    setIsDeleteModalOpen(true);
+  };
 
+  const openBulkDeleteModal = () => {
+    setProductToDelete(null);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleExecuteDelete = async () => {
+    setIsDeleting(true);
     try {
-      const res = await fetch(`/api/admin/products?id=${id}`, {
-        method: "DELETE",
-      });
+      if (productToDelete) {
+        const id = productToDelete.id;
+        const res = await fetch(`/api/admin/products?id=${id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
 
-      if (res.ok) {
-        setProducts(products.filter((p) => p.id !== id));
-      } else {
-        alert("خطا در حذف کالا.");
+        if (res.ok) {
+          if (data.action === "DELETED") {
+            setProducts((prev) => prev.filter((p) => p.id !== id));
+          } else if (data.action === "ARCHIVED") {
+            setProducts((prev) =>
+              prev.map((p) =>
+                p.id === id ? { ...p, isArchived: true, stock: 0 } : p
+              )
+            );
+          }
+          setActionFeedback(data.message || "عملیات با موفقیت انجام شد.");
+          setSelectedIds((prev) => prev.filter((item) => item !== id));
+        } else {
+          alert(data.message || "خطا در حذف کالا.");
+        }
+      } else if (selectedIds.length > 0) {
+        const res = await fetch("/api/admin/products", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: selectedIds }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          const deletedIds = new Set(
+            (data.results || []).filter((r: any) => r.action === "DELETED").map((r: any) => r.id)
+          );
+          const archivedIds = new Set(
+            (data.results || []).filter((r: any) => r.action === "ARCHIVED").map((r: any) => r.id)
+          );
+
+          setProducts((prev) =>
+            prev
+              .filter((p) => !deletedIds.has(p.id))
+              .map((p) =>
+                archivedIds.has(p.id) ? { ...p, isArchived: true, stock: 0 } : p
+              )
+          );
+          setSelectedIds([]);
+          setActionFeedback(data.summaryMessage || "عملیات حذف دسته‌ای انجام شد.");
+        } else {
+          alert(data.message || "خطا در حذف دسته‌ای کالاها.");
+        }
       }
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
     } catch {
-      alert("خطای سرور.");
+      alert("خطای سرور در پردازش عملیات حذف.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    const pageIds = paginatedProducts.map((p) => p.id);
+    const allSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+    if (allSelected) {
+      setSelectedIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+    } else {
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...pageIds])));
     }
   };
 
   // Filter & Sort Pipeline
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => {
+      const isArchived = Boolean(p.isArchived);
+      const matchTab = catalogTab === "active" ? !isArchived : isArchived;
+
       const matchSearch =
         !search ||
         p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -307,7 +389,7 @@ export function ProductsAdminClient({
       else if (stockFilter === "low_stock") matchStock = p.stock > 0 && p.stock <= 5;
       else if (stockFilter === "out_of_stock") matchStock = p.stock === 0;
 
-      return matchSearch && matchCat && matchStock;
+      return matchTab && matchSearch && matchCat && matchStock;
     });
 
     // Sorting
@@ -320,7 +402,7 @@ export function ProductsAdminClient({
     });
 
     return result;
-  }, [products, search, selectedCat, stockFilter, sortBy]);
+  }, [products, catalogTab, search, selectedCat, stockFilter, sortBy]);
 
   // Pagination calculation
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE) || 1;
@@ -370,6 +452,86 @@ export function ProductsAdminClient({
             <span>+ افزودن محصول جدید</span>
           </button>
         </div>
+      </div>
+
+      {/* Action Feedback Notification Banner */}
+      {actionFeedback && (
+        <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center justify-between shadow-lg animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
+            <span>{actionFeedback}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActionFeedback(null)}
+            className="text-amber-400/70 hover:text-amber-300 p-1 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Catalog Segmented Tabs */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setCatalogTab("active");
+              setCurrentPage(1);
+              setSelectedIds([]);
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              catalogTab === "active"
+                ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                : "bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-800"
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>کاتالوگ فعال</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-950/30 font-mono">
+              {toPersianDigits(products.filter((p) => !p.isArchived).length)}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setCatalogTab("archived");
+              setCurrentPage(1);
+              setSelectedIds([]);
+            }}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              catalogTab === "archived"
+                ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                : "bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-800"
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            <span>آرشیو شده‌ها (سابقه فاکتور)</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-950/30 font-mono">
+              {toPersianDigits(products.filter((p) => p.isArchived).length)}
+            </span>
+          </button>
+        </div>
+
+        {/* Bulk Action Controls */}
+        {selectedIds.length > 0 && (
+          <div className="flex items-center gap-2 animate-in fade-in">
+            <span className="text-xs text-slate-400">
+              <strong className="text-white font-mono">{toPersianDigits(selectedIds.length)}</strong> کالا انتخاب شده
+            </span>
+            <button
+              type="button"
+              onClick={openBulkDeleteModal}
+              disabled={isDeleting}
+              className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white text-xs font-black px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-rose-600/20"
+            >
+              {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              <span>حذف کالاهای انتخاب‌شده</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Filter / Search Bar & Stock Chips */}
@@ -482,6 +644,12 @@ export function ProductsAdminClient({
               }`}
             >
               <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(prod.id)}
+                  onChange={() => toggleSelect(prod.id)}
+                  className="w-4 h-4 mt-2 rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-amber-500 cursor-pointer shrink-0"
+                />
                 <div className="relative w-16 h-16 rounded-2xl bg-slate-800 p-1 border border-slate-700 shrink-0 overflow-hidden">
                   <Image
                     src={prod.images?.[0]?.url || LOCAL_FALLBACK_IMAGE}
@@ -543,7 +711,7 @@ export function ProductsAdminClient({
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDelete(prod.id)}
+                    onClick={() => openDeleteModal(prod)}
                     className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-400 rounded-lg transition-colors flex items-center gap-1 text-xs font-bold"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -561,6 +729,17 @@ export function ProductsAdminClient({
           <table className="w-full text-xs text-right text-slate-300">
             <thead className="bg-slate-800/80 text-slate-400 border-b border-slate-700 text-[11px]">
               <tr>
+                <th className="p-3.5 text-center w-10">
+                  <input
+                    type="checkbox"
+                    checked={
+                      paginatedProducts.length > 0 &&
+                      paginatedProducts.every((p) => selectedIds.includes(p.id))
+                    }
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-amber-500 cursor-pointer"
+                  />
+                </th>
                 <th className="p-3.5 font-bold">تصویر</th>
                 <th className="p-3.5 font-bold">نام کالا و دسته‌بندی</th>
                 <th className="p-3.5 font-bold">برند</th>
@@ -576,14 +755,24 @@ export function ProductsAdminClient({
                 const isOut = prod.stock === 0;
                 const isInlineEditing = editingInlineId === prod.id;
                 const isJustSaved = savedInlineId === prod.id;
+                const isSelected = selectedIds.includes(prod.id);
 
                 return (
                   <tr
                     key={prod.id}
                     className={`hover:bg-slate-800/50 transition-colors group animate-in fade-in slide-in-from-bottom-1 ${
                       isCritical ? "bg-rose-950/10" : ""
-                    }`}
+                    } ${isSelected ? "bg-amber-500/10 border-amber-500/20" : ""}`}
                   >
+                    {/* Checkbox */}
+                    <td className="p-3.5 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(prod.id)}
+                        className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-amber-500 cursor-pointer"
+                      />
+                    </td>
                     {/* Thumbnail */}
                     <td className="p-3.5">
                       <div className="relative w-12 h-12 rounded-xl bg-slate-800 p-1 border border-slate-700 overflow-hidden shrink-0">
@@ -734,7 +923,7 @@ export function ProductsAdminClient({
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDelete(prod.id)}
+                              onClick={() => openDeleteModal(prod)}
                               className="p-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-400 hover:text-white rounded-lg transition-colors cursor-pointer"
                               title="حذف از دیتابیس"
                             >
@@ -1072,6 +1261,24 @@ export function ProductsAdminClient({
         }}
       />
 
+      {/* Universal Guarded Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setProductToDelete(null);
+        }}
+        onConfirm={handleExecuteDelete}
+        title={
+          catalogTab === "archived"
+            ? "حذف قطعی کالا از سیستم"
+            : "حذف یا انتقال به آرشیو کالا"
+        }
+        itemCount={productToDelete ? 1 : selectedIds.length}
+        itemType="کالا"
+        isPurge={catalogTab === "archived"}
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

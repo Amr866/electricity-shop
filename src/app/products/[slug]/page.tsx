@@ -15,7 +15,7 @@ interface ProductPageProps {
 
 // React.cache for request-scoped deduplication across metadata & page rendering
 const getCachedProduct = cache(async (slug: string) => {
-  return prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { slug },
     include: {
       category: true,
@@ -26,6 +26,8 @@ const getCachedProduct = cache(async (slug: string) => {
       },
     },
   });
+  if (!product || product.isArchived) return null;
+  return product;
 });
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
@@ -65,6 +67,7 @@ async function RelatedProductsSection({
     where: {
       categoryId,
       id: { not: currentProductId },
+      isArchived: false,
     },
     take: 4,
     include: {

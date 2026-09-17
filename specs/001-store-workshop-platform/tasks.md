@@ -134,10 +134,10 @@
 
 **Independent Test**: Request `/images/products/alborz-cable-1.jpg` and `/uploads/products/alborz-cable-1.jpg` in browser/curl, verify both return HTTP 200 and identical image bytes.
 
-- [ ] T032 [P] Create migration script `scripts/migrate-images.js` to copy/move images from root `/Images` and `/public/images/products` into `/public/uploads/products/`
-- [ ] T033 [P] Update image references in `prisma/seed.js` and database rows (`ProductImage.url`, `Category.image`) to use `/uploads/products/...`
-- [ ] T034 [P] Configure transparent Next.js URL rewrite in `next.config.ts` mapping `/images/products/:path*` to `/uploads/products/:path*`
-- [ ] T035 Execute image migration script `scripts/migrate-images.js` and clean up empty redundant source directories
+- [x] T032 [P] Create migration script `scripts/migrate-images.js` to copy/move images from root `/Images` and `/public/images/products` into `/public/uploads/products/`
+- [x] T033 [P] Update image references in `prisma/seed.js` and database rows (`ProductImage.url`, `Category.image`) to use `/uploads/products/...`
+- [x] T034 [P] Configure transparent Next.js URL rewrite in `next.config.ts` mapping `/images/products/:path*` to `/uploads/products/:path*`
+- [x] T035 Execute image migration script `scripts/migrate-images.js` and clean up empty redundant source directories
 
 ---
 
@@ -147,10 +147,10 @@
 
 **Independent Test**: Attempt deleting a zero-order product (verify hard delete from DB); attempt deleting a product with 1+ orders (verify status transitions to `isArchived: true` and stock becomes 0); query public catalog (verify archived item is excluded); view admin catalog (verify item appears under "آرشیو شده‌ها").
 
-- [ ] T036 [P] Add `isArchived Boolean @default(false)` to `Product` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
-- [ ] T037 [US9] Implement `DELETE /api/admin/products` and `DELETE /api/admin/products/[id]` with `OrderItem` count check (hard delete + image unlink if 0 orders; `isArchived: true` if >=1 orders) in `src/app/api/admin/products/route.ts` and `src/app/api/admin/products/[id]/route.ts`
-- [ ] T038 [US9] Update public catalog queries in `src/app/products/page.tsx`, `src/app/products/[slug]/page.tsx`, and `src/app/api/search/route.ts` to filter `where: { isArchived: false }`
-- [ ] T039 [US9] Update `src/app/admin/products/ProductsAdminClient.tsx` with single/bulk deletion actions, summary badge feedback, and active vs. archived catalog view tabs
+- [x] T036 [P] Add `isArchived Boolean @default(false)` to `Product` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [x] T037 [US9] Implement `DELETE /api/admin/products` and `DELETE /api/admin/products/[id]` with `OrderItem` count check (hard delete + image unlink if 0 orders; `isArchived: true` if >=1 orders) in `src/app/api/admin/products/route.ts` and `src/app/api/admin/products/[id]/route.ts`
+- [x] T038 [US9] Update public catalog queries in `src/app/products/page.tsx`, `src/app/products/[slug]/page.tsx`, and `src/app/api/search/route.ts` to filter `where: { isArchived: false }`
+- [x] T039 [US9] Update `src/app/admin/products/ProductsAdminClient.tsx` with single/bulk deletion actions, summary badge feedback, and active vs. archived catalog view tabs
 
 ---
 
@@ -160,9 +160,9 @@
 
 **Independent Test**: Move an inquiry to archive (verify `isArchived: true` and file preserved on disk); click restore (verify `isArchived: false`); click permanent purge in archive tab (verify DB row deleted and uploaded file deleted from disk).
 
-- [ ] T040 [P] Add `isArchived Boolean @default(false)` to `BOMSubmission` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
-- [ ] T041 [US9] Implement `PATCH /api/admin/boms/[id]/archive` (toggle archive) and `DELETE /api/admin/boms/[id]` (permanent purge with physical Excel file unlinking from `public/uploads/boms/`) in `src/app/api/admin/boms/[id]/archive/route.ts` and `src/app/api/admin/boms/[id]/route.ts`
-- [ ] T042 [US9] Update `src/app/admin/boms/BomsAdminClient.tsx` with segmented tabs (active vs. archived), 1-click restore action, and permanent purge confirmation modal
+- [x] T040 [P] Add `isArchived Boolean @default(false)` to `BOMSubmission` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [x] T041 [US9] Implement `PATCH /api/admin/boms/[id]/archive` (toggle archive) and `DELETE /api/admin/boms/[id]` (permanent purge with physical Excel file unlinking from `public/uploads/boms/`) in `src/app/api/admin/boms/[id]/archive/route.ts` and `src/app/api/admin/boms/[id]/route.ts`
+- [x] T042 [US9] Update `src/app/admin/boms/BomsAdminClient.tsx` with segmented tabs (active vs. archived), 1-click restore action, and permanent purge confirmation modal
 
 ---
 
@@ -172,9 +172,9 @@
 
 **Independent Test**: Attempt deleting a repair ticket in `INSPECTING` status (verify HTTP 400 error and rejection); complete the ticket and delete (verify transition to `isArchived: true` in technical archive); purge terminal ticket from archive view (verify record removed).
 
-- [ ] T043 [P] Add `isArchived Boolean @default(false)` to `RepairRequest` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
-- [ ] T044 [US9] Implement `DELETE /api/admin/repairs/[id]` in `src/app/api/admin/repairs/[id]/route.ts` and bulk delete in `src/app/api/admin/repairs/route.ts` rejecting in-progress stages (`INSPECTING`, `COST_ESTIMATED`, `REPAIRING`, `READY`) and allowing deletion only for terminal states (`COMPLETED`, `CANCELLED`)
-- [ ] T045 [US9] Update `src/app/admin/repairs/RepairsAdminClient.tsx` with disabled delete tooltip on active repairs, a dedicated "بایگانی سوابق فنی کارگاه" tab, and permanent purge modal
+- [x] T043 [P] Add `isArchived Boolean @default(false)` to `RepairRequest` model in `prisma/schema.prisma` and push schema via `npx prisma db push`
+- [x] T044 [US9] Implement `DELETE /api/admin/repairs/[id]` in `src/app/api/admin/repairs/[id]/route.ts` and bulk delete in `src/app/api/admin/repairs/route.ts` rejecting in-progress stages (`INSPECTING`, `COST_ESTIMATED`, `REPAIRING`, `READY`) and allowing deletion only for terminal states (`COMPLETED`, `CANCELLED`)
+- [x] T045 [US9] Update `src/app/admin/repairs/RepairsAdminClient.tsx` with disabled delete tooltip on active repairs, a dedicated "بایگانی سوابق فنی کارگاه" tab, and permanent purge modal
 
 ---
 
@@ -184,8 +184,8 @@
 
 **Independent Test**: Select 2 items for deletion (verify standard red confirmation modal); select 5 items or "Delete All" (verify button is disabled until typing "حذف"); press `Escape` or tab through (verify focus trap and clean dismissal).
 
-- [ ] T046 [P] [US9] Create reusable component `src/components/admin/ConfirmDeleteModal.tsx` with count-aware friction (standard confirmation for 1-3 items; type "حذف" for >3 items or "Delete All"), Escape dismiss, and focus trap
-- [ ] T047 [US9] Integrate `ConfirmDeleteModal` into Orders, Products, BOMs, and Repairs admin client views in `src/app/admin/orders/OrdersAdminClient.tsx`, `src/app/admin/products/ProductsAdminClient.tsx`, `src/app/admin/boms/BomsAdminClient.tsx`, and `src/app/admin/repairs/RepairsAdminClient.tsx`
+- [x] T046 [P] [US9] Create reusable component `src/components/admin/ConfirmDeleteModal.tsx` with count-aware friction (standard confirmation for 1-3 items; type "حذف" for >3 items or "Delete All"), Escape dismiss, and focus trap
+- [x] T047 [US9] Integrate `ConfirmDeleteModal` into Orders, Products, BOMs, and Repairs admin client views in `src/app/admin/orders/OrdersAdminClient.tsx`, `src/app/admin/products/ProductsAdminClient.tsx`, `src/app/admin/boms/BomsAdminClient.tsx`, and `src/app/admin/repairs/RepairsAdminClient.tsx`
 
 ---
 
@@ -193,8 +193,8 @@
 
 **Purpose**: Execute end-to-end integration tests for media migration rewrites, guarded deletions across entities, and full system typecheck.
 
-- [ ] T048 Create integration test suite in `tests/phase9-guarded-deletion.test.mjs` covering image rewrites, product order-guard checks, BOM file deletion, and repair status protection
-- [ ] T049 Execute `npm run typecheck`, `npm test`, and `npx tsx tests/phase9-guarded-deletion.test.mjs` to verify zero errors across all phases
+- [x] T048 Create integration test suite in `tests/phase9-guarded-deletion.test.mjs` covering image rewrites, product order-guard checks, BOM file deletion, and repair status protection
+- [x] T049 Execute `npm run typecheck`, `npm test`, and `npx tsx tests/phase9-guarded-deletion.test.mjs` to verify zero errors across all phases
 
 ---
 

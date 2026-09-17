@@ -79,7 +79,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const take = pageSize;
 
   // Build Prisma where clause with PostgreSQL case-insensitivity and strong types
-  const where: Prisma.ProductWhereInput = {};
+  const where: Prisma.ProductWhereInput = {
+    isArchived: false,
+  };
 
   if (categorySlug) {
     where.category = { slug: categorySlug };
@@ -167,12 +169,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       prisma.category.findMany({
         orderBy: { sortOrder: "asc" },
         include: {
-          _count: { select: { products: true } },
+          _count: { select: { products: { where: { isArchived: false } } } },
         },
       }),
       prisma.product.findMany({
         select: { brand: true },
-        where: { brand: { not: null } },
+        where: { brand: { not: null }, isArchived: false },
         distinct: ["brand"],
       }),
     ]);

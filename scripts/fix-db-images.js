@@ -22,7 +22,7 @@ async function main() {
     await prisma.productImage.create({
       data: {
         productId: prod.id,
-        url: '/images/products/adonyig-machine-3098797_1920.jpg',
+        url: '/uploads/products/adonyig-machine-3098797_1920.jpg',
         isPrimary: true,
         alt: prod.name,
       },
@@ -48,7 +48,7 @@ async function main() {
     await prisma.productImage.create({
       data: {
         productId: prod.id,
-        url: '/images/products/richard_ssmid-equipment-3111880_1920.jpg',
+        url: '/uploads/products/richard_ssmid-equipment-3111880_1920.jpg',
         isPrimary: true,
         alt: prod.name,
       },
@@ -70,7 +70,7 @@ async function main() {
     await prisma.productImage.create({
       data: {
         productId: prod.id,
-        url: '/images/products/republica-wire-732209_1920.jpg',
+        url: '/uploads/products/republica-wire-732209_1920.jpg',
         isPrimary: true,
         alt: prod.name,
       },

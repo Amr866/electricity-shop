@@ -17,7 +17,12 @@ import {
   RefreshCw,
   ExternalLink,
   Download,
+  Archive,
+  ArchiveRestore,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
+import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
 
 interface BOMRecord {
   id: string;
@@ -31,6 +36,7 @@ interface BOMRecord {
   fileType: string | null;
   status: string;
   adminNotes: string | null;
+  isArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,6 +51,10 @@ const STATUSES = [
 
 export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any[] }) {
   const [submissions, setSubmissions] = useState<BOMRecord[]>(initialSubmissions);
+  const [viewTab, setViewTab] = useState<"active" | "archived">("active");
+  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const [purgingItem, setPurgingItem] = useState<BOMRecord | null>(null);
+  const [isPurging, setIsPurging] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [editingItem, setEditingItem] = useState<BOMRecord | null>(null);
@@ -53,6 +63,8 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
   const [isSaving, setIsSaving] = useState(false);
 
   const filtered = submissions.filter((s) => {
+    const isArchived = Boolean(s.isArchived);
+    const matchesTab = viewTab === "active" ? !isArchived : isArchived;
     const matchesStatus = selectedStatus === "ALL" || s.status === selectedStatus;
     const query = searchQuery.trim().toLowerCase();
     const matchesQuery =
@@ -61,8 +73,51 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
       s.contractorPhone.includes(query) ||
       s.contractorName.toLowerCase().includes(query) ||
       (s.companyName && s.companyName.toLowerCase().includes(query));
-    return matchesStatus && matchesQuery;
+    return matchesTab && matchesStatus && matchesQuery;
   });
+
+  const handleArchive = async (id: string, shouldArchive: boolean) => {
+    try {
+      const res = await fetch(`/api/admin/boms/${id}/archive`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shouldArchive }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubmissions((prev) =>
+          prev.map((item) => (item.id === id ? { ...item, isArchived: shouldArchive } : item))
+        );
+        setActionFeedback(data.message);
+      } else {
+        alert(data.message || "خطا در تغییر وضعیت آرشیو.");
+      }
+    } catch {
+      alert("خطای ارتباط با سرور.");
+    }
+  };
+
+  const handlePurge = async () => {
+    if (!purgingItem) return;
+    setIsPurging(true);
+    try {
+      const res = await fetch(`/api/admin/boms/${purgingItem.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubmissions((prev) => prev.filter((item) => item.id !== purgingItem.id));
+        setActionFeedback(data.message || "استعلام و فایل‌های پیوست آن با موفقیت حذف قطعی شدند.");
+        setPurgingItem(null);
+      } else {
+        alert(data.message || "خطا در حذف قطعی استعلام.");
+      }
+    } catch {
+      alert("خطای ارتباط با سرور در حذف فایل.");
+    } finally {
+      setIsPurging(false);
+    }
+  };
 
   const openEdit = (sub: BOMRecord) => {
     setEditingItem(sub);
@@ -116,6 +171,58 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
         <div className="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-300">
           کل استعلام‌ها: <strong className="text-white font-mono">{toPersianDigits(submissions.length)}</strong>
         </div>
+      </div>
+
+      {/* Action Feedback Banner */}
+      {actionFeedback && (
+        <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold flex items-center justify-between shadow-lg animate-in fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0" />
+            <span>{actionFeedback}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActionFeedback(null)}
+            className="text-cyan-400/70 hover:text-cyan-300 p-1 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Segmented View Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+        <button
+          type="button"
+          onClick={() => setViewTab("active")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+            viewTab === "active"
+              ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
+              : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-white"
+          }`}
+        >
+          <FileSpreadsheet className="w-4 h-4" />
+          <span>استعلام‌های جاری</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-950/30 font-mono">
+            {toPersianDigits(submissions.filter((s) => !s.isArchived).length)}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setViewTab("archived")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+            viewTab === "archived"
+              ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
+              : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-white"
+          }`}
+        >
+          <Archive className="w-4 h-4" />
+          <span>بایگانی‌شده‌ها</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-950/30 font-mono">
+            {toPersianDigits(submissions.filter((s) => s.isArchived).length)}
+          </span>
+        </button>
       </div>
 
       {/* Filter Bar */}
@@ -244,6 +351,35 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
                             <Edit3 className="w-3.5 h-3.5" />
                             <span>وضعیت و یادداشت</span>
                           </button>
+                          {viewTab === "active" ? (
+                            <button
+                              type="button"
+                              onClick={() => handleArchive(sub.id, true)}
+                              className="bg-slate-800 hover:bg-amber-950/60 text-slate-400 hover:text-amber-400 p-1.5 rounded-xl transition-all border border-slate-700 hover:border-amber-700/50 cursor-pointer"
+                              title="انتقال به بایگانی"
+                            >
+                              <Archive className="w-3.5 h-3.5" />
+                            </button>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleArchive(sub.id, false)}
+                                className="bg-slate-800 hover:bg-emerald-950/60 text-emerald-400 p-1.5 rounded-xl transition-all border border-slate-700 hover:border-emerald-700/50 cursor-pointer"
+                                title="بازگردانی به استعلام‌های جاری"
+                              >
+                                <ArchiveRestore className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setPurgingItem(sub)}
+                                className="bg-slate-800 hover:bg-rose-950/60 text-rose-400 p-1.5 rounded-xl transition-all border border-slate-700 hover:border-rose-700/50 cursor-pointer"
+                                title="حذف قطعی و پاکسازی فایل ضمیمه از سرور"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -322,6 +458,23 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
           </div>
         </div>
       )}
+
+      {/* Universal Guarded Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        isOpen={Boolean(purgingItem)}
+        onClose={() => setPurgingItem(null)}
+        onConfirm={handlePurge}
+        title="حذف قطعی استعلام و فایل‌های پیوست"
+        description={
+          purgingItem
+            ? `آیا از حذف دائم استعلام پیمانکار ${purgingItem.contractorName} با کد پیگیری ${purgingItem.trackingCode} و پاکسازی کامل فایل‌های ضمیمه از دیسک سرور اطمینان دارید؟`
+            : undefined
+        }
+        itemCount={1}
+        itemType="استعلام BOM"
+        isPurge={true}
+        isLoading={isPurging}
+      />
     </div>
   );
 }

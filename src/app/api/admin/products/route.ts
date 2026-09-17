@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
+import { deleteGuardedProduct, deleteGuardedProductsBulk } from "@/lib/admin-product-guard";
 
-const LOCAL_FALLBACK_IMAGE = "/images/products/wal_172619-fans-7995865_1920.jpg";
+const LOCAL_FALLBACK_IMAGE = "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
 export async function POST(req: NextRequest) {
   const { isAdmin, response } = await checkAdminSession();
@@ -192,17 +193,35 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
-    if (!id) {
+    // Check if JSON body provided for bulk deletion
+    let body: any = null;
+    try {
+      body = await req.json();
+    } catch {
+      // Body not JSON or empty
+    }
+
+    if (body?.ids && Array.isArray(body.ids)) {
+      const result = await deleteGuardedProductsBulk(body.ids);
+      return NextResponse.json(result);
+    }
+
+    const targetId = id || body?.id;
+    if (!targetId) {
       return NextResponse.json({ message: "شناسه محصول ارسال نشده است." }, { status: 400 });
     }
 
-    await prisma.product.delete({
-      where: { id },
+    const result = await deleteGuardedProduct(targetId);
+    return NextResponse.json({
+      success: true,
+      ...result,
+      message:
+        result.action === "DELETED"
+          ? "کالا به همراه تصاویر با موفقیت به طور کامل حذف شد."
+          : "کالا به دلیل داشتن سابقه فاکتور خرید به بایگانی منتقل شد و از ویترین عمومی حذف گردید."
     });
-
-    return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Error deleting product:", error);
-    return NextResponse.json({ message: "خطا در حذف محصول." }, { status: 500 });
+    return NextResponse.json({ message: error.message || "خطا در حذف محصول." }, { status: 500 });
   }
 }

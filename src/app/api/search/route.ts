@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
 
     // Every token must match somewhere in the product (AND across tokens, OR across fields)
     const productWhere: any = {
+      isArchived: false,
       AND: tokens.map((token) => ({
         OR: [
           { name: { contains: token, mode: "insensitive" } },
@@ -79,7 +80,7 @@ export async function GET(req: NextRequest) {
         image:
           p.images.find((img) => img.isPrimary)?.url ||
           p.images[0]?.url ||
-          "/images/products/wal_172619-fans-7995865_1920.jpg",
+          "/uploads/products/wal_172619-fans-7995865_1920.jpg",
       })),
       categories,
     });

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { AlertTriangle, Trash2, X, Loader2 } from "lucide-react";
@@ -28,11 +28,14 @@ export function ConfirmDeleteModal({
   isLoading = false,
 }: ConfirmDeleteModalProps) {
   const [typedConfirmation, setTypedConfirmation] = useState("");
+  const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const cancelBtnRef = useRef<HTMLButtonElement>(null);
 
   const requiresTyping = itemCount > 3;
-  const isTypingValid = !requiresTyping || typedConfirmation.trim() === "حذف";
+  const isTypingValid =
+    !requiresTyping ||
+    typedConfirmation.trim().replace(/\u200c/g, "") === "حذف";
 
   useEffect(() => {
     if (isOpen) {
@@ -53,6 +56,27 @@ export function ConfirmDeleteModal({
       if (!isOpen) return;
       if (e.key === "Escape" && !isLoading) {
         onClose();
+        return;
+      }
+      if (e.key === "Tab" && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
 
@@ -76,7 +100,7 @@ export function ConfirmDeleteModal({
       aria-labelledby="confirm-delete-title"
       aria-describedby="confirm-delete-desc"
     >
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5 text-right">
+      <div ref={modalRef} className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5 text-right">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -88,7 +112,7 @@ export function ConfirmDeleteModal({
                 {title}
               </h2>
               <span className="text-xs text-rose-400 font-bold mt-0.5 inline-block">
-                تعداد: {toPersianDigits(itemCount)} {itemType}
+                تعداد: <bdi dir="ltr">{toPersianDigits(itemCount)}</bdi> {itemType}
               </span>
             </div>
           </div>
@@ -122,7 +146,7 @@ export function ConfirmDeleteModal({
         {requiresTyping && (
           <div className="space-y-2">
             <label className="block text-xs font-bold text-slate-300">
-              جهت تایید قطعی حذف گروهی ({toPersianDigits(itemCount)} {itemType})، کلمه{" "}
+              جهت تایید قطعی حذف گروهی (<bdi dir="ltr">{toPersianDigits(itemCount)}</bdi> {itemType})، کلمه{" "}
               <span className="text-rose-400 font-mono underline underline-offset-4">حذف</span> را تایپ کنید:
             </label>
             <input

@@ -210,7 +210,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   );
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-4 sm:py-8 transition-colors duration-200">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen pt-4 pb-28 sm:py-8 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-4 sm:space-y-6">
         
         {/* 1. Mobile Search & Filter Action Bar (Digikala style) */}

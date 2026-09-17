@@ -189,7 +189,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-8 transition-colors duration-200">
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen pt-4 pb-28 sm:py-8 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* Title */}

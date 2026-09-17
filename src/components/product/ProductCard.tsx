@@ -24,8 +24,27 @@ function formatBrandName(brand?: string | null): string {
 
 function getPriceUnit(name: string, categorySlug?: string): string | null {
   if (name.includes("کلاف")) return "/کلاف";
-  // Exclude motor winding, motors, and accessories
-  if (name.includes("سیم‌پیچ") || name.includes("موتور") || name.includes("پمپ")) return null;
+
+  // If categorySlug is available, it MUST match wiring or cable
+  if (categorySlug) {
+    const isWiringCategory =
+      categorySlug.includes("wiring") ||
+      categorySlug.includes("cable") ||
+      categorySlug.includes("wire");
+    if (!isWiringCategory) return null;
+  }
+
+  // Exclude motor winding, motors, fans, heaters, and appliances
+  if (
+    name.includes("سیم‌پیچ") ||
+    name.includes("سیمپیچ") ||
+    name.includes("موتور") ||
+    name.includes("پمپ") ||
+    name.includes("پنکه") ||
+    name.includes("بخاری")
+  ) {
+    return null;
+  }
 
   const isCableOrWireName =
     (name.includes("کابل") && !name.includes("کولر")) ||

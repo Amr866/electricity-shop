@@ -156,6 +156,13 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      if (dbProduct.isArchived) {
+        return NextResponse.json(
+          { message: `کالای «${dbProduct.name}» از فروشگاه حذف یا بایگانی شده است و امکان سفارش آن وجود ندارد.` },
+          { status: 400 }
+        );
+      }
+
       if (dbProduct.stock < qty) {
         return NextResponse.json(
           {

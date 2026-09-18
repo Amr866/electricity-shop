@@ -661,7 +661,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   <span className="text-xl sm:text-2xl font-black text-slate-950 dark:text-amber-400 font-mono">
                     {formatToman(effectiveUnitPrice * quantity)}
                   </span>
-                  {product.priceUnit && (
+                  {product.priceUnit && quantity === 1 && (
                     <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
                       / {product.priceUnit.replace(/^\//, "")}
                     </span>

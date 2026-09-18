@@ -245,7 +245,7 @@ test('Phase 15 Seam 4: Bulk reviews deletion recalculates ratings accurately for
 
   const afterB = await prisma.product.findUnique({ where: { id: prodB.id } });
   assert.equal(afterB.reviewCount, 0);
-  assert.equal(afterB.rating, 5.0); // Defaults to 5.0 when 0 reviews
+  assert.equal(afterB.rating, 4.8); // Defaults to 4.8 (Prisma schema default) when 0 reviews
 
   // Cleanup
   await prisma.product.delete({ where: { id: prodA.id } });

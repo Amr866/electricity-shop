@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { checkAdminSession } from "@/lib/adminAuth";
+import { logger } from "@/lib/core/logger";
 import {
   moderateReview,
   deleteReviewWithRecalc,
@@ -17,7 +19,9 @@ export async function GET(req: NextRequest) {
     const productId = searchParams.get("productId");
     const search = searchParams.get("search")?.trim();
 
-    const where: any = {};
+    logger.info("Admin reviews query", { status, productId, hasSearch: Boolean(search) });
+
+    const where: Prisma.ReviewWhereInput = {};
 
     if (status === "pending") {
       where.isVerified = false;
@@ -75,12 +79,10 @@ export async function GET(req: NextRequest) {
         verified,
       },
     });
-  } catch (error: any) {
-    console.error("Error fetching admin reviews:", error);
-    return NextResponse.json(
-      { message: error.message || "خطا در دریافت لیست نظرات." },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "خطا در دریافت لیست نظرات.";
+    logger.error("Error fetching admin reviews", { error });
+    return NextResponse.json({ message: errMsg }, { status: 500 });
   }
 }
 
@@ -99,6 +101,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    logger.info("Admin moderating review", { reviewId, isVerified });
     const result = await moderateReview(reviewId, isVerified);
 
     return NextResponse.json({
@@ -106,12 +109,10 @@ export async function PATCH(req: NextRequest) {
       ...result,
       message: isVerified ? "نظر با موفقیت تایید و منتشر شد." : "وضعیت انتشار نظر لغو شد.",
     });
-  } catch (error: any) {
-    console.error("Error moderating review:", error);
-    return NextResponse.json(
-      { message: error.message || "خطا در ویرایش وضعیت نظر." },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "خطا در ویرایش وضعیت نظر.";
+    logger.error("Error moderating review", { error });
+    return NextResponse.json({ message: errMsg }, { status: 500 });
   }
 }
 
@@ -124,6 +125,7 @@ export async function DELETE(req: NextRequest) {
     const { reviewId, reviewIds } = data;
 
     if (reviewId) {
+      logger.info("Admin deleting single review", { reviewId });
       const result = await deleteReviewWithRecalc(reviewId);
       return NextResponse.json({
         ...result,
@@ -132,6 +134,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     if (Array.isArray(reviewIds) && reviewIds.length > 0) {
+      logger.info("Admin bulk deleting reviews", { count: reviewIds.length });
       const result = await deleteReviewsBulkWithRecalc(reviewIds);
       return NextResponse.json({
         ...result,
@@ -143,11 +146,9 @@ export async function DELETE(req: NextRequest) {
       { message: "شناسه نظر یا آرایه‌ای از شناسه‌های نظرات جهت حذف الزامی است." },
       { status: 400 }
     );
-  } catch (error: any) {
-    console.error("Error deleting review(s):", error);
-    return NextResponse.json(
-      { message: error.message || "خطا در حذف نظر." },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "خطا در حذف نظر.";
+    logger.error("Error deleting review(s)", { error });
+    return NextResponse.json({ message: errMsg }, { status: 500 });
   }
 }

@@ -48,7 +48,7 @@ export async function recomputeProductRating(productId: string, tx: DbClient = p
   const rating =
     reviewCount > 0
       ? Number((verifiedReviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviewCount).toFixed(1))
-      : 5.0;
+      : 4.8;
 
   const product = await tx.product.update({
     where: { id: productId },

@@ -1194,7 +1194,7 @@ export function ProductsAdminClient({
                   
                   {/* Preset Chips */}
                   <div className="flex flex-wrap items-center gap-1.5">
-                    {["عدد", "متر", "کلاف", "شاخه", "کیلوگرم", "بسته", "جفت", "رول"].map((preset) => {
+                    {["عدد", "متر", "کلاف", "شاخه", "کیلوگرم", "بسته"].map((preset) => {
                       const isSelected = priceUnit === preset;
                       return (
                         <button

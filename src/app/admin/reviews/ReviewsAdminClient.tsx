@@ -308,7 +308,7 @@ export function ReviewsAdminClient({
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div
           onClick={() => setActiveTab("all")}
           className={`cursor-pointer bg-white dark:bg-slate-900 p-4 rounded-2xl border transition-all ${
@@ -370,6 +370,25 @@ export function ReviewsAdminClient({
           </div>
           <div className="mt-2 text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
             {toPersianDigits(stats.verified)}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-amber-500 dark:text-amber-400 font-bold">
+              میانگین رضایت فروشگاه
+            </span>
+            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-1.5 font-mono">
+            <span className="text-2xl font-black text-slate-900 dark:text-white">
+              {toPersianDigits(
+                reviews.length > 0
+                  ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+                  : "4.8"
+              )}
+            </span>
+            <span className="text-xs text-slate-400 font-bold">از ۵</span>
           </div>
         </div>
       </div>
@@ -523,7 +542,7 @@ export function ReviewsAdminClient({
                               />
                             ))}
                             <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 mr-1 font-mono">
-                              <bdi dir="rtl">({toPersianDigits(rev.rating)} از ۵)</bdi>
+                              <bdi dir="ltr">({toPersianDigits(rev.rating)} از ۵)</bdi>
                             </span>
                           </div>
 
@@ -559,7 +578,7 @@ export function ReviewsAdminClient({
                               <ExternalLink className="w-3 h-3" />
                             </Link>
                             <span className="text-[11px] text-slate-400">
-                              <bdi dir="rtl">(میانگین فعلی: {toPersianDigits(rev.product.rating || 5)} - {toPersianDigits(rev.product.reviewCount || 0)} نظر)</bdi>
+                              <bdi dir="ltr">(میانگین فعلی: {toPersianDigits(rev.product.rating || 5)} - {toPersianDigits(rev.product.reviewCount || 0)} نظر)</bdi>
                             </span>
                           </div>
                         )}

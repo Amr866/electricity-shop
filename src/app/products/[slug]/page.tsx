@@ -13,6 +13,16 @@ interface ProductPageProps {
   }>;
 }
 
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany({
+    where: { isArchived: false },
+    select: { slug: true },
+  });
+  return products.map((p) => ({ slug: p.slug }));
+}
+
 // React.cache for request-scoped deduplication across metadata & page rendering
 const getCachedProduct = cache(async (slug: string) => {
   const product = await prisma.product.findUnique({
@@ -34,6 +44,7 @@ const getCachedProduct = cache(async (slug: string) => {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getCachedProduct(slug);
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
 
   if (!product) {
     return {
@@ -44,10 +55,13 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   return {
     title: `${product.name} | فروشگاه شیاسی نجف‌آباد`,
     description: product.shortDesc || product.description.slice(0, 160),
+    alternates: {
+      canonical: `${baseUrl}/products/${product.slug}`,
+    },
     openGraph: {
       title: product.name,
       description: product.shortDesc || product.description.slice(0, 160),
-      url: `https://shiasi-store.ir/products/${product.slug}`,
+      url: `${baseUrl}/products/${product.slug}`,
       siteName: "فروشگاه تخصصی شیاسی",
       locale: "fa_IR",
       type: "website",
@@ -130,6 +144,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     product.images[0]?.url ||
     "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c";
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -144,7 +160,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://shiasi-store.ir/products/${product.slug}`,
+      url: `${baseUrl}/products/${product.slug}`,
       priceCurrency: "IRR",
       price: product.price * 10, // Rials in Schema.org
       priceValidUntil: "2026-12-31",
@@ -165,12 +181,47 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "صفحه اصلی",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "کاتالوگ محصولات",
+        item: `${baseUrl}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category.name,
+        item: `${baseUrl}/categories/${product.category.slug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.name,
+        item: `${baseUrl}/products/${product.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-8 pb-32 sm:pb-12 transition-colors duration-200">
       {/* Inject JSON-LD Schema.org markup for Search Engines */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">

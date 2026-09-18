@@ -92,6 +92,9 @@ model Product {
   @@index([brand])
   @@index([isArchived])
   @@index([createdAt])
+  @@index([isArchived, createdAt])
+  @@index([isArchived, price])
+  @@index([isArchived, categoryId])
 }
 
 model ProductImage {

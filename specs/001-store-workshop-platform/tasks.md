@@ -243,13 +243,13 @@
 5. In `/admin/products`, update a product price; verify `revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')` immediately update the storefront price.
 6. Inspect `src/app/layout.tsx`; verify Vazirmatn font loads exactly 4 core weights (`400`, `500`, `700`, `900`) with `display: "swap"`.
 
-- [ ] T061 [P] [US1] Add composite indexes on `Product` in `prisma/schema.prisma` (`@@index([isArchived, createdAt])`, `@@index([isArchived, price])`, `@@index([isArchived, categoryId])`) and push to database via `npx prisma db push`
-- [ ] T062 [P] [US1] Implement cached catalog metadata helper `getCachedCatalogMetadata()` in `src/lib/domain/catalog-cache.ts` using Next.js `unstable_cache` with tag `['catalog-metadata']` for category product counts and distinct brands
-- [ ] T063 [US1] Refactor `src/app/products/page.tsx` to consume `getCachedCatalogMetadata()` and scope multi-token search queries to `name`, `sku`, `mpn`, `brand`, and `shortDesc`, omitting raw HTML `description` scans
-- [ ] T064 [US1] Configure ISR (`export const revalidate = 300`) and export `generateStaticParams()` in `src/app/products/[slug]/page.tsx` for active product catalog pre-rendering
-- [ ] T065 [P] [US9] Implement programmatic on-demand cache invalidation (`revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')`) inside administrative mutation handlers `src/app/api/admin/products/route.ts` and `src/app/api/admin/categories/route.ts`
-- [ ] T066 [P] [US1] Trim Vazirmatn Google font configuration in `src/app/layout.tsx` to 4 essential weights (`["400", "500", "700", "900"]`) with `display: "swap"` and `preload: true`
-- [ ] T067 [US1] Create automated performance and in-app caching integration test in `tests/integration/phase17-performance-and-caching.test.mjs`, verifying tag invalidation, composite index queries, and run `npm run typecheck` and `npm test`
+- [x] T061 [P] [US1] Add composite indexes on `Product` in `prisma/schema.prisma` (`@@index([isArchived, createdAt])`, `@@index([isArchived, price])`, `@@index([isArchived, categoryId])`) and push to database via `npx prisma db push`
+- [x] T062 [P] [US1] Implement cached catalog metadata helper `getCachedCatalogMetadata()` in `src/lib/domain/catalog-cache.ts` using Next.js `unstable_cache` with tag `['catalog-metadata']` for category product counts and distinct brands
+- [x] T063 [US1] Refactor `src/app/products/page.tsx` to consume `getCachedCatalogMetadata()` and scope multi-token search queries to `name`, `sku`, `mpn`, `brand`, and `shortDesc`, omitting raw HTML `description` scans
+- [x] T064 [US1] Configure ISR (`export const revalidate = 300`) and export `generateStaticParams()` in `src/app/products/[slug]/page.tsx` for active product catalog pre-rendering
+- [x] T065 [P] [US9] Implement programmatic on-demand cache invalidation (`revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')`) inside administrative mutation handlers `src/app/api/admin/products/route.ts` and `src/app/api/admin/categories/route.ts`
+- [x] T066 [P] [US1] Trim Vazirmatn Google font configuration in `src/app/layout.tsx` to 4 essential weights (`["400", "500", "700", "900"]`) with `display: "swap"` and `preload: true`
+- [x] T067 [US1] Create automated performance and in-app caching integration test in `tests/integration/phase17-performance-and-caching.test.mjs`, verifying tag invalidation, composite index queries, and run `npm run typecheck` and `npm test`
 
 ---
 

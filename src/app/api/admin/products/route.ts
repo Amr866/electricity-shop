@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
 import { deleteGuardedProduct, deleteGuardedProductsBulk } from "@/lib/admin-product-guard";
@@ -72,6 +73,17 @@ export async function POST(req: NextRequest) {
         images: true,
       },
     });
+
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+      revalidatePath(`/products/${product.slug}`);
+      if (product.category?.slug) {
+        revalidatePath(`/categories/${product.category.slug}`);
+      }
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Product Create]", revalErr);
+    }
 
     return NextResponse.json({ success: true, product });
   } catch (error: any) {
@@ -179,6 +191,19 @@ export async function PUT(req: NextRequest) {
       },
     });
 
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+      if (updatedProduct) {
+        revalidatePath(`/products/${updatedProduct.slug}`);
+        if (updatedProduct.category?.slug) {
+          revalidatePath(`/categories/${updatedProduct.category.slug}`);
+        }
+      }
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Product Update]", revalErr);
+    }
+
     return NextResponse.json({ success: true, product: updatedProduct });
   } catch (error: any) {
     console.error("Error updating product:", error);
@@ -207,6 +232,12 @@ export async function DELETE(req: NextRequest) {
 
     if (body?.ids && Array.isArray(body.ids)) {
       const result = await deleteGuardedProductsBulk(body.ids);
+      try {
+        revalidateTag("catalog-metadata");
+        revalidatePath("/products");
+      } catch (revalErr) {
+        console.warn("[Revalidation Warning on Bulk Delete]", revalErr);
+      }
       return NextResponse.json(result);
     }
 
@@ -216,6 +247,13 @@ export async function DELETE(req: NextRequest) {
     }
 
     const result = await deleteGuardedProduct(targetId);
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Delete]", revalErr);
+    }
+
     return NextResponse.json({
       success: true,
       ...result,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
 
@@ -25,6 +26,15 @@ export async function POST(req: NextRequest) {
         sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : 0,
       },
     });
+
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+      revalidatePath("/categories");
+      revalidatePath(`/categories/${cleanSlug}`);
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Category Create]", revalErr);
+    }
 
     return NextResponse.json({ success: true, category });
   } catch (error: any) {
@@ -63,6 +73,15 @@ export async function PUT(req: NextRequest) {
       },
     });
 
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+      revalidatePath("/categories");
+      revalidatePath(`/categories/${category.slug}`);
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Category Update]", revalErr);
+    }
+
     return NextResponse.json({ success: true, category });
   } catch (error: any) {
     console.error("Error updating category:", error);
@@ -86,9 +105,18 @@ export async function DELETE(req: NextRequest) {
       where: { id },
     });
 
+    try {
+      revalidateTag("catalog-metadata");
+      revalidatePath("/products");
+      revalidatePath("/categories");
+    } catch (revalErr) {
+      console.warn("[Revalidation Warning on Category Delete]", revalErr);
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Error deleting category:", error);
     return NextResponse.json({ message: "خطا در حذف دسته‌بندی." }, { status: 500 });
   }
 }
+

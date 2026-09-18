@@ -1,9 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { Prisma } from "@prisma/client";
+import { getCachedCatalogMetadata } from "@/lib/domain/catalog-cache";
 import { ProductCard } from "@/components/product/ProductCard";
 import { PriceFilterWidget } from "@/components/product/PriceFilterWidget";
 import { BrandFilterWidget } from "@/components/product/BrandFilterWidget";
@@ -55,6 +57,53 @@ interface ProductsPageProps {
   }>;
 }
 
+export async function generateMetadata({ searchParams }: ProductsPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
+
+  let title = "کاتالوگ و لیست قیمت تجهیزات برق صنعتی و ساختمانی | فروشگاه شیاسی نجف‌آباد";
+  let description =
+    "خرید آنلاین انواع سیم و کابل، کلید و پریز، تجهیزات روشنایی، اتوماسیون صنعتی و الکتروموتور با ضمانت اصالت در فروشگاه برق شیاسی نجف‌آباد.";
+
+  if (params.q?.trim()) {
+    const q = params.q.trim();
+    title = `جستجوی "${q}" | فروشگاه برق و صنعت شیاسی نجف‌آباد`;
+    description = `نتایج جستجو برای تجهیزات و کالای "${q}" در فروشگاه آنلاین برق و تجهیزات صنعتی شیاسی نجف‌آباد.`;
+  } else if (params.category) {
+    try {
+      const { categories } = await getCachedCatalogMetadata();
+      const cat = categories.find((c) => c.slug === params.category);
+      if (cat) {
+        title = `خرید انواع ${cat.name} | فروشگاه برق شیاسی نجف‌آباد`;
+        description =
+          cat.description ||
+          `خرید آنلاین انواع ${cat.name} با بهترین قیمت، مشخصات فنی و تحویل سریع در نجف‌آباد و اصفهان.`;
+      }
+    } catch {
+      // Keep default
+    }
+  } else if (params.brand) {
+    const brand = params.brand.split(",")[0].trim();
+    title = `محصولات برند ${brand} | فروشگاه برق شیاسی نجف‌آباد`;
+    description = `لیست کامل، مشخصات فنی و قیمت انواع کالاهای برند ${brand} در فروشگاه برق و صنعت شیاسی نجف‌آباد.`;
+  }
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${baseUrl}/products`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/products`,
+      type: "website",
+      siteName: "فروشگاه برق و صنعت شیاسی",
+    },
+  };
+}
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
   const categorySlug = params.category;
@@ -101,10 +150,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       where.AND = tokens.map((token) => ({
         OR: [
           { name: { contains: token, mode: "insensitive" } },
-          { description: { contains: token, mode: "insensitive" } },
-          { shortDesc: { contains: token, mode: "insensitive" } },
-          { brand: { contains: token, mode: "insensitive" } },
           { sku: { contains: token, mode: "insensitive" } },
+          { mpn: { contains: token, mode: "insensitive" } },
+          { brand: { contains: token, mode: "insensitive" } },
+          { shortDesc: { contains: token, mode: "insensitive" } },
         ],
       }));
     }
@@ -147,37 +196,34 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   else if (sortBy === "bestseller") orderBy = { isBestSeller: "desc" };
   else if (sortBy === "rating") orderBy = { rating: "desc" };
 
-  // Fetch count, products, categories, and unique brands concurrently with Zero-Crash fallback
+  // Fetch count, products, categories, and unique brands concurrently with in-app cached metadata
   let totalCount = 0;
   let products: any[] = [];
   let categories: any[] = [];
-  let allProductsForBrands: any[] = [];
+  let uniqueBrands: string[] = [];
 
   try {
-    [totalCount, products, categories, allProductsForBrands] = await Promise.all([
-      prisma.product.count({ where }),
-      prisma.product.findMany({
-        where,
-        orderBy,
-        skip,
-        take,
-        include: {
-          category: true,
-          images: true,
-        },
-      }),
-      prisma.category.findMany({
-        orderBy: { sortOrder: "asc" },
-        include: {
-          _count: { select: { products: { where: { isArchived: false } } } },
-        },
-      }),
-      prisma.product.findMany({
-        select: { brand: true },
-        where: { brand: { not: null }, isArchived: false },
-        distinct: ["brand"],
-      }),
+    const [catalogMeta, queryResult] = await Promise.all([
+      getCachedCatalogMetadata(),
+      Promise.all([
+        prisma.product.count({ where }),
+        prisma.product.findMany({
+          where,
+          orderBy,
+          skip,
+          take,
+          include: {
+            category: true,
+            images: true,
+          },
+        }),
+      ]),
     ]);
+
+    categories = catalogMeta.categories;
+    uniqueBrands = catalogMeta.brands;
+    totalCount = queryResult[0];
+    products = queryResult[1];
   } catch (dbErr) {
     logger.error("[Zero-Crash Fallback] Database query failed on /products, serving static fallback", {
       error: String(dbErr),
@@ -189,12 +235,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       { id: "cat-cooling", name: "سرمایشی و گرمایشی", slug: "cooling-heating", _count: { products: 2 } },
       { id: "cat-wiring", name: "سیم، کابل و لوله", slug: "wiring-building", _count: { products: 2 } },
     ] as any;
-    allProductsForBrands = [{ brand: "موتوژن" }, { brand: "البرز الکتریک نور" }, { brand: "هیوندای" }, { brand: "الکتروژن" }];
+    uniqueBrands = ["موتوژن", "البرز الکتریک نور", "هیوندای", "الکتروژن"];
   }
-
-  const uniqueBrands = allProductsForBrands
-    .map((p) => p.brand)
-    .filter(Boolean) as string[];
 
   const currentCategory = categories.find((c) => c.slug === categorySlug);
   const totalPages = Math.ceil(totalCount / pageSize);

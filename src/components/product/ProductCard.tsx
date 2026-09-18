@@ -22,48 +22,9 @@ function formatBrandName(brand?: string | null): string {
   return brand.replace(/\s*\(.*?\)/g, "").trim();
 }
 
-function getPriceUnit(name: string, categorySlug?: string, explicitUnit?: string | null): string | null {
-  // If explicitUnit is explicitly defined (string or null)
-  if (explicitUnit !== undefined) {
-    if (explicitUnit && explicitUnit.trim()) {
-      return `/${explicitUnit.trim().replace(/^\//, '')}`;
-    }
-    return null;
-  }
-
-  if (name.includes("کلاف")) return "/کلاف";
-
-  // If categorySlug is available, it MUST match wiring or cable
-  if (categorySlug) {
-    const isWiringCategory =
-      categorySlug.includes("wiring") ||
-      categorySlug.includes("cable") ||
-      categorySlug.includes("wire");
-    if (!isWiringCategory) return null;
-  }
-
-  // Exclude motor winding, motors, fans, heaters, and appliances
-  if (
-    name.includes("سیم‌پیچ") ||
-    name.includes("سیمپیچ") ||
-    name.includes("موتور") ||
-    name.includes("پمپ") ||
-    name.includes("پنکه") ||
-    name.includes("بخاری")
-  ) {
-    return null;
-  }
-
-  const isCableOrWireName =
-    (name.includes("کابل") && !name.includes("کولر")) ||
-    name.startsWith("سیم ") ||
-    name.includes("سیم نایلون") ||
-    name.includes("سیم افشان") ||
-    name.includes("سیم مفتول") ||
-    name.includes("سیم ارت");
-
-  if (isCableOrWireName) {
-    return "/متر";
+function getPriceUnit(explicitUnit?: string | null): string | null {
+  if (explicitUnit && explicitUnit.trim()) {
+    return `/${explicitUnit.trim().replace(/^\//, '')}`;
   }
   return null;
 }
@@ -125,7 +86,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const isOutOfStock = product.stock <= 0;
   const brandLabel = formatBrandName(product.brand);
-  const priceUnit = getPriceUnit(product.name, product.category?.slug, product.priceUnit);
+  const priceUnit = getPriceUnit(product.priceUnit);
 
   return (
     <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 dark:hover:shadow-amber-500/15 transition-all duration-300 flex flex-col justify-between h-full overflow-hidden">

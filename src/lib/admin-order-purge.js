@@ -1,4 +1,4 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -7,25 +7,48 @@ const prisma = new PrismaClient();
  *
  * @param {string[]} [orderIds] Specific order IDs to delete, or null/empty to purge all orders
  */
-export async function purgeAllOrdersCascade(orderIds = null) {
-  return await prisma.$transaction(async (tx) => {
-    let targetIds = orderIds;
+export async function purgeAllOrdersCascade(orderIds = null, txClient = null) {
+  const runner = async (tx) => {
+    if (orderIds !== null && Array.isArray(orderIds)) {
+      if (orderIds.length === 0) {
+        return { success: true, deletedCount: 0, itemsDeleted: 0 };
+      }
+      const targetIds = orderIds;
 
-    if (!targetIds || targetIds.length === 0) {
-      const allOrders = await tx.order.findMany({ select: { id: true } });
-      targetIds = allOrders.map(o => o.id);
+      await tx.paymentTransactionLog.deleteMany({
+        where: { orderId: { in: targetIds } }
+      });
+
+      const deletedItems = await tx.orderItem.deleteMany({
+        where: { orderId: { in: targetIds } }
+      });
+
+      const deletedOrders = await tx.order.deleteMany({
+        where: { id: { in: targetIds } }
+      });
+
+      return {
+        success: true,
+        deletedCount: deletedOrders.count,
+        itemsDeleted: deletedItems.count
+      };
     }
+
+    const allOrders = await tx.order.findMany({ select: { id: true } });
+    const targetIds = allOrders.map(o => o.id);
 
     if (targetIds.length === 0) {
       return { success: true, deletedCount: 0, itemsDeleted: 0 };
     }
 
-    // 1. Delete all associated order items
+    await tx.paymentTransactionLog.deleteMany({
+      where: { orderId: { in: targetIds } }
+    });
+
     const deletedItems = await tx.orderItem.deleteMany({
       where: { orderId: { in: targetIds } }
     });
 
-    // 2. Delete all target orders
     const deletedOrders = await tx.order.deleteMany({
       where: { id: { in: targetIds } }
     });
@@ -35,5 +58,10 @@ export async function purgeAllOrdersCascade(orderIds = null) {
       deletedCount: deletedOrders.count,
       itemsDeleted: deletedItems.count
     };
-  });
+  };
+
+  if (txClient) {
+    return await runner(txClient);
+  }
+  return await prisma.$transaction(runner);
 }

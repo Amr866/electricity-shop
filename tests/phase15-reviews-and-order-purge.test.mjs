@@ -251,3 +251,58 @@ test('Phase 15 Seam 4: Bulk reviews deletion recalculates ratings accurately for
   await prisma.product.delete({ where: { id: prodA.id } });
   await prisma.product.delete({ where: { id: prodB.id } });
 });
+
+test('Phase 15 Seam 5: Empty array safeguard prevents accidental total order purge', async () => {
+  const { purgeAllOrdersCascade } = await import('../src/lib/admin-order-purge.js');
+
+  const cat = await prisma.category.findFirst();
+  const prod = await prisma.product.create({
+    data: {
+      name: 'محصول موقت تست گارد آرایه خالی',
+      slug: 'test-guard-prod-' + Date.now(),
+      description: 'تست گارد حذف سفارشات',
+      price: 10000,
+      categoryId: cat.id,
+    }
+  });
+
+  const order = await prisma.order.create({
+    data: {
+      orderNumber: 'SH-KEEP-' + Date.now(),
+      customerName: 'کاربر محافظت‌شده',
+      customerPhone: '09139998877',
+      address: 'خیابان امام خمینی اصفهان',
+      shippingMethod: 'courier_najafabad',
+      paymentMethod: 'cod',
+      subtotal: 10000,
+      totalAmount: 10000,
+      items: {
+        create: [
+          {
+            productId: prod.id,
+            productName: prod.name,
+            price: 10000,
+            quantity: 1,
+            total: 10000,
+          }
+        ]
+      }
+    }
+  });
+
+  // Call purgeAllOrdersCascade with empty array []
+  const safeRes = await purgeAllOrdersCascade([]);
+  assert.equal(safeRes.deletedCount, 0, 'Passing empty array must delete 0 orders');
+  assert.equal(safeRes.itemsDeleted, 0, 'Passing empty array must delete 0 items');
+
+  // Verify order still exists
+  const existingOrder = await prisma.order.findUnique({ where: { id: order.id } });
+  assert.ok(existingOrder, 'Order must not be purged when empty array is passed');
+
+  // Specific ID purge works
+  const specificRes = await purgeAllOrdersCascade([order.id]);
+  assert.equal(specificRes.deletedCount, 1, 'Targeted purge must delete exactly 1 order');
+
+  // Cleanup
+  await prisma.product.delete({ where: { id: prod.id } });
+});

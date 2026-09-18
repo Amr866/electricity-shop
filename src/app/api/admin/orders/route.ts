@@ -50,16 +50,9 @@ export async function PUT(req: NextRequest) {
 }
 
 async function deleteOrdersCascade(ids: string[]): Promise<number> {
-  if (ids.length === 0) return 0;
-  return await prisma.$transaction(async (tx) => {
-    await tx.orderItem.deleteMany({
-      where: { orderId: { in: ids } },
-    });
-    const res = await tx.order.deleteMany({
-      where: { id: { in: ids } },
-    });
-    return res.count;
-  });
+  if (!ids || ids.length === 0) return 0;
+  const result = await purgeAllOrdersCascade(ids);
+  return result.deletedCount;
 }
 
 export async function DELETE(req: NextRequest) {

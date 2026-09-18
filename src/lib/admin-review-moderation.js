@@ -1,4 +1,4 @@
-﻿import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -85,6 +85,9 @@ export async function deleteReviewWithRecalc(reviewId) {
  * @param {string[]} reviewIds
  */
 export async function deleteReviewsBulkWithRecalc(reviewIds) {
+  if (!reviewIds || reviewIds.length === 0) {
+    return { success: true, deletedCount: 0 };
+  }
   return await prisma.$transaction(async (tx) => {
     const reviews = await tx.review.findMany({
       where: { id: { in: reviewIds } },

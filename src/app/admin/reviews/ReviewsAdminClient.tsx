@@ -466,6 +466,7 @@ export function ReviewsAdminClient({
                   onChange={toggleSelectAll}
                   className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 cursor-pointer"
                   title="انتخاب همه"
+                  aria-label="انتخاب همه دیدگاه‌ها"
                 />
                 <span>نمایش {toPersianDigits(filteredReviews.length)} دیدگاه</span>
               </div>
@@ -492,6 +493,7 @@ export function ReviewsAdminClient({
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleSelectOne(rev.id)}
+                        aria-label={`انتخاب دیدگاه ${rev.authorName}`}
                         className="w-4 h-4 mt-1 rounded text-amber-500 focus:ring-amber-500 cursor-pointer shrink-0"
                       />
 

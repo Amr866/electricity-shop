@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
+
+export type DbClient = Prisma.TransactionClient | typeof prisma;
 
 export interface ModerateReviewResult {
   review: {
@@ -35,7 +38,7 @@ export interface BulkDeleteReviewsResult {
  * Recomputes the average rating and verified review count for a product
  * based strictly on reviews where `isVerified === true`.
  */
-export async function recomputeProductRating(productId: string, tx: any = prisma) {
+export async function recomputeProductRating(productId: string, tx: DbClient = prisma) {
   const verifiedReviews = await tx.review.findMany({
     where: { productId, isVerified: true },
     select: { rating: true },
@@ -59,7 +62,7 @@ export async function recomputeProductRating(productId: string, tx: any = prisma
  * Moderates a review (approves or unpublishes) and updates product rating atomically.
  */
 export async function moderateReview(reviewId: string, isVerified: boolean): Promise<ModerateReviewResult> {
-  return await prisma.$transaction(async (tx: any) => {
+  return await prisma.$transaction(async (tx) => {
     const updatedReview = await tx.review.update({
       where: { id: reviewId },
       data: { isVerified: Boolean(isVerified) },
@@ -86,7 +89,7 @@ export async function moderateReview(reviewId: string, isVerified: boolean): Pro
  * Permanently deletes a review and recomputes the product rating atomically.
  */
 export async function deleteReviewWithRecalc(reviewId: string): Promise<DeleteReviewResult> {
-  return await prisma.$transaction(async (tx: any) => {
+  return await prisma.$transaction(async (tx) => {
     const review = await tx.review.findUnique({
       where: { id: reviewId },
       select: { id: true, productId: true },
@@ -113,7 +116,11 @@ export async function deleteReviewWithRecalc(reviewId: string): Promise<DeleteRe
  * Bulk deletes reviews and recomputes ratings for all affected products.
  */
 export async function deleteReviewsBulkWithRecalc(reviewIds: string[]): Promise<BulkDeleteReviewsResult> {
-  return await prisma.$transaction(async (tx: any) => {
+  if (reviewIds.length === 0) {
+    return { success: true, deletedCount: 0 };
+  }
+
+  return await prisma.$transaction(async (tx) => {
     const reviews = await tx.review.findMany({
       where: { id: { in: reviewIds } },
       select: { id: true, productId: true },

@@ -114,7 +114,7 @@ export function ConfirmDeleteModal({
                 {title}
               </h2>
               <span className="text-xs text-rose-400 font-bold mt-0.5 inline-block">
-                تعداد: <bdi dir="ltr">{toPersianDigits(itemCount)}</bdi> {itemType}
+                تعداد: <bdi dir="rtl">{toPersianDigits(itemCount)}</bdi> {itemType}
               </span>
             </div>
           </div>
@@ -148,7 +148,7 @@ export function ConfirmDeleteModal({
         {requiresTyping && (
           <div className="space-y-2">
             <label className="block text-xs font-bold text-slate-300">
-              جهت تایید قطعی حذف گروهی (<bdi dir="ltr">{toPersianDigits(itemCount)}</bdi> {itemType})، کلمه{" "}
+              جهت تایید قطعی حذف گروهی (<bdi dir="rtl">{toPersianDigits(itemCount)}</bdi> {itemType})، کلمه{" "}
               <span className="text-rose-400 font-mono underline underline-offset-4">حذف</span> را تایپ کنید:
             </label>
             <input

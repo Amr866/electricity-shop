@@ -199,8 +199,8 @@ export function HeroBanner() {
                     alt={item.title}
                     fill
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
-                    priority={index === 0}
-                    loading={index === 0 ? "eager" : "lazy"}
+                    priority={index < 2}
+                    loading={index < 2 ? "eager" : "lazy"}
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}

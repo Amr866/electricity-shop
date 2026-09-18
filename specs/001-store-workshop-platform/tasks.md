@@ -266,14 +266,14 @@
 6. Inspect product detail page; verify primary product image has `priority` attribute.
 7. Run `npm test` and `npm run typecheck`; verify all test suites pass.
 
-- [ ] T068 [P] [US1] Create dedicated category landing page at `src/app/categories/[slug]/page.tsx` with dynamic `generateMetadata`, H1, category description, breadcrumb navigation, and pre-filtered `ProductCard` grid
-- [ ] T069 [P] [US1] Add server-side `layout.tsx` files exporting localized `Metadata` with Persian titles, descriptions, canonical URLs, and OpenGraph definitions for client routes: `src/app/repair-service/layout.tsx`, `src/app/contact/layout.tsx`, `src/app/faq/layout.tsx`, `src/app/price-lists/layout.tsx`, and `src/app/bom-upload/layout.tsx`
-- [ ] T070 [P] [US1] Create JSON-LD schema builder and component `src/components/seo/JsonLd.tsx` supporting `ElectronicsStore`, `FAQPage`, and `BreadcrumbList` schemas
-- [ ] T071 [US1] Inject `ElectronicsStore` structured data with Najafabad NAP in root layout/homepage, and inject `FAQPage` structured data in `/faq` and `/repair-service`
-- [ ] T072 [US1] Unify domain resolution across `src/app/products/[slug]/page.tsx`, `src/app/sitemap.ts`, and `src/app/robots.ts` to strictly consume `process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir"`
-- [ ] T073 [US1] Implement dynamic `generateMetadata` in `src/app/products/page.tsx` with filter-aware titles and canonical self-referencing `/products`
-- [ ] T074 [US1] Add `priority` property to primary product detail image in `src/components/product/ProductDetailView.tsx` and hero banners to optimize Largest Contentful Paint (LCP)
-- [ ] T075 [US1] Create automated technical SEO integration test suite `tests/integration/phase18-technical-seo.test.mjs` and execute `npm run typecheck` and `npm test`
+- [x] T068 [P] [US1] Create dedicated category landing page at `src/app/categories/[slug]/page.tsx` with dynamic `generateMetadata`, H1, category description, breadcrumb navigation, and pre-filtered `ProductCard` grid
+- [x] T069 [P] [US1] Add server-side `layout.tsx` files exporting localized `Metadata` with Persian titles, descriptions, canonical URLs, and OpenGraph definitions for client routes: `src/app/repair-service/layout.tsx`, `src/app/contact/layout.tsx`, `src/app/faq/layout.tsx`, `src/app/price-lists/layout.tsx`, and `src/app/bom-upload/layout.tsx`
+- [x] T070 [P] [US1] Create JSON-LD schema builder and component `src/components/seo/JsonLd.tsx` supporting `ElectronicsStore`, `FAQPage`, and `BreadcrumbList` schemas
+- [x] T071 [US1] Inject `ElectronicsStore` structured data with Najafabad NAP in root layout/homepage, and inject `FAQPage` structured data in `/faq` and `/repair-service`
+- [x] T072 [US1] Unify domain resolution across `src/app/products/[slug]/page.tsx`, `src/app/sitemap.ts`, and `src/app/robots.ts` to strictly consume `process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir"`
+- [x] T073 [US1] Implement dynamic `generateMetadata` in `src/app/products/page.tsx` with filter-aware titles and canonical self-referencing `/products`
+- [x] T074 [US1] Add `priority` property to primary product detail image in `src/components/product/ProductDetailView.tsx` and hero banners to optimize Largest Contentful Paint (LCP)
+- [x] T075 [US1] Create automated technical SEO integration test suite `tests/integration/phase18-technical-seo.test.mjs` and execute `npm run typecheck` and `npm test`
 
 ---
 

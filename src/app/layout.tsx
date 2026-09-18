@@ -9,6 +9,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { JsonLd, buildElectronicsStoreSchema } from "@/components/seo/JsonLd";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -53,6 +54,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
+  const storeSchema = buildElectronicsStoreSchema(baseUrl);
+
   return (
     <html
       lang="fa"
@@ -64,6 +68,7 @@ export default function RootLayout({
         className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-16 md:pb-0 transition-colors duration-200`}
         suppressHydrationWarning
       >
+        <JsonLd data={storeSchema} />
         <AuthProvider>
           <BrandProvider>
             <WishlistProvider>

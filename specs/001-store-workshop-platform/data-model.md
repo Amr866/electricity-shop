@@ -84,6 +84,7 @@ erDiagram
   - `datasheetUrl`: `String?`, PDF datasheet download URL.
   - `categoryId`: `String`, Foreign key to `Category`.
   - `createdAt`, `updatedAt`: Timestamps.
+  - *Indexes*: `@@index([isFeatured, isBestSeller])`, `@@index([categoryId])`, `@@index([brand])`, `@@index([isArchived])`, `@@index([createdAt])`, `@@index([isArchived, createdAt])`, `@@index([isArchived, price])`, `@@index([isArchived, categoryId])`.
 
 - **ProductSpec**:
   - `id`: `String`, Primary Key.

@@ -255,6 +255,43 @@ src/
 
 ---
 
+## Plan Extension: Storefront In-App Performance Optimization & Database Indexing (Phase 17 - 2026-09-18)
+
+### Technical Architecture & Decisions
+
+1. **PostgreSQL Composite Indexing (`FR-054`)**:
+   - Update `prisma/schema.prisma` `Product` model with:
+     - `@@index([isArchived, createdAt])` (default recency ordering)
+     - `@@index([isArchived, price])` (cheapest / expensive sorting)
+     - `@@index([isArchived, categoryId])` (catalog category filtering)
+   - Synchronize with PostgreSQL via `npx prisma db push`.
+
+2. **In-App Data Cache & Tagged Revalidation (`FR-053`, `FR-057`)**:
+   - Implement `getCachedCatalogMetadata()` in `src/lib/domain/catalog-cache.ts` wrapped with Next.js `unstable_cache`:
+     - Caches active categories with product count calculations.
+     - Caches distinct brand listings.
+     - Tags cache with `['catalog-metadata']`.
+   - Update `src/app/products/page.tsx` to retrieve categories and brands from `getCachedCatalogMetadata()`.
+   - Update administrative route handlers `src/app/api/admin/products/route.ts` and `src/app/api/admin/categories/route.ts`:
+     - Add `revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')` upon product/category mutations.
+
+3. **Incremental Static Regeneration (ISR) for Product Detail Pages (`FR-053`)**:
+   - In `src/app/products/[slug]/page.tsx`:
+     - Export `revalidate = 300` (5 minutes ISR).
+     - Export `generateStaticParams()` querying active product slugs (`where: { isArchived: false }`).
+     - Product detail pages render from static HTML memory cache in under 30ms.
+
+4. **Search Query Execution Scoping (`FR-055`)**:
+   - In `src/app/products/page.tsx`:
+     - Refine multi-token search `where.AND` mapping to query: `name`, `sku`, `mpn`, `brand`, and `shortDesc`.
+     - Omit raw HTML `description` wildcard scanning, preventing database table scans on large text blobs.
+
+5. **Mobile Font Payload Trimming (`FR-056`)**:
+   - In `src/app/layout.tsx`:
+     - Trim Vazirmatn weights to `["400", "500", "700", "900"]` with `display: "swap"` and `preload: true`, cutting font transfer payload and reducing mobile FCP.
+
+---
+
 ## Complexity Tracking
 
 > No constitutional violations or unwarranted complexities detected. The architecture preserves direct Prisma database access, Next.js route handlers, and in-memory static fallbacks without unnecessary third-party microservices.

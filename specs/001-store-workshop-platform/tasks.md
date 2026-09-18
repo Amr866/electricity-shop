@@ -23,6 +23,9 @@
 | **Phase 12** | Workshop Repairs Safety-Locked Archival | P2 | Active repair protection, technical history archive, and terminal ticket deletion |
 | **Phase 13** | Universal Smart Friction Deletion Modal & WCAG | P2 | Count-aware friction modal (type "حذف" >3 items), keyboard trap, and accessible alerts |
 | **Phase 14** | Automated Verification & Full Test Suite | Final | End-to-end integration tests for image routing, guarded deletion, and full system typecheck |
+| **Phase 15** | Optional Pricing Units, Customer Reviews Moderation & Total Order Purge | P1 | priceUnit presets/rendering, /admin/reviews portal, and total order purge cascade |
+| **Phase 16** | Codebase Deep-Module Restructuring & Test Consolidation | Architectural | Deep submodules in src/lib/, root facades, three-tier tests, and categorized scripts |
+| **Phase 17** | Storefront In-App Performance Optimization & Database Indexing | P1 | In-app Data Cache, product detail ISR, composite DB indexes, and font trimming |
 
 ---
 
@@ -217,6 +220,39 @@
 
 ---
 
+## Phase 16: Codebase Deep-Module Restructuring & Test Consolidation (Architectural)
+
+**Goal**: Restructure `src/lib/` into deep domain packages (`core/`, `domain/`, `admin/`, `utils/`) with zero-breakage root facades, consolidate tests into a clean three-tier structure under `tests/`, purge redundant compiled `.js` twins, and categorize operational scripts into `scripts/migrations/`, `scripts/seeds/`, and `scripts/tools/`.
+
+- [x] T057 [P] Modularize `src/lib/` into focused subpackages (`core/`, `domain/`, `admin/`, `utils/`) and provide root facade re-exports in `src/lib/index.ts`
+- [x] T058 [P] Consolidate unit, integration, and E2E tests under `tests/` (`tests/unit/`, `tests/integration/`, `tests/e2e/`), update `package.json` scripts (`test`, `test:unit`, `test:integration`), and prune `src/lib/__tests__/`
+- [x] T059 [P] Delete redundant compiled `.js` twin files from `src/lib/` and configure all test suites to import `.ts` source modules directly via `tsx`
+- [x] T060 Organize scripts into categorized subdirectories (`scripts/migrations/`, `scripts/seeds/`, `scripts/tools/`) and update `package.json` command triggers
+
+---
+
+## Phase 17: Storefront In-App Performance Optimization & Database Indexing (Priority: P1)
+
+**Goal**: Deliver sub-100ms storefront catalog response times, eliminate PostgreSQL sequential table scans, and reduce mobile data consumption using Next.js 15 native in-app Data Cache (`unstable_cache`), product detail ISR (`revalidate = 300`) with `generateStaticParams`, targeted composite database indexes, commercial search scoping, and mobile Vazirmatn font weight trimming.
+
+**Independent Test**:
+1. Run `npx prisma db push`; verify PostgreSQL composite indexes `[isArchived, createdAt]`, `[isArchived, price]`, and `[isArchived, categoryId]` exist.
+2. Query `/products`; verify category counts and brand listings are served from in-app Data Cache in < 100ms.
+3. Perform a multi-token Persian search; verify search queries commercial attributes (`name`, `sku`, `mpn`, `brand`, `shortDesc`) and excludes heavy HTML descriptions.
+4. Open a product detail page (`/products/[slug]`); verify static pre-rendering via `generateStaticParams` and sub-30ms ISR cache response.
+5. In `/admin/products`, update a product price; verify `revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')` immediately update the storefront price.
+6. Inspect `src/app/layout.tsx`; verify Vazirmatn font loads exactly 4 core weights (`400`, `500`, `700`, `900`) with `display: "swap"`.
+
+- [ ] T061 [P] [US1] Add composite indexes on `Product` in `prisma/schema.prisma` (`@@index([isArchived, createdAt])`, `@@index([isArchived, price])`, `@@index([isArchived, categoryId])`) and push to database via `npx prisma db push`
+- [ ] T062 [P] [US1] Implement cached catalog metadata helper `getCachedCatalogMetadata()` in `src/lib/domain/catalog-cache.ts` using Next.js `unstable_cache` with tag `['catalog-metadata']` for category product counts and distinct brands
+- [ ] T063 [US1] Refactor `src/app/products/page.tsx` to consume `getCachedCatalogMetadata()` and scope multi-token search queries to `name`, `sku`, `mpn`, `brand`, and `shortDesc`, omitting raw HTML `description` scans
+- [ ] T064 [US1] Configure ISR (`export const revalidate = 300`) and export `generateStaticParams()` in `src/app/products/[slug]/page.tsx` for active product catalog pre-rendering
+- [ ] T065 [P] [US9] Implement programmatic on-demand cache invalidation (`revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')`) inside administrative mutation handlers `src/app/api/admin/products/route.ts` and `src/app/api/admin/categories/route.ts`
+- [ ] T066 [P] [US1] Trim Vazirmatn Google font configuration in `src/app/layout.tsx` to 4 essential weights (`["400", "500", "700", "900"]`) with `display: "swap"` and `preload: true`
+- [ ] T067 [US1] Create automated performance and in-app caching integration test in `tests/integration/phase17-performance-and-caching.test.mjs`, verifying tag invalidation, composite index queries, and run `npm run typecheck` and `npm test`
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid
@@ -343,6 +379,33 @@ flowchart TD
         T055 --> T056
     end
 
+    subgraph Phase16["Phase 16: Restructuring & Tests"]
+        T057["T057: Modularize src/lib"]
+        T058["T058: Three-Tier Tests"]
+        T059["T059: Purge JS Twins"]
+        T060["T060: Categorize Scripts"]
+        T057 --> T058
+        T058 --> T059
+        T059 --> T060
+    end
+
+    subgraph Phase17["Phase 17: Performance & Caching"]
+        T061["T061: Composite Indexes"]
+        T062["T062: In-App Data Cache"]
+        T063["T063: Search Field Scoping"]
+        T064["T064: Product Detail ISR"]
+        T065["T065: On-Demand Invalidation"]
+        T066["T066: Vazirmatn Font Trim"]
+        T067["T067: Performance Tests"]
+        T061 --> T063
+        T062 --> T063
+        T062 --> T065
+        T064 --> T065
+        T063 --> T067
+        T065 --> T067
+        T066 --> T067
+    end
+
     Phase1 --> Phase4
     Phase2 --> Phase5
     Phase2 --> Phase6
@@ -358,4 +421,6 @@ flowchart TD
     Phase12 --> Phase13
     Phase13 --> Phase14
     Phase14 --> Phase15
+    Phase15 --> Phase16
+    Phase16 --> Phase17
 ```

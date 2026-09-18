@@ -131,6 +131,18 @@ The application will launch at `http://localhost:3000`.
 
 ---
 
+### Scenario 8: Storefront Performance & In-App Caching (`FEAT-PERFORMANCE`)
+1. Open `/products` in browser:
+   - *Expected*: Catalog metadata (categories and brands) served in under 100ms via `unstable_cache`.
+2. Inspect product search with multiple Persian tokens (e.g. `موتور کولر`):
+   - *Expected*: Search matches title, SKU, MPN, and brand without full HTML description table scans.
+3. Navigate to a product detail page (`/products/[slug]`):
+   - *Expected*: Page loads instantly from ISR memory cache (`revalidate = 300`).
+4. Update a product price in `/admin/products`:
+   - *Expected*: `revalidateTag('catalog-metadata')` and `revalidatePath('/products/[slug]')` fire, immediately reflecting the new price on the storefront.
+
+---
+
 ## 3. Quality & Regression Verification
 
 Run the automated verification suite:

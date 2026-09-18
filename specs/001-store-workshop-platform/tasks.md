@@ -253,6 +253,30 @@
 
 ---
 
+## Phase 18: Storefront Technical & Local SEO Optimization (Priority: P1)
+
+**Goal**: Eliminate 404 crawl errors on category URLs, optimize Google Core Web Vitals (LCP) and local search indexing with dedicated category landing pages, server layout metadata for client interactive routes, LocalBusiness / FAQPage / Breadcrumb Schema.org JSON-LD suite, dynamic catalog metadata with clean canonicals, and image priority flags.
+
+**Independent Test**:
+1. Navigate to `/categories/[slug]` (e.g. `/categories/cables`); verify page returns 200, displays category H1, breadcrumbs, filtered products, and valid `BreadcrumbList` schema.
+2. Inspect headers/source of `/repair-service`, `/contact`, `/faq`, `/price-lists`, and `/bom-upload`; verify server `layout.tsx` generates accurate meta title, description, canonical link, and OpenGraph tags.
+3. Inspect root page source; verify `ElectronicsStore` / `LocalBusiness` JSON-LD schema renders with Najafabad NAP (`03142626116`, `32.6365457, 51.3551911`).
+4. Inspect `/faq` and `/repair-service`; verify `FAQPage` JSON-LD schema renders with questions and answers.
+5. In `/products`, query with filters (e.g. `?brand=البرز`); verify dynamic `title` is generated and `canonical` URL points to `/products`.
+6. Inspect product detail page; verify primary product image has `priority` attribute.
+7. Run `npm test` and `npm run typecheck`; verify all test suites pass.
+
+- [ ] T068 [P] [US1] Create dedicated category landing page at `src/app/categories/[slug]/page.tsx` with dynamic `generateMetadata`, H1, category description, breadcrumb navigation, and pre-filtered `ProductCard` grid
+- [ ] T069 [P] [US1] Add server-side `layout.tsx` files exporting localized `Metadata` with Persian titles, descriptions, canonical URLs, and OpenGraph definitions for client routes: `src/app/repair-service/layout.tsx`, `src/app/contact/layout.tsx`, `src/app/faq/layout.tsx`, `src/app/price-lists/layout.tsx`, and `src/app/bom-upload/layout.tsx`
+- [ ] T070 [P] [US1] Create JSON-LD schema builder and component `src/components/seo/JsonLd.tsx` supporting `ElectronicsStore`, `FAQPage`, and `BreadcrumbList` schemas
+- [ ] T071 [US1] Inject `ElectronicsStore` structured data with Najafabad NAP in root layout/homepage, and inject `FAQPage` structured data in `/faq` and `/repair-service`
+- [ ] T072 [US1] Unify domain resolution across `src/app/products/[slug]/page.tsx`, `src/app/sitemap.ts`, and `src/app/robots.ts` to strictly consume `process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir"`
+- [ ] T073 [US1] Implement dynamic `generateMetadata` in `src/app/products/page.tsx` with filter-aware titles and canonical self-referencing `/products`
+- [ ] T074 [US1] Add `priority` property to primary product detail image in `src/components/product/ProductDetailView.tsx` and hero banners to optimize Largest Contentful Paint (LCP)
+- [ ] T075 [US1] Create automated technical SEO integration test suite `tests/integration/phase18-technical-seo.test.mjs` and execute `npm run typecheck` and `npm test`
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid
@@ -404,6 +428,22 @@ flowchart TD
         T063 --> T067
         T065 --> T067
         T066 --> T067
+    subgraph Phase18["Phase 18: Storefront Technical & Local SEO"]
+        T068["T068: Category Landing Page"]
+        T069["T069: Server Metadata Layouts"]
+        T070["T070: Schema.org JSON-LD Suite"]
+        T071["T071: LocalBusiness & FAQ Injection"]
+        T072["T072: Domain Unification"]
+        T073["T073: Dynamic Catalog Metadata"]
+        T074["T074: LCP Image Priority"]
+        T075["T075: Technical SEO Tests"]
+        T068 --> T075
+        T069 --> T075
+        T070 --> T071
+        T071 --> T075
+        T072 --> T073
+        T073 --> T075
+        T074 --> T075
     end
 
     Phase1 --> Phase4
@@ -423,4 +463,6 @@ flowchart TD
     Phase14 --> Phase15
     Phase15 --> Phase16
     Phase16 --> Phase17
+    Phase17 --> Phase18
 ```
+

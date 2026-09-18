@@ -5,7 +5,7 @@ import {
   generateOrderNumber,
   calculateReservationExpiry,
   validateCorporateInvoice,
-} from "../src/lib/checkoutEngine";
+} from "../../src/lib/checkoutEngine";
 
 import {
   isValidRepairTransition,
@@ -13,13 +13,13 @@ import {
   evaluateCostApprovalDecision,
   getCostEstimationSmsPayload,
   getRepairStageMetadata,
-} from "../src/lib/repairLifecycle";
+} from "../../src/lib/repairLifecycle";
 
 import {
   calculateCableRequirements,
   createChapter13CartBundle,
   getFeederEngineeringAdvice,
-} from "../src/lib/cableCalculator";
+} from "../../src/lib/cableCalculator";
 
 function runTests() {
   console.log("=================================================");

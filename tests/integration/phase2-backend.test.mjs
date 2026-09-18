@@ -1,7 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { normalizeIranianPhone, toAsciiDigits } from "../src/lib/utils.ts";
-import { hashPassword, verifyPassword } from "../src/lib/password.ts";
+import { normalizeIranianPhone, toAsciiDigits } from "../../src/lib/utils.ts";
+import { hashPassword, verifyPassword } from "../../src/lib/password.ts";
 
 describe("Phase 2 - Backend Auth & Security Tests", () => {
   test("Password hashing and verification with scrypt/crypto", () => {
@@ -45,7 +45,25 @@ describe("Phase 2 - Backend Auth & Security Tests", () => {
     assert.strictEqual(isCodEligible("zarinpal", "iran_post"), true);
   });
 
-  test("Integration: /api/auth/check-user on running server", async () => {
+  const isServerRunning = async () => {
+    try {
+      await fetch("http://localhost:3000/api/auth/check-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: "09136260072" }),
+        signal: AbortSignal.timeout(500),
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  test("Integration: /api/auth/check-user on running server", async (t) => {
+    if (!(await isServerRunning())) {
+      t.skip("Live server not running on port 3000");
+      return;
+    }
     const res = await fetch("http://localhost:3000/api/auth/check-user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,7 +86,11 @@ describe("Phase 2 - Backend Auth & Security Tests", () => {
     assert.strictEqual(data2.hasPassword, false);
   });
 
-  test("Integration: /api/checkout rejects invalid postal code", async () => {
+  test("Integration: /api/checkout rejects invalid postal code", async (t) => {
+    if (!(await isServerRunning())) {
+      t.skip("Live server not running on port 3000");
+      return;
+    }
     const res = await fetch("http://localhost:3000/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -85,7 +107,11 @@ describe("Phase 2 - Backend Auth & Security Tests", () => {
     assert.match(data.message, /کد پستی باید دقیقاً ۱۰ رقم عددی باشد/);
   });
 
-  test("Integration: /api/checkout rejects COD on iran_post", async () => {
+  test("Integration: /api/checkout rejects COD on iran_post", async (t) => {
+    if (!(await isServerRunning())) {
+      t.skip("Live server not running on port 3000");
+      return;
+    }
     const res = await fetch("http://localhost:3000/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -104,7 +130,11 @@ describe("Phase 2 - Backend Auth & Security Tests", () => {
     assert.match(data.message, /پرداخت در محل فقط برای ارسال فوری/);
   });
 
-  test("Integration: DELETE /api/admin/orders requires ADMIN session", async () => {
+  test("Integration: DELETE /api/admin/orders requires ADMIN session", async (t) => {
+    if (!(await isServerRunning())) {
+      t.skip("Live server not running on port 3000");
+      return;
+    }
     const res = await fetch("http://localhost:3000/api/admin/orders?orderId=fake-id", {
       method: "DELETE",
     });

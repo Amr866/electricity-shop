@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { logPaymentTransaction, getPaymentLogsForOrder } from "../src/lib/paymentLogger";
+import { logPaymentTransaction, getPaymentLogsForOrder } from "../../src/lib/paymentLogger";
 
 const prisma = new PrismaClient();
 

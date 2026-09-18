@@ -1,11 +1,11 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 test('Phase 12: Workshop Repairs Safety-Locked Archival and Purge', async () => {
-  const { guardRepairDeletion, toggleArchiveRepair } = await import('../src/lib/admin-repair-guard.js');
+  const { guardRepairDeletion, toggleArchiveRepair } = await import('../../src/lib/admin/admin-repair-guard.ts');
 
   const activeTracking = 'REP-TEST-ACT-' + Date.now().toString().slice(-6);
   const terminalTracking = 'REP-TEST-TRM-' + Date.now().toString().slice(-6);

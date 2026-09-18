@@ -72,7 +72,7 @@ test('Phase 15 Seam 2: Review moderation updates verified status and recalculate
   assert.equal(pendingReview.isVerified, false, 'New customer review must default to unverified/pending');
 
   // Import review moderation helper
-  const { moderateReview, deleteReviewWithRecalc } = await import('../src/lib/admin-review-moderation.js');
+  const { moderateReview, deleteReviewWithRecalc } = await import('../../src/lib/admin/admin-review-moderation.ts');
 
   // 2. Approve review (isVerified: true)
   const approved = await moderateReview(pendingReview.id, true);
@@ -174,7 +174,7 @@ test('Phase 15 Seam 3: Total order purge cascade deletes all order items and ord
   });
 
   // Import order purge helper
-  const { purgeAllOrdersCascade } = await import('../src/lib/admin-order-purge.js');
+  const { purgeAllOrdersCascade } = await import('../../src/lib/admin/admin-order-purge.ts');
 
   // Execute purge of these specific test order IDs
   const purgeResult = await purgeAllOrdersCascade([order1.id, order2.id]);
@@ -226,7 +226,7 @@ test('Phase 15 Seam 4: Bulk reviews deletion recalculates ratings accurately for
     data: { authorName: 'کاربر ۳', productId: prodB.id, rating: 2, comment: 'ضعیف', isVerified: true }
   });
 
-  const { deleteReviewsBulkWithRecalc, recomputeProductRating } = await import('../src/lib/admin-review-moderation.js');
+  const { deleteReviewsBulkWithRecalc, recomputeProductRating } = await import('../../src/lib/admin/admin-review-moderation.ts');
 
   await recomputeProductRating(prodA.id);
   await recomputeProductRating(prodB.id);
@@ -253,7 +253,7 @@ test('Phase 15 Seam 4: Bulk reviews deletion recalculates ratings accurately for
 });
 
 test('Phase 15 Seam 5: Empty array safeguard prevents accidental total order purge', async () => {
-  const { purgeAllOrdersCascade } = await import('../src/lib/admin-order-purge.js');
+  const { purgeAllOrdersCascade } = await import('../../src/lib/admin/admin-order-purge.ts');
 
   const cat = await prisma.category.findFirst();
   const prod = await prisma.product.create({

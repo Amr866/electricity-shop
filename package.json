@@ -7,7 +7,9 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "npx tsx --test src/lib/__tests__/*.test.ts",
+    "test": "npx tsx --test tests/unit/*.test.ts tests/integration/*.test.mjs",
+    "test:unit": "npx tsx --test tests/unit/*.test.ts",
+    "test:integration": "npx tsx --test tests/integration/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
@@ -15,7 +17,7 @@
     "prisma:seed": "node prisma/seed.js",
     "db:setup": "prisma generate && prisma db push && node prisma/seed.js",
     "db:studio": "prisma studio",
-    "db:fix-images": "node scripts/fix-db-images.js"
+    "db:fix-images": "node scripts/migrations/fix-db-images.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
-import { hashPassword, verifyPassword } from "../src/lib/password.ts";
-import { toAsciiDigits, normalizeIranianPhone } from "../src/lib/utils.ts";
+import { hashPassword, verifyPassword } from "../../src/lib/password.ts";
+import { toAsciiDigits, normalizeIranianPhone } from "../../src/lib/utils.ts";
 
 const prisma = new PrismaClient();
 const BASE_URL = "http://localhost:3000";

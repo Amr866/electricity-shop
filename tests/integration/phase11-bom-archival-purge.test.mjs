@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -31,7 +31,7 @@ test('Phase 11 Seams 1-3: BOM Archival, Restore, and Permanent Purge with File U
     }
   });
 
-  const { toggleArchiveBom, purgeBomSubmission } = await import('../src/lib/admin-bom-guard.js');
+  const { toggleArchiveBom, purgeBomSubmission } = await import('../../src/lib/admin/admin-bom-guard.ts');
 
   // 3. Test Archive (Seam 1)
   const archiveResult = await toggleArchiveBom(bom.id, true);

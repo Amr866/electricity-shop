@@ -6,7 +6,7 @@ import {
   getFeederEngineeringAdvice,
   STANDARD_COPPER_GAUGES,
   STANDARD_MCB_RATINGS,
-} from '../cableCalculator';
+} from '../../src/lib/domain/cableCalculator';
 
 describe('Cable Calculator - Chapter 13 Compliance & Edge Cases', () => {
   describe('Seam 1: Single-Phase 220V Voltage Drop & Current Formulas', () => {

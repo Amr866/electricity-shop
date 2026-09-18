@@ -1,4 +1,4 @@
-﻿import test from 'node:test';
+import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PrismaClient } from '@prisma/client';
 
@@ -21,7 +21,7 @@ test('Phase 10 Seam 1: Product with zero orders is hard-deleted', async () => {
   });
 
   // Call the guarded deletion logic
-  const { deleteGuardedProduct } = await import('../src/lib/admin-product-guard.js');
+  const { deleteGuardedProduct } = await import('../../src/lib/admin/admin-product-guard.ts');
   const result = await deleteGuardedProduct(zeroProd.id);
 
   assert.equal(result.action, 'DELETED', 'Zero-order product must be DELETED');
@@ -68,7 +68,7 @@ test('Phase 10 Seam 2: Product with existing orders transitions to isArchived: t
     }
   });
 
-  const { deleteGuardedProduct } = await import('../src/lib/admin-product-guard.js');
+  const { deleteGuardedProduct } = await import('../../src/lib/admin/admin-product-guard.ts');
   const result = await deleteGuardedProduct(orderedProd.id);
 
   assert.equal(result.action, 'ARCHIVED', 'Ordered product must be ARCHIVED, not hard-deleted');

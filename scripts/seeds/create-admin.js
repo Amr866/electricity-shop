@@ -34,8 +34,8 @@ async function main() {
   let name = args[2] || "مدیریت کارگاه و فروشگاه شیاسی";
 
   if (!rawPhone || !rawPassword) {
-    console.log("Usage: node scripts/create-admin.js <phone> <password> [name]");
-    console.log("Example: node scripts/create-admin.js 09136260072 MyPass123! \"مهندس شیاسی\"");
+    console.log("Usage: node scripts/seeds/create-admin.js <phone> <password> [name]");
+    console.log("Example: node scripts/seeds/create-admin.js 09136260072 MyPass123! \"مهندس شیاسی\"");
     process.exit(1);
   }
 

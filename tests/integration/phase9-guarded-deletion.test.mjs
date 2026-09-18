@@ -7,9 +7,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 test("Comprehensive Guarded Deletion & Archival Integration Suite", async (t) => {
-  const { deleteGuardedProduct } = await import("../src/lib/admin-product-guard.js");
-  const { toggleArchiveBom, purgeBomSubmission } = await import("../src/lib/admin-bom-guard.js");
-  const { guardRepairDeletion, toggleArchiveRepair } = await import("../src/lib/admin-repair-guard.js");
+  const { deleteGuardedProduct } = await import("../../src/lib/admin/admin-product-guard.ts");
+  const { toggleArchiveBom, purgeBomSubmission } = await import("../../src/lib/admin/admin-bom-guard.ts");
+  const { guardRepairDeletion, toggleArchiveRepair } = await import("../../src/lib/admin/admin-repair-guard.ts");
 
   await t.test("Seam 1: Media Next.js rewrite configuration", () => {
     const nextConfigPath = path.join(process.cwd(), "next.config.ts");

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { releaseExpiredReservations } from "../src/lib/stockReservation";
+import { releaseExpiredReservations } from "../../src/lib/stockReservation";
 
 const prisma = new PrismaClient();
 

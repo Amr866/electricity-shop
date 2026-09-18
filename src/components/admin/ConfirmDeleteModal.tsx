@@ -14,6 +14,7 @@ export interface ConfirmDeleteModalProps {
   itemType?: string;
   isPurge?: boolean;
   isLoading?: boolean;
+  alwaysRequireTyping?: boolean;
 }
 
 export function ConfirmDeleteModal({
@@ -26,13 +27,14 @@ export function ConfirmDeleteModal({
   itemType = "مورد",
   isPurge = true,
   isLoading = false,
+  alwaysRequireTyping = false,
 }: ConfirmDeleteModalProps) {
   const [typedConfirmation, setTypedConfirmation] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const cancelBtnRef = useRef<HTMLButtonElement>(null);
 
-  const requiresTyping = itemCount > 3;
+  const requiresTyping = alwaysRequireTyping || itemCount > 3;
   const isTypingValid =
     !requiresTyping ||
     typedConfirmation.trim().replace(/\u200c/g, "") === "حذف";

@@ -213,6 +213,48 @@ src/
 
 ---
 
+## Plan Extension: Optional Pricing Units, Customer Reviews Moderation & Total Order Purge (2026-09-17)
+
+### Technical Architecture & Decisions
+
+1. **Configurable Product Pricing Units (FR-047)**:
+   - Database Schema: Add `priceUnit String?` to the `Product` model in `prisma/schema.prisma`.
+   - Run `npx prisma db push` to synchronize Postgres.
+   - Admin Editor (`src/app/admin/products/ProductsAdminClient.tsx` & `src/app/api/admin/products/route.ts`):
+     - Add interactive preset chips: `عدد`, `متر`, `کلاف`, `شاخه`, `کیلوگرم`, `بسته`.
+     - Clicking a chip populates or toggles the `priceUnit` state; custom text input allows bespoke units or clearing.
+     - Save `priceUnit` via `POST` / `PUT` endpoints in `src/app/api/admin/products/route.ts`.
+   - Storefront Rendering:
+     - In `src/components/product/ProductCard.tsx`: Conditionally append `/{product.priceUnit}` when `product.priceUnit` is not null/empty; otherwise render clean currency.
+     - In `src/app/products/[slug]/ProductDetailView.tsx`: Render `/ {product.priceUnit}` next to price in main header, bulk discount table, and mobile sticky bottom purchase bar.
+
+2. **Customer Reviews Moderation Hub (FR-046)**:
+   - Schema & Defaults:
+     - `Review` model has `isVerified Boolean @default(true)`. For user-submitted reviews from `ProductReviewsTab.tsx`, set default to `false` (pending moderation).
+   - Dedicated API Route (`src/app/api/admin/reviews/route.ts`):
+     - `GET`: Returns all reviews with product relation (`include: { product: true }`), ordered by `createdAt: desc`, with optional `status=pending|verified|all` query filtering.
+     - `PATCH`: Toggles `isVerified` (approve or unpublish). Automatically recomputes the product's average rating and verified review count in a `$transaction`.
+     - `DELETE`: Permanently deletes review records (single or bulk), recomputing the product's average rating.
+   - Admin Reviews Console (`src/app/admin/reviews/page.tsx` & `src/app/admin/reviews/ReviewsAdminClient.tsx`):
+     - Filter tabs: **"در انتظار بررسی"** (pending), **"تایید شده‌ها"** (approved), and **"همه نظرات"** (all).
+     - Metric counter cards: Pending count, Total Approved, Average Store Rating.
+     - Review cards with star rating, customer name, date, product thumbnail/title, review text, and 1-click action buttons: "تایید و انتشار" (Approve), "لغو انتشار" (Unpublish), "حذف قطعی" (Delete via `ConfirmDeleteModal`).
+   - Admin Navigation (`src/components/admin/AdminSidebar.tsx`):
+     - Register `/admin/reviews` with `MessageSquare` Lucide icon in admin sidebar.
+     - In `ProductsAdminClient.tsx`, provide a direct link/badge from product rows to review moderation.
+
+3. **Total Order Purge & Cascade Deletion (FR-048)**:
+   - Backend API (`src/app/api/admin/orders/route.ts`):
+     - Support `{ deleteAllOrders: true }` parameter in `DELETE` handler.
+     - Queries all existing Order IDs, deletes associated `OrderItem` rows in batch, and deletes the `Order` records in a `$transaction`.
+   - Admin UI (`src/app/admin/orders/OrdersAdminClient.tsx`):
+     - Provide two clear action buttons in the header toolbar:
+       1. **"حذف سفارش‌های تستی / نمونه"** (filters demo/mock orders).
+       2. **"حذف تمامی سفارش‌های سیستم (پاکسازی کلی)"** (triggers complete database order purge).
+     - Both actions are guarded by `ConfirmDeleteModal` with high-friction confirmation (mandatory typing "حذف" to activate the red destructive button).
+
+---
+
 ## Complexity Tracking
 
 > No constitutional violations or unwarranted complexities detected. The architecture preserves direct Prisma database access, Next.js route handlers, and in-memory static fallbacks without unnecessary third-party microservices.

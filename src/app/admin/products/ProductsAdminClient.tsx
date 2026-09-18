@@ -25,6 +25,7 @@ import {
   Filter,
   Save,
   Loader2,
+  MessageSquare,
 } from "lucide-react";
 import { ProductExcelImportModal } from "@/components/admin/ProductExcelImportModal";
 import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
@@ -58,6 +59,7 @@ export interface AdminProduct {
   brand?: string | null;
   warranty?: string | null;
   madeIn?: string | null;
+  priceUnit?: string | null;
   isFeatured?: boolean;
   isBestSeller?: boolean;
   isIsfahanFast?: boolean;
@@ -112,6 +114,7 @@ export function ProductsAdminClient({
   const [price, setPrice] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [stock, setStock] = useState("20");
+  const [priceUnit, setPriceUnit] = useState("");
   const [brand, setBrand] = useState("");
   const [warranty, setWarranty] = useState("گارانتی اصالت و سلامت فیزیکی");
   const [isFeatured, setIsFeatured] = useState(false);
@@ -129,6 +132,7 @@ export function ProductsAdminClient({
     setPrice("");
     setOriginalPrice("");
     setStock("20");
+    setPriceUnit("");
     setBrand("");
     setWarranty("گارانتی اصالت و سلامت فیزیکی");
     setIsFeatured(false);
@@ -149,6 +153,7 @@ export function ProductsAdminClient({
     setPrice(prod.price.toString());
     setOriginalPrice(prod.originalPrice ? prod.originalPrice.toString() : "");
     setStock(prod.stock.toString());
+    setPriceUnit(prod.priceUnit || "");
     setBrand(prod.brand || "");
     setWarranty(prod.warranty || "گارانتی اصالت و سلامت فیزیکی");
     setIsFeatured(Boolean(prod.isFeatured));
@@ -204,6 +209,7 @@ export function ProductsAdminClient({
       price: parseInt(price, 10),
       originalPrice: originalPrice ? parseInt(originalPrice, 10) : null,
       stock: parseInt(stock, 10) || 0,
+      priceUnit: priceUnit.trim() ? priceUnit.trim() : null,
       brand,
       warranty,
       isFeatured,
@@ -838,6 +844,11 @@ export function ProductsAdminClient({
                           title="کلیک برای ویرایش سریع قیمت"
                         >
                           <span>{formatToman(prod.price)}</span>
+                          {prod.priceUnit && (
+                            <span className="text-[10px] text-amber-400/90 font-sans font-medium">
+                              / {prod.priceUnit}
+                            </span>
+                          )}
                         </div>
                       )}
                     </td>
@@ -913,6 +924,13 @@ export function ProductsAdminClient({
                           </span>
                         ) : (
                           <>
+                            <Link
+                              href={`/admin/reviews?productId=${prod.id}`}
+                              className="p-1.5 bg-slate-800 hover:bg-indigo-900/60 text-indigo-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                              title="مدیریت نظرات این کالا"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" />
+                            </Link>
                             <button
                               type="button"
                               onClick={() => openEditModal(prod)}
@@ -1152,6 +1170,60 @@ export function ProductsAdminClient({
                     placeholder="۲۴ ماه گارانتی تعویض موتوژن"
                     className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                   />
+                </div>
+
+                {/* Pricing Unit (Optional) */}
+                <div className="sm:col-span-2 space-y-2 p-3.5 bg-slate-950/40 rounded-2xl border border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <label className="text-slate-300 font-bold flex items-center gap-1.5">
+                      <span>واحد قیمت‌گذاری (اختیاری)</span>
+                      <span className="text-[10px] text-slate-500 font-normal">
+                        (مانند: /متر، /کلاف، /عدد — در صورت خالی بودن فقط مبلغ تومانی درج می‌شود)
+                      </span>
+                    </label>
+                    {priceUnit && (
+                      <button
+                        type="button"
+                        onClick={() => setPriceUnit("")}
+                        className="text-[11px] text-rose-400 hover:text-rose-300 font-bold cursor-pointer"
+                      >
+                        پاک کردن واحد
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Preset Chips */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {["عدد", "متر", "کلاف", "شاخه", "کیلوگرم", "بسته", "جفت", "رول"].map((preset) => {
+                      const isSelected = priceUnit === preset;
+                      return (
+                        <button
+                          key={preset}
+                          type="button"
+                          onClick={() => setPriceUnit(isSelected ? "" : preset)}
+                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-amber-500 text-slate-950 shadow-sm shadow-amber-500/30 scale-105"
+                              : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
+                          }`}
+                        >
+                          {preset}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Custom Unit Input */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-slate-400 text-xs">یا واحد دلخواه:</span>
+                    <input
+                      type="text"
+                      value={priceUnit}
+                      onChange={(e) => setPriceUnit(e.target.value)}
+                      placeholder="مثلاً: قوطی، کارتن، لیتری..."
+                      className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
                 </div>
 
                 {/* Image Upload / URL */}

@@ -21,6 +21,7 @@ import {
   BookOpen,
   Wrench,
   FileSpreadsheet,
+  MessageSquare,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -46,6 +47,12 @@ export function AdminSidebar() {
       label: "سفارشات و ارسال",
       icon: ShoppingBag,
       color: "text-emerald-400",
+    },
+    {
+      href: "/admin/reviews",
+      label: "مدیریت نظرات",
+      icon: MessageSquare,
+      color: "text-amber-400",
     },
     {
       href: "/admin/repairs",

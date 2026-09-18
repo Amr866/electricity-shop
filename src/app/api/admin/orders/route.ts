@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
+import { purgeAllOrdersCascade } from "@/lib/admin-order-purge";
 
 export async function GET() {
   const { isAdmin, response } = await checkAdminSession();
@@ -69,15 +70,28 @@ export async function DELETE(req: NextRequest) {
     const url = new URL(req.url);
     let orderId: string | undefined = url.searchParams.get("orderId") || undefined;
     let deleteSampleOrders: boolean = url.searchParams.get("deleteSampleOrders") === "true";
+    let deleteAllOrders: boolean = url.searchParams.get("deleteAllOrders") === "true";
     let orderIds: string[] | undefined;
 
     try {
       const body = await req.json();
       if (body.orderId) orderId = body.orderId;
       if (body.deleteSampleOrders !== undefined) deleteSampleOrders = Boolean(body.deleteSampleOrders);
+      if (body.deleteAllOrders !== undefined) deleteAllOrders = Boolean(body.deleteAllOrders);
       if (Array.isArray(body.orderIds)) orderIds = body.orderIds;
     } catch {
       // Body may be empty when using query parameters
+    }
+
+    // 0. Total Database Purge of all orders
+    if (deleteAllOrders) {
+      const result = await purgeAllOrdersCascade();
+      return NextResponse.json({
+        success: true,
+        message: `تمامی سفارشات (${result.deletedCount} سفارش و ${result.itemsDeleted} اقلام مربوطه) با موفقیت از سیستم پاکسازی شدند.`,
+        deletedCount: result.deletedCount,
+        itemsDeleted: result.itemsDeleted,
+      });
     }
 
     // 1. Bulk purge sample/test orders

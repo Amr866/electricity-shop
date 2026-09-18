@@ -39,6 +39,7 @@ import {
   Save,
   CheckCheck,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
 
@@ -101,6 +102,7 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
   // Deletion states
   const [orderToDelete, setOrderToDelete] = useState<AdminOrder | null>(null);
   const [showDeleteSampleModal, setShowDeleteSampleModal] = useState(false);
+  const [showDeleteAllOrdersModal, setShowDeleteAllOrdersModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Financial & Fulfillment Metrics
@@ -263,6 +265,29 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
     }
   };
 
+  const handleDeleteAllOrders = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/orders", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deleteAllOrders: true }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setOrders([]);
+        setShowDeleteAllOrdersModal(false);
+        alert(data.message || "تمامی سفارشات سیستم با موفقیت پاکسازی شدند.");
+      } else {
+        alert(data.message || "خطا در حذف تمامی سفارشات.");
+      }
+    } catch {
+      alert("خطای سرور در برقراری ارتباط.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleExportExcel = () => {
     if (orders.length === 0) {
       alert("سفارشی برای خروجی اکسل وجود ندارد.");
@@ -408,6 +433,17 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
           >
             <Trash2 className="w-4 h-4 text-rose-400" />
             <span>حذف سفارش‌های تستی / نمونه</span>
+          </button>
+
+          {/* Bulk Delete All Orders Button */}
+          <button
+            type="button"
+            onClick={() => setShowDeleteAllOrdersModal(true)}
+            className="bg-rose-950/70 hover:bg-rose-900 text-rose-200 border border-rose-600/80 font-bold text-xs px-3.5 py-2.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow-rose-950/40"
+            title="حذف و پاکسازی کامل تمامی سفارش‌های موجود در کل پایگاه داده"
+          >
+            <AlertTriangle className="w-4 h-4 text-rose-400" />
+            <span>حذف تمامی سفارش‌های سیستم</span>
           </button>
 
           {/* Export Excel / CSV Button */}
@@ -1027,6 +1063,20 @@ export function OrdersAdminClient({ initialOrders }: OrdersAdminClientProps) {
         itemType="سفارش تستی"
         isPurge={true}
         isLoading={isDeleting}
+      />
+
+      {/* Modal 3: Total System Orders Purge Confirmation */}
+      <ConfirmDeleteModal
+        isOpen={showDeleteAllOrdersModal}
+        onClose={() => setShowDeleteAllOrdersModal(false)}
+        onConfirm={handleDeleteAllOrders}
+        title="پاکسازی کامل تمامی سفارش‌های سیستم"
+        description="هشدار حیاتی: شما در حال حذف کامل تمامی سفارش‌های موجود در پایگاه داده هستید. تمام اقلام فاکتور، سوابق پرداختی و کدهای رهگیری برای همیشه پاکسازی خواهند شد. برای تایید نهایی حتماً عبارت «حذف» را تایپ کنید."
+        itemCount={orders.length > 0 ? orders.length : 10}
+        itemType="سفارش کل سیستم"
+        isPurge={true}
+        isLoading={isDeleting}
+        alwaysRequireTyping={true}
       />
 
     </div>

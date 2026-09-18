@@ -198,6 +198,25 @@
 
 ---
 
+## Phase 15: Optional Pricing Units, Customer Reviews Moderation & Total Order Purge (Priority: P1)
+
+**Goal**: Deliver configurable product pricing units (`priceUnit`) with admin chips and storefront conditional rendering, a complete customer reviews moderation system at `/admin/reviews` with 1-click verification/purging and rating recomputation, and dual order purge workflows (samples vs total database purge) with high-friction confirmation.
+
+**Independent Test**:
+1. In admin product editor, select "متر" chip, save; verify storefront card and product detail display `/متر`. Edit and clear unit; verify clean currency without suffix.
+2. In customer reviews tab, submit a review; verify it appears in `/admin/reviews` under "در انتظار بررسی"; click "تایید نظر"; verify review appears on product page and rating recalculates; click "حذف نظر"; verify review is purged and rating recalculates.
+3. In admin orders table, click "حذف تمامی سفارش‌های سیستم"; verify `ConfirmDeleteModal` requires typing "حذف" and confirming deletes all orders and cascaded items cleanly.
+
+- [x] T050 [US1] [US9] Extend `Product` model in `prisma/schema.prisma` with optional field `priceUnit String?` and synchronize PostgreSQL schema via `npx prisma db push`
+- [x] T051 [US9] Update `src/app/admin/products/ProductsAdminClient.tsx` and `src/app/api/admin/products/route.ts` with quick preset chips (`عدد`, `متر`, `کلاف`, `شاخه`, `کیلوگرم`, `بسته`) and custom text input for `priceUnit`
+- [x] T052 [US1] Update `src/components/product/ProductCard.tsx`, `src/app/products/[slug]/ProductDetailView.tsx`, and mobile sticky purchase bar to conditionally render `/{product.priceUnit}` when present and omit suffix when null
+- [x] T053 [P] [US9] Create customer review moderation API route `src/app/api/admin/reviews/route.ts` supporting `GET` (filter by pending/approved), `PATCH` (toggle `isVerified` and recompute product average rating and review count), and `DELETE` (purge abusive review and recompute product rating)
+- [x] T054 [US9] Create administrative reviews moderation console in `src/app/admin/reviews/page.tsx` and `src/app/admin/reviews/ReviewsAdminClient.tsx` with filter tabs ("در انتظار بررسی", "تایید شده‌ها", "همه"), rating badges, 1-click approve/deny/delete actions, and register `/admin/reviews` link in `src/components/admin/AdminSidebar.tsx`
+- [x] T055 [P] [US9] Enhance `src/app/api/admin/orders/route.ts` to support `{ deleteAllOrders: true }` cascade purge, and update `src/app/admin/orders/OrdersAdminClient.tsx` with dual purge buttons ("حذف سفارش‌های تستی / نمونه" and "حذف تمامی سفارش‌های سیستم") guarded by `ConfirmDeleteModal`
+- [x] T056 [US9] Create automated integration test `tests/phase15-reviews-and-order-purge.test.mjs`, run full `npm run typecheck` and `npm test` to verify zero regressions
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid
@@ -307,6 +326,23 @@ flowchart TD
         T048 --> T049
     end
 
+    subgraph Phase15["Phase 15: Pricing Units, Reviews & Order Purge"]
+        T050["T050: Schema priceUnit (Product)"]
+        T051["T051: Admin Products Unit Presets"]
+        T052["T052: Storefront Unit Suffix Rendering"]
+        T053["T053: Reviews Moderation API"]
+        T054["T054: Reviews Admin Portal & Sidebar"]
+        T055["T055: Total Order Purge & Confirmation"]
+        T056["T056: Automated Verification & Typecheck"]
+        T050 --> T051
+        T050 --> T052
+        T053 --> T054
+        T051 --> T056
+        T052 --> T056
+        T054 --> T056
+        T055 --> T056
+    end
+
     Phase1 --> Phase4
     Phase2 --> Phase5
     Phase2 --> Phase6
@@ -321,4 +357,5 @@ flowchart TD
     Phase11 --> Phase13
     Phase12 --> Phase13
     Phase13 --> Phase14
+    Phase14 --> Phase15
 ```

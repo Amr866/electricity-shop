@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       isBestSeller,
       isIsfahanFast,
       imageUrl,
+      priceUnit,
     } = data;
 
     if (!name || !slug || !price || !categoryId) {
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
         brand: brand || null,
         warranty: warranty || "گارانتی اصالت و سلامت فیزیکی",
         madeIn: madeIn || "ایران",
+        priceUnit: priceUnit ? String(priceUnit).trim() : null,
         isFeatured: Boolean(isFeatured),
         isBestSeller: Boolean(isBestSeller),
         isIsfahanFast: isIsfahanFast !== undefined ? Boolean(isIsfahanFast) : true,
@@ -106,6 +108,7 @@ export async function PUT(req: NextRequest) {
       isBestSeller,
       isIsfahanFast,
       imageUrl,
+      priceUnit,
     } = data;
 
     if (!id) {
@@ -134,6 +137,7 @@ export async function PUT(req: NextRequest) {
     if (brand !== undefined) updateData.brand = brand || null;
     if (warranty !== undefined) updateData.warranty = warranty || "گارانتی اصالت و سلامت فیزیکی";
     if (madeIn !== undefined) updateData.madeIn = madeIn || "ایران";
+    if (priceUnit !== undefined) updateData.priceUnit = priceUnit ? String(priceUnit).trim() : null;
     if (isFeatured !== undefined) updateData.isFeatured = Boolean(isFeatured);
     if (isBestSeller !== undefined) updateData.isBestSeller = Boolean(isBestSeller);
     if (isIsfahanFast !== undefined) updateData.isIsfahanFast = Boolean(isIsfahanFast);

@@ -22,6 +22,7 @@ const getCachedProduct = cache(async (slug: string) => {
       images: true,
       specs: true,
       reviews: {
+        where: { isVerified: true },
         orderBy: { createdAt: "desc" },
       },
     },

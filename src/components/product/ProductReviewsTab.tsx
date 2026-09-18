@@ -63,13 +63,11 @@ export function ProductReviewsTab({
         }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        setReviewsList([data.review, ...reviewsList]);
         setReviewSuccess(true);
         setReviewerName("");
         setReviewerComment("");
-        setTimeout(() => setReviewSuccess(false), 3000);
+        setTimeout(() => setReviewSuccess(false), 5000);
       }
     } catch (err) {
       console.error(err);

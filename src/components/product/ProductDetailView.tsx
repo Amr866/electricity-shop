@@ -110,6 +110,7 @@ export interface ProductDetailData {
   images?: ProductImageItem[];
   specs?: ProductSpecItem[];
   reviews?: ProductReviewItem[];
+  priceUnit?: string | null;
 }
 
 interface ProductDetailProps {
@@ -322,10 +323,12 @@ export function ProductDetailView({ product }: ProductDetailProps) {
     product.category?.slug === "wiring-building" ||
     (product.name.includes("کابل") && !product.name.includes("کولر"));
 
-  const unitLabel = isWiring ? "متر" : "عدد";
-  const tierTitle = isWiring
-    ? "تخفیف پله‌ای خرید عمده و متراژ بالا:"
-    : "تخفیف پله‌ای خرید عمده و تعداد بالا:";
+  const unitLabel = product.priceUnit ? product.priceUnit : (isWiring ? "متر" : "عدد");
+  const tierTitle = product.priceUnit
+    ? `تخفیف پله‌ای خرید عمده (${product.priceUnit}):`
+    : (isWiring
+      ? "تخفیف پله‌ای خرید عمده و متراژ بالا:"
+      : "تخفیف پله‌ای خرید عمده و تعداد بالا:");
 
   // Calculate tiered bulk discount unit prices
   const tier1Price = calculateTieredUnitPrice(product.price, 1);
@@ -1020,9 +1023,16 @@ export function ProductDetailView({ product }: ProductDetailProps) {
       >
         <div className="flex flex-col">
           <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">قیمت واحد:</span>
-          <span className="text-sm font-black text-slate-950 dark:text-amber-400 font-mono">
-            {formatToman(effectiveUnitPrice)}
-          </span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-sm font-black text-slate-950 dark:text-amber-400 font-mono">
+              {formatToman(effectiveUnitPrice)}
+            </span>
+            {product.priceUnit && (
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                / {product.priceUnit}
+              </span>
+            )}
+          </div>
         </div>
 
         <button

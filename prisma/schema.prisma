@@ -73,6 +73,7 @@ model Product {
   madeIn          String?        @default("ایران")
   rating          Float          @default(4.8)
   reviewCount     Int            @default(0)
+  priceUnit       String?        // e.g. "متر", "عدد", "کلاف", "شاخه", "کیلوگرم", "بسته"
   isArchived      Boolean        @default(false)
   datasheetUrl    String?        // PDF Datasheet download link
   mpn             String?        // Manufacturer Part Number (e.g. ESP32-WROOM-32D, NE555)
@@ -126,6 +127,7 @@ model Review {
   createdAt  DateTime @default(now())
 
   @@index([productId])
+  @@index([isVerified])
 }
 
 model Order {

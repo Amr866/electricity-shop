@@ -17,7 +17,8 @@
     "prisma:seed": "node prisma/seed.js",
     "db:setup": "prisma generate && prisma db push && node prisma/seed.js",
     "db:studio": "prisma studio",
-    "db:fix-images": "node scripts/migrations/fix-db-images.js"
+    "db:fix-images": "node scripts/migrations/fix-db-images.js",
+    "admin:create": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

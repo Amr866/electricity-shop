@@ -1,6 +1,6 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
-import { SettingsAdminClient } from "./SettingsAdminClient";
+import { AdminSettingsClient } from "./AdminSettingsClient";
 
 export default async function AdminSettingsPage() {
   const settingsList = await prisma.storeSetting.findMany();
@@ -10,5 +10,5 @@ export default async function AdminSettingsPage() {
     settingsMap[s.key] = s.value;
   });
 
-  return <SettingsAdminClient initialSettings={settingsMap} />;
+  return <AdminSettingsClient initialSettings={settingsMap} />;
 }

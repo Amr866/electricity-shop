@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions, ADMIN_PHONES } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { formatJalaliDate, toPersianDigits } from "@/lib/utils";
 import { Store, ShieldCheck, User, Sparkles } from "lucide-react";
@@ -18,12 +18,14 @@ export default async function AdminLayout({
     redirect("/auth/login?callbackUrl=/admin");
   }
 
+  const isRootOwner = ADMIN_PHONES.includes(session.user.phone || "");
+  const permissions = session.user.permissions || [];
   const adminName = session.user.name || "مدیر ارشد";
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans">
       {/* Dynamic Admin Sidebar */}
-      <AdminSidebar />
+      <AdminSidebar permissions={permissions} isRootOwner={isRootOwner} />
 
       {/* Main Admin Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-slate-900/50">

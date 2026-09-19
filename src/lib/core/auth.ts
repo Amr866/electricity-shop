@@ -6,6 +6,16 @@ import { verifyPassword } from "@/lib/password";
 
 export const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
 
+export function parseAdminPermissions(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -35,30 +45,44 @@ export const authOptions: NextAuthOptions = {
             where: { phone },
           });
 
-          const isDbAdminMatch =
-            Boolean(adminUser) &&
-            (adminUser!.role === "ADMIN" || ADMIN_PHONES.includes(phone)) &&
-            verifyPassword(inputPass, adminUser!.password);
-
-          if (isDbAdminMatch && adminUser) {
-            if (adminUser.role !== "ADMIN") {
-              adminUser = await prisma.user.update({
-                where: { id: adminUser.id },
-                data: { role: "ADMIN", isVerified: true },
-              });
-            }
-
-            return {
-              id: adminUser.id,
-              name: adminUser.name || "مدیر ارشد فروشگاه",
-              phone: adminUser.phone,
-              role: "ADMIN" as const,
-            };
+          if (!adminUser || adminUser.isSuspended) {
+            return null;
           }
-          return null;
+
+          const isRootOwner = ADMIN_PHONES.includes(phone);
+          const isDbAdmin = adminUser.role === "ADMIN" || isRootOwner;
+
+          if (!isDbAdmin) {
+            return null;
+          }
+
+          if (!verifyPassword(inputPass, adminUser.password)) {
+            return null;
+          }
+
+          if (adminUser.role !== "ADMIN") {
+            adminUser = await prisma.user.update({
+              where: { id: adminUser.id },
+              data: { role: "ADMIN", isVerified: true },
+            });
+          }
+
+          const permissions: string[] = isRootOwner
+            ? ["ALL"]
+            : parseAdminPermissions(adminUser.adminPermissions);
+
+          return {
+            id: adminUser.id,
+            name: adminUser.name || (isRootOwner ? "مدیر ارشد فروشگاه" : "مدیر سیستم"),
+            phone: adminUser.phone,
+            role: "ADMIN" as const,
+            tokenVersion: adminUser.tokenVersion,
+            permissions,
+          };
         }
 
         // 2. OTP-based authentication (Customer & Admin via Phone Code)
+        // Per FR-067: Strictly clamped to role: "CUSTOMER" to prevent SMS OTP role escalation
         if (credentials.otpCode) {
           const inputCode = toAsciiDigits(credentials.otpCode.trim());
           const validToken = await prisma.verificationToken.findFirst({
@@ -78,22 +102,20 @@ export const authOptions: NextAuthOptions = {
 
           // Resolve user record strictly from PostgreSQL database
           let user = await prisma.user.findUnique({ where: { phone } });
-          const shouldBeAdmin = ADMIN_PHONES.includes(phone) || user?.role === "ADMIN";
 
           if (!user) {
             user = await prisma.user.create({
               data: {
                 phone,
-                name: credentials.name?.trim() || (shouldBeAdmin ? "مدیریت کارگاه شیاسی" : "مشتری گرامی"),
-                role: shouldBeAdmin ? "ADMIN" : "CUSTOMER",
+                name: credentials.name?.trim() || "مشتری گرامی",
+                role: "CUSTOMER",
                 isVerified: true,
                 city: "نجف‌آباد",
               },
             });
           } else {
-            const updateData: { role?: "ADMIN"; isVerified?: boolean; name?: string } = {};
-            if (shouldBeAdmin && user.role !== "ADMIN") {
-              updateData.role = "ADMIN";
+            const updateData: { isVerified?: boolean; name?: string } = {};
+            if (!user.isVerified) {
               updateData.isVerified = true;
             }
             if (credentials.name?.trim() && (!user.name || user.name === "مشتری گرامی")) {
@@ -107,11 +129,14 @@ export const authOptions: NextAuthOptions = {
             }
           }
 
+          // Clamped to CUSTOMER session per FR-067
           return {
             id: user.id,
-            name: user.name || (shouldBeAdmin ? "مدیر فروشگاه" : "مشتری گرامی"),
+            name: user.name || "مشتری گرامی",
             phone: user.phone,
-            role: (shouldBeAdmin ? "ADMIN" : "CUSTOMER") as "ADMIN" | "CUSTOMER",
+            role: "CUSTOMER" as const,
+            tokenVersion: user.tokenVersion,
+            permissions: [],
           };
         }
 
@@ -125,6 +150,8 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role || "CUSTOMER";
         token.phone = user.phone;
+        token.tokenVersion = user.tokenVersion ?? 0;
+        token.permissions = user.permissions ?? [];
       }
       return token;
     },
@@ -133,6 +160,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = (token.id as string) || "";
         session.user.role = (token.role as "ADMIN" | "CUSTOMER") || "CUSTOMER";
         session.user.phone = (token.phone as string) || "";
+        session.user.tokenVersion = typeof token.tokenVersion === "number" ? token.tokenVersion : 0;
+        session.user.permissions = Array.isArray(token.permissions) ? token.permissions : [];
       }
       return session;
     },

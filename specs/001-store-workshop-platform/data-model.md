@@ -29,15 +29,18 @@ erDiagram
   - `name`: `String?`, Customer full name.
   - `phone`: `String`, Unique, Normalized Iranian mobile (`09XXXXXXXXX`). Indexed.
   - `email`: `String?`, Unique, Optional email address.
-  - `password`: `String?`, Optional bcrypt/argon2 password hash for fallback login.
+  - `password`: `String?`, Cryptographically salted scrypt password hash (`salt:derivedKey`). Never exposed in queries or logs.
   - `role`: `String`, Default `"CUSTOMER"`. Enum: `CUSTOMER`, `ADMIN`, `TECHNICIAN`.
+  - `tokenVersion`: `Int`, Default `0`. Incremented atomically upon password rotation or credential revocation to instantly invalidate active JWT sessions across secondary devices globally.
+  - `adminPermissions`: `String?`, Default `null`. JSON array of granted administrative domain modules: `["CATALOG", "ORDERS", "REPAIRS", "REVIEWS"]` or `["ALL"]`. Root Owner possesses `["ALL"]`.
+  - `isSuspended`: `Boolean`, Default `false`. Administrative suspension toggle for secondary admins.
   - `address`: `String?`, Default delivery address.
   - `city`: `String?`, Default `"نجف‌آباد"`.
   - `postalCode`: `String?`, 10-digit postal code.
   - `nationalCode`: `String?`, 10-digit national code for invoice validation.
   - `companyName`: `String?`, Corporate entity name.
   - `economicCode`: `String?`, 12-digit corporate economic code.
-  - `isVerified`: `Boolean`, Default `false`. Set `true` on first successful OTP verification.
+  - `isVerified`: `Boolean`, Default `false`. Set `true` on first successful OTP verification or admin creation.
   - `createdAt`, `updatedAt`: Timestamps.
 
 - **VerificationToken**:
@@ -264,3 +267,37 @@ stateDiagram-v2
     EXPIRED --> [*]
     DELIVERED --> [*]
 ```
+
+---
+
+### 3. Admin Credential Lifecycle & Session Invalidation State Transition
+
+```mermaid
+stateDiagram-v2
+    [*] --> ActiveAdminSession : Password Authenticated (tokenVersion = V)
+    
+    state ActiveAdminSession {
+        [*] --> AuthorizedRequests : Bearer/Cookie tokenVersion == V
+        AuthorizedRequests --> ScopedModules : Module in adminPermissions
+        AuthorizedRequests --> UnauthorizedModule : Module not in adminPermissions (HTTP 403)
+    }
+
+    ActiveAdminSession --> PasswordRotated : /api/admin/change-password
+    ActiveAdminSession --> AdminRevokedOrSuspended : Root Owner in /admin/users
+
+    state PasswordRotated {
+        [*] --> IncrementTokenVersion : DB tokenVersion = V + 1
+        IncrementTokenVersion --> ActiveDeviceRefreshed : Issue JWT with V + 1
+    }
+
+    state AdminRevokedOrSuspended {
+        [*] --> IncrementTargetTokenVersion : DB tokenVersion = V + 1
+    }
+
+    PasswordRotated --> SecondarySessionsInvalidated : Secondary Devices present tokenVersion V < V + 1
+    AdminRevokedOrSuspended --> SecondarySessionsInvalidated : All Devices present tokenVersion V < V + 1
+
+    SecondarySessionsInvalidated --> SessionTerminated : HTTP 401 Unauthorized
+    SessionTerminated --> [*]
+```
+

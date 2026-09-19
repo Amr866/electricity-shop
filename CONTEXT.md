@@ -1,4 +1,4 @@
-﻿# Shiasi Store & Technical Workshop Platform
+# Shiasi Store & Technical Workshop Platform
 
 Unified digital ecosystem combining retail/wholesale electrical equipment commerce, certified electro-mechanical repair workshop management, and statutory Chapter 13 engineering calculations in Najafabad and Isfahan.
 

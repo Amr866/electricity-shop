@@ -10,7 +10,7 @@
 
 The Shiasi Store & Technical Workshop Platform unifies retail/wholesale electrical e-commerce, technical repair workshop management, and industrial electrical engineering calculations into a cohesive, zero-crash web application.
 
-The technical architecture leverages **Next.js 15 App Router** with **React 19 Server Components**, **PostgreSQL 16** managed via **Prisma ORM (v6.19.3)**, **Tailwind CSS RTL**, and **NextAuth.js 4**. Core systems enforce server-authoritative pricing (5% wholesale discount at ≥10 units, 10% at ≥50 units), an 8-hour inventory reservation window for Bank Card-to-Card payments, Iranian National Building Regulations Chapter 13 cable sizing (<3% voltage drop), a 7-stage repair lifecycle with hybrid SMS and 1-click web cost approvals, Persian numeral normalization, and Constitution v1.1.0-compliant structured logging.
+The technical architecture leverages **Next.js 15 App Router** with **React 19 Server Components**, **PostgreSQL 16** managed via **Prisma ORM (v6.19.3)**, **Tailwind CSS RTL**, and **NextAuth.js 4**. Core systems enforce server-authoritative pricing (5% wholesale discount at ≥10 units, 10% at ≥50 units), an 8-hour inventory reservation window for Bank Card-to-Card payments, Iranian National Building Regulations Chapter 13 cable sizing (<3% voltage drop), a 7-stage repair lifecycle with hybrid SMS and 1-click web cost approvals, Persian numeral normalization, Constitution v1.1.0-compliant structured logging, and Phase 19 multi-admin governance (Root Owner immutability, dynamic scoped permissions across `CATALOG`, `ORDERS`, `REPAIRS`, and `REVIEWS`, self-service password rotation, global session revocation via `tokenVersion`, and strict password-gated admin authentication).
 
 ---
 
@@ -62,7 +62,9 @@ specs/001-store-workshop-platform/
     ├── checkout-api.json
     ├── repairs-api.json
     ├── auth-otp-api.json
-    └── cable-calc-contract.json
+    ├── cable-calc-contract.json
+    ├── admin-password-api.json
+    └── admin-users-api.json
 ```
 
 ### Source Code (repository root)
@@ -78,13 +80,18 @@ src/
 │   │   ├── articles/             # Editorial Markdown authoring studio with live preview
 │   │   ├── orders/               # Order management and printable A4 tax invoices
 │   │   ├── products/             # Catalog CRUD and technical specs editor
-│   │   └── repairs/              # Workshop ticket dispatch and cost logging
+│   │   ├── repairs/              # Workshop ticket dispatch and cost logging
+│   │   ├── reviews/              # Customer rating and feedback moderation console
+│   │   ├── settings/             # Administrator self-service password rotation
+│   │   └── users/                # Root Owner multi-admin provisioning and permission management
 │   ├── api/                      # Server-side route handlers
 │   │   ├── auth/otp/             # Iranian phone normalization, cooldown, and verification
 │   │   ├── checkout/             # Server-authoritative checkout & Card-to-Card 8h reservation
 │   │   ├── repairs/              # Repair ticket intake, tracking, and 1-click approval
 │   │   ├── search/               # Multi-keyword Persian search API
-│   │   └── admin/backup/         # Single-click database snapshot export API
+│   │   ├── admin/backup/         # Single-click database snapshot export API
+│   │   ├── admin/change-password/# Self-service password rotation & session invalidation API
+│   │   └── admin/users/          # Multi-admin governance & scoped permissions API
 │   ├── blog/                     # SEO educational knowledge base
 │   ├── bom-upload/               # Contractor bill of materials inquiry portal
 │   ├── cart/                     # Dynamic cart with tiered wholesale discount display
@@ -336,7 +343,79 @@ src/
 
 ---
 
+## Plan Extension: Multi-Admin Governance, Scoped Permissions & Session Revocation (Phase 19 - 2026-09-19)
+
+### Technical Architecture & Decisions
+
+1. **Database Schema Enhancements (`FR-064`, `FR-065`)**:
+   - In `prisma/schema.prisma`, augment the `User` model with:
+     - `tokenVersion Int @default(0)`: Integer counter incremented upon credential rotation or account suspension to immediately revoke active sessions across secondary devices globally.
+     - `adminPermissions String?`: JSON-serialized string array of authorized administrative domain modules (`["CATALOG", "ORDERS", "REPAIRS", "REVIEWS"]` or `["ALL"]`).
+     - `isSuspended Boolean @default(false)`: Administrative suspension toggle allowing Root Owner to immediately lock compromised or inactive secondary admin accounts.
+   - Synchronize database schema with PostgreSQL via `npx prisma db push`.
+
+2. **Strict Password-Gated Authentication & Session Invalidation (`FR-065`, `FR-067`)**:
+   - In `src/lib/core/auth.ts`:
+     - Disallow administrative role escalation via SMS OTP: when authenticating via `otpCode`, the resulting session role is strictly clamped to `"CUSTOMER"` regardless of whether the mobile number matches an administrator or `ADMIN_PHONES`. SMS OTP is reserved exclusively for customer accounts and verified admin password recovery.
+     - Administrative session privileges (`role: "ADMIN"`) require explicit Phone + Password credentials, protected by sliding-window rate limiting (maximum 5 failed attempts per 15 minutes).
+     - Include `tokenVersion` and `permissions` in NextAuth `jwt` and `session` callbacks.
+   - In `src/lib/core/adminAuth.ts`:
+     - Enhance `checkAdminSession()`: query current `tokenVersion` and `isSuspended` from PostgreSQL. If `dbUser.isSuspended` is true or `dbUser.tokenVersion !== session.user.tokenVersion`, immediately reject with HTTP 401 Unauthorized, terminating stale sessions worldwide.
+     - Implement `checkAdminPermission(session, requiredModule)`: verify that the administrator possesses either `"ALL"` or the specific module in `adminPermissions`.
+
+3. **In-Portal Self-Service Password Rotation (`FR-062`) & UI/UX Pro Max Accessibility**:
+   - Implement `POST /api/admin/change-password`:
+     - Validates active session via `checkAdminSession()`.
+     - Enforces sliding-window rate limiting (maximum 5 attempts per 15 minutes) via `checkRateLimit`.
+     - Verifies `currentPassword` with timing-safe comparison (`crypto.timingSafeEqual` via `verifyPassword`).
+     - Enforces new password complexity: minimum 8 characters with at least one letter and one number (`/^(?=.*[A-Za-z])(?=.*\d).{8,}$/`).
+     - Hashes new password with cryptographic scrypt and random 16-byte salt (`hashPassword`).
+     - Atomically updates password and increments `tokenVersion: { increment: 1 }` in PostgreSQL.
+     - Never logs or serializes plaintext passwords or hash fragments.
+   - Build `/admin/settings` (`src/app/admin/settings/page.tsx` & `AdminSettingsClient.tsx`):
+     - Adhere strictly to UI/UX Pro Max guidelines:
+       - Accessible forms: visible `<label>` tags with `htmlFor`, WCAG 2.1 AA 4.5:1 text contrast, preserved visible focus rings (`focus:ring-2 focus:ring-primary-500 focus:outline-none`).
+       - Error summary announcements using `role="alert"` and `aria-live="polite"`.
+       - Touch targets: minimum 44×44px for submit buttons and toggle controls.
+       - RTL password reveal positioning: In RTL layout, the password visibility toggle icon must be placed at inline-start (`left-3` absolute positioning) with explicit Persian `aria-label` ("نمایش گذرواژه" / "مخفی کردن گذرواژه") to prevent visual collisions with right-aligned Persian text input.
+     - Live password complexity meter and localized Persian helper prompts.
+
+4. **Root Owner Governance & Re-Authentication Guard (`FR-063`, `FR-066`)**:
+   - Designate Root Owner (`ADMIN_PHONES`, e.g. `09136260072`) as immutable SuperAdmin: Root accounts cannot be edited, suspended, demoted, or deleted by any admin or API call.
+   - Implement `src/app/api/admin/users/route.ts` & `src/app/api/admin/users/[id]/route.ts`:
+     - `GET`: Accessible exclusively to Root Owner; returns list of administrative accounts with assigned module permissions, suspension states, and creation timestamps.
+     - `POST`: Provisions a new secondary admin (`phone`, `name`, `initialPassword`, `permissions`). Requires mandatory re-authentication of Root Owner current password (`rootPassword`).
+     - `PATCH`: Modifies assigned permissions or suspension status of secondary admins. Requires Root Owner password re-authentication. When setting `isSuspended: true`, PostgreSQL atomically increments `tokenVersion: { increment: 1 }`, immediately invalidating any active JWT/session held by the suspended administrator.
+     - `DELETE`: Revokes secondary admin account. Root Owner is guarded against deletion. Requires Root Owner password re-authentication.
+   - Build `/admin/users` (`src/app/admin/users/page.tsx` & `AdminUsersClient.tsx`):
+     - Accessible exclusively to Root Owner; non-root admins receive 403 Forbidden.
+     - Admin table with permission chips (`کاتالوگ`, `سفارش‌ها`, `تعمیرات`, `نظرات`), active/suspended badges, and action menus.
+     - Display phone numbers in table cells using `<bdi dir="ltr" className="font-mono">` to prevent bidirectional text scrambling in RTL layout.
+     - Provisioning and editing modal dialog: focus-trapped, keyboard-escapable (`Escape` key), with `role="dialog"` and `aria-modal="true"`.
+     - Confirmation barrier requiring Root Password re-auth before committing mutations.
+
+5. **Dynamic Scoped Admin Navigation (`FR-064`)**:
+   - Update `src/components/admin/AdminSidebar.tsx`:
+     - Inspect `session.user.permissions` and Root Owner status.
+     - Dynamically render navigation items matching the current administrator's assigned domain modules:
+       - `CATALOG`: Products (`/admin/products`), Categories (`/admin/categories`), Articles (`/admin/articles`)
+       - `ORDERS`: Orders (`/admin/orders`)
+       - `REPAIRS`: Repairs (`/admin/repairs`)
+       - `REVIEWS`: Customer Reviews (`/admin/reviews`)
+       - Root Owner only: Administrators (`/admin/users`), Backups (`/admin/backup`)
+       - All Admins: Dashboard (`/admin`), Settings (`/admin/settings`)
+     - Secondary admins attempting to navigate directly to unauthorized modules receive HTTP 403 Forbidden.
+
+6. **State Management & Test-Driven Verification Seams (`TDD`, `RTK / RTL`)**:
+   - State Architecture: Preserve lean client bundles by avoiding Redux Toolkit (RTK) client overhead; use Next.js 15 Server Components, route handlers, and React 19 Client hooks (`useState`, `useTransition`) with native optimistic updates and `router.refresh()`.
+   - Contract-First Integration Testing: Implement `tests/integration/phase19-admin-governance.test.mjs` using `node:test`:
+     - Test public API contracts (`/api/admin/change-password`, `/api/admin/users`, NextAuth credentials authentication) rather than internal mock-coupled implementation details.
+     - Verify rate-limiting, timing-safe password validation, session revocation via `tokenVersion`, Root Owner immutability, and OTP role clamping.
+
+---
+
 ## Complexity Tracking
 
 > No constitutional violations or unwarranted complexities detected. The architecture preserves direct Prisma database access, Next.js route handlers, and in-memory static fallbacks without unnecessary third-party microservices.
+
 

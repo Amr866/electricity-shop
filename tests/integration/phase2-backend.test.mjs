@@ -51,7 +51,7 @@ describe("Phase 2 - Backend Auth & Security Tests", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: "09136260072" }),
-        signal: AbortSignal.timeout(500),
+        signal: AbortSignal.timeout(3000),
       });
       return true;
     } catch {

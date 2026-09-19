@@ -1,4 +1,4 @@
-﻿---
+---
 name: Shiasi Store & Technical Workshop Design System
 description: Industrial electrical hardware, rewinding workshop, and engineering calculations design system
 colors:
@@ -60,7 +60,9 @@ A distinct, grounded industrial visual identity reflecting physical copper windi
 - **Electric Glow**: Specialized box shadows (shadow-electric-glow, shadow-copper-glow) reserved for key actions and active state indicators.
 
 ## Shapes
-- **Corner Radii**: 12px (ounded-xl) for cards and inputs; 16px (ounded-2xl) for major containers and dialogs.
+- **Corner Radii**: 12px (
+ounded-xl) for cards and inputs; 16px (
+ounded-2xl) for major containers and dialogs.
 
 ## Components
 - **LiveSearchBar**: Global / keyboard shortcut, real-time dropdown, recent query history.

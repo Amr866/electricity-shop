@@ -63,5 +63,6 @@ playwright/.cache/
 # ide & os metadata
 .idea/
 .vscode/
+.obsidian/
 Thumbs.db
 

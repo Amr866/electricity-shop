@@ -26,6 +26,8 @@
 | **Phase 15** | Optional Pricing Units, Customer Reviews Moderation & Total Order Purge | P1 | priceUnit presets/rendering, /admin/reviews portal, and total order purge cascade |
 | **Phase 16** | Codebase Deep-Module Restructuring & Test Consolidation | Architectural | Deep submodules in src/lib/, root facades, three-tier tests, and categorized scripts |
 | **Phase 17** | Storefront In-App Performance Optimization & Database Indexing | P1 | In-app Data Cache, product detail ISR, composite DB indexes, and font trimming |
+| **Phase 18** | Storefront Technical & Local SEO Optimization | P1 | Category landing pages, layout metadata, Schema.org suite, and LCP priority |
+| **Phase 19** | Multi-Admin Governance, Scoped Permissions & Session Revocation | P1 | TokenVersion invalidation, password-gated auth, /admin/settings, and /admin/users console |
 
 ---
 
@@ -277,6 +279,32 @@
 
 ---
 
+## Phase 19: Multi-Admin Governance, Scoped Permissions & Session Revocation (Priority: P1)
+
+**Goal**: Implement multi-admin team governance, enabling the Root Owner (`ADMIN_PHONES`) to provision secondary administrators with dynamically scoped module permissions (`CATALOG`, `ORDERS`, `REPAIRS`, `REVIEWS`), self-service password rotation with timing-safe validation, global session invalidation across secondary devices via `tokenVersion`, and strict password-gated administrative authentication.
+
+**Independent Test**:
+1. Run `npx prisma db push` to verify `tokenVersion`, `adminPermissions`, and `isSuspended` columns in PostgreSQL.
+2. Sign in via `/auth/login` using an administrative phone number with SMS OTP alone; verify the granted session role is strictly `CUSTOMER` and `/admin` access is rejected (FR-067).
+3. Sign in via `/auth/login` using Phone + Password as Root Owner (`09136260072`); verify access to `/admin` and visibility of all modules including `/admin/users`.
+4. On Browser A, navigate to `/admin/settings` and rotate the password with a valid 8+ char alphanumeric string; verify active session remains valid, `tokenVersion` increments in PostgreSQL, eye toggle is positioned at inline-start `left-3` in RTL, and focus rings/tap targets adhere to UI/UX Pro Max.
+5. On Browser B (logged in prior to password rotation), attempt an administrative API request; verify HTTP 401 Unauthorized is returned and the stale session is immediately terminated (FR-065).
+6. As Root Owner in `/admin/users`, provision a secondary administrator with permissions `["REPAIRS"]`, requiring Root Password re-authentication; sign in as the secondary admin and verify that only the "تعمیرات کارگاه" and "تنظیمات" links are visible in the sidebar, and direct navigation to `/admin/orders` returns 403 Forbidden (FR-063, FR-064).
+7. As Root Owner, toggle suspension on the secondary admin; verify `isSuspended: true` and `tokenVersion` increments atomically, immediately terminating the secondary admin's active session on their next request.
+8. Attempt to delete or demote the Root Owner account in `/admin/users`; verify the action is strictly blocked (FR-063).
+9. Run automated test suite `tests/integration/phase19-admin-governance.test.mjs` and execute `npm run typecheck`; verify all contract and security checks pass cleanly.
+
+- [x] T076 [P] [US9] Add `tokenVersion Int @default(0)`, `adminPermissions String?`, and `isSuspended Boolean @default(false)` fields to the `User` model in `prisma/schema.prisma` and synchronize PostgreSQL schema via `npx prisma db push`
+- [x] T077 [US9] Update `src/lib/core/auth.ts` to enforce password-gated admin authentication (disallowing role escalation from OTP), embed `tokenVersion` and `permissions` in NextAuth JWT and session callbacks, and update `src/lib/core/adminAuth.ts` with `tokenVersion` session revocation verification and `checkAdminPermission(session, module)`
+- [x] T078 [P] [US9] Implement `POST /api/admin/change-password` in `src/app/api/admin/change-password/route.ts` with timing-safe current password verification (`crypto.timingSafeEqual`), complexity validation (minimum 8 characters with letters and numbers), sliding-window rate limiting (5 attempts/15 min), atomic `tokenVersion` increment, and salted scrypt hashing via `src/lib/core/password.ts`
+- [x] T079 [US9] Build self-service password rotation interface at `/admin/settings` (`src/app/admin/settings/page.tsx` and `src/app/admin/settings/AdminSettingsClient.tsx`) adhering to UI/UX Pro Max standards: visible `<label htmlFor>`, `role="alert"` for error announcements, 44×44px minimum tap targets, eye toggle at inline-start `left-3` in RTL layout with Persian `aria-label`, visible focus rings (`focus:ring-2 focus:ring-primary-500`), and live strength meter
+- [x] T080 [P] [US9] Implement administrative users API route handlers (`GET`, `POST`, `PATCH`, `DELETE`) in `src/app/api/admin/users/route.ts` and `src/app/api/admin/users/[id]/route.ts` with Root Owner (`ADMIN_PHONES`) exclusivity, immutable SuperAdmin guard, mandatory Root Password re-authentication, and automatic `tokenVersion` increment on suspension (`isSuspended: true`) for immediate global session invalidation
+- [x] T081 [US9] Build administrative governance portal at `/admin/users` (`src/app/admin/users/page.tsx` and `src/app/admin/users/AdminUsersClient.tsx`) with UI/UX Pro Max compliance: phone numbers wrapped in `<bdi dir="ltr" className="font-mono">`, scoped module assignment chips (`CATALOG`, `ORDERS`, `REPAIRS`, `REVIEWS`), active/suspended badges, and a focus-trapped, keyboard-escapable (`Escape` key) modal dialog (`role="dialog"`, `aria-modal="true"`) requiring Root Password re-auth verification
+- [x] T082 [US9] Update `src/components/admin/AdminSidebar.tsx` to inspect `session.user.permissions` and dynamically render only permitted domain modules for secondary admins, hiding unauthorized sections and displaying Settings for all admins
+- [x] T083 [US9] Create automated integration test suite `tests/integration/phase19-admin-governance.test.mjs` verifying password rotation, tokenVersion session invalidation, scoped module access denial (403), Root Owner protection, and OTP elevation rejection, followed by clean `npm run typecheck`
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid
@@ -428,6 +456,8 @@ flowchart TD
         T063 --> T067
         T065 --> T067
         T066 --> T067
+    end
+
     subgraph Phase18["Phase 18: Storefront Technical & Local SEO"]
         T068["T068: Category Landing Page"]
         T069["T069: Server Metadata Layouts"]
@@ -444,6 +474,26 @@ flowchart TD
         T072 --> T073
         T073 --> T075
         T074 --> T075
+    end
+
+    subgraph Phase19["Phase 19: Multi-Admin Governance"]
+        T076["T076: Schema tokenVersion & permissions"]
+        T077["T077: Password-Gated Auth & adminAuth"]
+        T078["T078: Change-Password API"]
+        T079["T079: Admin Settings UI"]
+        T080["T080: Admin Users API"]
+        T081["T081: Admin Users UI"]
+        T082["T082: Scoped Sidebar UI"]
+        T083["T083: Automated Integration Tests"]
+        T076 --> T077
+        T077 --> T078
+        T077 --> T080
+        T078 --> T079
+        T080 --> T081
+        T080 --> T082
+        T079 --> T083
+        T081 --> T083
+        T082 --> T083
     end
 
     Phase1 --> Phase4
@@ -464,5 +514,45 @@ flowchart TD
     Phase15 --> Phase16
     Phase16 --> Phase17
     Phase17 --> Phase18
+    Phase18 --> Phase19
 ```
+
+---
+
+## Parallel Execution Opportunities (Phase 19)
+
+```bash
+# Schema and database push:
+Task T076: "Add tokenVersion, adminPermissions, and isSuspended to User in prisma/schema.prisma"
+
+# Parallel backend APIs once auth core is updated (T077):
+Task T078: "Implement POST /api/admin/change-password in src/app/api/admin/change-password/route.ts"
+Task T080: "Implement administrative users API route handlers in src/app/api/admin/users/route.ts"
+
+# Parallel UI components once API contracts are ready:
+Task T079: "Build self-service password rotation interface in src/app/admin/settings/"
+Task T081: "Build administrative governance portal in src/app/admin/users/"
+Task T082: "Update src/components/admin/AdminSidebar.tsx for dynamic scoped navigation"
+```
+
+---
+
+## Implementation Strategy
+
+### Sequential Milestones for Phase 19
+
+1. **Database & Core Auth Layer (T076, T077)**:
+   - Augment `User` schema with `tokenVersion`, `adminPermissions`, and `isSuspended`.
+   - Update `src/lib/core/auth.ts` and `src/lib/core/adminAuth.ts` to enforce password-gated admin auth, session `tokenVersion` checks, and module permissions.
+2. **Password Rotation Subsystem (T078, T079)**:
+   - Create timing-safe rate-limited `POST /api/admin/change-password` with atomic `tokenVersion` increment.
+   - Build `/admin/settings` self-service UI adhering to UI/UX Pro Max standards (44×44px tap targets, RTL eye toggle at `left-3`, visible focus rings, `role="alert"` announcements).
+3. **Multi-Admin Governance Subsystem (T080, T081, T082)**:
+   - Create `/api/admin/users` routes with Root Owner protection, password re-auth, and immediate session termination on suspension via atomic `tokenVersion` increment.
+   - Build `/admin/users` management console with `<bdi dir="ltr">` phone formatting and focus-trapped, keyboard-escapable modal dialogs.
+   - Update `AdminSidebar.tsx` to dynamically hide unauthorized modules for secondary admins while preserving lean RSC state without client-side RTK bloat.
+4. **Verification & Quality Gate (T083)**:
+   - Create automated test suite `tests/integration/phase19-admin-governance.test.mjs` verifying public contracts with `node:test`.
+   - Execute typecheck (`npm run typecheck`) and verify all suites pass.
+
 

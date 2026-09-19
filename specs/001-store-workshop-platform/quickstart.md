@@ -143,6 +143,31 @@ The application will launch at `http://localhost:3000`.
 
 ---
 
+### Scenario 9: Admin Self-Service Password Rotation & Global Session Invalidation (`FR-062`, `FR-065`)
+1. Log into `/admin` as an administrator on Browser A.
+2. Log into `/admin` on Browser B (or an incognito window) with the same credentials.
+3. On Browser A, navigate to `/admin/settings`.
+4. Enter current password, a new compliant password (minimum 8 characters with letters and numbers), and confirmation.
+5. Click "به‌روزرسانی کلمه عبور".
+   - *Expected*: Password updates successfully, `tokenVersion` is atomically incremented in PostgreSQL, and Browser A's active session is refreshed seamlessly.
+6. Switch to Browser B and trigger any administrative action or refresh an admin route (e.g. `/admin/products`).
+   - *Expected*: Request is rejected with HTTP 401 Unauthorized because Browser B presents an outdated `tokenVersion`. The session is immediately terminated and redirected to `/auth/login`.
+
+---
+
+### Scenario 10: Multi-Admin Provisioning & Dynamic Scoped Permissions (`FR-063`, `FR-064`, `FR-066`, `FR-067`)
+1. Log into `/admin` as Root Owner (`09136260072`).
+2. Navigate to `/admin/users` (accessible exclusively to Root Owner).
+3. Click "افزودن مدیر جدید" (Add New Admin), enter name *"تکنسین کارگاه"*, mobile number `09139998877`, initial strong password, and select scoped domain module: `["REPAIRS"]`.
+4. Enter Root Owner current password for mandatory re-authentication and submit.
+   - *Expected*: Secondary admin record created with role `ADMIN`, `isVerified: true`, and `adminPermissions: ["REPAIRS"]`.
+5. Log out and log in as the new secondary admin using Phone (`09139998877`) and the initial password.
+   - *Expected*: Dashboard and sidebar dynamically display only **"تعمیرات کارگاه"** and **"تنظیمات حساب"** (self-service password change). "محصولات", "سفارش‌ها", "نظرات", and "مدیریت مدیران" are completely hidden. Direct API access to `/api/admin/orders` returns HTTP 403 Forbidden.
+6. Attempt to log into an administrative account using SMS OTP alone on `/auth/login`.
+   - *Expected*: The issued session receives role `CUSTOMER` only. Accessing `/admin` is rejected with an instruction to sign in with password credentials, enforcing strict password-gated security against SIM-swap attacks.
+
+---
+
 ## 3. Quality & Regression Verification
 
 Run the automated verification suite:

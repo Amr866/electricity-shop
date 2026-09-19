@@ -222,3 +222,52 @@ Implement a multi-tier in-app performance optimization architecture:
 - *External Redis Caching Layer*: Evaluated and rejected; adds unnecessary operational complexity, hosting cost, and failover requirements for a regional store catalog whose active working set easily fits in server memory and PostgreSQL buffer cache.
 - *Client-Side Only Caching (SWR/React Query)*: Insufficient for initial SEO crawl and first-time mobile visitors; server-side ISR guarantees fast First Contentful Paint (FCP) and optimal SEO indexing.
 
+---
+
+## 9. Administrator Governance, Dynamic Scoped Permissions, Session Revocation & Password-Gated Security (Phase 19)
+
+### Context
+In accordance with Constitution Principle VII (Quality Gates, Admin Governance & Operational Resilience) and clarified requirements (Session 2026-09-19, `FR-062` to `FR-067`), administrative operations must support multi-admin team delegation without compromising the primary store owner's ultimate authority or exposing administrative back-office tools to SIM-swap/SMS interception attacks.
+
+### Decision
+Implement a multi-tiered administrative security and governance architecture:
+1. **Strict Password-Gated Administrative Authentication (`FR-067`)**:
+   - In `src/lib/core/auth.ts`, enforce strict separation of authentication factors.
+   - When authenticating via `otpCode`, the resulting session is strictly assigned `role: "CUSTOMER"`, regardless of whether the mobile number matches an administrator or `ADMIN_PHONES`. SMS OTP is reserved exclusively for retail customer logins and future admin password recovery flows.
+   - Elevated `ADMIN` role is granted exclusively via Phone + Password credentials, protected by sliding-window rate limiting (maximum 5 failed attempts per 15 minutes per phone/IP).
+2. **In-Portal Self-Service Password Rotation (`FR-062`)**:
+   - Provide `/admin/settings` backed by `POST /api/admin/change-password`.
+   - Require current password verification using timing-safe comparison (`crypto.timingSafeEqual` via `src/lib/core/password.ts`).
+   - Enforce minimum 8 characters with alphanumeric complexity (at least one letter and one number).
+   - Re-hash the new password using cryptographic scrypt with a unique 16-byte random salt (`hashPassword`).
+   - Rate limit failed attempts to 5 per 15-minute sliding window via `checkRateLimit`.
+   - Never log, echo, or expose plaintext passwords or hash fragments in HTTP responses or application loggers.
+3. **Global Session Invalidation via `tokenVersion` (`FR-065`)**:
+   - Add `tokenVersion Int @default(0)` column to the `User` entity in `prisma/schema.prisma`.
+   - Embed `tokenVersion` in the NextAuth JWT token and session object.
+   - Upon any password rotation or administrative credential revocation, atomically increment `tokenVersion: { increment: 1 }` in PostgreSQL.
+   - In `checkAdminSession()` (`src/lib/core/adminAuth.ts`), verify that the session's `tokenVersion` matches the current value in the database. If stale, immediately return HTTP 401 Unauthorized, terminating compromised or secondary device sessions globally without requiring an external Redis store.
+4. **Root Owner Immutability & Re-Authentication Guard (`FR-063`, `FR-066`)**:
+   - Designate the primary store owner (associated with `ADMIN_PHONES`, e.g. `09136260072`) as immutable SuperAdmin.
+   - Prevent deletion, demotion, or suspension of the Root Owner account by any administrator or API call.
+   - The user management console at `/admin/users` (`/api/admin/users`) is accessible exclusively to the Root Owner.
+   - Any secondary admin creation, permission update, or account suspension strictly requires mandatory re-authentication of the Root Owner's current password.
+   - Provisioned secondary administrators receive an initial strong password (salted scrypt), set to `isVerified: true` and `role: "ADMIN"`, and are prompted to rotate their password upon first login.
+5. **Dynamic Scoped Module Permissions (`FR-064`)**:
+   - Add `adminPermissions String?` (JSON array of strings) to the `User` model, supporting granular domain modules: `["CATALOG", "ORDERS", "REPAIRS", "REVIEWS"]` or `["ALL"]`.
+   - The Root Owner automatically possesses `["ALL"]`.
+   - Secondary administrators are granted specific modules by the Root Owner during provisioning or editing.
+   - Implement `checkAdminPermission(session, requiredModule)` in `src/lib/core/adminAuth.ts` to guard administrative API endpoints.
+   - Update `AdminSidebar.tsx` to dynamically render navigation items matching the current admin's assigned modules, plus Settings for password rotation.
+
+### Rationale
+- Stateless integer counter (`tokenVersion`) in PostgreSQL achieves instant worldwide session termination without the architectural overhead of Redis or distributed token blacklists.
+- Scoped permissions enforce the principle of least privilege: workshop technicians can manage repair tickets without viewing customer billing or financial totals; order fulfillment staff can pack orders without editing catalog pricing.
+- Mandatory password-gated admin authentication completely neutralizes SIM-swap and SMS OTP interception vulnerabilities against back-office operations.
+
+### Alternatives Considered
+- *External Redis Token Blacklist*: Rejected; adds runtime infrastructure dependency and network failure modes for a team of 2-5 administrators.
+- *Fine-Grained CRUD Action Matrix*: Rejected as unnecessary cognitive overhead; 4 operational domain modules (`CATALOG`, `ORDERS`, `REPAIRS`, `REVIEWS`) map directly to the store's physical organization.
+- *Secondary Admin Self-Registration / Invite Links*: Rejected; direct creation by Root Owner with mandatory re-authentication ensures zero unauthorized account creation.
+
+

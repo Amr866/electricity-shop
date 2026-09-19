@@ -32,7 +32,11 @@
 ## Notes
 
 - All 9 platform feature dimensions (Catalog & Search, Cart & Invoicing, Repair Workshop Lifecycle, Chapter 13 Cable Sizer, Contractor BOM Estimator, Factory Price Lists, Editorial Knowledge Base, OTP Authentication, and Admin Governance) have been systematically structured with Given/When/Then acceptance scenarios.
-- Clarifications session (2026-09-14) resolved: (1) Card-to-Card 8-hour inventory reservation window, (2) SMS OTP 60s cooldown, 3-attempt limit with password fallback, and (3) hybrid automated SMS and 1-click portal cost approval workflow for repair tickets.
-- All functional requirements (FR-001 through FR-040) are strictly formulated as testable behaviors.
-- All success criteria (SC-001 through SC-012) define verifiable, technology-agnostic benchmarks.
+- All functional requirements (FR-001 through FR-067) are strictly formulated as testable behaviors.
+- Clarifications sessions resolved key architectural policies:
+  - 2026-09-14: Card-to-Card 8-hour reservation, SMS OTP throttling, and repair cost approval.
+  - 2026-09-17: Review moderation queue, guarded deletion/archival workflows, pricing units, and order purge.
+  - 2026-09-18: Deep module structure, three-tier test organization, in-app cache/ISR, composite indexes, and SEO layouts.
+  - 2026-09-19: Admin password rotation (/admin/settings), Root Owner governance (/admin/users), dynamic secondary admin permissions (CATALOG, ORDERS, REPAIRS, REVIEWS), global session invalidation via tokenVersion, and strict password-gated administrative access.
+- All success criteria (SC-001 through SC-013) define verifiable benchmarks.
 - No unresolved clarification markers exist; the specification is complete and ready for `/speckit-plan`.

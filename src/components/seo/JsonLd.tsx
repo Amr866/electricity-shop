@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface JsonLdProps {
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export function JsonLd({ data }: JsonLdProps) {
@@ -32,7 +32,7 @@ export function buildElectronicsStoreSchema(baseUrl: string) {
     paymentAccepted: "Cash, Credit Card, Online Payment",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "خیابان شریعتی، بعد از چهارراه بازار، روبروی پاساژ ملت",
+      streetAddress: "خیابان ۱۵ خرداد مرکزی، نبش بن‌بست نرگس",
       addressLocality: "نجف‌آباد",
       addressRegion: "اصفهان",
       postalCode: "8514612345",

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ChevronLeft, Home, Layers, Sparkles, SlidersHorizontal, ArrowLeft } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
+import { JsonLd, buildBreadcrumbSchema } from "@/components/seo/JsonLd";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -88,30 +89,12 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
     },
   });
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "صفحه اصلی",
-        item: baseUrl,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "دسته‌بندی‌های کالا",
-        item: `${baseUrl}/categories`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: category.name,
-        item: `${baseUrl}/categories/${category.slug}`,
-      },
-    ],
-  };
+  // Schema.org BreadcrumbList structured data for search engines
+  const breadcrumbJsonLd = buildBreadcrumbSchema([
+    { name: "صفحه اصلی", url: baseUrl },
+    { name: "دسته‌بندی‌های کالا", url: `${baseUrl}/categories` },
+    { name: category.name, url: `${baseUrl}/categories/${category.slug}` },
+  ]);
 
   const collectionJsonLd = {
     "@context": "https://schema.org",
@@ -125,14 +108,8 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-10 pb-28 sm:pb-16 transition-colors duration-200">
       {/* Schema.org Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
-      />
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={collectionJsonLd} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
         {/* Breadcrumbs */}

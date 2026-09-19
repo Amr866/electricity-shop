@@ -20,11 +20,14 @@ model User {
   nationalCode  String?         // For legal/corporate invoice
   companyName   String?         // For legal invoice
   economicCode  String?         // For legal invoice
-  isVerified    Boolean         @default(false)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  orders        Order[]
-  repairs       RepairRequest[]
+  isVerified        Boolean         @default(false)
+  tokenVersion      Int             @default(0)
+  adminPermissions  String?         // JSON string: ["CATALOG", "ORDERS", "REPAIRS", "REVIEWS"] or ["ALL"]
+  isSuspended       Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  orders            Order[]
+  repairs           RepairRequest[]
 }
 
 model VerificationToken {

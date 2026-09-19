@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Admin Users & Scoped Permissions API Contract",
+  "description": "API endpoints for Root Owner governance of secondary administrator accounts, dynamic domain permissions (CATALOG, ORDERS, REPAIRS, REVIEWS), and mandatory re-authentication.",
+  "endpoints": [
+    {
+      "path": "/api/admin/users",
+      "method": "GET",
+      "description": "List all administrative accounts and their assigned domain permissions. Accessible exclusively to Root Owner.",
+      "responses": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "role": { "type": "string", "enum": ["ADMIN"] },
+                  "isRootOwner": { "type": "boolean" },
+                  "permissions": {
+                    "type": "array",
+                    "items": { "type": "string", "enum": ["CATALOG", "ORDERS", "REPAIRS", "REVIEWS", "ALL"] }
+                  },
+                  "isSuspended": { "type": "boolean" },
+                  "createdAt": { "type": "string", "format": "date-time" }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "FORBIDDEN_ROOT_ONLY" },
+            "message": { "type": "string", "example": "دسترسی به مدیریت مدیران صرفاً برای مدیر ارشد (مالک سیستم) مجاز است." }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/admin/users",
+      "method": "POST",
+      "description": "Provision a new secondary administrator account with owner-defined initial credentials and scoped module permissions.",
+      "request": {
+        "type": "object",
+        "required": ["phone", "name", "initialPassword", "permissions", "rootPassword"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Normalized Iranian mobile number (09XXXXXXXXX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the secondary administrator"
+          },
+          "initialPassword": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Initial strong password (min 8 chars, letters and digits)"
+          },
+          "permissions": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["CATALOG", "ORDERS", "REPAIRS", "REVIEWS", "ALL"] },
+            "description": "Assigned operational domain modules"
+          },
+          "rootPassword": {
+            "type": "string",
+            "description": "Mandatory re-authentication of Root Owner current password"
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "message": { "type": "string", "example": "مدیر جدید با موفقیت ایجاد گردید." },
+            "user": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "phone": { "type": "string" },
+                "permissions": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "400": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "USER_ALREADY_EXISTS" },
+            "message": { "type": "string" }
+          }
+        },
+        "401": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "INVALID_ROOT_CREDENTIALS" },
+            "message": { "type": "string", "example": "کلمه عبور مدیر ارشد نادرست است. عملیات لغو گردید." }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/admin/users/[id]",
+      "method": "PATCH",
+      "description": "Update permissions or suspension status of a secondary administrator. Guarded by Root Owner password re-authentication.",
+      "request": {
+        "type": "object",
+        "required": ["rootPassword"],
+        "properties": {
+          "name": { "type": "string" },
+          "permissions": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["CATALOG", "ORDERS", "REPAIRS", "REVIEWS", "ALL"] }
+          },
+          "isSuspended": { "type": "boolean" },
+          "resetPassword": { "type": "string", "minLength": 8 },
+          "rootPassword": { "type": "string" }
+        }
+      },
+      "responses": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "message": { "type": "string" }
+          }
+        },
+        "400": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "CANNOT_MODIFY_ROOT_OWNER" }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/admin/users/[id]",
+      "method": "DELETE",
+      "description": "Permanently revoke and delete a secondary administrator account. Root Owner is strictly protected from deletion.",
+      "request": {
+        "type": "object",
+        "required": ["rootPassword"],
+        "properties": {
+          "rootPassword": { "type": "string" }
+        }
+      },
+      "responses": {
+        "200": {
+          "type": "object",
+          "properties": {
+            "success": { "type": "boolean", "enum": [true] },
+            "message": { "type": "string", "example": "حساب مدیر با موفقیت حذف گردید." }
+          }
+        },
+        "400": {
+          "type": "object",
+          "properties": {
+            "error": { "type": "string", "example": "CANNOT_DELETE_ROOT_OWNER" },
+            "message": { "type": "string", "example": "امکان حذف حساب مالک اصلی فروشگاه وجود ندارد." }
+          }
+        }
+      }
+    }
+  ]
+}

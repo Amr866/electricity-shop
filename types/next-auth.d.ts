@@ -6,6 +6,9 @@ declare module "next-auth" {
       id: string;
       role: "ADMIN" | "CUSTOMER";
       phone?: string;
+      tokenVersion?: number;
+      permissions?: string[];
+      isSuspended?: boolean;
     } & DefaultSession["user"];
   }
 
@@ -13,6 +16,9 @@ declare module "next-auth" {
     id: string;
     role?: "ADMIN" | "CUSTOMER";
     phone?: string;
+    tokenVersion?: number;
+    permissions?: string[];
+    isSuspended?: boolean;
   }
 }
 
@@ -21,5 +27,9 @@ declare module "next-auth/jwt" {
     id?: string;
     role?: "ADMIN" | "CUSTOMER";
     phone?: string;
+    tokenVersion?: number;
+    permissions?: string[];
+    isSuspended?: boolean;
   }
 }
+

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 import { verifyPassword } from "@/lib/password";
 
-export const ADMIN_PHONES = ["09136260072", "09162665884", "09131112233", "09132334455"];
+export const ADMIN_PHONES = ["09136260072"];
 
 export function parseAdminPermissions(raw: string | null | undefined): string[] {
   if (!raw) return [];

@@ -1,21 +1,11 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions, ADMIN_PHONES } from "@/lib/auth";
+import { authOptions, ADMIN_PHONES, parseAdminPermissions } from "./auth";
 import { prisma } from "@/lib/prisma";
 
 import { Session } from "next-auth";
 
 export type AdminModule = "CATALOG" | "ORDERS" | "REPAIRS" | "REVIEWS";
-
-export function parseAdminPermissions(raw: string | null | undefined): string[] {
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
 
 export function checkAdminPermission(
   sessionOrPermissions: { user?: { permissions?: string[]; phone?: string } } | string[] | null | undefined,

@@ -69,7 +69,9 @@ export const authOptions: NextAuthOptions = {
 
           const permissions: string[] = isRootOwner
             ? ["ALL"]
-            : parseAdminPermissions(adminUser.adminPermissions);
+            : adminUser.adminPermissions
+              ? parseAdminPermissions(adminUser.adminPermissions)
+              : ["ALL"];
 
           return {
             id: adminUser.id,

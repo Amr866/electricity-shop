@@ -19,7 +19,10 @@ export default async function AdminLayout({
   }
 
   const isRootOwner = ADMIN_PHONES.includes(session.user.phone || "");
-  const permissions = session.user.permissions || [];
+  let permissions = session.user.permissions || [];
+  if (permissions.length === 0 && session.user.role === "ADMIN") {
+    permissions = ["ALL"];
+  }
   const adminName = session.user.name || "مدیر ارشد";
 
   return (

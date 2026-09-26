@@ -29,17 +29,18 @@ import {
 } from "lucide-react";
 import { ProductExcelImportModal } from "@/components/admin/ProductExcelImportModal";
 import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
+import { ProductEditModal } from "@/components/admin/ProductEditModal";
 
 const ITEMS_PER_PAGE = 15;
-const LOCAL_FALLBACK_IMAGE = "/images/products/wal_172619-fans-7995865_1920.jpg";
+const LOCAL_FALLBACK_IMAGE = "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
-interface ProductImageItem {
+export interface ProductImageItem {
   id: string;
   url: string;
   isPrimary?: boolean;
 }
 
-interface CategoryItem {
+export interface CategoryItem {
   id: string;
   name: string;
   slug?: string;
@@ -95,9 +96,6 @@ export function ProductsAdminClient({
   const [excelModalOpen, setExcelModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<AdminProduct | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [message, setMessage] = useState("");
 
   // Inline edit state
   const [editingInlineId, setEditingInlineId] = useState<string | null>(null);
@@ -105,149 +103,14 @@ export function ProductsAdminClient({
   const [inlineStock, setInlineStock] = useState("");
   const [inlineLoading, setInlineLoading] = useState(false);
   const [savedInlineId, setSavedInlineId] = useState<string | null>(null);
-
-  // Form state
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [sku, setSku] = useState("");
-  const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
-  const [price, setPrice] = useState("");
-  const [originalPrice, setOriginalPrice] = useState("");
-  const [stock, setStock] = useState("20");
-  const [priceUnit, setPriceUnit] = useState("");
-  const [brand, setBrand] = useState("");
-  const [warranty, setWarranty] = useState("گارانتی اصالت و سلامت فیزیکی");
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [isBestSeller, setIsBestSeller] = useState(false);
-  const [isIsfahanFast, setIsIsfahanFast] = useState(true);
-  const [imageUrl, setImageUrl] = useState("");
-  const [description, setDescription] = useState("");
-
   const openCreateModal = () => {
     setEditingProduct(null);
-    setName("");
-    setSlug("");
-    setSku("");
-    setCategoryId(categories[0]?.id || "");
-    setPrice("");
-    setOriginalPrice("");
-    setStock("20");
-    setPriceUnit("");
-    setBrand("");
-    setWarranty("گارانتی اصالت و سلامت فیزیکی");
-    setIsFeatured(false);
-    setIsBestSeller(false);
-    setIsIsfahanFast(true);
-    setImageUrl("");
-    setDescription("");
-    setMessage("");
     setModalOpen(true);
   };
 
   const openEditModal = (prod: AdminProduct) => {
     setEditingProduct(prod);
-    setName(prod.name);
-    setSlug(prod.slug);
-    setSku(prod.sku || "");
-    setCategoryId(prod.categoryId);
-    setPrice(prod.price.toString());
-    setOriginalPrice(prod.originalPrice ? prod.originalPrice.toString() : "");
-    setStock(prod.stock.toString());
-    setPriceUnit(prod.priceUnit || "");
-    setBrand(prod.brand || "");
-    setWarranty(prod.warranty || "گارانتی اصالت و سلامت فیزیکی");
-    setIsFeatured(Boolean(prod.isFeatured));
-    setIsBestSeller(Boolean(prod.isBestSeller));
-    setIsIsfahanFast(prod.isIsfahanFast !== false);
-    setImageUrl(prod.images?.[0]?.url || "");
-    setDescription(prod.description || "");
-    setMessage("");
     setModalOpen(true);
-  };
-
-  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setUploadingImage(true);
-    const file = files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setImageUrl(data.url);
-      } else {
-        alert(data.message || "خطا در آپلود تصویر.");
-      }
-    } catch {
-      alert("خطای سرور در آپلود فایل.");
-    } finally {
-      setUploadingImage(false);
-      e.target.value = "";
-    }
-  };
-
-  const handleSubmitProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    const isEdit = Boolean(editingProduct);
-    const method = isEdit ? "PUT" : "POST";
-
-    const payload: any = {
-      name,
-      slug,
-      sku,
-      categoryId,
-      price: parseInt(price, 10),
-      originalPrice: originalPrice ? parseInt(originalPrice, 10) : null,
-      stock: parseInt(stock, 10) || 0,
-      priceUnit: priceUnit.trim() ? priceUnit.trim() : null,
-      brand,
-      warranty,
-      isFeatured,
-      isBestSeller,
-      isIsfahanFast,
-      imageUrl,
-      description,
-    };
-
-    if (isEdit) {
-      payload.id = editingProduct!.id;
-    }
-
-    try {
-      const res = await fetch("/api/admin/products", {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setMessage(data.message || "خطا در ذخیره کالا.");
-      } else {
-        if (isEdit) {
-          setProducts((prev) =>
-            prev.map((p) => (p.id === data.product.id ? data.product : p))
-          );
-        } else {
-          setProducts([data.product, ...products]);
-        }
-        setModalOpen(false);
-      }
-    } catch {
-      setMessage("خطا در برقراری ارتباط با سرور.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleInlineSave = async (id: string) => {
@@ -1017,312 +880,21 @@ export function ProductsAdminClient({
       )}
 
       {/* Create / Edit Product Modal */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
-                  {editingProduct ? <Edit className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                </div>
-                <h2 className="font-black text-sm text-white">
-                  {editingProduct ? "ویرایش مشخصات کالا" : "افزودن محصول جدید به کاتالوگ"}
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setModalOpen(false)}
-                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {message && (
-              <div className="p-3 bg-rose-950/80 border border-rose-800 rounded-xl text-rose-300 text-xs font-bold flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                <span>{message}</span>
-              </div>
-            )}
-
-            {/* Modal Form */}
-            <form onSubmit={handleSubmitProduct} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
-                {/* Product Name */}
-                <div className="sm:col-span-2 space-y-1">
-                  <label className="text-slate-400 font-bold">نام محصول *</label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (!editingProduct) {
-                        setSlug(e.target.value.trim().toLowerCase().replace(/\s+/g, "-"));
-                      }
-                    }}
-                    placeholder="مثال: موتور کولر آبی ۳/۴ موتوژن تمام مس"
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Slug */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">نامک انگلیسی (Slug) *</label>
-                  <input
-                    type="text"
-                    required
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                    placeholder="motogen-cooler-motor-34"
-                    className="w-full bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* SKU */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">کد انبار / SKU</label>
-                  <input
-                    type="text"
-                    value={sku}
-                    onChange={(e) => setSku(e.target.value)}
-                    placeholder="SH-ENG-102"
-                    className="w-full bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Category */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">دسته‌بندی *</label>
-                  <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  >
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Brand */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">برند تولیدکننده</label>
-                  <input
-                    type="text"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                    placeholder="موتوژن، پارت الکتریک، رونیکس..."
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Price */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">قیمت فروش (تومان) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder="2500000"
-                    className="w-full bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Original Price */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">قیمت قبل از تخفیف (اختیاری)</label>
-                  <input
-                    type="number"
-                    value={originalPrice}
-                    onChange={(e) => setOriginalPrice(e.target.value)}
-                    placeholder="2800000"
-                    className="w-full bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Stock */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">موجودی انبار *</label>
-                  <input
-                    type="number"
-                    required
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                    placeholder="20"
-                    className="w-full bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Warranty */}
-                <div className="space-y-1">
-                  <label className="text-slate-400 font-bold">گارانتی</label>
-                  <input
-                    type="text"
-                    value={warranty}
-                    onChange={(e) => setWarranty(e.target.value)}
-                    placeholder="۲۴ ماه گارانتی تعویض موتوژن"
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                  />
-                </div>
-
-                {/* Pricing Unit (Optional) */}
-                <div className="sm:col-span-2 space-y-2 p-3.5 bg-slate-950/40 rounded-2xl border border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <label className="text-slate-300 font-bold flex items-center gap-1.5">
-                      <span>واحد قیمت‌گذاری (اختیاری)</span>
-                      <span className="text-[10px] text-slate-500 font-normal">
-                        (مانند: /متر، /کلاف، /عدد — در صورت خالی بودن فقط مبلغ تومانی درج می‌شود)
-                      </span>
-                    </label>
-                    {priceUnit && (
-                      <button
-                        type="button"
-                        onClick={() => setPriceUnit("")}
-                        className="text-[11px] text-rose-400 hover:text-rose-300 font-bold cursor-pointer"
-                      >
-                        پاک کردن واحد
-                      </button>
-                    )}
-                  </div>
-                  
-                  {/* Preset Chips */}
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {["عدد", "متر", "کلاف", "شاخه", "کیلوگرم", "بسته"].map((preset) => {
-                      const isSelected = priceUnit === preset;
-                      return (
-                        <button
-                          key={preset}
-                          type="button"
-                          onClick={() => setPriceUnit(isSelected ? "" : preset)}
-                          className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                            isSelected
-                              ? "bg-amber-500 text-slate-950 shadow-sm shadow-amber-500/30 scale-105"
-                              : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
-                          }`}
-                        >
-                          {preset}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Custom Unit Input */}
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-slate-400 text-xs">یا واحد دلخواه:</span>
-                    <input
-                      type="text"
-                      value={priceUnit}
-                      onChange={(e) => setPriceUnit(e.target.value)}
-                      placeholder="مثلاً: قوطی، کارتن، لیتری..."
-                      className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Image Upload / URL */}
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label className="text-slate-400 font-bold">تصویر محصول</label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="text"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="آدرس اینترنتی یا مسیر تصویر لوکال..."
-                      className="flex-1 bg-slate-800 border border-slate-700 text-white font-mono rounded-xl px-3 py-2 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                    />
-                    <label className="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-3 py-2 rounded-xl border border-slate-700 cursor-pointer flex items-center gap-1 shrink-0">
-                      <UploadCloud className="w-4 h-4" />
-                      <span>{uploadingImage ? "در حال آپلود..." : "آپلود فایل"}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageFileUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="sm:col-span-2 space-y-1">
-                  <label className="text-slate-400 font-bold">توضیحات و مشخصات فنی</label>
-                  <textarea
-                    rows={3}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="شرح کامل، توان، ولتاژ، مشخصات سیم‌پیچ و ویژگی‌های کالا..."
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl p-3 focus:ring-2 focus:ring-amber-500 focus:outline-none leading-relaxed"
-                  />
-                </div>
-
-              </div>
-
-              {/* Toggles */}
-              <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-800">
-                <label className="flex items-center gap-2 cursor-pointer text-slate-300">
-                  <input
-                    type="checkbox"
-                    checked={isFeatured}
-                    onChange={(e) => setIsFeatured(e.target.checked)}
-                    className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 bg-slate-800 border-slate-700"
-                  />
-                  <span>کالای ویژه (Featured)</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer text-slate-300">
-                  <input
-                    type="checkbox"
-                    checked={isBestSeller}
-                    onChange={(e) => setIsBestSeller(e.target.checked)}
-                    className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 bg-slate-800 border-slate-700"
-                  />
-                  <span>پرفروش‌ترین (Best Seller)</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer text-slate-300">
-                  <input
-                    type="checkbox"
-                    checked={isIsfahanFast}
-                    onChange={(e) => setIsIsfahanFast(e.target.checked)}
-                    className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 bg-slate-800 border-slate-700"
-                  />
-                  <span>آماده ارسال فوری نجف‌آباد و اصفهان</span>
-                </label>
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  انصراف
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
-                >
-                  {loading
-                    ? "در حال ذخیره‌سازی..."
-                    : editingProduct
-                    ? "ذخیره تغییرات کالا"
-                    : "افزودن کالا به کاتالوگ"}
-                </button>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      )}
+      <ProductEditModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSaveSuccess={(savedProduct, isEdit) => {
+          if (isEdit) {
+            setProducts((prev) =>
+              prev.map((p) => (p.id === savedProduct.id ? savedProduct : p))
+            );
+          } else {
+            setProducts([savedProduct, ...products]);
+          }
+        }}
+        editingProduct={editingProduct}
+        categories={categories}
+      />
 
       {/* Excel / CSV Import Modal */}
       <ProductExcelImportModal
@@ -1351,6 +923,7 @@ export function ProductsAdminClient({
         isPurge={catalogTab === "archived"}
         isLoading={isDeleting}
       />
+
     </div>
   );
 }

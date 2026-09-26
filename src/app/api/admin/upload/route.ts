@@ -1,118 +1,90 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir, readdir, stat, unlink } from "fs/promises";
-import path from "path";
-import { checkAdminSession } from "@/lib/adminAuth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/core/auth";
+import { MediaService } from "@/lib/services/mediaService";
 
+async function requireAdmin() {
+  const session = await getServerSession(authOptions);
+  return session && session.user && session.user.role === "ADMIN";
+}
+
+/**
+ * GET: List all uploaded media files across directories
+ */
 export async function GET() {
-  const { isAdmin, response } = await checkAdminSession();
-  if (!isAdmin) return response!;
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ message: "دسترسی غیرمجاز" }, { status: 403 });
+  }
 
   try {
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
-
-    const filenames = await readdir(uploadsDir);
-    const files = [];
-
-    for (const name of filenames) {
-      if (name.startsWith(".")) continue;
-      const filePath = path.join(uploadsDir, name);
-      try {
-        const fileStat = await stat(filePath);
-        if (fileStat.isFile()) {
-          files.push({
-            name,
-            url: `/uploads/${name}`,
-            size: fileStat.size,
-            createdAt: fileStat.birthtime || fileStat.mtime,
-          });
-        }
-      } catch {}
-    }
-
-    // Sort newest first
-    files.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    return NextResponse.json({ success: true, files });
-  } catch (error: any) {
-    console.error("Error reading uploads:", error);
-    return NextResponse.json({ message: "خطا در خواندن فایل‌های آپلود شده." }, { status: 500 });
+    const files = await MediaService.listUploadedMedia();
+    return NextResponse.json({ files });
+  } catch (error) {
+    console.error("Media list error:", error);
+    return NextResponse.json({ message: "خطا در دریافت لیست تصاویر." }, { status: 500 });
   }
 }
 
+/**
+ * POST: Upload and persist media files with format validation and category routing
+ */
 export async function POST(req: NextRequest) {
-  const { isAdmin, response } = await checkAdminSession();
-  if (!isAdmin) return response!;
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ message: "دسترسی غیرمجاز" }, { status: 403 });
+  }
 
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
+    const folder = (formData.get("folder") as string) || "general";
 
-    if (!file) {
-      return NextResponse.json({ message: "فایلی ارسال نشده است." }, { status: 400 });
-    }
-
-    // Limit file size to 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ message: "حداکثر حجم مجاز تصویر ۱۰ مگابایت می‌باشد." }, { status: 400 });
-    }
-
-    // Whitelist allowed image extensions
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg", "image/avif", "image/svg+xml"];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ message: "فرمت فایل مجاز نیست (فقط JPG, PNG, WEBP, SVG مجاز است)." }, { status: 400 });
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Ensure uploads directory exists
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
-
-    // Generate safe file name with timestamp
-    const safeName = file.name.replace(/[^\w\.-]/g, "_");
-    const filename = `${Date.now()}_${safeName}`;
-    const filePath = path.join(uploadsDir, filename);
-
-    await writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${filename}`;
-
+    const saved = await MediaService.saveUploadedFile(file, folder);
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      filename,
-      size: file.size,
-      createdAt: new Date(),
+      ...saved,
+      filename: saved.name,
     });
-  } catch (error: any) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ message: "خطا در بارگذاری تصویر." }, { status: 500 });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "خطا در بارگذاری فایل.";
+    const status = msg.includes("فرمت") || msg.includes("حجم") || msg.includes("فایلی") ? 400 : 500;
+    return NextResponse.json({ message: msg }, { status });
   }
 }
 
+/**
+ * DELETE: Guarded file deletion with product connection checks and force override
+ */
 export async function DELETE(req: NextRequest) {
-  const { isAdmin, response } = await checkAdminSession();
-  if (!isAdmin) return response!;
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ message: "دسترسی غیرمجاز" }, { status: 403 });
+  }
 
   try {
     const { searchParams } = new URL(req.url);
-    const filename = searchParams.get("filename");
+    const target = searchParams.get("path") || searchParams.get("filename") || searchParams.get("url");
+    const force = searchParams.get("force") === "true";
 
-    if (!filename) {
-      return NextResponse.json({ message: "نام فایل الزامی است." }, { status: 400 });
+    if (!target) {
+      return NextResponse.json({ message: "آدرس یا نام فایل الزامی است." }, { status: 400 });
     }
 
-    // Prevent directory traversal
-    const safeFilename = path.basename(filename);
-    const filePath = path.join(process.cwd(), "public", "uploads", safeFilename);
-
-    await unlink(filePath);
+    const result = await MediaService.deleteUploadedFile(target, force);
+    if (!result.success && result.conflict) {
+      return NextResponse.json(
+        {
+          success: false,
+          isUsedInProduct: true,
+          productName: result.conflict.productName,
+          message: `این تصویر در حال حاضر به عنوان تصویر کالای «${result.conflict.productName}» در سایت متصل است. جهت حذف، تایید اجباری نیاز است.`,
+        },
+        { status: 409 }
+      );
+    }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("Delete file error:", error);
-    return NextResponse.json({ message: "خطا در حذف فایل از سرور." }, { status: 500 });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "خطا در حذف فایل از سرور.";
+    const status = msg.includes("نامعتبر") || msg.includes("الزامی") ? 400 : 500;
+    return NextResponse.json({ message: msg }, { status });
   }
 }

@@ -37,6 +37,7 @@ export class MediaService {
   public static async listUploadedMedia(): Promise<MediaFile[]> {
     const uploadsBase = this.getUploadsBase();
     const productsDir = path.join(uploadsBase, "products");
+    const articlesDir = path.join(uploadsBase, "articles");
     const bomsDir = path.join(uploadsBase, "boms");
 
     // Fetch active product images from database to map usage
@@ -99,7 +100,10 @@ export class MediaService {
     // 2. Scan Products Uploads (/public/uploads/products/)
     await scanFolder(productsDir, "products", "/uploads/products");
 
-    // 3. Scan BOM Inquiry Documents (/public/uploads/boms/)
+    // 3. Scan Articles Uploads (/public/uploads/articles/)
+    await scanFolder(articlesDir, "articles", "/uploads/articles");
+
+    // 4. Scan BOM Inquiry Documents (/public/uploads/boms/)
     await scanFolder(bomsDir, "boms", "/uploads/boms");
 
     // Sort newest first
@@ -128,6 +132,9 @@ export class MediaService {
     if (folder === "products") {
       targetSubfolder = "products";
       folderType = "products";
+    } else if (folder === "articles") {
+      targetSubfolder = "articles";
+      folderType = "articles";
     } else if (folder === "boms") {
       targetSubfolder = "boms";
       folderType = "boms";

@@ -1,6 +1,6 @@
 import path from "path";
 
-export type MediaFolder = "products" | "boms" | "general";
+export type MediaFolder = "products" | "boms" | "articles" | "general";
 export type FileType = "image" | "pdf" | "excel" | "word" | "doc" | "document" | "spreadsheet" | "other";
 
 export interface MediaFile {

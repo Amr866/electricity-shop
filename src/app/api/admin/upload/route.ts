@@ -10,6 +10,7 @@ async function requireAdmin() {
 
 /**
  * GET: List all uploaded media files across directories
+ * Scans uploadsBase, productsDir, articlesDir, and bomsDir via MediaService
  */
 export async function GET() {
   if (!(await requireAdmin())) {
@@ -18,7 +19,7 @@ export async function GET() {
 
   try {
     const files = await MediaService.listUploadedMedia();
-    return NextResponse.json({ files });
+    return NextResponse.json({ success: true, files });
   } catch (error) {
     console.error("Media list error:", error);
     return NextResponse.json({ message: "خطا در دریافت لیست تصاویر." }, { status: 500 });
@@ -27,6 +28,7 @@ export async function GET() {
 
 /**
  * POST: Upload and persist media files with format validation and category routing
+ * Supports folder === "articles" (stored in articlesDir), folder === "products", and "boms"
  */
 export async function POST(req: NextRequest) {
   if (!(await requireAdmin())) {
@@ -38,6 +40,7 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File;
     const folder = (formData.get("folder") as string) || "general";
 
+    // MediaService routes folder === "articles" to /uploads/articles/ (articlesDir)
     const saved = await MediaService.saveUploadedFile(file, folder);
     return NextResponse.json({
       success: true,

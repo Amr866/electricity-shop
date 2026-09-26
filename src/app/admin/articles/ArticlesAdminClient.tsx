@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArticleContentRenderer } from "@/components/blog/ArticleContentRenderer";
+import { MediaPickerModal } from "@/components/admin/MediaPickerModal";
 import {
   BookOpen,
   Plus,
@@ -27,8 +28,8 @@ import {
   Lightbulb,
   Table,
   Image as ImageIcon,
-  Check,
   RefreshCw,
+  UploadCloud,
 } from "lucide-react";
 import { toPersianDigits, formatJalaliDate } from "@/lib/utils";
 
@@ -63,6 +64,10 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Media Picker and Upload State
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
+
   // Form State
   const [formData, setFormData] = useState({
     title: "",
@@ -70,7 +75,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     category: "نورپردازی و روشنایی",
     customCategory: "",
     readTime: "۵ دقیقه مطالعه",
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+    image: "/uploads/articles/ceiling-light.webp",
     authorName: "کارشناس فنی فروشگاه شیاسی",
     tags: "",
     summary: "",
@@ -93,6 +98,38 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const body = new FormData();
+    body.append("file", file);
+    body.append("folder", "articles");
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFormData((prev) => ({ ...prev, image: data.url }));
+        showToast("تصویر مقاله با موفقیت بارگذاری شد.");
+      } else {
+        alert(data.message || "خطا در بارگذاری تصویر.");
+      }
+    } catch {
+      alert("خطا در ارتباط با سرور آپلود.");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+
+
   const filteredArticles = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return articles;
@@ -113,7 +150,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
       category: "نورپردازی و روشنایی",
       customCategory: "",
       readTime: "۵ دقیقه مطالعه",
-      image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+      image: "/uploads/articles/ceiling-light.webp",
       authorName: "کارشناس فنی فروشگاه شیاسی",
       tags: "روشنایی, برق_ساختمان, نجف_آباد",
       summary: "",
@@ -379,14 +416,19 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                   <tr key={art.id} className="hover:bg-slate-800/40 transition-colors">
                     {/* Thumbnail */}
                     <td className="p-4">
-                      <div className="relative w-14 h-10 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-700">
-                        <Image
-                          src={art.image}
-                          alt={art.title}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
+                      <div className="relative w-14 h-10 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-700 flex items-center justify-center">
+                        {art.image ? (
+                          <Image
+                            src={art.image}
+                            alt={art.title}
+                            fill
+                            unoptimized
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <BookOpen className="w-5 h-5 text-slate-500" />
+                        )}
                       </div>
                     </td>
 
@@ -681,15 +723,57 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-200">
-                        آدرس تصویر شاخص (URL)
+                        تصویر شاخص مقاله
                       </label>
-                      <input
-                        type="text"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        placeholder="https://images.unsplash.com/..."
-                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 dir-ltr text-left focus:outline-hidden focus:border-amber-400 font-mono"
-                      />
+                      <div className="space-y-2">
+                        <div className="relative flex items-center">
+                          <input
+                            type="text"
+                            value={formData.image}
+                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                            placeholder="/uploads/articles/..."
+                            className={`w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 text-xs text-white placeholder-slate-500 dir-ltr text-left focus:outline-hidden focus:border-amber-400 font-mono ${
+                              formData.image ? "pr-3 pl-12" : "px-3.5"
+                            }`}
+                          />
+                          {formData.image && (
+                            <div className="absolute left-1.5 top-1.5 w-7 h-7 rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shrink-0">
+                              <Image
+                                src={formData.image}
+                                alt="Preview"
+                                fill
+                                unoptimized
+                                sizes="28px"
+                                className="object-cover"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setMediaModalOpen(true)}
+                            className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-3 py-2 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 text-xs transition-colors"
+                            title="انتخاب از رسانه و تصاویر سرور"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>انتخاب از رسانه</span>
+                          </button>
+
+                          <label className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold px-3 py-2 rounded-xl border border-slate-700 cursor-pointer flex items-center justify-center gap-1.5 text-xs transition-colors">
+                            <UploadCloud className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{uploadingImage ? "در حال آپلود..." : "آپلود تصویر"}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              disabled={uploadingImage}
+                              onChange={handleImageFileUpload}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -868,6 +952,17 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
           </div>
         </div>
       )}
+
+      {/* Reusable Media Picker Modal */}
+      <MediaPickerModal
+        isOpen={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        onSelect={(url) => {
+          setFormData((prev) => ({ ...prev, image: url }));
+          showToast("تصویر شاخص از رسانه انتخاب شد.");
+        }}
+        currentUrl={formData.image}
+      />
     </div>
   );
 }

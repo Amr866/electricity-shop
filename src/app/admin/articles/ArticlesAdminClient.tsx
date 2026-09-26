@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArticleContentRenderer } from "@/components/blog/ArticleContentRenderer";
+import { MediaPickerModal } from "@/components/admin/MediaPickerModal";
 import {
   BookOpen,
   Plus,
@@ -27,10 +28,8 @@ import {
   Lightbulb,
   Table,
   Image as ImageIcon,
-  Check,
   RefreshCw,
   UploadCloud,
-  Loader2,
 } from "lucide-react";
 import { toPersianDigits, formatJalaliDate } from "@/lib/utils";
 
@@ -68,9 +67,6 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
   // Media Picker and Upload State
   const [uploadingImage, setUploadingImage] = useState(false);
   const [mediaModalOpen, setMediaModalOpen] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<Array<{ name: string; url: string }>>([]);
-  const [loadingMedia, setLoadingMedia] = useState(false);
-  const [mediaSearch, setMediaSearch] = useState("");
 
   // Form State
   const [formData, setFormData] = useState({
@@ -132,38 +128,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     }
   };
 
-  const openMediaPicker = async () => {
-    setMediaModalOpen(true);
-    setLoadingMedia(true);
-    try {
-      const res = await fetch("/api/admin/upload");
-      const data = await res.json();
-      if (res.ok && data.files) {
-        setMediaFiles(
-          data.files
-            .filter((f: any) => !f.fileType || f.fileType === "image" || f.name.match(/\.(jpg|jpeg|png|webp|svg|avif)$/i))
-            .map((f: any) => ({ name: f.name, url: f.url }))
-        );
-      }
-    } catch {
-      console.error("Error loading media files");
-    } finally {
-      setLoadingMedia(false);
-    }
-  };
 
-  const selectMediaImage = (url: string) => {
-    setFormData((prev) => ({ ...prev, image: url }));
-    setMediaModalOpen(false);
-    showToast("تصویر از رسانه انتخاب شد.");
-  };
-
-  const filteredMediaFiles = useMemo(() => {
-    if (!mediaSearch.trim()) return mediaFiles;
-    return mediaFiles.filter((m) =>
-      m.name.toLowerCase().includes(mediaSearch.toLowerCase())
-    );
-  }, [mediaFiles, mediaSearch]);
 
   const filteredArticles = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -788,7 +753,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
-                            onClick={openMediaPicker}
+                            onClick={() => setMediaModalOpen(true)}
                             className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-3 py-2 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 text-xs transition-colors"
                             title="انتخاب از رسانه و تصاویر سرور"
                           >
@@ -988,106 +953,16 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
         </div>
       )}
 
-      {/* Media Picker Modal */}
-      {mediaModalOpen && (
-        <div
-          onClick={() => setMediaModalOpen(false)}
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-4xl w-full max-h-[85vh] bg-slate-900 rounded-3xl p-6 border border-slate-800 shadow-2xl flex flex-col space-y-4"
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-black text-white">انتخاب تصویر از رسانه و تصاویر سرور</h3>
-                  <p className="text-[11px] text-slate-400">یک تصویر را جهت استفاده به عنوان تصویر شاخص مقاله انتخاب فرمایید</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setMediaModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Search Input in Media Modal */}
-            <div className="relative">
-              <input
-                type="text"
-                value={mediaSearch}
-                onChange={(e) => setMediaSearch(e.target.value)}
-                placeholder="جستجوی نام فایل تصویر..."
-                className="w-full bg-slate-950 border border-slate-800 text-white text-xs rounded-xl pr-9 pl-4 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-hidden font-mono"
-              />
-              <Search className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
-            </div>
-
-            {/* Images Grid */}
-            <div className="overflow-y-auto max-h-[50vh] pr-1">
-              {loadingMedia ? (
-                <div className="p-12 text-center text-slate-400 flex items-center justify-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
-                  <span className="text-xs font-bold">در حال بارگذاری تصاویر سرور...</span>
-                </div>
-              ) : filteredMediaFiles.length === 0 ? (
-                <div className="p-10 text-center text-slate-500 text-xs">تصویری یافت نشد.</div>
-              ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                  {filteredMediaFiles.map((m) => (
-                    <div
-                      key={m.url}
-                      onClick={() => selectMediaImage(m.url)}
-                      className={`group rounded-xl p-2 border cursor-pointer transition-all flex flex-col justify-between ${
-                        formData.image === m.url
-                          ? "bg-amber-500/20 border-amber-500 ring-2 ring-amber-500/40"
-                          : "bg-slate-950 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40"
-                      }`}
-                    >
-                      <div className="aspect-square relative rounded-lg overflow-hidden bg-slate-900 mb-1.5 flex items-center justify-center">
-                        <Image
-                          src={m.url}
-                          alt={m.name}
-                          fill
-                          unoptimized
-                          sizes="80px"
-                          className="object-cover group-hover:scale-105 transition-transform"
-                        />
-                        {formData.image === m.url && (
-                          <div className="absolute inset-0 bg-amber-500/40 flex items-center justify-center">
-                            <Check className="w-5 h-5 text-slate-950 stroke-[3]" />
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-[10px] font-mono text-slate-300 truncate" title={m.name} dir="ltr">
-                        {m.name}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-              <span>{filteredMediaFiles.length} تصویر در دسترس</span>
-              <button
-                type="button"
-                onClick={() => setMediaModalOpen(false)}
-                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold cursor-pointer"
-              >
-                بستن
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Reusable Media Picker Modal */}
+      <MediaPickerModal
+        isOpen={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        onSelect={(url) => {
+          setFormData((prev) => ({ ...prev, image: url }));
+          showToast("تصویر شاخص از رسانه انتخاب شد.");
+        }}
+        currentUrl={formData.image}
+      />
     </div>
   );
 }

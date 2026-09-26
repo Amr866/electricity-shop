@@ -49,4 +49,28 @@ describe("Article Media & Local Storage Suite (TDD)", () => {
       "Upload route must scan articlesDir"
     );
   });
+
+  test("Seam 4: Reusable MediaPickerModal component is exported and used by ArticlesAdminClient", () => {
+    const modalPath = path.join(process.cwd(), "src", "components", "admin", "MediaPickerModal.tsx");
+    assert.ok(fs.existsSync(modalPath), "MediaPickerModal component file must exist");
+
+    const clientCode = fs.readFileSync(
+      path.join(process.cwd(), "src", "app", "admin", "articles", "ArticlesAdminClient.tsx"),
+      "utf-8"
+    );
+    assert.ok(
+      clientCode.includes("MediaPickerModal"),
+      "ArticlesAdminClient must import and utilize MediaPickerModal"
+    );
+  });
+
+  test("Seam 5: Maintainability Guard - ArticlesAdminClient.tsx must stay strictly under 1,000 lines", () => {
+    const clientPath = path.join(process.cwd(), "src", "app", "admin", "articles", "ArticlesAdminClient.tsx");
+    const content = fs.readFileSync(clientPath, "utf-8");
+    const lineCount = content.split("\n").length;
+    assert.ok(
+      lineCount < 1000,
+      `ArticlesAdminClient.tsx must stay under 1,000 lines (current: ${lineCount}) to prevent god-component sprawl`
+    );
+  });
 });

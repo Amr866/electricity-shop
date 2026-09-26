@@ -3,98 +3,84 @@ import { writeFile, mkdir, readdir, stat, unlink } from "fs/promises";
 import path from "path";
 import { checkAdminSession } from "@/lib/adminAuth";
 
+type UploadFolder = "general" | "products" | "articles" | "boms";
+
+interface FolderConfig {
+  folder: UploadFolder;
+  dir: string;
+  prefix: string;
+}
+
+interface UploadedFileInfo {
+  name: string;
+  relativePath: string;
+  url: string;
+  folder: UploadFolder;
+  size: number;
+  createdAt: Date;
+}
+
+/**
+ * Scan a single folder on disk and return array of valid file metadata
+ */
+async function scanFolderFiles({ folder, dir, prefix }: FolderConfig): Promise<UploadedFileInfo[]> {
+  try {
+    await mkdir(dir, { recursive: true });
+    const names = await readdir(dir);
+    const results = await Promise.all(
+      names
+        .filter((n) => !n.startsWith("."))
+        .map(async (name): Promise<UploadedFileInfo | null> => {
+          try {
+            const filePath = path.join(dir, name);
+            const fileStat = await stat(filePath);
+            if (!fileStat.isFile()) return null;
+            return {
+              name,
+              relativePath: `${prefix}${name}`,
+              url: `/uploads/${prefix}${name}`,
+              folder,
+              size: fileStat.size,
+              createdAt: fileStat.birthtime || fileStat.mtime,
+            };
+          } catch {
+            return null;
+          }
+        })
+    );
+    return results.filter((f): f is UploadedFileInfo => f !== null);
+  } catch (error) {
+    console.error(`Error scanning folder ${folder}:`, error);
+    return [];
+  }
+}
+
 export async function GET() {
   const { isAdmin, response } = await checkAdminSession();
   if (!isAdmin) return response!;
 
   try {
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    const productsDir = path.join(uploadsDir, "products");
-    const articlesDir = path.join(uploadsDir, "articles");
+    const uploadsBase = path.join(process.cwd(), "public", "uploads");
+    const productsDir = path.join(uploadsBase, "products");
+    const articlesDir = path.join(uploadsBase, "articles");
+    const bomsDir = path.join(uploadsBase, "boms");
 
-    await mkdir(uploadsDir, { recursive: true });
-    await mkdir(productsDir, { recursive: true });
-    await mkdir(articlesDir, { recursive: true });
+    const folderConfigs: FolderConfig[] = [
+      { folder: "general", dir: uploadsBase, prefix: "" },
+      { folder: "products", dir: productsDir, prefix: "products/" },
+      { folder: "articles", dir: articlesDir, prefix: "articles/" },
+      { folder: "boms", dir: bomsDir, prefix: "boms/" },
+    ];
 
-    const files: Array<{
-      name: string;
-      relativePath: string;
-      url: string;
-      folder: "general" | "products" | "articles";
-      size: number;
-      createdAt: Date;
-    }> = [];
-
-    // 1. General uploads
-    const filenames = await readdir(uploadsDir);
-    for (const name of filenames) {
-      if (name.startsWith(".")) continue;
-      const filePath = path.join(uploadsDir, name);
-      try {
-        const fileStat = await stat(filePath);
-        if (fileStat.isFile()) {
-          files.push({
-            name,
-            relativePath: name,
-            url: `/uploads/${name}`,
-            folder: "general",
-            size: fileStat.size,
-            createdAt: fileStat.birthtime || fileStat.mtime,
-          });
-        }
-      } catch {}
-    }
-
-    // 2. Products uploads
-    try {
-      const productFiles = await readdir(productsDir);
-      for (const name of productFiles) {
-        if (name.startsWith(".")) continue;
-        const filePath = path.join(productsDir, name);
-        try {
-          const fileStat = await stat(filePath);
-          if (fileStat.isFile()) {
-            files.push({
-              name,
-              relativePath: `products/${name}`,
-              url: `/uploads/products/${name}`,
-              folder: "products",
-              size: fileStat.size,
-              createdAt: fileStat.birthtime || fileStat.mtime,
-            });
-          }
-        } catch {}
-      }
-    } catch {}
-
-    // 3. Articles uploads
-    try {
-      const articleFiles = await readdir(articlesDir);
-      for (const name of articleFiles) {
-        if (name.startsWith(".")) continue;
-        const filePath = path.join(articlesDir, name);
-        try {
-          const fileStat = await stat(filePath);
-          if (fileStat.isFile()) {
-            files.push({
-              name,
-              relativePath: `articles/${name}`,
-              url: `/uploads/articles/${name}`,
-              folder: "articles",
-              size: fileStat.size,
-              createdAt: fileStat.birthtime || fileStat.mtime,
-            });
-          }
-        } catch {}
-      }
-    } catch {}
-
-    // Sort newest first
-    files.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    // Scan all directories concurrently
+    const fileArrays = await Promise.all(folderConfigs.map(scanFolderFiles));
+    const files = fileArrays
+      .flat()
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ success: true, files });
   } catch (error: any) {
-    console.error("Error reading uploads:", error);
+    console.error("Error reading uploads inventory:", error);
     return NextResponse.json({ message: "خطا در خواندن فایل‌های آپلود شده." }, { status: 500 });
   }
 }
@@ -129,10 +115,13 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Target directory: /public/uploads/ or /public/uploads/products/ or /public/uploads/articles/
-    let targetSubfolder = "";
-    if (folder === "products") targetSubfolder = "products";
-    else if (folder === "articles") targetSubfolder = "articles";
+    // Whitelisted target subfolders
+    const validFolders: Record<string, string> = {
+      products: "products",
+      articles: "articles",
+      boms: "boms",
+    };
+    const targetSubfolder = folder === "articles" ? "articles" : validFolders[folder] || "";
 
     const uploadsDir = path.join(process.cwd(), "public", "uploads", targetSubfolder);
     await mkdir(uploadsDir, { recursive: true });
@@ -152,7 +141,7 @@ export async function POST(req: NextRequest) {
       url: publicUrl,
       filename,
       relativePath,
-      folder,
+      folder: (targetSubfolder || "general") as UploadFolder,
       size: file.size,
       createdAt: new Date(),
     });
@@ -182,7 +171,7 @@ export async function DELETE(req: NextRequest) {
     const uploadsBase = path.resolve(process.cwd(), "public", "uploads");
     const targetFilePath = path.resolve(uploadsBase, cleanRelPath);
 
-    // Prevent directory traversal
+    // Strict path traversal defense
     if (!targetFilePath.startsWith(uploadsBase)) {
       return NextResponse.json({ message: "مسیر فایل نامعتبر است." }, { status: 400 });
     }

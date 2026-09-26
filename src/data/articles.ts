@@ -25,7 +25,7 @@ export const INITIAL_ARTICLES: ArticleData[] = [
     badgeColor: "bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800",
     readTime: "۶ دقیقه مطالعه",
     date: "۱۴۰۳/۰۶/۱۵",
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+    image: "/uploads/articles/ceiling-light.webp",
     author: "کارشناس فنی فروشگاه شیاسی",
     summary: "بررسی تفاوت پنل‌های SMD و چراغ‌های COB، مقایسه چراغ‌های توکار و روکار، محاسبه لومن بر اساس متراژ و آموزش نکات کلیدی برای کاهش مصرف برق و افزایش طول عمر روشنایی ساختمان.",
     tags: [
@@ -147,7 +147,7 @@ export const INITIAL_ARTICLES: ArticleData[] = [
     badgeColor: "bg-cyan-100 dark:bg-cyan-950/80 text-cyan-900 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800",
     readTime: "۷ دقیقه مطالعه",
     date: "۱۴۰۳/۰۶/۱۰",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    image: "/uploads/articles/linear-lighting.jpg",
     author: "کارشناس فنی فروشگاه شیاسی",
     summary: "آشنایی با ۸ موقعیت طلایی اجرای لاین نوری در کناف سقف، قرنیز، زیر کابینت، پله‌ها، تی‌وی‌وال، سرویس بهداشتی و نما، به همراه بررسی ترانس ۱۲ ولت، دیفیوزر و جلوگیری از افت ولتاژ.",
     tags: [
@@ -246,7 +246,7 @@ export const INITIAL_ARTICLES: ArticleData[] = [
     badgeColor: "bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
     readTime: "۸ دقیقه مطالعه",
     date: "۱۴۰۳/۰۶/۰۲",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
+    image: "/uploads/articles/cooler-motor.jpg",
     author: "کارشناس فنی فروشگاه شیاسی",
     summary: "راهنمای تخصصی کارگاه سیم‌پیچی شیاسی برای تست خازن راه‌انداز، روغن‌کاری بوش‌ها و نمدی، رفع صدای ناهنجار، تنظیم سفتی تسمه و سرویس پمپ آب موتوژن و الکتروژن.",
     tags: [

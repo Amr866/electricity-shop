@@ -29,6 +29,8 @@ import {
   Image as ImageIcon,
   Check,
   RefreshCw,
+  UploadCloud,
+  Loader2,
 } from "lucide-react";
 import { toPersianDigits, formatJalaliDate } from "@/lib/utils";
 
@@ -63,6 +65,13 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Media Picker and Upload State
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [mediaModalOpen, setMediaModalOpen] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<Array<{ name: string; url: string }>>([]);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [mediaSearch, setMediaSearch] = useState("");
+
   // Form State
   const [formData, setFormData] = useState({
     title: "",
@@ -70,7 +79,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     category: "نورپردازی و روشنایی",
     customCategory: "",
     readTime: "۵ دقیقه مطالعه",
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+    image: "/uploads/articles/ceiling-light.webp",
     authorName: "کارشناس فنی فروشگاه شیاسی",
     tags: "",
     summary: "",
@@ -93,6 +102,69 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const body = new FormData();
+    body.append("file", file);
+    body.append("folder", "articles");
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFormData((prev) => ({ ...prev, image: data.url }));
+        showToast("تصویر مقاله با موفقیت بارگذاری شد.");
+      } else {
+        alert(data.message || "خطا در بارگذاری تصویر.");
+      }
+    } catch {
+      alert("خطا در ارتباط با سرور آپلود.");
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+  const openMediaPicker = async () => {
+    setMediaModalOpen(true);
+    setLoadingMedia(true);
+    try {
+      const res = await fetch("/api/admin/upload");
+      const data = await res.json();
+      if (res.ok && data.files) {
+        setMediaFiles(
+          data.files
+            .filter((f: any) => !f.fileType || f.fileType === "image" || f.name.match(/\.(jpg|jpeg|png|webp|svg|avif)$/i))
+            .map((f: any) => ({ name: f.name, url: f.url }))
+        );
+      }
+    } catch {
+      console.error("Error loading media files");
+    } finally {
+      setLoadingMedia(false);
+    }
+  };
+
+  const selectMediaImage = (url: string) => {
+    setFormData((prev) => ({ ...prev, image: url }));
+    setMediaModalOpen(false);
+    showToast("تصویر از رسانه انتخاب شد.");
+  };
+
+  const filteredMediaFiles = useMemo(() => {
+    if (!mediaSearch.trim()) return mediaFiles;
+    return mediaFiles.filter((m) =>
+      m.name.toLowerCase().includes(mediaSearch.toLowerCase())
+    );
+  }, [mediaFiles, mediaSearch]);
+
   const filteredArticles = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return articles;
@@ -113,7 +185,7 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
       category: "نورپردازی و روشنایی",
       customCategory: "",
       readTime: "۵ دقیقه مطالعه",
-      image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+      image: "/uploads/articles/ceiling-light.webp",
       authorName: "کارشناس فنی فروشگاه شیاسی",
       tags: "روشنایی, برق_ساختمان, نجف_آباد",
       summary: "",
@@ -379,14 +451,19 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                   <tr key={art.id} className="hover:bg-slate-800/40 transition-colors">
                     {/* Thumbnail */}
                     <td className="p-4">
-                      <div className="relative w-14 h-10 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-700">
-                        <Image
-                          src={art.image}
-                          alt={art.title}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
+                      <div className="relative w-14 h-10 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-700 flex items-center justify-center">
+                        {art.image ? (
+                          <Image
+                            src={art.image}
+                            alt={art.title}
+                            fill
+                            unoptimized
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <BookOpen className="w-5 h-5 text-slate-500" />
+                        )}
                       </div>
                     </td>
 
@@ -681,15 +758,57 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-200">
-                        آدرس تصویر شاخص (URL)
+                        تصویر شاخص مقاله
                       </label>
-                      <input
-                        type="text"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        placeholder="https://images.unsplash.com/..."
-                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 dir-ltr text-left focus:outline-hidden focus:border-amber-400 font-mono"
-                      />
+                      <div className="space-y-2">
+                        <div className="relative flex items-center">
+                          <input
+                            type="text"
+                            value={formData.image}
+                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                            placeholder="/uploads/articles/..."
+                            className={`w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 text-xs text-white placeholder-slate-500 dir-ltr text-left focus:outline-hidden focus:border-amber-400 font-mono ${
+                              formData.image ? "pr-3 pl-12" : "px-3.5"
+                            }`}
+                          />
+                          {formData.image && (
+                            <div className="absolute left-1.5 top-1.5 w-7 h-7 rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shrink-0">
+                              <Image
+                                src={formData.image}
+                                alt="Preview"
+                                fill
+                                unoptimized
+                                sizes="28px"
+                                className="object-cover"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={openMediaPicker}
+                            className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-3 py-2 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 text-xs transition-colors"
+                            title="انتخاب از رسانه و تصاویر سرور"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>انتخاب از رسانه</span>
+                          </button>
+
+                          <label className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold px-3 py-2 rounded-xl border border-slate-700 cursor-pointer flex items-center justify-center gap-1.5 text-xs transition-colors">
+                            <UploadCloud className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>{uploadingImage ? "در حال آپلود..." : "آپلود تصویر"}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              disabled={uploadingImage}
+                              onChange={handleImageFileUpload}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
@@ -863,6 +982,107 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
                   <Save className="w-4 h-4" />
                 )}
                 <span>{editingArticle ? "ذخیره تغییرات مقاله" : "انتشار مقاله"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Media Picker Modal */}
+      {mediaModalOpen && (
+        <div
+          onClick={() => setMediaModalOpen(false)}
+          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl w-full max-h-[85vh] bg-slate-900 rounded-3xl p-6 border border-slate-800 shadow-2xl flex flex-col space-y-4"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white">انتخاب تصویر از رسانه و تصاویر سرور</h3>
+                  <p className="text-[11px] text-slate-400">یک تصویر را جهت استفاده به عنوان تصویر شاخص مقاله انتخاب فرمایید</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setMediaModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Search Input in Media Modal */}
+            <div className="relative">
+              <input
+                type="text"
+                value={mediaSearch}
+                onChange={(e) => setMediaSearch(e.target.value)}
+                placeholder="جستجوی نام فایل تصویر..."
+                className="w-full bg-slate-950 border border-slate-800 text-white text-xs rounded-xl pr-9 pl-4 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-hidden font-mono"
+              />
+              <Search className="w-4 h-4 text-slate-400 absolute right-3 top-3 pointer-events-none" />
+            </div>
+
+            {/* Images Grid */}
+            <div className="overflow-y-auto max-h-[50vh] pr-1">
+              {loadingMedia ? (
+                <div className="p-12 text-center text-slate-400 flex items-center justify-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-amber-400" />
+                  <span className="text-xs font-bold">در حال بارگذاری تصاویر سرور...</span>
+                </div>
+              ) : filteredMediaFiles.length === 0 ? (
+                <div className="p-10 text-center text-slate-500 text-xs">تصویری یافت نشد.</div>
+              ) : (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                  {filteredMediaFiles.map((m) => (
+                    <div
+                      key={m.url}
+                      onClick={() => selectMediaImage(m.url)}
+                      className={`group rounded-xl p-2 border cursor-pointer transition-all flex flex-col justify-between ${
+                        formData.image === m.url
+                          ? "bg-amber-500/20 border-amber-500 ring-2 ring-amber-500/40"
+                          : "bg-slate-950 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40"
+                      }`}
+                    >
+                      <div className="aspect-square relative rounded-lg overflow-hidden bg-slate-900 mb-1.5 flex items-center justify-center">
+                        <Image
+                          src={m.url}
+                          alt={m.name}
+                          fill
+                          unoptimized
+                          sizes="80px"
+                          className="object-cover group-hover:scale-105 transition-transform"
+                        />
+                        {formData.image === m.url && (
+                          <div className="absolute inset-0 bg-amber-500/40 flex items-center justify-center">
+                            <Check className="w-5 h-5 text-slate-950 stroke-[3]" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[10px] font-mono text-slate-300 truncate" title={m.name} dir="ltr">
+                        {m.name}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <span>{filteredMediaFiles.length} تصویر در دسترس</span>
+              <button
+                type="button"
+                onClick={() => setMediaModalOpen(false)}
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold cursor-pointer"
+              >
+                بستن
               </button>
             </div>
           </div>

@@ -26,7 +26,7 @@ export default async function AdminLayout({
   const adminName = session.user.name || "مدیر ارشد";
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="dark min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans">
       {/* Dynamic Admin Sidebar */}
       <AdminSidebar permissions={permissions} isRootOwner={isRootOwner} />
 

@@ -25,7 +25,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
-import { MediaFile, formatBytes } from "@/lib/utils/media";
+import { MediaFile, formatBytes, isImageMedia, isPdfMedia, isExcelMedia } from "@/lib/utils/media";
 
 export type UploadsFolderTab = "all" | "products" | "articles" | "general" | "docs";
 
@@ -109,17 +109,19 @@ export function UploadsAdminClient() {
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
-  const handleDelete = async (file: MediaFile) => {
-    let force = false;
+  const handleDelete = async (file: MediaFile, forceDelete = false) => {
+    let force = forceDelete;
 
-    if (file.isUsedInProduct) {
-      const confirmed = confirm(
-        `⚠️ هشدار مهم:\n\nفایل «${file.name}» در حال حاضر به عنوان تصویر یا سند کالای «${file.productName || "فروشگاه"}» در سایت متصل است.\n\nدر صورت حذف، ارجاع این فایل در کالا خالی خواهد شد.\n\nآیا از حذف قطعی این فایل از سرور اطمینان دارید؟`
-      );
-      if (!confirmed) return;
-      force = true;
-    } else {
-      if (!confirm(`آیا از حذف فایل «${file.name}» از سرور اطمینان دارید؟`)) return;
+    if (!force) {
+      if (file.isUsedInProduct) {
+        const confirmed = confirm(
+          `⚠️ هشدار مهم:\n\nفایل «${file.name}» در حال حاضر به عنوان تصویر یا سند کالای «${file.productName || "فروشگاه"}» در سایت متصل است.\n\nدر صورت حذف، ارجاع این فایل در کالا خالی خواهد شد.\n\nآیا از حذف قطعی این فایل از سرور اطمینان دارید؟`
+        );
+        if (!confirmed) return;
+        force = true;
+      } else {
+        if (!confirm(`آیا از حذف فایل «${file.name}» از سرور اطمینان دارید؟`)) return;
+      }
     }
 
     try {
@@ -137,6 +139,14 @@ export function UploadsAdminClient() {
       if (res.ok && data.success) {
         setFiles((prev) => prev.filter((f) => f.url !== file.url));
         if (previewFile?.url === file.url) setPreviewFile(null);
+      } else if (res.status === 409 || data.isUsedInProduct || data.error === "Conflict") {
+        // Interactive 409 Conflict handling with immediate force-retry option
+        const retryForce = confirm(
+          `⚠️ تعارض در حذف (کد ۴۰۹):\n\nفایل «${file.name}» به کالا متصل است.\n${data.message || ""}\n\nآیا تمایل دارید ارجاع فایل در کالا لغو شده و حذف به صورت اجباری (Force Delete) اعمال شود؟`
+        );
+        if (retryForce) {
+          await handleDelete(file, true);
+        }
       } else {
         alert(data.message || "خطا در حذف فایل.");
       }
@@ -147,16 +157,16 @@ export function UploadsAdminClient() {
 
   const productsCount = useMemo(() => files.filter((f) => f.folder === "products").length, [files]);
   const articlesCount = useMemo(() => files.filter((f) => f.folder === "articles").length, [files]);
-  const generalCount = useMemo(() => files.filter((f) => f.folder === "general" && (!f.fileType || f.fileType === "image")).length, [files]);
-  const docsCount = useMemo(() => files.filter((f) => f.folder === "boms" || (f.fileType && f.fileType !== "image")).length, [files]);
+  const generalCount = useMemo(() => files.filter((f) => f.folder === "general" && isImageMedia(f)).length, [files]);
+  const docsCount = useMemo(() => files.filter((f) => f.folder === "boms" || !isImageMedia(f)).length, [files]);
 
   const filteredFiles = useMemo(() => {
     return files.filter((f) => {
       // Folder / Document filter tab
       if (activeFolderTab === "products" && f.folder !== "products") return false;
       if (activeFolderTab === "articles" && f.folder !== "articles") return false;
-      if (activeFolderTab === "general" && (f.folder !== "general" || (f.fileType && f.fileType !== "image"))) return false;
-      if (activeFolderTab === "docs" && f.folder !== "boms" && (!f.fileType || f.fileType === "image")) return false;
+      if (activeFolderTab === "general" && (f.folder !== "general" || !isImageMedia(f))) return false;
+      if (activeFolderTab === "docs" && f.folder !== "boms" && isImageMedia(f)) return false;
 
       // Search query
       if (search && !f.name.toLowerCase().includes(search.toLowerCase())) return false;
@@ -428,9 +438,9 @@ export function UploadsAdminClient() {
       ) : viewMode === "grid" ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {paginatedFiles.map((file) => {
-            const isImage = file.fileType === "image" || (!file.fileType && !file.name.match(/\.(pdf|xlsx|xls|csv|docx|doc|txt)$/i));
-            const isPdf = file.fileType === "pdf" || file.name.endsWith(".pdf");
-            const isExcel = file.fileType === "excel" || file.name.match(/\.(xlsx|xls|csv)$/i);
+            const isImage = isImageMedia(file);
+            const isPdf = isPdfMedia(file);
+            const isExcel = isExcelMedia(file);
 
             return (
               <div
@@ -580,11 +590,9 @@ export function UploadsAdminClient() {
               </thead>
               <tbody className="divide-y divide-slate-800 font-medium">
                 {paginatedFiles.map((file) => {
-                  const isImage =
-                    file.fileType === "image" ||
-                    (!file.fileType && !file.name.match(/\.(pdf|xlsx|xls|csv|docx|doc|txt)$/i));
-                  const isPdf = file.fileType === "pdf" || file.name.endsWith(".pdf");
-                  const isExcel = file.fileType === "excel" || file.name.match(/\.(xlsx|xls|csv)$/i);
+                  const isImage = isImageMedia(file);
+                  const isPdf = isPdfMedia(file);
+                  const isExcel = isExcelMedia(file);
 
                   return (
                     <tr
@@ -796,7 +804,7 @@ export function UploadsAdminClient() {
             </button>
 
             <div className="relative w-full h-[55vh] rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center">
-              {previewFile.fileType === "image" || (!previewFile.fileType && !previewFile.name.match(/\.(pdf|xlsx|xls|csv|docx|doc|txt)$/i)) ? (
+              {isImageMedia(previewFile) ? (
                 <Image
                   src={previewFile.url}
                   alt={previewFile.name}
@@ -806,7 +814,7 @@ export function UploadsAdminClient() {
               ) : (
                 <div className="flex flex-col items-center justify-center space-y-3 p-6 text-center">
                   <div className="w-20 h-20 rounded-3xl bg-slate-800 border border-slate-700 text-amber-400 flex items-center justify-center shadow-lg">
-                    {previewFile.name.endsWith(".pdf") ? (
+                    {isPdfMedia(previewFile) ? (
                       <FileText className="w-10 h-10 text-rose-400" />
                     ) : (
                       <FileSpreadsheet className="w-10 h-10 text-emerald-400" />

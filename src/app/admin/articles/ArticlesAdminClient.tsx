@@ -32,6 +32,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { toPersianDigits, formatJalaliDate } from "@/lib/utils";
+import { uploadMediaFile } from "@/lib/utils/media";
 
 interface ArticleItem {
   id: string;
@@ -103,25 +104,12 @@ export function ArticlesAdminClient({ initialArticles }: ArticlesAdminClientProp
     if (!file) return;
 
     setUploadingImage(true);
-    const body = new FormData();
-    body.append("file", file);
-    body.append("folder", "articles");
-
     try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.url) {
-        setFormData((prev) => ({ ...prev, image: data.url }));
-        showToast("تصویر مقاله با موفقیت بارگذاری شد.");
-      } else {
-        alert(data.message || "خطا در بارگذاری تصویر.");
-      }
-    } catch {
-      alert("خطا در ارتباط با سرور آپلود.");
+      const uploaded = await uploadMediaFile(file, "articles");
+      setFormData((prev) => ({ ...prev, image: uploaded.url }));
+      showToast("تصویر مقاله با موفقیت بارگذاری شد.");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "خطا در ارتباط با سرور آپلود.");
     } finally {
       setUploadingImage(false);
       e.target.value = "";

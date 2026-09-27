@@ -39,8 +39,14 @@ export interface CustomerRepairTicket {
   brandModel?: string | null;
   issueDesc: string;
   estimatedCost?: number | null;
-  status: "SUBMITTED" | "RECEIVED" | "INSPECTING" | "COST_ESTIMATED" | "REPAIRING" | "READY" | "COMPLETED" | "DELIVERED" | string;
+  status: "SUBMITTED" | "RECEIVED" | "INSPECTING" | "COST_ESTIMATED" | "REPAIRING" | "READY" | "COMPLETED" | "DELIVERED" | "CANCELLED" | string;
   createdAt?: string;
+}
+
+export interface CorporateInfo {
+  companyName: string;
+  nationalCode: string;
+  economicCode: string;
 }
 
 export interface CustomerUser {
@@ -70,9 +76,11 @@ export function CustomerAccountClient({
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Corporate Invoice Settings
-  const [companyName, setCompanyName] = useState("");
-  const [nationalCode, setNationalCode] = useState("");
-  const [economicCode, setEconomicCode] = useState("");
+  const [corporateInfo, setCorporateInfo] = useState<CorporateInfo>({
+    companyName: "",
+    nationalCode: "",
+    economicCode: "",
+  });
   const [savingCorporate, setSavingCorporate] = useState(false);
   const [corporateSaved, setCorporateSaved] = useState(false);
 
@@ -82,9 +90,11 @@ export function CustomerAccountClient({
       const saved = localStorage.getItem("shiasi_corporate_info");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.companyName) setCompanyName(parsed.companyName);
-        if (parsed.nationalCode) setNationalCode(parsed.nationalCode);
-        if (parsed.economicCode) setEconomicCode(parsed.economicCode);
+        setCorporateInfo({
+          companyName: parsed.companyName || "",
+          nationalCode: parsed.nationalCode || "",
+          economicCode: parsed.economicCode || "",
+        });
       }
     } catch (e) {
       console.error(e);
@@ -99,9 +109,9 @@ export function CustomerAccountClient({
       localStorage.setItem(
         "shiasi_corporate_info",
         JSON.stringify({
-          companyName: companyName.trim(),
-          nationalCode: nationalCode.trim(),
-          economicCode: economicCode.trim(),
+          companyName: corporateInfo.companyName.trim(),
+          nationalCode: corporateInfo.nationalCode.trim(),
+          economicCode: corporateInfo.economicCode.trim(),
         })
       );
     } catch (err) {
@@ -121,7 +131,7 @@ export function CustomerAccountClient({
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const userPhone = user.phone || "۰۹۱۳۶۲۶۰۰۷۲";
+  const userPhone = user.phone ? toPersianDigits(user.phone) : "ثبت نشده";
   const userName = user.name || "مشتری محترم";
 
   return (
@@ -376,7 +386,7 @@ export function CustomerAccountClient({
 
                       <div className="flex items-center gap-2">
                         <span className={`text-xs font-black px-3 py-1 rounded-xl flex items-center gap-1.5 ${
-                          rep.status === "COMPLETED"
+                          rep.status === "READY" || rep.status === "COMPLETED"
                             ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
                             : rep.status === "REPAIRING"
                             ? "bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
@@ -387,9 +397,11 @@ export function CustomerAccountClient({
                             {rep.status === "SUBMITTED" && "درخواست ثبت شد - در نوبت تحویل"}
                             {rep.status === "RECEIVED" && "پذیرش شد - در نوبت عیب‌یابی"}
                             {rep.status === "INSPECTING" && "در حال بررسی فنی"}
+                            {rep.status === "COST_ESTIMATED" && "برآورد هزینه و در انتظار تایید"}
                             {rep.status === "REPAIRING" && "در حال تعمیر در کارگاه"}
-                            {rep.status === "COMPLETED" && "آماده تحویل در کارگاه"}
+                            {(rep.status === "READY" || rep.status === "COMPLETED") && "آماده تحویل در کارگاه"}
                             {rep.status === "DELIVERED" && "تحویل داده شده"}
+                            {rep.status === "CANCELLED" && "لغو شده"}
                           </span>
                         </span>
 
@@ -451,8 +463,8 @@ export function CustomerAccountClient({
                 </label>
                 <input
                   type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
+                  value={corporateInfo.companyName}
+                  onChange={(e) => setCorporateInfo((prev) => ({ ...prev, companyName: e.target.value }))}
                   placeholder="مثال: شرکت مهندسی برق آذرخش نجف‌آباد"
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                 />
@@ -465,8 +477,8 @@ export function CustomerAccountClient({
                   </label>
                   <input
                     type="text"
-                    value={nationalCode}
-                    onChange={(e) => setNationalCode(e.target.value)}
+                    value={corporateInfo.nationalCode}
+                    onChange={(e) => setCorporateInfo((prev) => ({ ...prev, nationalCode: e.target.value }))}
                     placeholder="۱۰۱۰..."
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
@@ -478,8 +490,8 @@ export function CustomerAccountClient({
                   </label>
                   <input
                     type="text"
-                    value={economicCode}
-                    onChange={(e) => setEconomicCode(e.target.value)}
+                    value={corporateInfo.economicCode}
+                    onChange={(e) => setCorporateInfo((prev) => ({ ...prev, economicCode: e.target.value }))}
                     placeholder="۱۲ رقمی"
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />

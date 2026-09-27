@@ -578,7 +578,7 @@ export function ReviewsAdminClient({
                               <ExternalLink className="w-3 h-3" />
                             </Link>
                             <span className="text-[11px] text-slate-500">
-                              <bdi dir="ltr">(میانگین فعلی: {toPersianDigits(rev.product.rating || 5)} - {toPersianDigits(rev.product.reviewCount || 0)} نظر)</bdi>
+                              (میانگین فعلی: {toPersianDigits(rev.product.rating || 5)} - {toPersianDigits(rev.product.reviewCount || 0)} نظر)
                             </span>
                           </div>
                         )}

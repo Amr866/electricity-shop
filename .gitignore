@@ -74,3 +74,6 @@ worktrees
 worktrees/
 worktrees/**
 
+# temporary scratch diffs
+.scratch/
+

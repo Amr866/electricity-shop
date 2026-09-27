@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { Sparkles, Search, Loader2, Check, X, ImageIcon } from "lucide-react";
-import { MediaFile } from "@/lib/utils/media";
+import { MediaFile, isImageMedia } from "@/lib/utils/media";
 
 export interface MediaPickerModalProps {
   isOpen: boolean;
@@ -69,12 +69,7 @@ export function MediaPickerModal({
 
   // Filter image files by search term and optional folder filter
   const filteredFiles = useMemo(() => {
-    let imagesOnly = mediaFiles.filter((f) =>
-      f.fileType === "image" ||
-      /\.(jpg|jpeg|png|webp|svg|avif)$/i.test(f.name || f.url) ||
-      f.folder === "products" ||
-      f.folder === "articles"
-    );
+    let imagesOnly = mediaFiles.filter((f) => isImageMedia(f));
 
     if (folderFilter !== "all") {
       imagesOnly = imagesOnly.filter((f) => f.folder === folderFilter);

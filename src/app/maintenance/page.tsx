@@ -91,7 +91,7 @@ export default function MaintenancePage() {
             className="flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm py-3 px-4 rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95 cursor-pointer"
           >
             <Phone className="w-4 h-4" />
-            <span>تماس با کارگاه: ۰۳۱-۴۲۶۲۶۱۱۶</span>
+            <span>تماس با کارگاه: <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi></span>
           </a>
 
           <a
@@ -102,7 +102,7 @@ export default function MaintenancePage() {
             className="flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm py-3 px-4 rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-95 cursor-pointer"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>پیام در واتساپ: ۰۹۱۳۶۲۶۰۰۷۲</span>
+            <span>پیام در واتساپ: <bdi dir="ltr">۰۹۱۳۶۲۶۰۰۷۲</bdi></span>
           </a>
         </div>
 

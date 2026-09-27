@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/core/auth";
 import { MediaService } from "@/lib/services/mediaService";
+import { logger } from "@/lib/logger";
 
 async function requireAdmin() {
   const session = await getServerSession(authOptions);
@@ -21,7 +22,7 @@ export async function GET() {
     const files = await MediaService.listUploadedMedia();
     return NextResponse.json({ success: true, files });
   } catch (error) {
-    console.error("Media list error:", error);
+    logger.error("Media list retrieval error", error);
     return NextResponse.json({ message: "خطا در دریافت لیست تصاویر." }, { status: 500 });
   }
 }
@@ -35,19 +36,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "دسترسی غیرمجاز" }, { status: 403 });
   }
 
+  let folder = "general";
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const folder = (formData.get("folder") as string) || "general";
+    folder = (formData.get("folder") as string) || "general";
 
     // MediaService routes folder === "articles" to /uploads/articles/ (articlesDir)
     const saved = await MediaService.saveUploadedFile(file, folder);
+    logger.info("Admin media uploaded successfully", {
+      filename: saved.name,
+      folder,
+      size: saved.size,
+    });
+
     return NextResponse.json({
       success: true,
       ...saved,
       filename: saved.name,
     });
   } catch (error) {
+    logger.error("Admin media upload failed", error, { folder });
     const msg = error instanceof Error ? error.message : "خطا در بارگذاری فایل.";
     const status = msg.includes("فرمت") || msg.includes("حجم") || msg.includes("فایلی") ? 400 : 500;
     return NextResponse.json({ message: msg }, { status });
@@ -62,10 +71,13 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: "دسترسی غیرمجاز" }, { status: 403 });
   }
 
+  let target = "";
+  let force = false;
+
   try {
     const { searchParams } = new URL(req.url);
-    const target = searchParams.get("path") || searchParams.get("filename") || searchParams.get("url");
-    const force = searchParams.get("force") === "true";
+    target = searchParams.get("path") || searchParams.get("filename") || searchParams.get("url") || "";
+    force = searchParams.get("force") === "true";
 
     if (!target) {
       return NextResponse.json({ message: "آدرس یا نام فایل الزامی است." }, { status: 400 });
@@ -73,6 +85,10 @@ export async function DELETE(req: NextRequest) {
 
     const result = await MediaService.deleteUploadedFile(target, force);
     if (!result.success && result.conflict) {
+      logger.info("Admin media deletion blocked by product conflict", {
+        target,
+        productName: result.conflict.productName,
+      });
       return NextResponse.json(
         {
           success: false,
@@ -84,8 +100,10 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
+    logger.info("Admin media deleted successfully", { target, force });
     return NextResponse.json({ success: true });
   } catch (error) {
+    logger.error("Admin media deletion failed", error, { target, force });
     const msg = error instanceof Error ? error.message : "خطا در حذف فایل از سرور.";
     const status = msg.includes("نامعتبر") || msg.includes("الزامی") ? 400 : 500;
     return NextResponse.json({ message: msg }, { status });

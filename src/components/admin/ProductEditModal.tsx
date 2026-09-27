@@ -11,6 +11,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal";
+import { uploadMediaFile } from "@/lib/utils/media";
 import type { AdminProduct, CategoryItem } from "@/app/admin/products/ProductsAdminClient";
 
 export interface ProductEditModalProps {
@@ -97,23 +98,12 @@ export function ProductEditModal({
 
     setUploadingImage(true);
     const file = files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", "products");
 
     try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setImageUrl(data.url);
-      } else {
-        alert(data.message || "خطا در آپلود تصویر.");
-      }
-    } catch {
-      alert("خطای سرور در آپلود فایل.");
+      const uploaded = await uploadMediaFile(file, "products");
+      setImageUrl(uploaded.url);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "خطای سرور در آپلود فایل.");
     } finally {
       setUploadingImage(false);
       e.target.value = "";

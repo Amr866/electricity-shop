@@ -43,7 +43,7 @@ import {
 
 export function Header() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { itemCount, subtotal, openCartDrawer } = useCart();
   const { wishlistCount } = useWishlist();
   const { brand } = useBrand();
@@ -54,6 +54,44 @@ export function Header() {
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [cartBump, setCartBump] = useState(false);
+
+  // Instant User Cache to eliminate latency/flash of unauthenticated state
+  const [cachedUser, setCachedUser] = useState<{ name?: string | null; role?: string | null } | null>(null);
+  const [hasHydratedUser, setHasHydratedUser] = useState(false);
+
+  useEffect(() => {
+    setHasHydratedUser(true);
+    try {
+      const saved = localStorage.getItem("shiasi_user_cache");
+      if (saved) {
+        setCachedUser(JSON.parse(saved));
+      }
+    } catch {
+      // Storage access disabled or corrupt
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const user = { name: session.user.name, role: (session.user as any).role };
+      setCachedUser(user);
+      try {
+        localStorage.setItem("shiasi_user_cache", JSON.stringify(user));
+      } catch {
+        // Ignore storage write failure
+      }
+    } else if (status === "unauthenticated") {
+      setCachedUser(null);
+      try {
+        localStorage.removeItem("shiasi_user_cache");
+      } catch {
+        // Ignore storage removal failure
+      }
+    }
+  }, [status, session]);
+
+  const activeUser = session?.user || (status === "loading" && hasHydratedUser ? cachedUser : null);
+  const isResolvingAuth = status === "loading" && !activeUser;
 
   // Trigger bounce effect on desktop cart button when items added
   useEffect(() => {
@@ -234,7 +272,9 @@ export function Header() {
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               
               {/* Desktop User Account / Login Button */}
-              {session?.user ? (
+              {isResolvingAuth ? (
+                <div className="hidden md:flex items-center gap-1.5 h-8 w-24 bg-slate-200/60 dark:bg-slate-800/60 animate-pulse rounded-xl" />
+              ) : activeUser ? (
                 <div className="hidden md:flex items-center gap-1.5">
                   <Link
                     href="/account"
@@ -242,11 +282,11 @@ export function Header() {
                     title="حساب کاربری من"
                   >
                     <User className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
-                    <span className="hidden xl:inline">{session.user.name || "حساب من"}</span>
+                    <span className="hidden xl:inline">{activeUser.name || "حساب من"}</span>
                   </Link>
 
                   {/* Conditionally rendered ONLY for authenticated ADMIN */}
-                  {session.user.role === "ADMIN" && (
+                  {activeUser.role === "ADMIN" && (
                     <Link
                       href="/admin"
                       className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black px-3 py-2 rounded-xl border border-amber-400 shadow-sm shadow-amber-500/20 transition-all active:scale-95"
@@ -559,7 +599,9 @@ export function Header() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               
               {/* User Account / Auth Banner */}
-              {session?.user ? (
+              {isResolvingAuth ? (
+                <div className="h-14 w-full bg-slate-200/60 dark:bg-slate-800/60 animate-pulse rounded-2xl" />
+              ) : activeUser ? (
                 <div className="space-y-2">
                   <Link
                     href="/account"
@@ -571,7 +613,7 @@ export function Header() {
                         <User className="w-4 h-4" />
                       </div>
                       <div>
-                        <span className="block font-black text-slate-900 dark:text-slate-100">{session.user.name || "حساب کاربری من"}</span>
+                        <span className="block font-black text-slate-900 dark:text-slate-100">{activeUser.name || "حساب کاربری من"}</span>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">مشاهده پروفایل و سفارش‌ها</span>
                       </div>
                     </div>
@@ -579,7 +621,7 @@ export function Header() {
                   </Link>
 
                   {/* Mobile Admin Link ONLY for authenticated ADMIN */}
-                  {session.user.role === "ADMIN" && (
+                  {activeUser.role === "ADMIN" && (
                     <Link
                       href="/admin"
                       onClick={() => setMobileMenuOpen(false)}

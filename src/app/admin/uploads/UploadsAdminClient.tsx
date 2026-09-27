@@ -21,21 +21,26 @@ import {
   Layers,
   LayoutGrid,
   List,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 import { MediaFile, formatBytes } from "@/lib/utils/media";
+
+export type UploadsFolderTab = "all" | "products" | "articles" | "general" | "docs";
 
 export function UploadsAdminClient() {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
-  const [activeFolderTab, setActiveFolderTab] = useState<"all" | "products" | "general" | "docs">("all");
-  const [uploadTargetFolder, setUploadTargetFolder] = useState<"products" | "general">("products");
+  const [activeFolderTab, setActiveFolderTab] = useState<UploadsFolderTab>("all");
+  const [uploadTargetFolder, setUploadTargetFolder] = useState<"products" | "articles" | "general">("products");
   const [isDragOver, setIsDragOver] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [previewFile, setPreviewFile] = useState<MediaFile | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchFiles = async () => {
     try {
@@ -141,6 +146,7 @@ export function UploadsAdminClient() {
   };
 
   const productsCount = useMemo(() => files.filter((f) => f.folder === "products").length, [files]);
+  const articlesCount = useMemo(() => files.filter((f) => f.folder === "articles").length, [files]);
   const generalCount = useMemo(() => files.filter((f) => f.folder === "general" && (!f.fileType || f.fileType === "image")).length, [files]);
   const docsCount = useMemo(() => files.filter((f) => f.folder === "boms" || (f.fileType && f.fileType !== "image")).length, [files]);
 
@@ -148,6 +154,7 @@ export function UploadsAdminClient() {
     return files.filter((f) => {
       // Folder / Document filter tab
       if (activeFolderTab === "products" && f.folder !== "products") return false;
+      if (activeFolderTab === "articles" && f.folder !== "articles") return false;
       if (activeFolderTab === "general" && (f.folder !== "general" || (f.fileType && f.fileType !== "image"))) return false;
       if (activeFolderTab === "docs" && f.folder !== "boms" && (!f.fileType || f.fileType === "image")) return false;
 
@@ -158,6 +165,19 @@ export function UploadsAdminClient() {
     });
   }, [files, activeFolderTab, search]);
 
+  const pageSize = viewMode === "grid" ? 24 : 50;
+  const totalPages = Math.ceil(filteredFiles.length / pageSize) || 1;
+
+  // Reset to first page when folder tab, search, or viewMode changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeFolderTab, search, viewMode]);
+
+  const paginatedFiles = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredFiles.slice(start, start + pageSize);
+  }, [filteredFiles, currentPage, pageSize]);
+
   return (
     <div className="space-y-6">
       {/* 1. Header */}
@@ -167,7 +187,7 @@ export function UploadsAdminClient() {
           <span>آپلود و مدیریت گالری تصاویر و اسناد سرور</span>
         </h1>
         <p className="text-xs text-slate-400 mt-1 font-medium">
-          بارگذاری و مدیریت تصاویر محصولات در <code className="text-amber-400 font-mono">/public/uploads/products/</code>، اسناد، کاتالوگ‌ها و فایل‌های پیوست
+          بارگذاری و مدیریت تصاویر محصولات در <code className="text-amber-400 font-mono">/public/uploads/products/</code>، مقالات در <code className="text-purple-400 font-mono">/public/uploads/articles/</code>، اسناد و فایل‌های پیوست
         </p>
       </div>
 
@@ -178,7 +198,7 @@ export function UploadsAdminClient() {
             <Layers className="w-4 h-4 text-cyan-400" />
             <span>پوشه مقصد بارگذاری:</span>
           </span>
-          <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <div className="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
             <button
               type="button"
               onClick={() => setUploadTargetFolder("products")}
@@ -189,6 +209,17 @@ export function UploadsAdminClient() {
               }`}
             >
               تصاویر کاتالوگ محصولات (/products)
+            </button>
+            <button
+              type="button"
+              onClick={() => setUploadTargetFolder("articles")}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+                uploadTargetFolder === "articles"
+                  ? "bg-purple-500 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              تصاویر مقالات مجله (/articles)
             </button>
             <button
               type="button"
@@ -295,6 +326,21 @@ export function UploadsAdminClient() {
 
           <button
             type="button"
+            onClick={() => setActiveFolderTab("articles")}
+            className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeFolderTab === "articles"
+                ? "bg-purple-500 text-white font-black shadow-md shadow-purple-500/20"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>تصاویر مقالات</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-900/60 font-mono">
+              {toPersianDigits(articlesCount)}
+            </span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveFolderTab("general")}
             className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               activeFolderTab === "general"
@@ -381,7 +427,7 @@ export function UploadsAdminClient() {
         </div>
       ) : viewMode === "grid" ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {filteredFiles.map((file) => {
+          {paginatedFiles.map((file) => {
             const isImage = file.fileType === "image" || (!file.fileType && !file.name.match(/\.(pdf|xlsx|xls|csv|docx|doc|txt)$/i));
             const isPdf = file.fileType === "pdf" || file.name.endsWith(".pdf");
             const isExcel = file.fileType === "excel" || file.name.match(/\.(xlsx|xls|csv)$/i);
@@ -439,6 +485,10 @@ export function UploadsAdminClient() {
                       <span className="bg-amber-500/90 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
                         کالا
                       </span>
+                    ) : file.folder === "articles" ? (
+                      <span className="bg-purple-500/90 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
+                        مقاله
+                      </span>
                     ) : file.folder === "boms" ? (
                       <span className="bg-cyan-500/90 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm">
                         BOM
@@ -467,11 +517,11 @@ export function UploadsAdminClient() {
 
                 {/* Filename & Details */}
                 <div>
-                  <p className="text-[11px] font-mono text-slate-300 truncate" title={file.name} dir="ltr">
-                    {file.name}
+                  <p className="text-[11px] font-mono text-slate-300 truncate" title={file.name}>
+                    <bdi dir="ltr">{file.name}</bdi>
                   </p>
                   <div className="flex items-center justify-between text-[10px] text-slate-500 mt-0.5 font-mono">
-                    <span>{formatBytes(file.size)}</span>
+                    <span><bdi dir="ltr">{formatBytes(file.size)}</bdi></span>
                     {file.isUsedInProduct && (
                       <span className="text-emerald-400 font-sans font-bold truncate max-w-[80px]" title={file.productName || ""}>
                         {file.productName}
@@ -529,7 +579,7 @@ export function UploadsAdminClient() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 font-medium">
-                {filteredFiles.map((file) => {
+                {paginatedFiles.map((file) => {
                   const isImage =
                     file.fileType === "image" ||
                     (!file.fileType && !file.name.match(/\.(pdf|xlsx|xls|csv|docx|doc|txt)$/i));
@@ -571,15 +621,14 @@ export function UploadsAdminClient() {
                           <p
                             className="font-mono text-white text-xs truncate font-bold"
                             title={file.name}
-                            dir="ltr"
                           >
-                            {file.name}
+                            <bdi dir="ltr">{file.name}</bdi>
                           </p>
                           <p
                             className="font-mono text-[10px] text-slate-500 truncate"
-                            dir="ltr"
+                            title={file.url}
                           >
-                            {file.url}
+                            <bdi dir="ltr">{file.url}</bdi>
                           </p>
                         </div>
                       </td>
@@ -610,6 +659,10 @@ export function UploadsAdminClient() {
                             <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-lg">
                               کاتالوگ محصولات
                             </span>
+                          ) : file.folder === "articles" ? (
+                            <span className="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-0.5 rounded-lg">
+                              تصاویر مقالات
+                            </span>
                           ) : file.folder === "boms" ? (
                             <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-bold px-2 py-0.5 rounded-lg">
                               BOM / استعلام
@@ -624,7 +677,7 @@ export function UploadsAdminClient() {
 
                       {/* Size */}
                       <td className="p-3.5 text-center font-mono text-[11px] text-slate-400">
-                        {formatBytes(file.size)}
+                        <bdi dir="ltr">{formatBytes(file.size)}</bdi>
                       </td>
 
                       {/* Actions */}
@@ -681,6 +734,49 @@ export function UploadsAdminClient() {
         </div>
       )}
 
+      {/* Pagination Controls */}
+      {filteredFiles.length > pageSize && (
+        <div className="bg-slate-900 rounded-2xl p-3 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold text-slate-300 shadow-lg">
+          <div className="flex items-center gap-1.5 text-slate-400 text-xs">
+            <span>نمایش</span>
+            <span className="text-white font-mono">{toPersianDigits((currentPage - 1) * pageSize + 1)}</span>
+            <span>تا</span>
+            <span className="text-white font-mono">
+              {toPersianDigits(Math.min(currentPage * pageSize, filteredFiles.length))}
+            </span>
+            <span>از مجموع</span>
+            <span className="text-amber-400 font-mono font-black">{toPersianDigits(filteredFiles.length)}</span>
+            <span>فایل</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-slate-300 hover:text-white flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <ChevronRight className="w-4 h-4" />
+              <span>قبلی</span>
+            </button>
+
+            <span className="px-3 py-1.5 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-white">
+              صفحه {toPersianDigits(currentPage)} از {toPersianDigits(totalPages)}
+            </span>
+
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-slate-300 hover:text-white flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <span>بعدی</span>
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 5. Lightbox Modal for Images & Documents */}
       {previewFile && (
         <div
@@ -717,11 +813,11 @@ export function UploadsAdminClient() {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white font-mono" dir="ltr">
-                      {previewFile.name}
+                    <h3 className="text-sm font-bold text-white font-mono">
+                      <bdi dir="ltr">{previewFile.name}</bdi>
                     </h3>
                     <p className="text-xs text-slate-400 mt-1">
-                      حجم فایل: {formatBytes(previewFile.size)}
+                      حجم فایل: <bdi dir="ltr">{formatBytes(previewFile.size)}</bdi>
                     </p>
                   </div>
                   <a
@@ -739,8 +835,8 @@ export function UploadsAdminClient() {
 
             <div className="w-full pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-400 border-t border-slate-800">
               <div className="space-y-0.5">
-                <p className="font-mono text-white text-xs truncate max-w-md" dir="ltr">
-                  {previewFile.url}
+                <p className="font-mono text-white text-xs truncate max-w-md">
+                  <bdi dir="ltr">{previewFile.url}</bdi>
                 </p>
                 {previewFile.isUsedInProduct && (
                   <p className="text-[11px] text-emerald-400 font-bold">

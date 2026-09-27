@@ -49,3 +49,23 @@ _Avoid_: Material list, quotation request, RFQ
 **Factory Price List**:
 Verified manufacturer PDF catalog and discount coefficient sheets for partnered brands (Alborz Cable, Motogen, Electrogen, Hani) dated in the Jalali calendar.
 _Avoid_: Rate card, brand catalog
+
+### Operations & Media Infrastructure
+
+**Maintenance Mode**:
+An SEO-safe operational holding state (HTTP 503 Service Unavailable + `Retry-After: 3600`) triggered by `MAINTENANCE_MODE=true` that bypasses authenticated `ADMIN` sessions while rendering direct workshop telephone contact lines and noindex robots tags.
+_Avoid_: Down mode, maintenance page, offline site
+
+**Isomorphic Media Utility**:
+Zero-dependency pure string predicates (`isImageMedia`, `isPdfMedia`, `isExcelMedia`, `isDocMedia`) and upload helpers executing identically across Edge, Browser, and Node runtimes without importing Node.js `path`.
+_Avoid_: File helper, image checker, upload util
+
+### Governance & Security
+
+**Multi-Admin Governance**:
+Role-Based Access Control partitioning secondary admin privileges across Catalog, Orders, Repairs, and Reviews, with automatic `tokenVersion` increment on suspension for immediate global session invalidation.
+_Avoid_: User manager, permissions table, admin roles
+
+**Password Rotation**:
+Self-service credential rotation under `/admin/settings` backed by constant-time verification, salted scrypt hashing, and sliding-window rate limiting.
+_Avoid_: Password reset, change pass

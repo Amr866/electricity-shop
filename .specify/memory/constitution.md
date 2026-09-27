@@ -1,11 +1,15 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 -> 1.1.0
-- List of modified principles: None
+- Version change: 1.1.0 -> 1.2.0
+- List of modified principles:
+  - Principle II (Zero-Crash Fallback Architecture & Resilient Uptime): Integrated SEO-safe operational Store Maintenance Mode specification (HTTP 503, Retry-After header, whitelists, and physical workshop contact disclosure).
+  - Principle IV (Persian RTL Localization & BiDi Isolation): Explicitly prohibited inverted BiDi boundaries (wrapping Persian prose in dir="ltr"), and mandated <bdi dir="ltr"> for all telephone numbers, coordinates, and system codes.
 - Added sections:
-  - ## Logging
+  - Media Management & Isomorphic Utilities in Technology Stack
+  - Multi-Admin Governance & Token Revocation in Technology Stack
+- Quality Gates:
+  - Updated production route compilation gate from 55 to 83 compiled routes.
 - Removed sections: None
-  - Follow-up TODOs: None (All placeholders resolved)
 -->
 
 # Shiasi Store & Technical Workshop Platform Constitution
@@ -27,8 +31,9 @@ The platform MUST never present a fatal error screen or crash due to transient d
 - All critical public routes (`/`, `/blog`, `/price-lists`, `/repair-service`) MUST incorporate static fallback datasets (such as `src/data/articles.ts`, cached products, and static reviews) to guarantee 100% continuous uptime.
 - Incremental Static Regeneration (ISR) and Static Site Generation (SSG) MUST be prioritized for high-traffic informational and catalog views.
 - Workshop intake and customer tracking portals MUST fail gracefully with informative, actionable messaging rather than unhandled exceptions.
+- **Store Maintenance Mode**: The platform MUST support an operational Maintenance Mode (`MAINTENANCE_MODE=true` in `src/middleware.ts`) responding with HTTP 503 Service Unavailable, `Retry-After: 3600`, and `X-Robots-Tag: noindex, nofollow` headers to protect search engine indexation during infrastructure upgrades. The maintenance page (`/maintenance`) MUST present direct workshop landline and mobile telephone numbers wrapped in `<bdi dir="ltr">`, while whitelisting `/auth/login` and allowing authenticated `ADMIN` sessions to bypass maintenance restrictions for live verification.
 
-*Rationale*: Field electricians, contractors, and local customers often access the platform over unreliable mobile networks; uncompromised uptime and sub-second page loads directly drive customer retention and conversions.
+*Rationale*: Field electricians, contractors, and local customers often access the platform over unreliable mobile networks; uncompromised uptime, predictable degradation, and sub-second page loads directly drive customer retention and conversions.
 
 ### III. Server-Authoritative Financial Calculations & Dual Invoicing
 All client-side computations (product pricing, item subtotals, tiered volume discounts, coupons, and final checkout sums) are strictly treated as advisory display values.
@@ -45,6 +50,7 @@ All client-side computations (product pricing, item subtotals, tiered volume dis
 ### IV. Persian RTL Localization, BiDi Isolation & Input Sanitization
 The platform MUST be natively Right-to-Left (RTL) styled using the Vazirmatn font family across all Arabic and Persian character subsets with tabular numbers to prevent layout shifts.
 - All numeric strings, phone numbers, tracking codes (`REP-YYMMDD-XXXX`, `SH-XXXXXX-XXX`), coordinates, and alphanumeric identifiers displayed in RTL views MUST be wrapped in explicit bidirectional text isolation (`<bdi dir="ltr">`).
+- Surrounding Persian prose MUST NOT be placed inside `dir="ltr"` wrappers (inverted BiDi boundary anti-pattern); bidirectional isolation MUST apply strictly to alphanumeric tokens.
 - All user phone inputs MUST be processed through `normalizeIranianPhone`, converting Persian (`۰-۹`) and Arabic numerals to ASCII, stripping country code prefixes (`+98`, `0098`), hyphens, and whitespace into standard 11-digit mobile strings (`09xxxxxxxxx`) without rejecting valid customer inputs.
 
 *Rationale*: Eliminates directional punctuation flipping, prevents BiDi layout corruptions in Persian text, and removes checkout friction for non-technical users.
@@ -60,13 +66,15 @@ All engineering calculation engines—specifically the Cable Sizing & Voltage Dr
 
 ## Technology Stack & Architectural Standards
 The platform architecture is standardized on the following verified stack:
-- **Frontend Framework**: Next.js 15 (App Router v15.5.24) using React 19 Server Components (RSC) by default and Client Components (`'use client'`) where interactivity is required.
+- **Frontend Framework**: Next.js 15 (App Router v15.5.24) using React 19 Server Components (RSC) by default and Client Components (`'use client'`) where interactivity is required. Customer accounts (`/account`) use direct Prisma prefetching in Server Components for zero network watermarking.
 - **UI Library & Styling**: React 19 and Tailwind CSS 3.4 with custom RTL plugins, Lucide React icons, and a light/dark theme system engineered for zero hydration flash.
 - **Typography**: Vazirmatn Persian font family with Latin and Persian glyph subsets.
 - **Database & Relational ORM**: PostgreSQL 16 managed through Prisma ORM (v6.19.3) with connection pooling (`pool_limit=10`), indexed queries, and atomic transactions.
 - **Authentication & Authorization**: NextAuth.js 4 with JWT sessions, 5-digit SMS OTP verification, and Role-Based Access Control (`CUSTOMER` vs `ADMIN`).
+- **Multi-Admin Governance**: Role-Based Access Control partitioning secondary admin privileges across Catalog, Orders, Repairs, and Reviews, with automatic `tokenVersion` increment on suspension for immediate global session invalidation.
+- **Media Management & Isomorphic Utilities**: File uploads and media resolution MUST use isomorphic utilities (`src/lib/utils/media.ts`) without Node.js `path` dependencies in browser client components, exporting canonical predicates (`isImageMedia`, `isPdfMedia`, `isExcelMedia`, `isDocMedia`) and `uploadMediaFile`.
 - **SEO & Structured Metadata**: Next.js Metadata API, automated `sitemap.xml` and `robots.txt`, and Schema.org JSON-LD schemas (`Product`, `BreadcrumbList`, `BlogPosting`, `LocalBusiness`).
-- **Repair Ticket Lifecycle**: Standardized tracking format (`REP-YYMMDD-XXXX`) traversing 6 stages: `SUBMITTED` ➔ `RECEIVED` ➔ `INSPECTING` ➔ `COST_ESTIMATED` ➔ `REPAIRING` ➔ `READY` ➔ `DELIVERED`.
+- **Repair Ticket Lifecycle**: Standardized tracking format (`REP-YYMMDD-XXXX`) traversing 7 stages: `SUBMITTED` ➔ `RECEIVED` ➔ `INSPECTING` ➔ `COST_ESTIMATED` ➔ `REPAIRING` ➔ `READY` ➔ `DELIVERED` (with optional `CANCELLED`).
 
 ## Logging
 The platform MUST enforce structured, level-appropriate logging across all server routes, background jobs, and operational workflows:
@@ -79,7 +87,7 @@ The platform MUST enforce structured, level-appropriate logging across all serve
 ## Quality Gates, Admin Governance & Operational Resilience
 Development, deployments, and administrative management MUST adhere to strict verification gates:
 - **Zero TypeScript Errors**: All source code MUST compile cleanly with zero TypeScript errors (`tsc --noEmit`) prior to commit.
-- **Full Production Route Build**: All 55 application routes MUST compile cleanly during `next build`, maintaining static pre-rendering (SSG/ISR) for blog posts and catalog pages.
+- **Full Production Route Build**: All 83 application routes MUST compile cleanly during `next build`, maintaining static pre-rendering (SSG/ISR) for blog posts and catalog pages.
 - **Database Schema Parity**: Prisma schemas MUST remain synchronized with PostgreSQL (`prisma db push` / `prisma generate`).
 - **Executive Administration (`/admin`)**: Centralized dashboard monitoring gross revenue, order volume, low-stock threshold alerts (≤ 5 units), and active repair tickets.
 - **Disaster Recovery & Backups (`/admin/backup`)**: Single-click manual PostgreSQL backup dumps and documented restore procedures.
@@ -96,4 +104,4 @@ This Constitution is the supreme architectural, engineering, and quality authori
   - **PATCH**: Non-semantic clarifications, wording improvements, typo corrections, or minor documentation refinements.
 - **Compliance & Workflow**: All Spec Kit workflows (including `/speckit-specify`, `/speckit-plan`, `/speckit-tasks`, and `/speckit-implement`) MUST validate work against the principles, invariants, and quality gates defined in this Constitution.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-14
+**Version**: 1.2.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-27

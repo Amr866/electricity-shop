@@ -305,6 +305,21 @@
 
 ---
 
+## Phase 20: Customer Account Latency, Maintenance Mode & Code Judo Stabilization (Priority: P1)
+
+**Goal**: Eliminate client-side loading latency on customer accounts via direct Prisma Server Component prefetching, provide SEO-safe 503 maintenance mode, make media utilities universal/isomorphic, and enforce bidirectional formatting standards.
+
+**Independent Test**: Navigate to `/account` with an authenticated user (verify zero network watermarking or delay in loading orders/repairs/wishlist); set `MAINTENANCE_MODE=true` (verify anonymous users receive 503 while `/admin` and whitelisted routes remain accessible); run `tests/unit/codeJudoDesign.test.ts`.
+
+- [x] T084 [P] Refactor `src/app/account/page.tsx` into an async React Server Component with direct Prisma parallel prefetching (`prisma.order.findMany`, `prisma.repairTicket.findMany`) and pass hydrated records to `src/app/account/CustomerAccountClient.tsx`.
+- [x] T085 Implement instant user cache with session loading skeleton in `src/components/layout/Header.tsx` to eliminate layout shift during NextAuth session resolution.
+- [x] T086 Implement SEO-safe Maintenance Mode in `src/middleware.ts` responding with HTTP 503 and `Retry-After: 3600` when `MAINTENANCE_MODE=true`, with automatic bypass for `ADMIN` sessions and whitelisting of `/maintenance` and `/auth/login`.
+- [x] T087 [P] Make `src/lib/utils/media.ts` universal and isomorphic by eliminating Node.js `path` dependency and exporting predicates (`isImageMedia`, `isPdfMedia`, `isExcelMedia`, `isDocMedia`) and `uploadMediaFile`.
+- [x] T088 Synchronize customer repair lifecycle with canonical `READY` (and `CANCELLED`) status and remove store owner phone number fallback from customer profile headers.
+- [x] T089 Add interactive 409 Conflict force-retry prompt to `src/app/admin/uploads/UploadsAdminClient.tsx`, wire structured `logger` into `src/app/api/admin/upload/route.ts`, and create test suite `tests/unit/codeJudoDesign.test.ts`.
+
+---
+
 ## Dependencies & Execution Order
 
 ```mermaid

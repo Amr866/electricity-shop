@@ -10,7 +10,9 @@ web
 
 - **Primary Users**: Electricians, technical contractors, and building wiring project leads in Isfahan and Najafabad needing reliable, verified components, official manufacturer price lists, fast BOM estimations, and Chapter 13 regulatory calculations.
 - **Secondary Users**: Homeowners and retail consumers seeking repair and servicing for domestic electrical appliances (cooler motors, fans, heaters, water pumps) or retail hardware with fast local delivery/in-store pickup.
-- **Administrative Users**: Shiasi workshop technicians and sales desk managers logging diagnostics, managing inventory, processing official corporate tax invoices, and triaging BOM quotes.
+- **Administrative Users**:
+  - *SuperAdmin / Root Owner*: Full system governance, staff password rotation, module assignment, and disaster recovery.
+  - *Department Admins*: Sales desk managers and workshop technicians with scoped permissions across Catalog, Orders, Repairs, or Reviews.
 
 ## Product Purpose
 
@@ -30,10 +32,13 @@ The only regional electrical platform in Isfahan/Najafabad combining statutory C
 
 - Next.js 15 App Router + React 19 + Tailwind CSS RTL with Vazirmatn Persian typography.
 - PostgreSQL 16 via Prisma ORM with connection pooling.
+- Instant customer account loading (`/account`) via React Server Component parallel prefetching.
 - Server-authoritative calculations with 5% (>=10 units) and 10% (>=50 units) tiered wholesale discounts.
 - 8-hour inventory reservation window for Bank Card-to-Card payments.
 - Chapter 13 cable calculation engine adhering strictly to Delta V% < 3.0% with pure copper ladder (1.5mm2 to 120mm2).
-- 7-stage repair ticket lifecycle with 1-click customer approval.
+- 7-stage repair ticket lifecycle (`SUBMITTED` -> `RECEIVED` -> `INSPECTING` -> `COST_ESTIMATED` -> `REPAIRING` -> `READY` -> `DELIVERED`).
+- SEO-safe Maintenance Mode (`MAINTENANCE_MODE=true`) returning HTTP 503 with workshop contact access.
+- Multi-Admin Governance with fine-grained module privileges and immediate session termination on suspension.
 
 ## Brand Commitments
 
@@ -51,6 +56,6 @@ The only regional electrical platform in Isfahan/Najafabad combining statutory C
 
 ## Accessibility & Inclusion
 
-- Native Persian Right-to-Left (RTL) layout with explicit bidirectional text isolation (<bdi dir=ltr>) on tracking numbers and codes.
-- Tabular numerals (tabular-nums) to prevent layout shifts.
-- Mobile-first responsive touch targets (minimum 44x44px).
+- Native Persian Right-to-Left (RTL) layout with explicit bidirectional text isolation (`<bdi dir="ltr">`) on tracking numbers, codes, and telephone numbers.
+- Tabular numerals (`tabular-nums`) to prevent layout shifts.
+- Mobile-first responsive touch targets (minimum 44×44px).

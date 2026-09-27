@@ -40,39 +40,40 @@ spacing:
 A distinct, grounded industrial visual identity reflecting physical copper windings, electric current, and the regional craftsmanship of Isfahan and Najafabad. Built for high legibility on mobile networks in field conditions, fast task completion, and zero layout shift.
 
 ## Colors
-- **Electric Amber Primary (#f59e0b / rand-500)**: Core brand accent, high-visibility actions, and voltage status.
-- **Pure Copper Accent (#ea580c / copper-600)**: Highlighting conductors, copper purity, and physical rewinding workshop authority.
-- **Persian Azure & Turquoise (#0284c7 & #14b8a6)**: Reflecting Isfahan tile heritage and trusted water pump/cooling services.
-- **Industrial Slate Neutral (#020617 / #0f172a dark, #f8fafc light)**: High contrast backgrounds with 4.5:1+ text contrast ratio.
+- **Electric Amber Primary (`#f59e0b` / `amber-500`)**: Core brand accent, high-visibility actions, and voltage status.
+- **Pure Copper Accent (`#ea580c` / `orange-600`)**: Highlighting conductors, copper purity, and physical rewinding workshop authority.
+- **Persian Azure & Turquoise (`#0284c7` & `#14b8a6`)**: Reflecting Isfahan tile heritage and trusted water pump/cooling services.
+- **Industrial Slate Neutral (`#020617` / `#0f172a` dark, `#f8fafc` light)**: High contrast backgrounds with 4.5:1+ text contrast ratio.
 
 ## Typography
 - **Primary Typeface**: Vazirmatn Persian font family across all weights (400, 500, 600, 700, 800, 900).
-- **Tabular Numerals**: Enforced via 	abular-nums on all currency, prices, cable gauges, and tracking codes.
-- **BiDi Isolation**: Mandatory <bdi dir=ltr> wrapper on all alphanumeric identifiers, phone numbers, and coordinates.
+- **Tabular Numerals**: Enforced via `tabular-nums` on all currency, prices, cable gauges, and tracking codes.
+- **BiDi Isolation**: Mandatory `<bdi dir="ltr">` wrapper on all alphanumeric identifiers, phone numbers, and coordinates. Persian surrounding text MUST remain in RTL context.
 
 ## Layout
-- **Directionality**: Pure RTL (dir=rtl).
+- **Directionality**: Pure RTL (`dir="rtl"`).
 - **Mobile-First Responsive**: Zero horizontal scrollbars. Seamless scaling at 375px, 768px, 1024px, and 1440px.
-- **Ergonomic Touch Targets**: Minimum 44x44px clickable area on mobile bottom nav, buttons, and form selectors.
+- **Ergonomic Touch Targets**: Minimum 44×44px clickable area on mobile bottom nav, buttons, and form selectors.
 
 ## Elevation & Depth
 - **Surface Elevation**: Subtle 1px borders with dark/light mode parity.
-- **Electric Glow**: Specialized box shadows (shadow-electric-glow, shadow-copper-glow) reserved for key actions and active state indicators.
+- **Electric Glow**: Specialized box shadows (`shadow-amber-500/20`, `shadow-emerald-500/20`) reserved for key actions and active state indicators.
 
 ## Shapes
-- **Corner Radii**: 12px (
-ounded-xl) for cards and inputs; 16px (
-ounded-2xl) for major containers and dialogs.
+- **Corner Radii**: 12px (`rounded-xl`) for cards and inputs; 16px to 24px (`rounded-2xl` / `rounded-3xl`) for major containers and dialogs.
 
 ## Components
-- **LiveSearchBar**: Global / keyboard shortcut, real-time dropdown, recent query history.
+- **LiveSearchBar**: Global keyboard shortcut, real-time dropdown, recent query history.
 - **ElectricalCableCalculator**: Interactive slider inputs, compliance badges, matching MCB card, and 1-click cart bundling.
-- **RepairTracker**: 7-stage interactive timeline with 1-click customer cost approval buttons.
-- **AdminClientTables**: Interactive client-side triage tables with search, filter, and quick communication links.
+- **RepairTracker**: 7-stage interactive timeline (`SUBMITTED` ➔ `RECEIVED` ➔ `INSPECTING` ➔ `COST_ESTIMATED` ➔ `REPAIRING` ➔ `READY` ➔ `DELIVERED`) with 1-click customer cost approval buttons.
+- **MediaPickerModal**: Modal dialog with search filter, folder tabs, keyboard dismiss (`Escape`), active outline indicator, and strict `isImageMedia` thumbnail safety.
+- **CustomerAccountTabs**: Zero-latency Server Component prefetching, tabbed history (Orders, Repairs, Wishlist, Corporate Invoice with LocalStorage synchronization).
+- **AdminClientTables**: Interactive client-side triage tables with search, filter, pagination (24/50), 409 conflict force-retries, and communication links.
 
 ## Do's and Don'ts
-- **DO**: Use Lucide SVG vector icons exclusively with ria-hidden=true or ria-label.
-- **DO**: Wrap all tracking codes (REP-..., SH-...) in <bdi dir=ltr>.
-- **DON'T**: Use emojis as UI icons.
-- **DON'T**: Use naked outline-none without visible focus rings (ocus-visible:ring-2).
-- **DON'T**: Animate layout properties (width, height, margin); animate opacity and 	ransform only.
+- **DO**: Use Lucide SVG vector icons exclusively with `aria-hidden="true"` or `aria-label`.
+- **DO**: Wrap all telephone numbers, tracking codes (`REP-...`, `SH-...`), and filenames in `<bdi dir="ltr">`.
+- **DON'T**: Invert BiDi boundaries by wrapping Persian sentences or labels in `dir="ltr"`.
+- **DON'T**: Use emojis as primary UI icons.
+- **DON'T**: Use naked `outline-none` without visible focus rings (`focus-visible:ring-2`).
+- **DON'T**: Animate layout properties (`width`, `height`, `margin`); animate `opacity` and `transform` only.

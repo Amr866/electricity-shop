@@ -24,6 +24,6 @@
 - [x] T007 Run quality gates (`npm run typecheck`, `npm run test:integration`, and `npm run build`)
 
 ### Phase 5: Convergence
-- [ ] T008 Add client-side pagination (24 items in Grid, 50 rows in Table) with responsive page controls to `src/app/admin/uploads/UploadsAdminClient.tsx` per FR-002 (partial)
-- [ ] T009 Add "articles" folder filter tab and article badge to `src/app/admin/uploads/UploadsAdminClient.tsx` per FR-001, FR-002 (partial)
-- [ ] T010 Wrap all alphanumeric filenames, URLs, and byte counters in `<bdi dir="ltr">` in `src/app/admin/uploads/UploadsAdminClient.tsx` per Constitution IV (partial)
+- [x] T008 Add client-side pagination (24 items in Grid, 50 rows in Table) with responsive page controls to `src/app/admin/uploads/UploadsAdminClient.tsx` per FR-002
+- [x] T009 Add "articles" folder filter tab and article badge to `src/app/admin/uploads/UploadsAdminClient.tsx` per FR-001, FR-002
+- [x] T010 Wrap all alphanumeric filenames, URLs, and byte counters in `<bdi dir="ltr">` in `src/app/admin/uploads/UploadsAdminClient.tsx` per Constitution IV

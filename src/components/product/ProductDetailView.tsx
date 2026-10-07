@@ -69,205 +69,25 @@ import {
   QrCode,
 } from "lucide-react";
 
-export interface ProductSpecItem {
-  id?: string;
-  label?: string;
-  key?: string;
-  value: string;
-  group?: string | null;
-}
+export type {
+  ProductSpecItem,
+  ProductImageItem,
+  ProductDetailData,
+  ProductReviewItem,
+  TerminalPin,
+} from "./productDetailHelpers";
 
-import type { ProductReviewItem } from "./ProductReviewsTab";
-export type { ProductReviewItem };
-
-export interface ProductImageItem {
-  id?: string;
-  url: string;
-  isPrimary?: boolean;
-  alt?: string | null;
-}
-
-export interface ProductDetailData {
-  id: string;
-  name: string;
-  slug: string;
-  sku?: string | null;
-  price: number;
-  originalPrice?: number | null;
-  discountPercent?: number;
-  stock: number;
-  isFeatured?: boolean;
-  isBestSeller?: boolean;
-  isIsfahanFast?: boolean;
-  brand?: string | null;
-  madeIn?: string | null;
-  warranty?: string | null;
-  rating?: number;
-  reviewCount?: number;
-  shortDesc?: string | null;
-  description?: string | null;
-  category?: { name: string; slug: string };
-  images?: ProductImageItem[];
-  specs?: ProductSpecItem[];
-  reviews?: ProductReviewItem[];
-  priceUnit?: string | null;
-}
+import {
+  getProductTechnicalSpecs,
+  getCategoryWiringSchematic,
+  type ProductDetailData,
+} from "./productDetailHelpers";
+import { ProductPrintDatasheet } from "./ProductPrintDatasheet";
+import { ProductStickyBar } from "./ProductStickyBar";
+import { ProductDeliveryTab } from "./ProductDeliveryTab";
 
 interface ProductDetailProps {
   product: ProductDetailData;
-}
-
-interface TerminalPin {
-  color: string;
-  colorName: string;
-  label: string;
-  functionDesc: string;
-}
-
-// 1. Universal Category-Aware Specifications Generator (Applies to 100% current & future products)
-function getProductTechnicalSpecs(product: ProductDetailData): ProductSpecItem[] {
-  if (product.specs && product.specs.length > 0) {
-    return product.specs;
-  }
-
-  const categorySlug = product.category?.slug || "";
-  const brandName = product.brand || "فروشگاه شیاسی";
-  const madeIn = product.madeIn || "ایران";
-  const warranty = product.warranty || "ضمانت سلامت فیزیکی و اصالت کالا";
-
-  if (categorySlug.includes("cooling") || categorySlug.includes("fan") || categorySlug.includes("appliance")) {
-    return [
-      { label: "نوع محصول", value: product.name },
-      { label: "برند و سازنده", value: brandName },
-      { label: "کشور سازنده", value: madeIn },
-      { label: "ولتاژ کاری استاندارد", value: "۲۲۰ ولت متناوب شهری (AC - 50Hz)" },
-      { label: "نوع سیم‌پیچی موتور", value: "۱۰۰٪ مس خالص با بازدهی بالا" },
-      { label: "سطح استاندارد ایمنی", value: "دارای نشان استاندارد ملی ایران و CE اروپا" },
-      { label: "مدت زمان گارانتی", value: warranty },
-      { label: "وضعیت اصالت قطعه", value: "اورجینال شرکتی با تاییدیه کارگاه فنی شیاسی" },
-    ];
-  }
-
-  if (categorySlug.includes("wiring") || categorySlug.includes("cable")) {
-    return [
-      { label: "نوع کابل / سیم", value: product.name },
-      { label: "برند کارخانه", value: brandName },
-      { label: "جنس هادی", value: "مس آنیل شده کلاس ۵ (تمام مس خالص)" },
-      { label: "جنس عایق و روکش", value: "PVC مقاوم در برابر حرارت و سایش" },
-      { label: "ولتاژ نامی", value: "۴۵۰/۷۵۰ ولت" },
-      { label: "استاندارد مرجع", value: "ISIRI 607-02 و IEC 60227" },
-      { label: "تاییدیه اصالت", value: "ضمانت خلوص مس و تایید ناظر تاسیسات" },
-    ];
-  }
-
-  if (categorySlug.includes("lighting")) {
-    return [
-      { label: "نوع منبع نور", value: "LED با راندمان نوری فوق‌کم‌مصرف A+" },
-      { label: "برند و شرکت سازنده", value: brandName },
-      { label: "ولتاژ ورودی", value: "۱۸۰ الی ۲۴۰ ولت" },
-      { label: "طول عمر مفید", value: "بیش از ۲۵,۰۰۰ ساعت کارکرد مداوم" },
-      { label: "شاخص نمود رنگ (CRI)", value: "بالای ۸۰ (طبیعی‌ترین طیف نوری)" },
-      { label: "شرایط گارانتی", value: warranty },
-    ];
-  }
-
-  return [
-    { label: "نام و مدل کالا", value: product.name },
-    { label: "کد شناسایی فنی (SKU)", value: product.sku || product.id },
-    { label: "برند تولیدکننده", value: brandName },
-    { label: "کشور سازنده", value: madeIn },
-    { label: "گارانتی و خدمات پس از فروش", value: warranty },
-    { label: "اصالت کالا", value: "ضمانت اصالت شرکتی توسط فروشگاه شیاسی نجف‌آباد" },
-    { label: "تست سلامت کارکرد", value: "دارای مهلت تست و عیب‌یابی حضوری در کارگاه" },
-  ];
-}
-
-// 2. Category Wiring & Schematics Generator
-function getCategoryWiringSchematic(product: ProductDetailData): {
-  title: string;
-  diagramSubtitle: string;
-  terminals: TerminalPin[];
-} {
-  const categorySlug = product.category?.slug || "";
-
-  if (categorySlug.includes("cooling") || categorySlug.includes("fan")) {
-    return {
-      title: "دیاگرام شماتیک اتصالات الکتروموتور و پنکه (سیم‌بندی ۴ و ۵ رشته)",
-      diagramSubtitle: "نقشه سیم‌بندی استاندارد ترمینال‌های دور تند، کند، نول و خازن راه‌انداز",
-      terminals: [
-        {
-          color: "bg-slate-900 dark:bg-slate-300 text-white dark:text-slate-950 border-slate-700",
-          colorName: "مشکی (Black)",
-          label: "ترمینال COM (نول مشترک)",
-          functionDesc: "اتصال مستقیم به نول شبکه برق (N)",
-        },
-        {
-          color: "bg-rose-600 text-white border-rose-700",
-          colorName: "قرمز (Red)",
-          label: "ترمینال HI (دور تند)",
-          functionDesc: "اتصال به کلید وضعیت دور تند (High Speed)",
-        },
-        {
-          color: "bg-amber-600 text-white border-amber-700",
-          colorName: "قهوه‌ای (Brown)",
-          label: "ترمینال MED (دور متوسط)",
-          functionDesc: "اتصال به کلید وضعیت دور متوسط (در مدل‌های ۳ سرعته)",
-        },
-        {
-          color: "bg-blue-600 text-white border-blue-700",
-          colorName: "آبی / زرد (Blue)",
-          label: "ترمینال LOW / CAP (دور کند و خازن)",
-          functionDesc: "اتصال به دور کند و سر خازن روغنی راه‌انداز",
-        },
-      ],
-    };
-  }
-
-  if (categorySlug.includes("wiring") || categorySlug.includes("cable")) {
-    return {
-      title: "راهنمای رنگ‌بندی استاندارد سیم‌ها و کابل‌های ساختمانی (IEC 60227)",
-      diagramSubtitle: "کد رنگ‌بندی فاز، نول و ارت مطابق با مقررات ملی ساختمان مبحث ۱۳",
-      terminals: [
-        {
-          color: "bg-amber-700 text-white border-amber-800",
-          colorName: "قهوه‌ای / قرمز",
-          label: "سیم فاز (Phase - L)",
-          functionDesc: "حامل جریان برق متناوب اصلی ۲۲۰ ولت",
-        },
-        {
-          color: "bg-blue-600 text-white border-blue-700",
-          colorName: "آبی روشن",
-          label: "سیم نول (Neutral - N)",
-          functionDesc: "مسیر برگشت جریان با پتانسیل صفر",
-        },
-        {
-          color: "bg-emerald-600 text-white border-emerald-700",
-          colorName: "زرد با خط سبز",
-          label: "سیم ارت حفاظتی (Earth - PE)",
-          functionDesc: "اتصال ایمنی به چاه ارت و حفاظت در برابر برق‌گرفتگی",
-        },
-      ],
-    };
-  }
-
-  return {
-    title: "راهنمای نصب، سربندی و اتصالات ایمن قطعه الکتریکی",
-    diagramSubtitle: "دیاگرام اتصالات استاندارد ترمینال با رعایت موازین ایمنی",
-    terminals: [
-      {
-        color: "bg-rose-600 text-white border-rose-700",
-        colorName: "قرمز / قهوه‌ای",
-        label: "ورودی فاز (L)",
-        functionDesc: "اتصال به فاز شبکه از طریق فیوز محافظتی",
-      },
-      {
-        color: "bg-blue-600 text-white border-blue-700",
-        colorName: "آبی",
-        label: "ورودی نول (N)",
-        functionDesc: "اتصال به نول پایدار تابلوی برق",
-      },
-    ],
-  };
 }
 
 export function ProductDetailView({ product }: ProductDetailProps) {
@@ -372,75 +192,13 @@ export function ProductDetailView({ product }: ProductDetailProps) {
       {/* ========================================================================= */}
       {/* 0. DEDICATED OFFICIAL PRINT-ONLY ENGINEERING DATASHEET (Visible only on print) */}
       {/* ========================================================================= */}
-      <div className="hidden print:block bg-white text-black p-8 font-sans space-y-6" dir="rtl">
-        {/* Printable Header */}
-        <div className="border-b-2 border-black pb-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-black">فروشگاه و مرکز خدمات فنی مهندسی شیاسی نجف‌آباد</h1>
-            <p className="text-xs text-gray-700 mt-1">
-              شناسنامه فنی و برگه مشخصات مهندسی کالا (Datasheet) • تاسیس ۱۳۷۸
-            </p>
-          </div>
-          <div className="text-left text-xs font-mono">
-            <div>تاریخ صدور: {new Date().toLocaleDateString("fa-IR")}</div>
-            <div>تلفن کارگاه: <bdi dir="ltr">۰۳۱-۴۲۶۲۶۱۱۶</bdi></div>
-            <div>همراه فنی: <bdi dir="ltr">۰۹۱۳-۶۲۶-۰۰۷۲</bdi></div>
-          </div>
-        </div>
-
-        {/* Product Identity */}
-        <div className="grid grid-cols-3 gap-6 items-center border border-gray-300 rounded-xl p-4">
-          <div className="col-span-2 space-y-2">
-            <h2 className="text-base font-black">{product.name}</h2>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div><strong>کد شناسایی (SKU):</strong> {product.sku || product.id}</div>
-              <div><strong>برند سازنده:</strong> {product.brand || "فروشگاه شیاسی"}</div>
-              <div><strong>دسته‌بندی:</strong> {product.category?.name}</div>
-              <div><strong>کشور سازنده:</strong> {product.madeIn || "ایران"}</div>
-              <div><strong>وضعیت گارانتی:</strong> {product.warranty || "اصالت و سلامت فیزیکی"}</div>
-              <div><strong>قیمت رسمی:</strong> {effectiveUnitPrice.toLocaleString("fa-IR")} تومان</div>
-            </div>
-          </div>
-          <div className="col-span-1 text-center">
-            <div className="w-28 h-28 mx-auto relative border border-gray-200 rounded-lg p-2">
-              <img src={selectedImage} alt={product.name} className="w-full h-full object-contain" />
-            </div>
-          </div>
-        </div>
-
-        {/* Technical Specs Table */}
-        <div className="space-y-2">
-          <h3 className="text-sm font-black border-b border-gray-400 pb-1">جدول مشخصات و استانداردهای فنی</h3>
-          <table className="w-full text-xs border-collapse border border-gray-300">
-            <tbody>
-              {technicalSpecs.map((s, idx) => (
-                <tr key={idx} className={idx % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                  <td className="border border-gray-300 p-2 font-bold w-1/3">{s.label || s.key}</td>
-                  <td className="border border-gray-300 p-2">{s.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Wiring Diagram Pins */}
-        <div className="space-y-2">
-          <h3 className="text-sm font-black border-b border-gray-400 pb-1">{wiringSchematic.title}</h3>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            {wiringSchematic.terminals.map((t, idx) => (
-              <div key={idx} className="border border-gray-300 p-2 rounded">
-                <strong>{t.colorName} ({t.label}):</strong> {t.functionDesc}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Workshop Seal & Address */}
-        <div className="border-t border-gray-300 pt-4 flex items-center justify-between text-xs text-gray-600">
-          <div>آدرس: اصفهان، نجف‌آباد، ۱۵ خرداد مرکزی، نبش بن‌بست نرگس (فروشگاه شیاسی)</div>
-          <div className="font-bold">مهر و تاییدیه اصالت کارگاه فنی شیاسی</div>
-        </div>
-      </div>
+      <ProductPrintDatasheet
+        product={product}
+        selectedImage={selectedImage}
+        effectiveUnitPrice={effectiveUnitPrice}
+        technicalSpecs={technicalSpecs}
+        wiringSchematic={wiringSchematic}
+      />
 
       {/* ========================================================================= */}
       {/* 1. SCREEN VIEW: Main Product Overview Section (Interactive UI) */}
@@ -950,70 +708,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
           )}
 
           {/* Tab 5: 3-Step Illustrated Delivery Timeline */}
-          {activeTab === "isfahan" && (
-            <div id="panel-isfahan" role="tabpanel" aria-labelledby="tab-isfahan" className="space-y-5 max-w-4xl animate-in fade-in zoom-in-98 duration-200">
-              <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-extrabold text-sm sm:text-base">
-                <Truck className="w-5 h-5" />
-                <span>روش‌ها و زمان‌بندی ارسال سفارشات در نجف‌آباد، اصفهان و کشور</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Step 1: Snapp Fast Delivery */}
-                <div className="group bg-slate-50 dark:bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2 hover:border-emerald-500/60 transition-all shadow-2xs hover:-translate-y-1">
-                  <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                      <Truck className="w-4.5 h-4.5" />
-                    </div>
-                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700">
-                      زیر ۲ ساعت
-                    </span>
-                  </div>
-                  <strong className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                    ارسال فوری با اسنپ‌باکس
-                  </strong>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    تحویل سریع در کلیه مناطق نجف‌آباد، ویلاشهر، گلدشت، یزدانشهر و اصفهان در همان روز.
-                  </p>
-                </div>
-
-                {/* Step 2: Store Pickup */}
-                <div className="group bg-slate-50 dark:bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2 hover:border-amber-500/60 transition-all shadow-2xs hover:-translate-y-1">
-                  <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
-                      <Navigation className="w-4.5 h-4.5" />
-                    </div>
-                    <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-700">
-                      تست حضوری
-                    </span>
-                  </div>
-                  <strong className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                    تحویل حضوری در فروشگاه
-                  </strong>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    امکان مراجعه مستقیم به شعبه مرکزی نجف‌آباد (۱۵ خرداد مرکزی، نبش بن‌بست نرگس) با امکان تست سلامت کالا قبل از تحویل.
-                  </p>
-                </div>
-
-                {/* Step 3: Nationwide Tipax */}
-                <div className="group bg-slate-50 dark:bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2 hover:border-blue-500/60 transition-all shadow-2xs hover:-translate-y-1">
-                  <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
-                      <Package className="w-4.5 h-4.5" />
-                    </div>
-                    <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 bg-blue-100 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-300 dark:border-blue-700">
-                      ۲۴ تا ۴۸ ساعت
-                    </span>
-                  </div>
-                  <strong className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    ارسال تیپاکس و پست پیشتاز
-                  </strong>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    ارسال بسته‌بندی ایمن و استاندارد به سراسر کشور با بیمه کامل و کد رهگیری مرسوله.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {activeTab === "isfahan" && <ProductDeliveryTab />}
 
         </div>
       </div>
@@ -1021,54 +716,14 @@ export function ProductDetailView({ product }: ProductDetailProps) {
       {/* ========================================================================= */}
       {/* 3. Mobile Sticky Bottom Buy Bar (Only visible when scrolled past main buy box) */}
       {/* ========================================================================= */}
-      <div
-        className={`print:hidden sm:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 border-t border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-between gap-3 transition-all duration-300 ${
-          showStickyBar
-            ? "translate-y-0 opacity-100 pointer-events-auto"
-            : "translate-y-full opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="flex flex-col">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">قیمت واحد:</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-sm font-black text-slate-950 dark:text-amber-400 font-mono">
-              {formatToman(effectiveUnitPrice)}
-            </span>
-            {product.priceUnit && (
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
-                / {product.priceUnit.replace(/^\//, "")}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={isOutOfStock}
-          className={`flex-1 h-10 px-4 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
-            isOutOfStock
-              ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
-              : addedToCart
-              ? "bg-emerald-600 text-white"
-              : "bg-amber-500 text-slate-950"
-          }`}
-        >
-          {isOutOfStock ? (
-            <span>اتمام موجودی</span>
-          ) : addedToCart ? (
-            <>
-              <Check className="w-3.5 h-3.5" />
-              <span>اضافه شد</span>
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="w-3.5 h-3.5" />
-              <span>افزودن به سبد</span>
-            </>
-          )}
-        </button>
-      </div>
+      <ProductStickyBar
+        product={product}
+        effectiveUnitPrice={effectiveUnitPrice}
+        showStickyBar={showStickyBar}
+        isOutOfStock={isOutOfStock}
+        addedToCart={addedToCart}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   );
 }

@@ -428,19 +428,19 @@ export function ElectricalCableCalculator() {
 
           {/* Voltage drop validation badge with Dynamic Gauge Morph */}
           <div
-            className={`flex items-center justify-between text-[11px] px-3.5 py-2.5 rounded-xl border transition-all duration-500 ${
+            className={`flex items-center justify-between text-[11px] px-3.5 py-2.5 rounded-xl border transition-all duration-500 font-medium ${
               isDropAcceptable
-                ? "bg-emerald-500/10 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-900 dark:text-emerald-300"
-                : "bg-amber-500/15 dark:bg-amber-950/40 border-amber-500/40 text-amber-900 dark:text-amber-300"
+                ? "bg-emerald-100 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800 text-emerald-950 dark:text-emerald-100"
+                : "bg-amber-100 dark:bg-amber-950/60 border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-100"
             }`}
           >
             <div className="flex items-center gap-2">
               {isDropAcceptable ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-800 dark:text-emerald-300 shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 animate-pulse" />
+                <AlertTriangle className="w-4 h-4 text-amber-800 dark:text-amber-300 shrink-0 animate-pulse" />
               )}
-              <span className="font-medium leading-relaxed">
+              <span className="leading-relaxed">
                 {isDropAcceptable
                   ? `سیم محاسبه‌شده ۱۰۰٪ تمام مس با افت ولتاژ مجاز (${voltageDropPercent.toFixed(1)}٪) در مسافت ${toPersianDigits(distanceMeters)} متر است.`
                   : `افت ولتاژ (${voltageDropPercent.toFixed(1)}٪) بیش از حد مجاز ۳٪ بود؛ سایز سیم جهت حفاظت مصرف‌کننده ارتقا یافت.`}

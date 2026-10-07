@@ -77,3 +77,6 @@ worktrees/**
 # temporary scratch diffs
 .scratch/
 
+# knowledge graph artifacts
+graphify-out/
+

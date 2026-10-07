@@ -1,15 +1,12 @@
-﻿import { calculateTieredUnitPrice as engineCalculateTieredUnitPrice } from "../domain/checkoutEngine";
+import { calculateTieredUnitPrice as engineCalculateTieredUnitPrice } from "../domain/checkoutEngine";
 
 // Convert Persian and Arabic digits to ASCII English digits
 export function toAsciiDigits(str: string | undefined | null): string {
   if (!str) return "";
-  const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-  const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-  let res = str.toString();
-  for (let i = 0; i < 10; i++) {
-    res = res.replaceAll(persianDigits[i], i.toString()).replaceAll(arabicDigits[i], i.toString());
-  }
-  return res;
+  return str
+    .toString()
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632));
 }
 
 export const toEnglishDigits = toAsciiDigits;

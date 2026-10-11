@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Zap, SunMedium, Cpu, ArrowLeft, Fan } from "lucide-react";
 import { toPersianDigits } from "@/lib/utils";
 
@@ -126,10 +127,12 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
               className={`group relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-3.5 sm:p-4 bg-slate-850 dark:bg-slate-900 ${theme.hoverBorder} ${theme.hoverShadow}`}
             >
               {/* Background Photo */}
-              <img
+              <Image
                 src={bgImage}
                 alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                fill
+                sizes="(max-width: 640px) 50vw, 25vw"
+                className="object-cover group-hover:scale-108 transition-transform duration-500"
               />
               {/* Gradient Overlay for crisp text legibility in both themes */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-slate-950/20 dark:from-slate-950 dark:via-slate-950/85 dark:to-slate-950/40" />

@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
@@ -234,14 +235,15 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                 <Link
                   href={`/products/${deal.slug}`}
                   prefetch={false}
-                  className="aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs"
+                  className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs"
                 >
-                  <img
+                  <Image
                     src={primaryImg}
                     alt={deal.name}
+                    fill
+                    sizes="(max-width: 640px) 150px, 215px"
+                    className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500 ease-out"
                   />
                 </Link>
 

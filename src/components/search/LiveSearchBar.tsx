@@ -301,7 +301,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                         className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors group"
                       >
                         <img
-                          src={prod.images?.[0]?.url || "/images/products/wal_172619-fans-7995865_1920.jpg"}
+                          src={prod.images?.[0]?.url || "/uploads/products/wal_172619-fans-7995865_1920.jpg"}
                           alt={prod.name}
                           className="w-12 h-12 rounded-lg object-contain bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 shrink-0"
                         />

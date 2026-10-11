@@ -531,7 +531,7 @@ export function CustomerAccountClient({
                       className="relative aspect-square bg-slate-50 dark:bg-slate-800 rounded-2xl p-2 flex items-center justify-center overflow-hidden border border-slate-100 dark:border-slate-700/60 group"
                     >
                       <Image
-                        src={item.image || "/images/products/wal_172619-fans-7995865_1920.jpg"}
+                        src={item.image || "/uploads/products/wal_172619-fans-7995865_1920.jpg"}
                         alt={item.name}
                         fill
                         sizes="(max-width: 768px) 50vw, 25vw"

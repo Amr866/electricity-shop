@@ -98,7 +98,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
   const primaryImage =
     product.images?.find((img) => img.isPrimary)?.url ||
     product.images?.[0]?.url ||
-    "/images/products/wal_172619-fans-7995865_1920.jpg";
+    "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
   const [selectedImage, setSelectedImage] = useState(primaryImage);
   const [activeTab, setActiveTab] = useState<"specs" | "wiring" | "desc" | "reviews" | "isfahan">("specs");

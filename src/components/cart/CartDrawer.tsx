@@ -39,8 +39,8 @@ function DrawerItemRow({
 }) {
   const [imgError, setImgError] = useState(false);
   const displayImage = imgError
-    ? "/images/products/wal_172619-fans-7995865_1920.jpg"
-    : item.image || "/images/products/wal_172619-fans-7995865_1920.jpg";
+    ? "/uploads/products/wal_172619-fans-7995865_1920.jpg"
+    : item.image || "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
   return (
     <div

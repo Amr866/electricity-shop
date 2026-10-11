@@ -41,8 +41,8 @@ const CartItemRow = React.memo(function CartItemRow({
 }: CartItemRowProps) {
   const [imgError, setImgError] = useState(false);
   const displayImage = imgError
-    ? "/images/products/wal_172619-fans-7995865_1920.jpg"
-    : item.image || "/images/products/wal_172619-fans-7995865_1920.jpg";
+    ? "/uploads/products/wal_172619-fans-7995865_1920.jpg"
+    : item.image || "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
   return (
     <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50/50 dark:hover:bg-slate-850/50 transition-colors">

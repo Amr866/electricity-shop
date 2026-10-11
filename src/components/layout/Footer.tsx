@@ -151,37 +151,37 @@ export function Footer() {
               </h4>
               <ul className="space-y-2.5 text-xs text-slate-400 font-medium">
                 <li>
-                  <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=home-appliances-cooling-heating" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>پنکه و تهویه خانگی</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products?category=home-appliances-cooling-heating" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=home-appliances-cooling-heating" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>موتور و پمپ کولر آبی</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products?category=wiring-building" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=wiring-building" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>سیم، کابل و آنتن مس</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products?category=lighting-fixtures" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=lighting-fixtures" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>پروژکتور و روشنایی</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products?category=tools-equipment" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=tools-equipment" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>بخاری برقی و هیتر</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
                 </li>
                 <li>
-                  <Link href="/products?category=maker-diy-electronics" className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
+                  <Link href="/products?category=maker-diy-electronics" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center justify-between group py-0.5">
                     <span>بردهای الکترونیک و ماژول</span>
                     <ChevronLeft className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all text-amber-400" />
                   </Link>
@@ -196,43 +196,43 @@ export function Footer() {
               </h4>
               <ul className="space-y-2.5 text-xs text-slate-400 font-medium">
                 <li>
-                  <Link href="/repair-service" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/repair-service" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <Wrench className="w-3.5 h-3.5 shrink-0 text-cyan-400" />
                     <span>پیگیری تعمیرات کارگاه</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/bom-upload" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/bom-upload" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <FileSpreadsheet className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
                     <span>بارگذاری و استعلام BOM</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/order-tracking" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/order-tracking" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-amber-400" />
                     <span>پیگیری فاکتور و مرسوله</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/faq" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <HelpCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
                     <span>سوالات متداول مشتریان</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/blog" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <BookOpen className="w-3.5 h-3.5 shrink-0 text-amber-400" />
                     <span>مجله دانستنی‌ها و مقالات</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <Scale className="w-3.5 h-3.5 shrink-0 text-purple-400" />
                     <span>قوانین، گارانتی و حریم خصوصی</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/account" className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
+                  <Link href="/account" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <User className="w-3.5 h-3.5 shrink-0 text-blue-400" />
                     <span>حساب کاربری و سفارشات</span>
                   </Link>

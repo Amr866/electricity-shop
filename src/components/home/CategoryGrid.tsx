@@ -16,13 +16,13 @@ interface CategoryGridProps {
 
 const CATEGORY_IMAGES: Record<string, string> = {
   "home-appliances-cooling-heating":
-    "/images/products/wal_172619-fans-7995865_1920.jpg",
+    "/uploads/products/wal_172619-fans-7995865_1920.jpg",
   "wiring-building":
-    "/images/products/skdunning-wire-962753_1920.jpg",
+    "/uploads/products/skdunning-wire-962753_1920.jpg",
   "lighting-fixtures":
-    "/images/products/inspiredimages-light-bulb-1138047_1920.jpg",
+    "/uploads/products/inspiredimages-light-bulb-1138047_1920.jpg",
   "maker-diy-electronics":
-    "/images/products/close-up-circuit-reparing-tool.jpg",
+    "/uploads/products/close-up-circuit-reparing-tool.jpg",
 };
 
 const CATEGORY_THEMES: Record<string, {
@@ -100,6 +100,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
 
         <Link
           href="/categories"
+          prefetch={false}
           className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 group"
         >
           <span>مشاهده کاتالوگ جامع</span>
@@ -121,6 +122,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             <Link
               key={cat.id}
               href={`/products?category=${cat.slug}`}
+              prefetch={false}
               className={`group relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-300 h-48 sm:h-52 flex flex-col justify-between p-3.5 sm:p-4 bg-slate-850 dark:bg-slate-900 ${theme.hoverBorder} ${theme.hoverShadow}`}
             >
               {/* Background Photo */}

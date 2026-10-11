@@ -63,10 +63,10 @@ export function ProductCard({ product }: ProductCardProps) {
   const [imageError, setImageError] = useState(false);
 
   const primaryImage = imageError
-    ? "/images/products/wal_172619-fans-7995865_1920.jpg"
+    ? "/uploads/products/wal_172619-fans-7995865_1920.jpg"
     : product.images?.find((img) => img.isPrimary)?.url ||
       product.images?.[0]?.url ||
-      "/images/products/wal_172619-fans-7995865_1920.jpg";
+      "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -125,7 +125,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
 
           {/* Product Image Link */}
-          <Link href={`/products/${product.slug}`} className="relative w-full h-full block">
+          <Link href={`/products/${product.slug}`} prefetch={false} className="relative w-full h-full block">
             <Image
               src={primaryImage}
               alt={product.name}
@@ -160,7 +160,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {/* Product Title (Locked to consistent 2-line height) */}
-            <Link href={`/products/${product.slug}`} className="block">
+            <Link href={`/products/${product.slug}`} prefetch={false} className="block">
               <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-8 sm:h-10">
                 {product.name}
               </h3>

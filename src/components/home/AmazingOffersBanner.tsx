@@ -28,7 +28,7 @@ const FALLBACK_DEALS = [
     discountPercent: 10,
     rating: 4.9,
     slug: "pars-khazar-standing-fan-fsr",
-    image: "/images/products/wal_172619-fans-7995865_1920.jpg",
+    image: "/uploads/products/wal_172619-fans-7995865_1920.jpg",
   },
   {
     id: "deal-2",
@@ -40,7 +40,7 @@ const FALLBACK_DEALS = [
     discountPercent: 12,
     rating: 5.0,
     slug: "motogen-cooler-motor-34hp",
-    image: "/images/products/موتور-کولر-موتوژن-3-4.jpg",
+    image: "/uploads/products/موتور-کولر-موتوژن-3-4.jpg",
   },
   {
     id: "deal-3",
@@ -52,7 +52,7 @@ const FALLBACK_DEALS = [
     discountPercent: 12,
     rating: 4.8,
     slug: "electrogen-water-pump-alborz",
-    image: "/images/products/adonyig-machine-3098797_1920.jpg",
+    image: "/uploads/products/adonyig-machine-3098797_1920.jpg",
   },
   {
     id: "deal-4",
@@ -64,7 +64,7 @@ const FALLBACK_DEALS = [
     discountPercent: 15,
     rating: 4.9,
     slug: "copper-wire-15-alborz",
-    image: "/images/products/skdunning-wire-962753_1920.jpg",
+    image: "/uploads/products/skdunning-wire-962753_1920.jpg",
   },
 ];
 
@@ -145,6 +145,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
         <div className="flex items-center gap-2">
           <Link
             href="/products?bestseller=true"
+            prefetch={false}
             className="bg-white hover:bg-slate-100 dark:bg-amber-500 dark:hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all shadow-md flex items-center gap-1 active:scale-95 shrink-0"
           >
             <span>مشاهده همه</span>
@@ -200,7 +201,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
           const primaryImg =
             deal.images?.[0]?.url ||
             deal.image ||
-            "/images/products/wal_172619-fans-7995865_1920.jpg";
+            "/uploads/products/wal_172619-fans-7995865_1920.jpg";
 
           const cleanBrand = (deal.brand || deal.category?.name || "شیاسی").replace(/\s*\(.*?\)/g, "");
 
@@ -232,6 +233,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                 {/* Isolated Photo Frame: Seamless in both Light and Dark modes */}
                 <Link
                   href={`/products/${deal.slug}`}
+                  prefetch={false}
                   className="aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs"
                 >
                   <img
@@ -250,6 +252,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                   </span>
                   <Link
                     href={`/products/${deal.slug}`}
+                    prefetch={false}
                     className="font-bold text-[11px] sm:text-xs text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug h-8 sm:h-9"
                   >
                     {deal.name}

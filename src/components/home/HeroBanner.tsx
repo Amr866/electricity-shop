@@ -20,7 +20,7 @@ const SHOWCASE_CATEGORIES = [
     tag: "گارانتی ۲۴ ماهه",
     badge: "پارس خزر",
     link: "/price-lists#parskhazar",
-    image: "/images/products/wal_172619-fans-7995865_1920.jpg",
+    image: "/uploads/products/wal_172619-fans-7995865_1920.jpg",
     // 1. Amber / Gold (Matches cooling-heating category in /categories)
     hoverBorder: "hover:border-amber-500 dark:hover:border-amber-400",
     hoverShadow: "hover:shadow-amber-500/20 hover:shadow-2xl",
@@ -36,7 +36,7 @@ const SHOWCASE_CATEGORIES = [
     tag: "تخفیف ویژه همکار",
     badge: "موتوژن تبریز",
     link: "/price-lists#motogen",
-    image: "/images/products/موتور-کولر-موتوژن-3-4.jpg",
+    image: "/uploads/products/موتور-کولر-موتوژن-3-4.jpg",
     // 2. Electric Sky / Blue (Matches industrial cooling & electric motor in /categories)
     hoverBorder: "hover:border-blue-500 dark:hover:border-blue-400",
     hoverShadow: "hover:shadow-blue-500/20 hover:shadow-2xl",
@@ -52,7 +52,7 @@ const SHOWCASE_CATEGORIES = [
     tag: "فوق کم‌مصرف A+",
     badge: "روشنایی مدرن",
     link: "/price-lists#shahcheragh",
-    image: "/images/products/6653167-flashlight-6786569_1920.jpg",
+    image: "/uploads/products/6653167-flashlight-6786569_1920.jpg",
     // 3. Emerald Green (Matches lighting-solar category in /categories)
     hoverBorder: "hover:border-emerald-500 dark:hover:border-emerald-400",
     hoverShadow: "hover:shadow-emerald-500/20 hover:shadow-2xl",
@@ -68,7 +68,7 @@ const SHOWCASE_CATEGORIES = [
     tag: "۱۰۰٪ مس استاندارد",
     badge: "سیم و کابل تمام مس",
     link: "/price-lists#alborz-wire",
-    image: "/images/products/skdunning-wire-962753_1920.jpg",
+    image: "/uploads/products/skdunning-wire-962753_1920.jpg",
     // 4. Electric Blue / Wiring (Matches wiring-cables category in /categories)
     hoverBorder: "hover:border-blue-500 dark:hover:border-blue-400",
     hoverShadow: "hover:shadow-blue-500/20 hover:shadow-2xl",
@@ -131,6 +131,7 @@ export function HeroBanner() {
             <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 pt-1.5 sm:pt-2.5">
               <Link
                 href="/products"
+                prefetch={false}
                 className="relative overflow-hidden bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 sm:px-6 py-3 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center group"
               >
                 {/* Subtle Shimmer Sweep Light */}
@@ -141,6 +142,7 @@ export function HeroBanner() {
 
               <Link
                 href="/repair-service"
+                prefetch={false}
                 className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
               >
                 <Wrench className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
@@ -166,6 +168,7 @@ export function HeroBanner() {
               </div>
               <Link
                 href="/categories"
+                prefetch={false}
                 className="text-[11px] sm:text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 transition-colors"
               >
                 <span>مشاهده همه دسته‌ها</span>
@@ -178,6 +181,7 @@ export function HeroBanner() {
               <Link
                 key={item.id}
                 href={item.link}
+                prefetch={false}
                 className={`group relative bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3 flex flex-col justify-between transition-all duration-300 active:scale-[0.98] hover:-translate-y-1 ${item.hoverBorder} ${item.hoverShadow}`}
               >
                 {/* Dynamic Ambient Hover Aura */}

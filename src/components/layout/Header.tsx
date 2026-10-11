@@ -481,24 +481,28 @@ export function Header() {
               {/* Direct Categorized Links with whitespace-nowrap */}
               <Link
                 href="/products?category=home-appliances-cooling-heating"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 transition-colors whitespace-nowrap shrink-0"
               >
                 پنکه و کولر
               </Link>
               <Link
                 href="/products?category=wiring-building"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 transition-colors whitespace-nowrap shrink-0"
               >
                 سیم و کابل
               </Link>
               <Link
                 href="/products?category=lighting-fixtures"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 transition-colors whitespace-nowrap shrink-0"
               >
                 روشنایی LED
               </Link>
               <Link
                 href="/repair-service"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
                 <Wrench className="w-3.5 h-3.5 text-slate-400" />
@@ -506,6 +510,7 @@ export function Header() {
               </Link>
               <Link
                 href="/#calculator"
+                prefetch={false}
                 onClick={handleCalculatorClick}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
@@ -514,6 +519,7 @@ export function Header() {
               </Link>
               <Link
                 href="/bom-upload"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5 text-slate-400" />
@@ -521,6 +527,7 @@ export function Header() {
               </Link>
               <Link
                 href="/price-lists"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
                 <FileText className="w-3.5 h-3.5 text-slate-400" />
@@ -528,6 +535,7 @@ export function Header() {
               </Link>
               <Link
                 href="/blog"
+                prefetch={false}
                 className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 px-2.5 py-2 flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
               >
                 <BookOpen className="w-3.5 h-3.5 text-slate-400" />
@@ -539,6 +547,7 @@ export function Header() {
             <div className="flex items-center gap-3 whitespace-nowrap shrink-0">
               <Link
                 href="/order-tracking"
+                prefetch={false}
                 className="text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 text-[11px] transition-colors whitespace-nowrap"
               >
                 <span>پیگیری سفارشات</span>
@@ -546,6 +555,7 @@ export function Header() {
               <span className="text-slate-200 dark:text-slate-800">|</span>
               <Link
                 href="/contact"
+                prefetch={false}
                 className="text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1 text-[11px] transition-colors whitespace-nowrap"
               >
                 <Phone className="w-3 h-3 text-amber-500" />

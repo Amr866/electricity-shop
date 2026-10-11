@@ -19,31 +19,61 @@ export async function GET(req: NextRequest) {
 
     logger.info("Inbound GET repairs request", { rawQuery, code, phone });
 
-    let where: any = {};
+    const session = await getServerSession(authOptions);
+    const isAdmin = session?.user?.role === "ADMIN";
+
     const query = (code || phone || rawQuery).trim();
 
-    if (query) {
-      const cleanQuery = query.trim();
-      const englishQuery = toAsciiDigits(cleanQuery);
-      const normalizedPhone = normalizeIranianPhone(cleanQuery);
+    // Security Gate: Anonymous visitors MUST supply a tracking code or phone number
+    if (!query) {
+      if (!isAdmin) {
+        return NextResponse.json(
+          { error: "کد پیگیری یا شماره تماس جهت استعلام الزامی است." },
+          { status: 400 }
+        );
+      }
 
-      where = {
-        OR: [
-          { customerPhone: cleanQuery },
-          { customerPhone: englishQuery },
-          { customerPhone: normalizedPhone },
-          { trackingCode: cleanQuery.toUpperCase() },
-          { trackingCode: englishQuery.toUpperCase() },
-        ],
-      };
+      const repairs = await prisma.repairRequest.findMany({
+        orderBy: { createdAt: "desc" },
+      });
+      return NextResponse.json({ success: true, repairs, ticket: repairs[0] || null });
     }
+
+    const cleanQuery = query.trim();
+    const englishQuery = toAsciiDigits(cleanQuery);
+    const normalizedPhone = normalizeIranianPhone(cleanQuery);
+
+    const where = {
+      OR: [
+        { customerPhone: cleanQuery },
+        { customerPhone: englishQuery },
+        { customerPhone: normalizedPhone },
+        { trackingCode: cleanQuery.toUpperCase() },
+        { trackingCode: englishQuery.toUpperCase() },
+      ],
+    };
 
     const repairs = await prisma.repairRequest.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      take: isAdmin ? 50 : 5,
     });
 
-    return NextResponse.json({ success: true, repairs, ticket: repairs[0] || null });
+    // Mask phone number for non-admin viewers to protect customer privacy
+    const sanitizedRepairs = isAdmin
+      ? repairs
+      : repairs.map((r) => ({
+          ...r,
+          customerPhone: r.customerPhone
+            ? r.customerPhone.replace(/(\d{4})\d{4}(\d{3})/, "$1****$2")
+            : "",
+        }));
+
+    return NextResponse.json({
+      success: true,
+      repairs: sanitizedRepairs,
+      ticket: sanitizedRepairs[0] || null,
+    });
   } catch (error) {
     logger.error("Error fetching repairs", error);
     return NextResponse.json({ error: "Failed to fetch repairs" }, { status: 500 });

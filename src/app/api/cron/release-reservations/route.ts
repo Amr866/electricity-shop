@@ -17,8 +17,9 @@ async function handleCron(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
 
-    // Optional bearer authentication if CRON_SECRET is configured
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    // Mandatory authentication: fail closed if secret is missing or mismatched
+    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+      logger.info("Unauthorized attempt to invoke release-reservations cron", { ip });
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+    const rateCheck = checkRateLimit(`coupon-verify-${ip}`, 5, 60);
+    if (!rateCheck.success) {
+      return NextResponse.json(
+        { message: "تعداد تلاش‌های ناموفق بیش از حد مجاز است. لطفاً یک دقیقه دیگر تلاش کنید." },
+        { status: 429, headers: { "Retry-After": String(rateCheck.retryAfterSeconds) } }
+      );
+    }
+
     const { code, subtotal } = await req.json();
 
     if (!code) {

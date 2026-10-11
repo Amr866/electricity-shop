@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { toEnglishDigits } from "@/lib/utils";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+    const rateCheck = checkRateLimit(`order-lookup-${ip}`, 5, 60);
+    if (!rateCheck.success) {
+      return NextResponse.json(
+        { error: "تعداد درخواست‌های استعلام بیش از حد مجاز است. لطفاً کمی بعد تلاش کنید." },
+        { status: 429, headers: { "Retry-After": String(rateCheck.retryAfterSeconds) } }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const rawPhone = searchParams.get("phone") || "";
     const cleanPhone = toEnglishDigits(rawPhone.trim()).replace(/[^\d]/g, "");
@@ -32,7 +42,6 @@ export async function GET(request: NextRequest) {
       select: {
         id: true,
         orderNumber: true,
-        customerName: true,
         orderStatus: true,
         paymentStatus: true,
         totalAmount: true,

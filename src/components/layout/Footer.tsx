@@ -228,7 +228,7 @@ export function Footer() {
                 <li>
                   <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors flex items-center gap-1.5 py-0.5">
                     <Scale className="w-3.5 h-3.5 shrink-0 text-purple-400" />
-                    <span>قوانین، گارانتی و حریم خصوصی</span>
+                    <span>قوانین و ضمانت خدمات</span>
                   </Link>
                 </li>
                 <li>
@@ -307,10 +307,25 @@ export function Footer() {
 
         </div>
 
-        {/* Bottom Copyright Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
+        {/* Bottom Copyright Bar with Legal Links */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-3">
           <p>© تمامی حقوق مادی و معنوی برای {brand.nameFa} محفوظ است.</p>
-          <p className="flex items-center gap-1 text-slate-400">
+          
+          <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] font-medium text-slate-400">
+            <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors">
+              قوانین و مقررات
+            </Link>
+            <span className="text-slate-600">•</span>
+            <Link href="/privacy" prefetch={false} className="hover:text-amber-400 transition-colors">
+              حریم خصوصی
+            </Link>
+            <span className="text-slate-600">•</span>
+            <Link href="/cookies" prefetch={false} className="hover:text-amber-400 transition-colors">
+              سیاست کوکی‌ها
+            </Link>
+          </div>
+
+          <p className="flex items-center gap-1 text-slate-400 text-[11px]">
             <span>مرکز تخصصی لوازم برقی، روشنایی، سرمایش و گرمایش نجف‌آباد</span>
           </p>
         </div>

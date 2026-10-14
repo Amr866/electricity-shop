@@ -55,6 +55,19 @@ export interface BomItem {
   status: "pending" | "matched" | "not_found";
 }
 
+export interface BomInquiryTrackItem {
+  id: string;
+  trackingCode: string;
+  contractorName: string;
+  contractorPhone: string;
+  projectCity?: string | null;
+  companyName?: string | null;
+  status: string;
+  adminNotes?: string | null;
+  content?: string | null;
+  createdAt: string | Date;
+}
+
 function generateUniqueId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
@@ -124,7 +137,7 @@ export default function BomUploadPage() {
   const [showTrackModal, setShowTrackModal] = useState(false);
   const [trackQuery, setTrackQuery] = useState("");
   const [isTracking, setIsTracking] = useState(false);
-  const [trackResult, setTrackResult] = useState<any[] | null>(null);
+  const [trackResult, setTrackResult] = useState<BomInquiryTrackItem[] | null>(null);
   const [trackError, setTrackError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);

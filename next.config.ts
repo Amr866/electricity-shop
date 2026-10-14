@@ -57,6 +57,20 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://images.unsplash.com https://placehold.co https://cdn.jsdelivr.net",
+              "font-src 'self' data: https://cdn.jsdelivr.net",
+              "connect-src 'self' https://maps.google.com https://wa.me",
+              "frame-src 'self' https://maps.google.com https://www.google.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
+          },
         ],
       },
     ];

@@ -168,5 +168,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "shiasi-secret-key-1403-najafabad-isfahan-auth",
+  secret: process.env.NEXTAUTH_SECRET,
 };

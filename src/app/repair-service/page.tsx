@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useBrand } from "@/context/BrandContext";
-import { formatToman, toPersianDigits } from "@/lib/utils";
+import { formatToman, toPersianDigits, toEnglishDigits } from "@/lib/utils";
 import {
   Wrench,
   CheckCircle2,
@@ -38,14 +38,6 @@ import {
   HelpCircle,
   ExternalLink,
 } from "lucide-react";
-
-function toEnglishDigits(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
-    .trim();
-}
 
 export interface RepairTicketData {
   id: string;

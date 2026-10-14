@@ -182,11 +182,12 @@ export class MediaService {
     }
 
     const { cleanRelPath, possibleUrls } = normalizeUploadPath(target);
-    const uploadsBase = this.getUploadsBase();
+    const uploadsBase = path.resolve(this.getUploadsBase());
     const targetFilePath = path.resolve(uploadsBase, cleanRelPath);
 
-    // Traversal check
-    if (!targetFilePath.startsWith(uploadsBase)) {
+    // Hardened path traversal check: ensure targetFilePath is strictly within uploadsBase root
+    const rel = path.relative(uploadsBase, targetFilePath);
+    if (rel.startsWith("..") || path.isAbsolute(rel)) {
       throw new Error("مسیر فایل نامعتبر است.");
     }
 

@@ -37,6 +37,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Security Hardening: Cap upload size to 10MB to prevent memory exhaustion DoS
+    const MAX_BOM_BYTES = 10 * 1024 * 1024;
+    if (fileBuffer.length > MAX_BOM_BYTES) {
+      return NextResponse.json(
+        { error: "حجم فایل اکسل ارسالی بیش از حد مجاز است (حداکثر ۱۰ مگابایت)." },
+        { status: 400 }
+      );
+    }
+
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
     logger.info("Parsing contractor BOM Excel file", {
       method: "POST",

@@ -21,14 +21,7 @@ import {
   Compass,
 } from "lucide-react";
 import { ConsultationBanner } from "@/components/home/ConsultationBanner";
-
-function toEnglishDigits(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
-    .trim();
-}
+import { toEnglishDigits } from "@/lib/utils";
 
 const STORE_GEO = {
   lat: 32.6365457,

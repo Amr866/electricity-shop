@@ -55,6 +55,7 @@ export default function CheckoutPage() {
   const [cardReceiptProof, setCardReceiptProof] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   // Sync session user details when loaded
@@ -115,6 +116,12 @@ export default function CheckoutPage() {
     // 4. Corporate fields validation
     if (isCorporate && (!companyName.trim() || !nationalCode.trim() || !economicCode.trim())) {
       setErrorMsg("برای صدور فاکتور رسمی حقوقی، وارد کردن نام شرکت، شناسه ملی و کد اقتصادی الزامی است.");
+      return;
+    }
+
+    // 5. Mandatory Terms & Refund Policy Agreement
+    if (!agreedToTerms) {
+      setErrorMsg("جهت تکمیل و ثبت سفارش، لطفاً تیک موافقت با شرایط و قوانین و رویه بازگشت وجه را علامت بزنید.");
       return;
     }
 
@@ -582,6 +589,40 @@ export default function CheckoutPage() {
                       {formatToman(grandTotal)}
                     </span>
                   </div>
+                </div>
+
+                {/* Mandatory Legal & Refund Policy Consent Checkbox */}
+                <div className="bg-slate-50 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-750 transition-colors">
+                  <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(e) => {
+                        setAgreedToTerms(e.target.checked);
+                        if (errorMsg) setErrorMsg("");
+                      }}
+                      className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                    />
+                    <span className="leading-relaxed">
+                      من کلیه{" "}
+                      <Link
+                        href="/terms"
+                        target="_blank"
+                        className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500 inline-block"
+                      >
+                        قوانین و مقررات خرید، شرایط بازگشت کالا و رویه استرداد وجه
+                      </Link>
+                      {" "}و{" "}
+                      <Link
+                        href="/privacy"
+                        target="_blank"
+                        className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500 inline-block"
+                      >
+                        سیاست حفظ حریم خصوصی
+                      </Link>
+                      {" "}فروشگاه شیاسی را مطالعه نموده و با آگاهی کامل می‌پذیرم.
+                    </span>
+                  </label>
                 </div>
 
                 {errorMsg && (

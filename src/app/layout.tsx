@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { CookieConsentBanner } from "@/components/layout/CookieConsentBanner";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
@@ -78,6 +79,7 @@ export default function RootLayout({
                 <Footer />
                 <MobileBottomNav />
                 <CartDrawer />
+                <CookieConsentBanner />
               </CartProvider>
             </WishlistProvider>
           </BrandProvider>

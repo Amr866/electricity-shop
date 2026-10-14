@@ -46,6 +46,7 @@ function LoginForm() {
   const [otpDigits, setOtpDigits] = useState<string[]>(["", "", "", "", ""]);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [devCode, setDevCode] = useState("");
@@ -109,6 +110,11 @@ function LoginForm() {
 
     if (!cleanPhone || !/^09\d{9}$/.test(cleanPhone)) {
       setErrorMsg("لطفاً شماره موبایل ۱۱ رقمی معتبر وارد نمایید (مثال: 09132456789)");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setErrorMsg("جهت ادامه و احراز هویت، لطفاً تیک موافقت با قوانین و مقررات و حریم خصوصی را علامت بزنید.");
       return;
     }
 
@@ -401,6 +407,40 @@ function LoginForm() {
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 block">
                   ورود مشتریان، پرسنل و مدیران از طریق همین فرم انجام می‌پذیرد.
                 </span>
+              </div>
+
+              {/* Mandatory Terms & Privacy Consent Checkbox */}
+              <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700/80">
+                <label className="flex items-start gap-2 cursor-pointer text-[11px] text-slate-600 dark:text-slate-400 select-none">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => {
+                      setAgreedToTerms(e.target.checked);
+                      if (errorMsg) setErrorMsg("");
+                    }}
+                    className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                  />
+                  <span className="leading-relaxed">
+                    با ورود یا ثبت‌نام، کلیه{" "}
+                    <Link
+                      href="/terms"
+                      target="_blank"
+                      className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500"
+                    >
+                      قوانین و مقررات
+                    </Link>
+                    {" "}و{" "}
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500"
+                    >
+                      حریم خصوصی
+                    </Link>
+                    {" "}فروشگاه شیاسی را می‌پذیرم.
+                  </span>
+                </label>
               </div>
 
               <button

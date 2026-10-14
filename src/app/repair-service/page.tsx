@@ -145,6 +145,7 @@ export default function RepairServicePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [submitting, setSubmitting] = useState(false);
+  const [agreedToWorkshopTerms, setAgreedToWorkshopTerms] = useState(false);
   const [ticketResult, setTicketResult] = useState<RepairTicketData | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
 
@@ -219,6 +220,11 @@ export default function RepairServicePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName || !customerPhone || !issueDesc) return;
+
+    if (!agreedToWorkshopTerms) {
+      alert("لطفاً تیک مطالعه و پذیرش ضوابط کارگاه و شرایط نگهداری و ترخیص کالا را علامت بزنید.");
+      return;
+    }
 
     const normalizedPhone = toEnglishDigits(customerPhone);
     const finalApplianceType =
@@ -770,6 +776,29 @@ export default function RepairServicePage() {
                         </div>
                       </div>
                     )}
+                  </div>
+
+                  {/* Workshop Terms Consent Checkbox */}
+                  <div className="bg-slate-50 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200 dark:border-slate-750">
+                    <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
+                      <input
+                        type="checkbox"
+                        checked={agreedToWorkshopTerms}
+                        onChange={(e) => setAgreedToWorkshopTerms(e.target.checked)}
+                        className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                      />
+                      <span className="leading-relaxed">
+                        من{" "}
+                        <Link
+                          href="/terms"
+                          target="_blank"
+                          className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500"
+                        >
+                          ضوابط کارگاه تعمیرات نجف‌آباد (مهلت تست ۷ روزه و مهلت ترخیص ۳۰ روزه)
+                        </Link>
+                        {" "}را مطالعه نموده و می‌پذیرم.
+                      </span>
+                    </label>
                   </div>
 
                   {/* Submit Button */}

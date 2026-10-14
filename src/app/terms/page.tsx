@@ -18,6 +18,8 @@ import {
   Cpu,
   BadgeAlert,
   Flame,
+  CreditCard,
+  Banknote,
 } from "lucide-react";
 
 export const metadata = {
@@ -273,17 +275,88 @@ export default function TermsPage() {
           </div>
 
           <p className="text-slate-600 dark:text-slate-400 text-xs">
-            در صورت تایید کارشناسان فنی انبار مبنی بر سلامت کامل کالای مرجوعی، کل وجه سفارش ظرف حداکثر ۲۴ ساعت کاری به حساب خریدار واریز خواهد شد.
+            در صورت تایید انصراف یا سلامت کالای مرجوعی، بازگشت وجه منحصراً مطابق ضوابط ماده ۷ انجام می‌پذیرد.
           </p>
         </section>
 
-        {/* Section 7: Repair Workshop Regulations */}
+        {/* Section 7: Refund & Money-Back Policy */}
+        <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-emerald-500/30 dark:border-emerald-500/20 shadow-sm space-y-4 text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed transition-colors duration-200">
+          <div className="flex items-center gap-2.5 text-slate-950 dark:text-white font-black text-base border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center">
+              <Banknote className="w-4 h-4" />
+            </div>
+            <h2>ماده ۷: رویه و شرایط دقیق استرداد و بازگشت وجه (Refund Policy)</h2>
+          </div>
+
+          <p className="text-justify">
+            فروشگاه شیاسی متعهد است کلیه وجوه حاصل از انصراف قانونی، لغو سفارش یا مرجوعی‌های تاییدشده را در کمال شفافیت و در سریع‌ترین زمان ممکن به مشتریان گرامی مسترد نماید. فرآیند بازگشت پول دقیقاً تابع ضوابط زیر است:
+          </p>
+
+          <div className="space-y-3">
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-750 space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>۱. الزامات ضدپولشویی و تطابق نام صاحب حساب بانکی (شماره شبا)</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
+                طبق آیین‌نامه‌های رسمی بانک مرکزی جمهوری اسلامی ایران، دستورالعمل‌های پلیس فتا و قانون مبارزه با پولشویی، واریز وجه استردادی <strong>منحصراً به شماره شبای بانکی (IBAN) به نام شخص پرداخت‌کننده یا سفارش‌دهنده</strong> امکان‌پذیر است. درخواست عودت وجه به حساب افراد متفرقه، کارت بستگان یا اشخاص ثالث به هیچ عنوان مورد پذیرش قرار نخواهد گرفت.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-750 space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <CreditCard className="w-4 h-4 text-amber-500" />
+                <span>۲. زمان‌بندی و چرخه پرداخت بانکی</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
+                پس از ثبت انصراف (قبل از ارسال) یا پس از دریافت کالای مرجوعی در انبار و تایید سلامت ظاهری و فنی آن توسط کارشناسان، وجه ظرف مدت <strong>۲۴ الی ۷۲ ساعت کاری</strong> از طریق سیکل‌های رسمی بانکی پایا / ساتنا مسترد شده و شناسه ارجاع بانکی در پنل کاربری یا از طریق پیامک به خریدار اطلاع داده می‌شود.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-750 space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <Truck className="w-4 h-4 text-cyan-500" />
+                <span>۳. تفکیک هزینه حمل‌ونقل و بسته‌بندی</span>
+              </div>
+              <ul className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed space-y-1 list-disc list-inside text-justify">
+                <li>
+                  <strong>خطای فروشگاه یا نقص ذاتی کالا:</strong> در صورتی که مرجوعی ناشی از ارسال اشتباه، نقص فنی یا مغایرت با فاکتور باشد، ۱۰۰٪ مبلغ فاکتور به همراه هزینه‌های پستی عودت به عهده فروشگاه شیاسی بوده و پرداخت می‌گردد.
+                </li>
+                <li>
+                  <strong>انصراف سلیقه‌ای خریدار:</strong> در مواردی که کالا کاملاً سالم و مطابق فاکتور بوده و خریدار در مهلت ۷ روزه قانونی صرفاً منصرف شده باشد، هزینه‌های حمل رفت و برگشت پستی از مبلغ استردادی کسر خواهد شد.
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-750 space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <RotateCcw className="w-4 h-4 text-purple-500" />
+                <span>۴. لغو سفارش پیش از ارسال فیزیکی</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
+                چنانچه خریدار پیش از بسته‌بندی نهایی و تحویل مرسوله به شرکت‌های پستی یا باربری انصراف خود را تلفنی یا از طریق حساب کاربری اعلام نماید، کل مبلغ پرداختی بدون کسر هیچ‌گونه جریمه یا کارمزد واریز خواهد شد.
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-750 space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <AlertTriangle className="w-4 h-4 text-rose-500" />
+                <span>۵. مبالغ کسرشده در تراکنش‌های ناموفق درگاه</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
+                در مواردی که به دلیل اختلال شبکه بانکی یا اینترنت، مبلغ از حساب خریدار کسر گردیده اما سفارش ثبت نشود، وجه در حساب‌های واسط بانکی شاپرک بلوکه است و سیستم بانکی موظف است طی حداکثر ۷۲ ساعت وجه را خودکار به حساب خریدار برگرداند. در صورت عدم بازگشت، پشتیبانی شیاسی با اخذ شماره پیگیری، پیگیری اداری را از شاپرک انجام خواهد داد.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 8: Repair Workshop Regulations */}
         <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed transition-colors duration-200">
           <div className="flex items-center gap-2.5 text-slate-950 dark:text-white font-black text-base border-b border-slate-100 dark:border-slate-800 pb-3">
             <div className="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center">
               <Wrench className="w-4 h-4" />
             </div>
-            <h2>ماده ۷: ضوابط کارگاه تعمیرات تخصصی شیاسی نجف‌آباد</h2>
+            <h2>ماده ۸: ضوابط کارگاه تعمیرات تخصصی شیاسی نجف‌آباد</h2>
           </div>
 
           <p>
@@ -303,13 +376,13 @@ export default function TermsPage() {
           </ul>
         </section>
 
-        {/* Section 8: Force Majeure & Dispute Resolution */}
+        {/* Section 9: Force Majeure & Dispute Resolution */}
         <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed transition-colors duration-200">
           <div className="flex items-center gap-2.5 text-slate-950 dark:text-white font-black text-base border-b border-slate-100 dark:border-slate-800 pb-3">
             <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
               <Scale className="w-4 h-4" />
             </div>
-            <h2>ماده ۸: حوادث غیرمترقبه و مراجع حل اختلاف</h2>
+            <h2>ماده ۹: حوادث غیرمترقبه و مراجع حل اختلاف</h2>
           </div>
 
           <p>

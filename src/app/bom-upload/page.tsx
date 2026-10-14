@@ -630,7 +630,8 @@ export default function BomUploadPage() {
                 <button
                   type="button"
                   onClick={clearAllRows}
-                  className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                  aria-label="پاک‌کردن همه ردیف‌های لیست استعلام BOM"
+                  className="p-2 text-slate-400 hover:text-rose-500 transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none rounded-lg"
                   title="پاک‌کردن همه ردیف‌ها"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -703,7 +704,8 @@ export default function BomUploadPage() {
                     <button
                       type="button"
                       onClick={() => removeItemRow(item.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors"
+                      aria-label={`حذف ردیف شماره ${toPersianDigits(index + 1)}: ${item.query || "قطعه بدون نام"}`}
+                      className="p-1.5 text-slate-400 hover:text-rose-500 transition-colors focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none rounded-lg"
                       title="حذف ردیف"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -958,11 +960,12 @@ export default function BomUploadPage() {
 
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="inquiry-name" className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       نام و نام خانوادگی مسئول سفارش / پیمانکار <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative">
                       <input
+                        id="inquiry-name"
                         type="text"
                         required
                         value={inquiryName}
@@ -976,11 +979,12 @@ export default function BomUploadPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      <label htmlFor="inquiry-phone" className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                         شماره تلفن همراه <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
                         <input
+                          id="inquiry-phone"
                           type="tel"
                           required
                           value={inquiryPhone}
@@ -993,11 +997,12 @@ export default function BomUploadPage() {
                     </div>
 
                     <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      <label htmlFor="inquiry-city" className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                         شهر یا محدوده پروژه
                       </label>
                       <div className="relative">
                         <input
+                          id="inquiry-city"
                           type="text"
                           value={inquiryCity}
                           onChange={(e) => setInquiryCity(e.target.value)}
@@ -1010,11 +1015,12 @@ export default function BomUploadPage() {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="inquiry-company" className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       نام شرکت، کارگاه یا پروژه (اختیاری)
                     </label>
                     <div className="relative">
                       <input
+                        id="inquiry-company"
                         type="text"
                         value={inquiryCompany}
                         onChange={(e) => setInquiryCompany(e.target.value)}
@@ -1026,10 +1032,11 @@ export default function BomUploadPage() {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="inquiry-notes" className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
                       توضیحات و برندهای مدنظر (اختیاری)
                     </label>
                     <textarea
+                      id="inquiry-notes"
                       rows={2}
                       value={inquiryNotes}
                       onChange={(e) => setInquiryNotes(e.target.value)}
@@ -1100,6 +1107,7 @@ export default function BomUploadPage() {
                 <input
                   type="text"
                   required
+                  aria-label="کد رهگیری استعلام یا شماره تلفن همراه"
                   value={trackQuery}
                   onChange={(e) => setTrackQuery(e.target.value)}
                   placeholder="کد رهگیری (BOM-...) یا شماره تلفن همراه..."
@@ -1110,7 +1118,8 @@ export default function BomUploadPage() {
               <button
                 type="submit"
                 disabled={isTracking || !trackQuery.trim()}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50 shrink-0"
+                aria-label="جستجو و استعلام وضعیت استعلام پروژه"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
               >
                 {isTracking ? <RefreshCw className="w-4 h-4 animate-spin" /> : "جستجو"}
               </button>

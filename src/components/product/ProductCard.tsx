@@ -114,8 +114,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             type="button"
             onClick={handleToggleFav}
-            aria-label={`افزودن ${product.name} به علاقه‌مندی‌ها`}
-            className={`absolute top-2 left-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-75 ${
+            aria-label={isFavorited ? `حذف ${product.name} از علاقه‌مندی‌ها` : `افزودن ${product.name} به علاقه‌مندی‌ها`}
+            className={`absolute top-2 left-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm active:scale-75 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
               isFavorited
                 ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 scale-105 shadow-rose-500/20"
                 : "bg-white/90 dark:bg-slate-900/90 text-slate-400 dark:text-slate-300 hover:text-rose-500 hover:scale-110 border border-slate-200/80 dark:border-slate-700 backdrop-blur-sm"
@@ -125,10 +125,10 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
 
           {/* Product Image Link */}
-          <Link href={`/products/${product.slug}`} prefetch={false} className="relative w-full h-full block">
+          <Link href={`/products/${product.slug}`} prefetch={false} className="relative w-full h-full block focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl">
             <Image
               src={primaryImage}
-              alt={product.name}
+              alt={`تصویر کالا: ${product.name} - کالای برق و الکتریک شیاسی`}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
@@ -217,8 +217,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            aria-label={`افزودن ${product.name} به سبد خرید`}
-            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 shrink-0 ${
+            aria-label={added ? `کالای ${product.name} در سبد خرید ثبت شد` : `افزودن ${product.name} به سبد خرید`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 shrink-0 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
               isOutOfStock
                 ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
                 : added

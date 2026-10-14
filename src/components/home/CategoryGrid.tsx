@@ -129,7 +129,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
               {/* Background Photo */}
               <Image
                 src={bgImage}
-                alt={cat.name}
+                alt={`دسته‌بندی تجهیزات برقی و صنعتی: ${cat.name}`}
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"
                 className="object-cover group-hover:scale-108 transition-transform duration-500"

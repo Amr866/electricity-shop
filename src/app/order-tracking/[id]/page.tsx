@@ -513,7 +513,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                     {productImg ? (
                       <img
                         src={productImg}
-                        alt={item.productName}
+                        alt={`تصویر محصول سفارش: ${item.productName}`}
                         className="w-10 h-10 rounded-xl object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0"
                       />
                     ) : (
@@ -581,7 +581,7 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                           {productImg ? (
                             <img
                               src={productImg}
-                              alt={item.productName}
+                              alt={`تصویر کالا در فاکتور: ${item.productName}`}
                               className="w-8 h-8 rounded-lg object-contain bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0 print:border print:border-black group-hover/row:scale-105 transition-all duration-200"
                             />
                           ) : (

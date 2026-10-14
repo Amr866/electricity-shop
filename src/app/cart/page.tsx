@@ -54,7 +54,7 @@ const CartItemRow = React.memo(function CartItemRow({
         >
           <Image
             src={displayImage}
-            alt={item.name}
+            alt={`تصویر کالا در سبد خرید: ${item.name}`}
             fill
             sizes="80px"
             className="object-contain p-1 group-hover:scale-108 transition-transform duration-300"
@@ -89,8 +89,8 @@ const CartItemRow = React.memo(function CartItemRow({
             type="button"
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
             disabled={item.quantity >= item.stock}
-            aria-label="افزایش تعداد"
-            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90 transition-transform"
+            aria-label={`افزایش تعداد خرید ${item.name}`}
+            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90 transition-transform focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
           >
             <Plus className="w-3.5 h-3.5" />
           </button>
@@ -106,8 +106,8 @@ const CartItemRow = React.memo(function CartItemRow({
                 removeFromCart(item.id);
               }
             }}
-            aria-label="کاهش تعداد"
-            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white active:scale-90 transition-transform"
+            aria-label={item.quantity === 1 ? `حذف ${item.name} از سبد خرید` : `کاهش تعداد خرید ${item.name}`}
+            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white active:scale-90 transition-transform focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
           >
             {item.quantity === 1 ? (
               <Trash2 className="w-3.5 h-3.5 text-rose-500" />
@@ -129,7 +129,8 @@ const CartItemRow = React.memo(function CartItemRow({
         <button
           type="button"
           onClick={() => removeFromCart(item.id)}
-          className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+          aria-label={`حذف کامل ${item.name} از سبد خرید`}
+          className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
           title="حذف از سبد"
         >
           <Trash2 className="w-4 h-4" />

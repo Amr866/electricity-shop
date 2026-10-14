@@ -532,7 +532,7 @@ export function CustomerAccountClient({
                     >
                       <Image
                         src={item.image || "/uploads/products/wal_172619-fans-7995865_1920.jpg"}
-                        alt={item.name}
+                        alt={`تصویر کالا در لیست علاقه‌مندی‌ها: ${item.name}`}
                         fill
                         sizes="(max-width: 768px) 50vw, 25vw"
                         className="object-contain p-2 group-hover:scale-108 transition-transform duration-300"

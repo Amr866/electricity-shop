@@ -52,7 +52,7 @@ export function ProductPrintDatasheet({
         </div>
         <div className="col-span-1 text-center">
           <div className="w-28 h-28 mx-auto relative border border-gray-200 rounded-lg p-2">
-            <img src={selectedImage} alt={product.name} className="w-full h-full object-contain" />
+            <img src={selectedImage} alt={`تصویر کالا در برگه اطلاعات فنی: ${product.name}`} className="w-full h-full object-contain" />
           </div>
         </div>
       </div>

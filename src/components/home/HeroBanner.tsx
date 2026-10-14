@@ -200,7 +200,7 @@ export function HeroBanner() {
                 <div className="relative aspect-[4/3] w-full rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200/80 dark:from-slate-800/80 dark:to-slate-850/80 overflow-hidden p-1 mb-2.5 border border-slate-100 dark:border-slate-800/60 shadow-inner">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={`تصویر کارت معرفی: ${item.title} - ${item.subtitle}`}
                     fill
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
                     priority={index < 2}

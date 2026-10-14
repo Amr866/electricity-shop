@@ -172,7 +172,7 @@ export function BlogClient({ initialArticles, categories }: BlogClientProps) {
                 >
                   <Image
                     src={art.image}
-                    alt={art.title}
+                    alt={`تصویر شاخص مقاله: ${art.title} - مجله برق شیاسی`}
                     fill
                     unoptimized
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

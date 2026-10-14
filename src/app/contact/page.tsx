@@ -373,10 +373,11 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label htmlFor="contact-name" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         نام و نام خانوادگی <span className="text-rose-500">*</span>
                       </label>
                       <input
+                        id="contact-name"
                         type="text"
                         required
                         value={name}
@@ -387,10 +388,11 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label htmlFor="contact-phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         شماره همراه <span className="text-rose-500">*</span>
                       </label>
                       <input
+                        id="contact-phone"
                         type="tel"
                         dir="ltr"
                         required
@@ -403,10 +405,11 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="contact-subject" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       موضوع استعلام
                     </label>
                     <select
+                      id="contact-subject"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
                       className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
@@ -419,10 +422,11 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="contact-message" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       متن پیام یا لیست اقلام مورد نیاز <span className="text-rose-500">*</span>
                     </label>
                     <textarea
+                      id="contact-message"
                       required
                       rows={3}
                       value={message}
@@ -436,7 +440,8 @@ export default function ContactPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                     <button
                       type="submit"
-                      className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-98 hover-glow"
+                      aria-label="ثبت پیام در سامانه پیام‌های فروشگاه شیاسی"
+                      className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-98 hover-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                     >
                       <Send className="w-4 h-4" />
                       <span>ثبت پیام در سامانه</span>
@@ -445,7 +450,8 @@ export default function ContactPage() {
                     <button
                       type="button"
                       onClick={handleSendViaWhatsApp}
-                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-98 hover-glow"
+                      aria-label="ارسال آنی متن پیام به واتساپ فروشگاه شیاسی"
+                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 active:scale-98 hover-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>ارسال آنی به واتساپ</span>

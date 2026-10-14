@@ -242,31 +242,28 @@ export function Footer() {
 
           </div>
 
-          {/* Col 5: Glassmorphic Trust Badges & Messengers */}
+          {/* Col 5: Verified Store Credentials & Messengers */}
           <div className="space-y-3.5 border-t border-slate-850 md:border-t-0 pt-6 md:pt-0">
             <h4 className="text-white font-black text-sm border-r-2 border-amber-400 pr-2.5">
-              نمادهای اعتماد و پشتیبانی
+              خدمات حضوری و ارتباط مستقیم
             </h4>
             
-            {/* Glassmorphic Trust Badges with Glowing Borders & Pulse */}
+            {/* Real Store & Workshop Assurances */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className="group bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 p-3 rounded-2xl border border-slate-800 hover:border-emerald-500/60 text-center flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-black/40">
-                <div className="relative">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-75" />
-                </div>
-                <span className="text-[10px] text-slate-200 font-bold">پروانه کسب</span>
-                <span className="text-[9px] text-slate-400">صنف الکتریک نجف‌آباد</span>
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] text-slate-200 font-bold">مراجعه و تحویل حضوری</span>
+                <span className="text-[9px] text-slate-400">۱۵ خرداد مرکزی نجف‌آباد</span>
               </div>
 
               <div className="group bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 p-3 rounded-2xl border border-slate-800 hover:border-amber-500/60 text-center flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-black/40">
-                <ShieldCheck className="w-6 h-6 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] text-slate-200 font-bold">درگاه امن</span>
-                <span className="text-[9px] text-slate-400">زرین‌پال و شاپرک</span>
+                <Wrench className="w-5 h-5 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] text-slate-200 font-bold">تست فنی در کارگاه</span>
+                <span className="text-[9px] text-slate-400">آزمایش قبل از تحویل</span>
               </div>
             </div>
 
-            {/* Official Messengers with 60fps Brand Glow and Real URLs */}
+            {/* Official Messengers with Brand Colors and Real URLs */}
             <div className="pt-2">
               <p className="text-xs text-slate-300 mb-2 font-bold">پیام‌رسان‌های رسمی فروشگاه:</p>
               <div className="flex items-center gap-2">
@@ -275,7 +272,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="ارسال پیام به واتساپ رسمی فروشگاه شیاسی"
-                  className="flex-1 bg-emerald-950/60 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-800/80 hover:border-emerald-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-95 cursor-pointer"
+                  className="flex-1 bg-emerald-950/60 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-800/80 hover:border-emerald-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-95 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>واتساپ</span>
@@ -285,8 +282,8 @@ export function Footer() {
                   href={eitaaUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="کانال رسمی فروشگاه شیاسی در ایتا"
-                  className="flex-1 bg-orange-950/60 hover:bg-orange-600 text-orange-400 hover:text-white border border-orange-800/80 hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-orange-500/25 active:scale-95 cursor-pointer"
+                  aria-label="کانال رسمی فروشگاه شیاسی در پیام‌رسان ایتا"
+                  className="flex-1 bg-orange-950/60 hover:bg-orange-600 text-orange-400 hover:text-white border border-orange-800/80 hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-orange-500/25 active:scale-95 cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-none"
                 >
                   <span>ایتا</span>
                 </a>
@@ -295,8 +292,8 @@ export function Footer() {
                   href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="کانال تلگرام فروشگاه شیاسی"
-                  className="flex-1 bg-sky-950/60 hover:bg-sky-600 text-sky-400 hover:text-white border border-sky-800/80 hover:border-sky-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer"
+                  aria-label="کانال تلگرام رسمی فروشگاه شیاسی"
+                  className="flex-1 bg-sky-950/60 hover:bg-sky-600 text-sky-400 hover:text-white border border-sky-800/80 hover:border-sky-500 px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sky-500/25 active:scale-95 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:outline-none"
                 >
                   <span>تلگرام</span>
                 </a>
@@ -307,26 +304,33 @@ export function Footer() {
 
         </div>
 
-        {/* Bottom Copyright Bar with Legal Links */}
-        <div className="pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-3">
-          <p>© تمامی حقوق مادی و معنوی برای {brand.nameFa} محفوظ است.</p>
-          
-          <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] font-medium text-slate-400">
-            <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors">
-              قوانین و مقررات
-            </Link>
-            <span className="text-slate-600">•</span>
-            <Link href="/privacy" prefetch={false} className="hover:text-amber-400 transition-colors">
-              حریم خصوصی
-            </Link>
-            <span className="text-slate-600">•</span>
-            <Link href="/cookies" prefetch={false} className="hover:text-amber-400 transition-colors">
-              سیاست کوکی‌ها
-            </Link>
+        {/* Bottom Copyright Bar with Legal Links and Image Copyright Disclosure */}
+        <div className="pt-6 border-t border-slate-800/60 space-y-3">
+          <div className="flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-3">
+            <p>© تمامی حقوق مادی و معنوی برای {brand.nameFa} محفوظ است.</p>
+            
+            <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] font-medium text-slate-400">
+              <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded">
+                قوانین و مقررات
+              </Link>
+              <span className="text-slate-600">•</span>
+              <Link href="/privacy" prefetch={false} className="hover:text-amber-400 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded">
+                حریم خصوصی
+              </Link>
+              <span className="text-slate-600">•</span>
+              <Link href="/cookies" prefetch={false} className="hover:text-amber-400 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded">
+                سیاست کوکی‌ها
+              </Link>
+            </div>
+
+            <p className="flex items-center gap-1 text-slate-400 text-[11px]">
+              <span>مرکز تخصصی لوازم برقی، روشنایی، سرمایش و گرمایش نجف‌آباد</span>
+            </p>
           </div>
 
-          <p className="flex items-center gap-1 text-slate-400 text-[11px]">
-            <span>مرکز تخصصی لوازم برقی، روشنایی، سرمایش و گرمایش نجف‌آباد</span>
+          {/* Genuine Trademark & Image Licensing Transparency Note */}
+          <p className="text-[10px] text-slate-500 text-center leading-relaxed">
+            تصاویر و نشان‌های تجاری کالاهای عرضه شده در سایت متعلق به شرکت‌های سازنده مربوطه (از جمله پارس خزر، موتوژن، الکتروژن، سیم و کابل البرز و هانی) بوده و صرفاً جهت معرفی، مشخصات فنی و توزیع کالای اصل استفاده شده‌اند.
           </p>
         </div>
 

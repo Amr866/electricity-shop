@@ -234,7 +234,7 @@ export default async function SingleArticlePage({ params }: ArticlePageProps) {
         <div className="relative aspect-video sm:aspect-21/9 rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-xl border border-slate-200/80 dark:border-slate-800">
           <Image
             src={article.image}
-            alt={article.title}
+            alt={`تصویر شاخص مقاله: ${article.title} - وبلاگ تخصصی الکتریک شیاسی`}
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 896px"
@@ -345,7 +345,7 @@ export default async function SingleArticlePage({ params }: ArticlePageProps) {
                     <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <Image
                         src={rel.image}
-                        alt={rel.title}
+                        alt={`تصویر مقاله مرتبط: ${rel.title} - دانشنامه الکتریک شیاسی`}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"

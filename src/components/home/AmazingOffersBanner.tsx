@@ -220,8 +220,8 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
 
                   <button
                     onClick={() => toggleWishlist(deal)}
-                    aria-label="افزودن به علاقه‌مندی‌ها"
-                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 active:scale-75 ${
+                    aria-label={isFav ? `حذف ${deal.name} از علاقه‌مندی‌ها` : `افزودن ${deal.name} به علاقه‌مندی‌ها`}
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 active:scale-75 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                       isFav
                         ? "text-rose-500 bg-rose-50 dark:bg-rose-950/60 scale-105 shadow-sm shadow-rose-500/20"
                         : "text-slate-400 hover:text-rose-500 hover:scale-110 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -235,11 +235,11 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                 <Link
                   href={`/products/${deal.slug}`}
                   prefetch={false}
-                  className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs"
+                  className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
                   <Image
                     src={primaryImg}
-                    alt={deal.name}
+                    alt={`پیشنهاد شگفت‌انگیز: ${deal.name} - کالای برق شیاسی`}
                     fill
                     sizes="(max-width: 640px) 150px, 215px"
                     className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"

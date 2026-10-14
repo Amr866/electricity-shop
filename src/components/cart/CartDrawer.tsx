@@ -55,7 +55,7 @@ function DrawerItemRow({
       >
         <Image
           src={displayImage}
-          alt={item.name}
+          alt={`تصویر کالا ${item.name} در سبد خرید`}
           fill
           sizes="64px"
           className="object-contain p-1"
@@ -89,8 +89,8 @@ function DrawerItemRow({
             type="button"
             onClick={() => updateQuantity(item.id, item.quantity + 1)}
             disabled={item.quantity >= item.stock}
-            aria-label="افزایش"
-            className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-80 hover:scale-110 transition-transform cursor-pointer"
+            aria-label={`افزایش تعداد خرید ${item.name}`}
+            className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-80 hover:scale-110 transition-transform cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
           >
             <Plus className="w-3 h-3" />
           </button>
@@ -106,8 +106,8 @@ function DrawerItemRow({
                 removeFromCart(item.id);
               }
             }}
-            aria-label="کاهش"
-            className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white active:scale-80 hover:scale-110 transition-transform cursor-pointer"
+            aria-label={item.quantity === 1 ? `حذف ${item.name} از سبد خرید` : `کاهش تعداد خرید ${item.name}`}
+            className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white active:scale-80 hover:scale-110 transition-transform cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
           >
             {item.quantity === 1 ? (
               <Trash2 className="w-3 h-3 text-rose-500" />
@@ -120,7 +120,8 @@ function DrawerItemRow({
         <button
           type="button"
           onClick={() => removeFromCart(item.id)}
-          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/50 active:scale-90 transition-all cursor-pointer"
+          aria-label={`حذف کامل ${item.name} از سبد خرید`}
+          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/50 active:scale-90 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
           title="حذف از سبد"
         >
           <Trash2 className="w-3.5 h-3.5" />
@@ -244,7 +245,7 @@ export function CartDrawer() {
             <button
               type="button"
               onClick={closeCartDrawer}
-              className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-transform active:scale-90 cursor-pointer"
+              className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-transform active:scale-90 cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
               aria-label="بستن سبد خرید"
             >
               <X className="w-4 h-4" />

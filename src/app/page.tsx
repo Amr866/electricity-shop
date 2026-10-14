@@ -21,33 +21,6 @@ import {
 
 export const revalidate = 60; // ISR cache for 60 seconds
 
-const FALLBACK_REVIEWS = [
-  {
-    id: "rev-1",
-    authorName: "حاج احمد امینی",
-    city: "نجف‌آباد",
-    rating: 5,
-    comment: "پنکه ایستاده ۵ پره پارس خزر عالی و بی‌صدا، تحویل فوری در نجف‌آباد با اخلاق عالی مدیریت شیاسی.",
-    product: { name: "پنکه ایستاده ۵ پره ریموت‌دار پارس خزر", slug: "pars-khazar-fan-5blade" },
-  },
-  {
-    id: "rev-2",
-    authorName: "مهندس رضا کریمی",
-    city: "اصفهان (پیمانکار برق)",
-    rating: 5,
-    comment: "برای پروژه ساختمانی کلاف‌های سیم تمام مس البرز و فیوز دنا سفارش دادم؛ مس ۱۰۰٪ خالص و ارسال بسیار سریع بود.",
-    product: { name: "سیم افشان ۲.۵ تمام مس البرز الکتریک", slug: "wire-2-5" },
-  },
-  {
-    id: "rev-3",
-    authorName: "علیرضا یوسفی",
-    city: "ویلاشهر نجف‌آباد",
-    rating: 5,
-    comment: "موتور کولر آبی ۳/۴ موتوژن رو حضوری در کارگاه تست کردند و تحویل دادند. گارانتی معتبر و قیمت بسیار منصفانه.",
-    product: { name: "موتور کولر آبی ۳/۴ اسب موتوژن تبریز", slug: "motogen-cooler-motor-3-4" },
-  },
-];
-
 async function getHomeData() {
   try {
     const [categories, featuredProducts, discountedProducts, dbReviews] =
@@ -85,16 +58,11 @@ async function getHomeData() {
         }),
       ]);
 
-    const finalReviews = dbReviews.length >= 3 ? dbReviews : [
-      ...dbReviews,
-      ...FALLBACK_REVIEWS.slice(0, 3 - dbReviews.length),
-    ];
-
     return {
       categories,
       featuredProducts,
       discountedProducts,
-      reviews: finalReviews,
+      reviews: dbReviews,
     };
   } catch (error) {
     console.error("Error fetching home data:", error);
@@ -102,7 +70,7 @@ async function getHomeData() {
       categories: [],
       featuredProducts: [],
       discountedProducts: [],
-      reviews: FALLBACK_REVIEWS,
+      reviews: [],
     };
   }
 }

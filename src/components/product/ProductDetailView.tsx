@@ -218,8 +218,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             <button
               type="button"
               onClick={() => toggleWishlist(product)}
-              aria-label={isFavorited ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
-              className={`absolute top-4 left-4 w-9 h-9 rounded-2xl flex items-center justify-center z-10 transition-all shadow-sm active:scale-90 ${
+              aria-label={isFavorited ? `حذف ${product.name} از علاقه‌مندی‌ها` : `افزودن ${product.name} به علاقه‌مندی‌ها`}
+              className={`absolute top-4 left-4 w-9 h-9 rounded-2xl flex items-center justify-center z-10 transition-all shadow-sm active:scale-90 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                 isFavorited
                   ? "bg-rose-50 dark:bg-rose-950 text-rose-500 border border-rose-200 dark:border-rose-800 shadow-rose-500/10"
                   : "bg-white/90 dark:bg-slate-800 text-slate-400 dark:text-slate-300 hover:text-rose-500 border border-slate-200 dark:border-slate-700"
@@ -232,7 +232,7 @@ export function ProductDetailView({ product }: ProductDetailProps) {
             <div className="relative w-full h-full">
               <Image
                 src={selectedImage}
-                alt={product.name}
+                alt={`تصویر اصلی کالا: ${product.name} - برند ${product.brand || 'معتبر'} - فروشگاه الکتریک شیاسی`}
                 fill
                 sizes="(max-width: 768px) 100vw, 450px"
                 className="object-contain object-center group-hover:scale-108 transition-transform duration-500 ease-out"
@@ -249,13 +249,14 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   key={idx}
                   type="button"
                   onClick={() => setSelectedImage(img.url)}
-                  className={`relative w-12 h-12 rounded-xl p-1 border bg-slate-50 dark:bg-slate-800 overflow-hidden transition-all shrink-0 active:scale-95 ${
+                  aria-label={`نمایش تصویر شماره ${toPersianDigits(idx + 1)} از ${product.name}`}
+                  className={`relative w-12 h-12 rounded-xl p-1 border bg-slate-50 dark:bg-slate-800 overflow-hidden transition-all shrink-0 active:scale-95 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                     selectedImage === img.url
                       ? "border-amber-500 ring-2 ring-amber-500/30 scale-105"
                       : "border-slate-200 dark:border-slate-700 opacity-60 hover:opacity-100"
                   }`}
                 >
-                  <Image src={img.url} alt="" fill className="object-contain p-1" sizes="48px" />
+                  <Image src={img.url} alt={`تصویر بندانگشتی ${toPersianDigits(idx + 1)} از کالا ${product.name}`} fill className="object-contain p-1" sizes="48px" />
                 </button>
               ))}
             </div>
@@ -292,8 +293,9 @@ export function ProductDetailView({ product }: ProductDetailProps) {
               <button
                 type="button"
                 onClick={handleCopySku}
+                aria-label="کپی کد فنی و مشخصات کالا جهت ارسال به همکاران"
                 title="کپی کد فنی و مشخصات کالا جهت ارسال به همکاران"
-                className="flex items-center gap-1 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-750 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 font-bold transition-all active:scale-95 text-slate-700 dark:text-slate-300"
+                className="flex items-center gap-1 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-750 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 font-bold transition-all active:scale-95 text-slate-700 dark:text-slate-300 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
               >
                 {copiedSku ? (
                   <>
@@ -435,8 +437,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   type="button"
                   onClick={() => setQuantity(Math.min(quantity + 1, product.stock))}
                   disabled={quantity >= product.stock || isOutOfStock}
-                  aria-label="افزایش تعداد"
-                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90"
+                  aria-label={`افزایش تعداد خرید ${product.name}`}
+                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -447,8 +449,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                   type="button"
                   onClick={() => setQuantity(Math.max(quantity - 1, 1))}
                   disabled={quantity <= 1 || isOutOfStock}
-                  aria-label="کاهش تعداد"
-                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90"
+                  aria-label={`کاهش تعداد خرید ${product.name}`}
+                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white disabled:opacity-30 active:scale-90 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
@@ -459,7 +461,8 @@ export function ProductDetailView({ product }: ProductDetailProps) {
                 type="button"
                 onClick={handleAddToCart}
                 disabled={isOutOfStock}
-                className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md active:scale-98 ${
+                aria-label={`افزودن ${toPersianDigits(quantity)} عدد از ${product.name} به سبد خرید`}
+                className={`flex-1 h-11 px-4 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md active:scale-98 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                   isOutOfStock
                     ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none"
                     : addedToCart

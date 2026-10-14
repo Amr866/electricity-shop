@@ -225,10 +225,11 @@ export default function CheckoutPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="checkout-customer-name" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       نام و نام خانوادگی <span className="text-rose-500">*</span>
                     </label>
                     <input
+                      id="checkout-customer-name"
                       type="text"
                       required
                       value={customerName}
@@ -239,10 +240,11 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="checkout-customer-phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       شماره همراه (۱۱ رقم) <span className="text-rose-500">*</span>
                     </label>
                     <input
+                      id="checkout-customer-phone"
                       type="tel"
                       dir="ltr"
                       required
@@ -255,10 +257,11 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="checkout-province" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       استان <span className="text-rose-500">*</span>
                     </label>
                     <select
+                      id="checkout-province"
                       value={province}
                       onChange={(e) => setProvince(e.target.value)}
                       className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800"
@@ -273,10 +276,11 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="checkout-city" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       شهر / منطقه <span className="text-rose-500">*</span>
                     </label>
                     <input
+                      id="checkout-city"
                       type="text"
                       required
                       value={city}
@@ -288,10 +292,11 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label htmlFor="checkout-address" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     نشانی دقیق خیابان، کوچه، پلاک و واحد <span className="text-rose-500">*</span>
                   </label>
                   <textarea
+                    id="checkout-address"
                     required
                     rows={2}
                     value={address}
@@ -303,10 +308,11 @@ export default function CheckoutPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="checkout-postal-code" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       کد پستی ۱۰ رقمی <span className="text-rose-500">*</span>
                     </label>
                     <input
+                      id="checkout-postal-code"
                       type="text"
                       required
                       maxLength={10}
@@ -327,27 +333,29 @@ export default function CheckoutPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label htmlFor="checkout-notes" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       توضیحات و یادداشت برای انباردار
                     </label>
                     <input
+                      id="checkout-notes"
                       type="text"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="مثال: تحویل عصر"
-                      className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:focus:bg-slate-800"
                     />
                   </div>
                 </div>
 
                 {/* Corporate / Official Invoice Checkbox */}
-                <div className="pt-2 border-t border-slate-100 space-y-3">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                  <label htmlFor="checkout-corporate-checkbox" className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800 dark:text-slate-200">
                     <input
+                      id="checkout-corporate-checkbox"
                       type="checkbox"
                       checked={isCorporate}
                       onChange={(e) => setIsCorporate(e.target.checked)}
-                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500"
+                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 focus-visible:ring-2 focus-visible:ring-amber-500"
                     />
                     <span>درخواست صدور فاکتور رسمی / حقوقی (دارای شناسه ملی و کد اقتصادی)</span>
                   </label>
@@ -405,17 +413,24 @@ export default function CheckoutPage() {
                   <span>انتخاب شیوه ارسال مرسوله</span>
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5" role="radiogroup" aria-label="انتخاب شیوه ارسال مرسوله">
                   {SHIPPING_METHODS.map((method) => (
                     <label
                       key={method.id}
-                      onClick={() => setSelectedShipping(method.id)}
-                      className={`cursor-pointer rounded-2xl p-4 border transition-all flex flex-col justify-between ${
+                      className={`cursor-pointer rounded-2xl p-4 border transition-all flex flex-col justify-between focus-within:ring-2 focus-within:ring-amber-500 focus-within:outline-none ${
                         selectedShipping === method.id
                           ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-2 ring-amber-500/20"
                           : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                       }`}
                     >
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.id}
+                        checked={selectedShipping === method.id}
+                        onChange={() => setSelectedShipping(method.id)}
+                        className="sr-only"
+                      />
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-slate-900 dark:text-white">{method.title}</span>
@@ -452,7 +467,7 @@ export default function CheckoutPage() {
                   <span>انتخاب شیوه پرداخت</span>
                 </h2>
 
-                <div className="space-y-3">
+                <div className="space-y-3" role="radiogroup" aria-label="انتخاب شیوه پرداخت">
                   {PAYMENT_METHODS.map((method) => {
                     const isCod = method.id === "cod_isfahan";
                     const isMethodDisabled = isCod && !isCodEligible;
@@ -460,12 +475,7 @@ export default function CheckoutPage() {
                     return (
                       <label
                         key={method.id}
-                        onClick={() => {
-                          if (!isMethodDisabled) {
-                            setSelectedPayment(method.id);
-                          }
-                        }}
-                        className={`rounded-2xl p-4 border transition-all flex items-start justify-between gap-3 ${
+                        className={`rounded-2xl p-4 border transition-all flex items-start justify-between gap-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:outline-none ${
                           isMethodDisabled
                             ? "opacity-50 cursor-not-allowed bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800"
                             : selectedPayment === method.id
@@ -473,6 +483,19 @@ export default function CheckoutPage() {
                             : "cursor-pointer border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={method.id}
+                          checked={selectedPayment === method.id}
+                          disabled={isMethodDisabled}
+                          onChange={() => {
+                            if (!isMethodDisabled) {
+                              setSelectedPayment(method.id);
+                            }
+                          }}
+                          className="sr-only"
+                        />
                         <div className="flex items-start gap-3">
                           <div
                             className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center shrink-0 border ${
@@ -548,7 +571,7 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-2 truncate">
                         <img
                           src={item.image}
-                          alt={item.name}
+                          alt={`تصویر کالا در پیش‌فاکتور: ${item.name}`}
                           className="w-8 h-8 rounded-lg object-contain bg-slate-50 dark:bg-slate-800 p-0.5 border border-slate-100 dark:border-slate-700 shrink-0"
                         />
                         <span className="text-slate-700 dark:text-slate-300 truncate font-medium">{item.name}</span>
@@ -593,22 +616,23 @@ export default function CheckoutPage() {
 
                 {/* Mandatory Legal & Refund Policy Consent Checkbox */}
                 <div className="bg-slate-50 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-750 transition-colors">
-                  <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
+                  <label htmlFor="checkout-terms-consent" className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
                     <input
+                      id="checkout-terms-consent"
                       type="checkbox"
                       checked={agreedToTerms}
                       onChange={(e) => {
                         setAgreedToTerms(e.target.checked);
                         if (errorMsg) setErrorMsg("");
                       }}
-                      className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                      className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0 cursor-pointer"
                     />
                     <span className="leading-relaxed">
                       من کلیه{" "}
                       <Link
                         href="/terms"
                         target="_blank"
-                        className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500 inline-block"
+                        className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500 inline-block focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
                       >
                         قوانین و مقررات خرید، شرایط بازگشت کالا و رویه استرداد وجه
                       </Link>
@@ -616,7 +640,7 @@ export default function CheckoutPage() {
                       <Link
                         href="/privacy"
                         target="_blank"
-                        className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500 inline-block"
+                        className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500 inline-block focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
                       >
                         سیاست حفظ حریم خصوصی
                       </Link>
@@ -635,7 +659,8 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-slate-950 font-extrabold text-sm rounded-xl transition-all shadow-md shadow-amber-500/25 flex items-center justify-center gap-2"
+                  aria-label="ثبت نهایی سفارش و پرداخت"
+                  className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-extrabold text-sm rounded-xl transition-all shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 active:scale-98 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none cursor-pointer"
                 >
                   {submitting ? (
                     <span>در حال پردازش سفارش...</span>

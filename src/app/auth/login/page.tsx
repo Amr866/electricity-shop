@@ -389,18 +389,19 @@ function LoginForm() {
           {step === "phone" && (
             <form onSubmit={handlePhoneSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label htmlFor="login-phone-input" className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   شماره تلفن همراه شما:
                 </label>
                 <div className="relative">
                   <input
+                    id="login-phone-input"
                     type="tel"
                     dir="ltr"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="۰۹۱۳۲۴۵۶۷۸۹"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono tracking-wider focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 transition-colors"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl p-3 pr-4 pl-10 text-sm text-left font-mono tracking-wider focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-amber-500 transition-colors focus-visible:outline-none"
                   />
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
                 </div>
@@ -411,22 +412,23 @@ function LoginForm() {
 
               {/* Mandatory Terms & Privacy Consent Checkbox */}
               <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700/80">
-                <label className="flex items-start gap-2 cursor-pointer text-[11px] text-slate-600 dark:text-slate-400 select-none">
+                <label htmlFor="login-terms-consent" className="flex items-start gap-2 cursor-pointer text-[11px] text-slate-600 dark:text-slate-400 select-none">
                   <input
+                    id="login-terms-consent"
                     type="checkbox"
                     checked={agreedToTerms}
                     onChange={(e) => {
                       setAgreedToTerms(e.target.checked);
                       if (errorMsg) setErrorMsg("");
                     }}
-                    className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                    className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 focus-visible:ring-2 focus-visible:ring-amber-500 shrink-0 cursor-pointer"
                   />
                   <span className="leading-relaxed">
                     با ورود یا ثبت‌نام، کلیه{" "}
                     <Link
                       href="/terms"
                       target="_blank"
-                      className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500"
+                      className="font-bold text-amber-600 dark:text-amber-400 underline hover:text-amber-500 focus-visible:ring-2 focus-visible:ring-amber-500 rounded"
                     >
                       قوانین و مقررات
                     </Link>
@@ -434,7 +436,7 @@ function LoginForm() {
                     <Link
                       href="/privacy"
                       target="_blank"
-                      className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500"
+                      className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500 focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
                     >
                       حریم خصوصی
                     </Link>
@@ -446,7 +448,8 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-2xl transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+                aria-label="ورود یا ثبت‌نام با شماره تلفن همراه"
+                className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs sm:text-sm rounded-2xl transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 active:scale-95 cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
               >
                 {loading ? (
                   <>
@@ -485,11 +488,12 @@ function LoginForm() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label htmlFor="login-password-input" className="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   کلمه عبور مدیریت:
                 </label>
                 <div className="relative">
                   <input
+                    id="login-password-input"
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
@@ -499,8 +503,9 @@ function LoginForm() {
                   />
                   <button
                     type="button"
+                    aria-label={showPassword ? "مخفی کردن کلمه عبور" : "نمایش کلمه عبور"}
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    className="absolute left-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg p-0.5"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -600,6 +605,7 @@ function LoginForm() {
                       type="text"
                       inputMode="numeric"
                       maxLength={1}
+                      aria-label={`رقم شماره ${idx + 1} از کد تایید ۵ رقمی`}
                       value={digit}
                       onChange={(e) => handleDigitChange(idx, e.target.value)}
                       onKeyDown={(e) => handleDigitKeyDown(idx, e)}

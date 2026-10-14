@@ -16,6 +16,7 @@ import {
   Zap,
   Flame,
 } from "lucide-react";
+import { toPersianDigits } from "@/lib/utils";
 
 export function EdisonHeroBanner() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -135,7 +136,7 @@ export function EdisonHeroBanner() {
             <div className="relative aspect-square max-w-[240px] sm:max-w-none mx-auto flex items-center justify-center">
               <img
                 src={current.image}
-                alt={current.title}
+                alt={`اسلایدر فروشگاه الکتریک شیاسی: ${current.title}`}
                 className="w-full h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 rounded-2xl"
               />
             </div>
@@ -146,11 +147,12 @@ export function EdisonHeroBanner() {
             {slides.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={() => setActiveSlide(i)}
-                className={`h-2 rounded-full transition-all ${
-                  activeSlide === i ? "w-8 bg-amber-500" : "w-2 bg-white/30"
+                className={`h-2.5 rounded-full transition-all focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
+                  activeSlide === i ? "w-8 bg-amber-500" : "w-2.5 bg-white/40 hover:bg-white/70"
                 }`}
-                aria-label={`اسلاید ${i + 1}`}
+                aria-label={`نمایش اسلاید شماره ${toPersianDigits(i + 1)}: ${slides[i]?.title || ""}`}
               />
             ))}
           </div>

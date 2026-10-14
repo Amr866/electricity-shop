@@ -516,10 +516,11 @@ export default function RepairServicePage() {
                   {/* Customer Info */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label htmlFor="repair-customer-name" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         نام و نام خانوادگی <span className="text-rose-500">*</span>
                       </label>
                       <input
+                        id="repair-customer-name"
                         type="text"
                         required
                         value={customerName}
@@ -530,10 +531,11 @@ export default function RepairServicePage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label htmlFor="repair-customer-phone" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         شماره تماس همراه <span className="text-rose-500">*</span>
                       </label>
                       <input
+                        id="repair-customer-phone"
                         type="tel"
                         required
                         value={customerPhone}
@@ -558,7 +560,7 @@ export default function RepairServicePage() {
                             key={opt.value}
                             type="button"
                             onClick={() => setApplianceType(opt.value)}
-                            className={`min-h-[50px] p-3 rounded-2xl border text-right transition-all flex items-center gap-2.5 active:scale-98 ${
+                            className={`min-h-[50px] p-3 rounded-2xl border text-right transition-all flex items-center gap-2.5 active:scale-98 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
                               isSelected
                                 ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-950 dark:text-amber-300 font-bold shadow-sm shadow-amber-500/10 scale-102"
                                 : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
@@ -575,10 +577,11 @@ export default function RepairServicePage() {
                   {/* Custom Appliance Name Field (If 'Other' selected) */}
                   {applianceType === "سایر وسایل برقی (غیره)" && (
                     <div className="bg-amber-50/50 dark:bg-amber-950/30 p-3.5 rounded-2xl border border-amber-200 dark:border-amber-800 animate-in fade-in">
-                      <label className="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
+                      <label htmlFor="repair-custom-appliance" className="block text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
                         نام وسیله برقی خود را بنویسید <span className="text-rose-500">*</span>
                       </label>
                       <input
+                        id="repair-custom-appliance"
                         type="text"
                         required
                         value={customApplianceName}
@@ -591,10 +594,11 @@ export default function RepairServicePage() {
 
                   {/* Brand & Model */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label htmlFor="repair-brand-model" className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       برند و مدل دستگاه (اختیاری)
                     </label>
                     <input
+                      id="repair-brand-model"
                       type="text"
                       value={brandModel}
                       onChange={(e) => setBrandModel(e.target.value)}
@@ -605,7 +609,7 @@ export default function RepairServicePage() {
 
                   {/* Issue Description + Quick Symptom Tags */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <label htmlFor="repair-issue-desc" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       شرح ایراد و مشکل فنی دستگاه <span className="text-rose-500">*</span>
                     </label>
 
@@ -620,7 +624,7 @@ export default function RepairServicePage() {
                             key={tag}
                             type="button"
                             onClick={() => handleToggleSymptomTag(tag)}
-                            className="min-h-[36px] bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-300 border border-amber-300/70 dark:border-amber-700/60 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 hover-glow flex items-center gap-1.5"
+                            className="min-h-[36px] bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-300 border border-amber-300/70 dark:border-amber-700/60 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 hover-glow flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                           >
                             <span className="text-amber-600 dark:text-amber-400 font-black">+</span>
                             <span>{tag}</span>
@@ -630,6 +634,7 @@ export default function RepairServicePage() {
                     </div>
 
                     <textarea
+                      id="repair-issue-desc"
                       required
                       rows={3}
                       value={issueDesc}
@@ -658,7 +663,7 @@ export default function RepairServicePage() {
                         <div className="relative w-28 h-28 rounded-xl overflow-hidden">
                           <Image
                             src={photoUrl}
-                            alt="پیش‌نمایش تصویر قطعه"
+                            alt="پیش‌نمایش تصویر قطعه یا پلاک دستگاه ارسالی جهت تعمیر در کارگاه"
                             fill
                             className="object-cover"
                             sizes="112px"
@@ -667,7 +672,8 @@ export default function RepairServicePage() {
                         <button
                           type="button"
                           onClick={handleRemovePhoto}
-                          className="absolute top-2 left-2 bg-rose-500 text-white rounded-full p-1 shadow-md hover:bg-rose-600 active:scale-90 transition-transform"
+                          aria-label="حذف تصویر بارگذاری شده"
+                          className="absolute top-2 left-2 bg-rose-500 text-white rounded-full p-1 shadow-md hover:bg-rose-600 active:scale-90 transition-transform focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
                           title="حذف تصویر"
                         >
                           <X className="w-3.5 h-3.5" />
@@ -678,7 +684,8 @@ export default function RepairServicePage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploadingPhoto}
-                        className="w-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-4 text-center transition-all flex flex-col items-center justify-center gap-1.5 bg-slate-50/50 dark:bg-slate-800/40 active:scale-99"
+                        aria-label="بارگذاری تصویر یا عکس از پلاک دستگاه"
+                        className="w-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-4 text-center transition-all flex flex-col items-center justify-center gap-1.5 bg-slate-50/50 dark:bg-slate-800/40 active:scale-99 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
                       >
                         <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-2xs">
                           {uploadingPhoto ? (
@@ -706,11 +713,13 @@ export default function RepairServicePage() {
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       روش تحویل کالا به کارگاه
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="انتخاب شیوه تحویل دستگاه به کارگاه">
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={deliveryType === "in_person"}
                         onClick={() => setDeliveryType("in_person")}
-                        className={`p-3.5 rounded-2xl border text-right transition-all flex items-start gap-2.5 active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-right transition-all flex items-start gap-2.5 active:scale-98 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                           deliveryType === "in_person"
                             ? "bg-amber-50 dark:bg-amber-950/80 border-amber-500 text-amber-950 dark:text-amber-300 font-bold shadow-sm"
                             : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
@@ -727,8 +736,10 @@ export default function RepairServicePage() {
 
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={deliveryType === "courier"}
                         onClick={() => setDeliveryType("courier")}
-                        className={`p-3.5 rounded-2xl border text-right transition-all flex items-start gap-2.5 active:scale-98 ${
+                        className={`p-3.5 rounded-2xl border text-right transition-all flex items-start gap-2.5 active:scale-98 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                           deliveryType === "courier"
                             ? "bg-emerald-50 dark:bg-emerald-950/80 border-emerald-500 text-emerald-950 dark:text-emerald-300 font-bold shadow-sm"
                             : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
@@ -780,12 +791,13 @@ export default function RepairServicePage() {
 
                   {/* Workshop Terms Consent Checkbox */}
                   <div className="bg-slate-50 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200 dark:border-slate-750">
-                    <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
+                    <label htmlFor="repair-terms-checkbox" className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-700 dark:text-slate-300 select-none">
                       <input
+                        id="repair-terms-checkbox"
                         type="checkbox"
                         checked={agreedToWorkshopTerms}
                         onChange={(e) => setAgreedToWorkshopTerms(e.target.checked)}
-                        className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer"
+                        className="w-4 h-4 mt-0.5 rounded border-slate-300 dark:border-slate-600 text-amber-500 focus:ring-amber-500 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                       />
                       <span className="leading-relaxed">
                         من{" "}
@@ -805,7 +817,8 @@ export default function RepairServicePage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 hover-glow"
+                    aria-label="ثبت نهایی درخواست و دریافت کد رهگیری تعمیرات"
+                    className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-98 hover-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     <Send className="w-4 h-4" />
                     <span>{submitting ? "در حال ثبت درخواست..." : "ثبت نهایی درخواست و دریافت کد رهگیری"}</span>
@@ -836,6 +849,7 @@ export default function RepairServicePage() {
                   <input
                     type="text"
                     required
+                    aria-label="شماره تماس ثبت‌شده یا کد پیگیری تعمیرات"
                     value={trackCode}
                     onChange={(e) => setTrackCode(e.target.value)}
                     placeholder="مثال: 09132456789 یا REP-1403..."
@@ -844,7 +858,8 @@ export default function RepairServicePage() {
                   <button
                     type="submit"
                     disabled={trackingLoading}
-                    className="min-h-[44px] bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs px-4 py-2.5 rounded-xl shrink-0 transition-all disabled:opacity-50 active:scale-95 shadow-sm flex items-center justify-center"
+                    aria-label="استعلام و بررسی وضعیت تعمیرات در سامانه"
+                    className="min-h-[44px] bg-amber-500 hover:bg-amber-400 text-amber-950 font-black text-xs px-4 py-2.5 rounded-xl shrink-0 transition-all disabled:opacity-50 active:scale-95 shadow-sm flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
                   >
                     {trackingLoading ? "..." : "استعلام"}
                   </button>

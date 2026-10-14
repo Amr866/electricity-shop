@@ -47,7 +47,7 @@ export function KnowledgeBaseSection() {
             <div className="relative w-24 h-24 sm:w-full sm:h-auto sm:aspect-video overflow-hidden bg-slate-200 dark:bg-slate-800 rounded-xl sm:rounded-none shrink-0">
               <Image
                 src={art.image}
-                alt={art.title}
+                alt={`تصویر مقاله آموزشی: ${art.title} - دانشنامه الکتریک شیاسی`}
                 fill
                 sizes="(max-width: 640px) 100px, (max-width: 1024px) 33vw, 25vw"
                 className="object-cover group-hover:scale-108 transition-transform duration-500 ease-out"

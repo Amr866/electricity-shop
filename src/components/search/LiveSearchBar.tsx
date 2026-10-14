@@ -302,7 +302,7 @@ export function LiveSearchBar({ isMobile = false }: { isMobile?: boolean }) {
                       >
                         <img
                           src={prod.images?.[0]?.url || "/uploads/products/wal_172619-fans-7995865_1920.jpg"}
-                          alt={prod.name}
+                          alt={`نتیجه جستجوی کالا: ${prod.name} - کالای برق شیاسی`}
                           className="w-12 h-12 rounded-lg object-contain bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700 shrink-0"
                         />
                         <div className="flex-1 min-w-0">

@@ -315,7 +315,8 @@ export function Header() {
               {/* Desktop Wishlist Button */}
               <Link
                 href="/wishlist"
-                className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 items-center justify-center relative transition-colors border border-slate-200 dark:border-slate-700/80"
+                aria-label={`مشاهده کالاهای ذخیره‌شده (${toPersianDigits(wishlistCount)} کالا)`}
+                className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 items-center justify-center relative transition-colors border border-slate-200 dark:border-slate-700/80 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
                 title="کالاهای ذخیره‌شده"
               >
                 <Heart className={`w-4 h-4 ${wishlistCount > 0 ? "text-rose-500 fill-rose-500" : ""}`} />
@@ -330,7 +331,8 @@ export function Header() {
               <button
                 type="button"
                 onClick={openCartDrawer}
-                className={`hidden md:flex items-center gap-1.5 sm:gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-700/60 shadow-xs transition-all duration-300 active:scale-95 shrink-0 cursor-pointer ${
+                aria-label={`مشاهده سبد خرید (${toPersianDigits(itemCount)} قلم کالا، مجموع ${subtotal > 0 ? formatToman(subtotal) : "۰ تومان"})`}
+                className={`hidden md:flex items-center gap-1.5 sm:gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-xl border border-slate-700/60 shadow-xs transition-all duration-300 active:scale-95 shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                   cartBump ? "scale-105 ring-2 ring-amber-400 shadow-md shadow-amber-500/20" : ""
                 }`}
               >
@@ -354,8 +356,8 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="md:hidden w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 flex items-center justify-center cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shrink-0"
-                aria-label="منوی سایت"
+                className="md:hidden w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 active:scale-95 flex items-center justify-center cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shrink-0 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none"
+                aria-label="باز کردن منوی اصلی و دسته‌بندی‌های سایت"
               >
                 <Menu className="w-4 h-4" />
               </button>
@@ -386,7 +388,10 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => setMegaMenuOpen(!megaMenuOpen)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                  aria-expanded={megaMenuOpen}
+                  aria-haspopup="true"
+                  aria-label="منوی دسته‌بندی‌های کالای برق و الکتریک"
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
                     megaMenuOpen
                       ? "bg-amber-500 text-slate-950 font-black shadow-sm"
                       : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 dark:text-amber-300 font-bold"

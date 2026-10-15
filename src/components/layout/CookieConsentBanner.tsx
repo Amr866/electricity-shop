@@ -8,10 +8,15 @@ export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Only show if user hasn't already accepted
+    // Only show if user hasn't already accepted or dismissed
     try {
-      const consent = localStorage.getItem("shiasi_cookie_consent");
-      if (!consent) {
+      const localConsent = localStorage.getItem("shiasi_cookie_consent");
+      const sessionConsent = sessionStorage.getItem("shiasi_cookie_consent");
+      const cookieConsent = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("shiasi_cookie_consent="));
+
+      if (!localConsent && !sessionConsent && !cookieConsent) {
         // Subtle delay so it doesn't flash on immediate paint
         const timer = setTimeout(() => {
           setVisible(true);
@@ -19,22 +24,26 @@ export function CookieConsentBanner() {
         return () => clearTimeout(timer);
       }
     } catch {
-      // In case localStorage is blocked by user privacy modes
+      // In case storage is blocked by user privacy modes
     }
   }, []);
 
-  const handleAccept = () => {
+  const saveConsent = (status: "accepted" | "dismissed") => {
     try {
-      localStorage.setItem("shiasi_cookie_consent", "accepted");
+      localStorage.setItem("shiasi_cookie_consent", status);
+      sessionStorage.setItem("shiasi_cookie_consent", status);
+      // Persist for 1 year (31536000 seconds)
+      document.cookie = `shiasi_cookie_consent=${status}; path=/; max-age=31536000; SameSite=Lax`;
     } catch {}
     setVisible(false);
   };
 
+  const handleAccept = () => {
+    saveConsent("accepted");
+  };
+
   const handleDismiss = () => {
-    try {
-      sessionStorage.setItem("shiasi_cookie_consent", "dismissed");
-    } catch {}
-    setVisible(false);
+    saveConsent("dismissed");
   };
 
   if (!visible) return null;

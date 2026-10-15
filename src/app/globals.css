@@ -113,13 +113,98 @@ input[type="range"]::-moz-range-thumb {
   border: 2px solid #ffffff;
 }
 
-/* Print only invoice rules */
+/* Universal Clean Print Engine */
 @media print {
-  body:has(#printable-invoice) > *:not(main),
-  body:has(#printable-invoice) header,
-  body:has(#printable-invoice) footer,
-  body:has(#printable-invoice) nav {
+  @page {
+    size: auto;
+    margin: 5mm 3mm;
+  }
+
+  /* Universal chrome hide */
+  header,
+  footer,
+  nav,
+  aside,
+  [data-mobile-dock],
+  .print\:hidden {
     display: none !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* 1. Isolated Thermal Receipt Slip Printing */
+  body:has(#thermal-receipt-paper) * {
+    visibility: hidden;
+  }
+
+  body:has(#thermal-receipt-paper) #thermal-receipt-paper,
+  body:has(#thermal-receipt-paper) #thermal-receipt-paper * {
+    visibility: visible !important;
+  }
+
+  body:has(#thermal-receipt-paper) #thermal-receipt-paper {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto !important;
+    width: 78mm !important;
+    max-width: 100% !important;
+    padding: 4mm 3mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px dashed #000000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+
+  body:has(#thermal-receipt-paper) #thermal-receipt-paper * {
+    color: #000000 !important;
+    border-color: #000000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 2. Isolated Formal A4 Invoice Printing */
+  body:has(#printable-invoice) * {
+    visibility: hidden;
+  }
+
+  body:has(#printable-invoice) #printable-invoice,
+  body:has(#printable-invoice) #printable-invoice * {
+    visibility: visible !important;
+  }
+
+  body:has(#printable-invoice) #printable-invoice {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 6mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
 

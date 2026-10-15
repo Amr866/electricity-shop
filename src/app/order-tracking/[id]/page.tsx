@@ -13,6 +13,7 @@ import {
 } from "@/lib/utils";
 import { OrderInvoiceActions } from "@/components/order/OrderInvoiceActions";
 import { AnimatedPriceCounter } from "@/components/order/AnimatedPriceCounter";
+import { OrderViewTabs } from "@/components/order/OrderViewTabs";
 import {
   CheckCircle2,
   Clock,
@@ -424,11 +425,14 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           </div>
         </div>
 
-        {/* 2. Official Printable Iranian Proforma Invoice Component */}
-        <div
-          id="printable-invoice"
-          className="bg-white dark:bg-slate-900 rounded-3xl p-3.5 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-5 text-slate-900 dark:text-white transition-colors duration-200 print:bg-white print:text-black print:p-4 print:border print:border-black print:rounded-none print:shadow-none print:block print:break-inside-avoid"
-        >
+        {/* 2. Invoice View with Thermal Receipt Switcher */}
+        <OrderViewTabs
+          order={order}
+          formalInvoiceContent={
+            <div
+              id="printable-invoice"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-3.5 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 sm:space-y-5 text-slate-900 dark:text-white transition-colors duration-200 print:bg-white print:text-black print:p-4 print:border print:border-black print:rounded-none print:shadow-none print:block print:break-inside-avoid"
+            >
           {/* Invoice Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b-2 border-slate-900 dark:border-slate-700 print:border-b-2 print:border-black pb-3 sm:pb-4 text-center sm:text-right">
             <div className="flex items-center gap-2.5">
@@ -686,6 +690,8 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           </div>
 
         </div>
+          }
+        />
 
       </div>
     </div>

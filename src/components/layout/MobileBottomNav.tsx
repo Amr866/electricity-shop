@@ -75,11 +75,11 @@ export function MobileBottomNav() {
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/90 dark:border-slate-800 pt-1.5 pb-[calc(0.4rem+env(safe-area-inset-bottom,0px))] px-2 shadow-xl no-print transition-colors duration-200">
-      <div className="relative max-w-md mx-auto">
+    <nav className="md:hidden fixed bottom-3 inset-x-3.5 max-w-md mx-auto z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.55)] py-1.5 px-2 no-print transition-all duration-300">
+      <div className="relative w-full">
         {/* 5. Smooth Sliding Tab Indicator Capsule (Slide Morph in RTL) */}
         <div
-          className="absolute top-0.5 bottom-0.5 w-[20%] rounded-2xl bg-amber-500/10 dark:bg-amber-500/25 border border-amber-500/25 dark:border-amber-500/40 shadow-2xs transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none"
+          className="absolute top-0.5 bottom-0.5 w-[20%] rounded-xl bg-amber-500/15 dark:bg-amber-400/20 border border-amber-500/30 dark:border-amber-400/30 shadow-2xs transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] pointer-events-none"
           style={{
             transform: `translateX(-${safeActiveIndex * 100}%)`,
           }}

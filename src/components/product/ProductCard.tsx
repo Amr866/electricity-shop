@@ -93,9 +93,15 @@ export function ProductCard({ product }: ProductCardProps) {
       
       {/* Top Section: Badges, Wishlist & Image */}
       <div className="flex-1 flex flex-col">
-        {/* Product Image Frame: Clean Soft Background in both Light and Dark Modes */}
-        <div className="relative m-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 overflow-hidden aspect-square flex items-center justify-center p-3">
+        {/* Product Image Frame: Clean Ambient Pedestal in both Light and Dark Modes */}
+        <div className="relative m-2.5 rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/70 dark:from-slate-800/80 dark:to-slate-850/90 border border-slate-100 dark:border-slate-700/60 overflow-hidden aspect-square flex items-center justify-center p-3">
           
+          {/* Ambient Floating Object Pedestal Shadow */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-3 inset-x-8 h-3.5 bg-gradient-to-r from-transparent via-slate-400/35 dark:via-amber-500/20 to-transparent rounded-full blur-[3px] pointer-events-none transition-all duration-500 group-hover:scale-120 group-hover:opacity-75 group-hover:blur-[5px]"
+          />
+
           {/* Top-Right Badge: Discount or Best Seller */}
           <div className="absolute top-2 right-2 z-10">
             {product.discountPercent && product.discountPercent > 0 ? (
@@ -124,14 +130,14 @@ export function ProductCard({ product }: ProductCardProps) {
             <Heart className={`w-3.5 h-3.5 transition-all duration-300 ${isFavorited ? "fill-rose-500 text-rose-500 animate-in zoom-in-75" : ""}`} />
           </button>
 
-          {/* Product Image Link */}
+          {/* Product Image Link with Gentle Floating Upward Hover */}
           <Link href={`/products/${product.slug}`} prefetch={false} className="relative w-full h-full block focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl">
             <Image
               src={primaryImage}
               alt={`تصویر کالا: ${product.name} - کالای برق و الکتریک شیاسی`}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
+              className="object-contain p-2 group-hover:-translate-y-2 group-hover:scale-105 transition-all duration-500 ease-out drop-shadow-sm group-hover:drop-shadow-lg"
               loading="lazy"
               onError={() => setImageError(true)}
             />
@@ -213,17 +219,18 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
 
-          {/* Spring Pop Add To Cart CTA Button */}
+          {/* Tactile 3D Add To Cart Button */}
           <button
+            type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
             aria-label={added ? `کالای ${product.name} در سبد خرید ثبت شد` : `افزودن ${product.name} به سبد خرید`}
-            className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all duration-300 flex items-center justify-center gap-1 shadow-sm active:scale-85 shrink-0 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
+            className={`relative h-9 px-3 rounded-xl text-xs font-black transition-all duration-100 flex items-center justify-center gap-1.5 shrink-0 select-none cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none ${
               isOutOfStock
-                ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
+                ? "bg-slate-100 dark:bg-slate-850 text-slate-400 border border-slate-200 dark:border-slate-800 cursor-not-allowed"
                 : added
-                ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-105 animate-in zoom-in-95"
-                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/20 hover-glow hover:scale-105"
+                ? "bg-emerald-600 text-white shadow-[0_2.5px_0_#065f46] active:translate-y-[2.5px] active:shadow-none animate-in zoom-in-95"
+                : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_2.5px_0_#b45309] active:translate-y-[2.5px] active:shadow-none hover:-translate-y-[0.5px]"
             }`}
             title="افزودن به سبد خرید"
           >

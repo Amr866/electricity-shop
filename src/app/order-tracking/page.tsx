@@ -20,6 +20,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toPersianDigits, toEnglishDigits, formatToman, formatJalaliDateTime } from "@/lib/utils";
+import { LogoTraceLoader } from "@/components/ui/LogoTraceLoader";
 
 interface OrderSummary {
   id: string;
@@ -298,6 +299,16 @@ export default function OrderLookupPage() {
                     <span>{phoneLoading ? "در حال جستجو در فاکتورها..." : "یافتن سفارشات من"}</span>
                   </button>
                 </form>
+
+                {/* Animated Logo Trace Loader during Lookup */}
+                {phoneLoading && (
+                  <div className="flex flex-col items-center justify-center py-6 space-y-2.5 animate-in fade-in duration-200">
+                    <LogoTraceLoader size={44} strokeWidth={3} className="text-amber-500" />
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">
+                      در حال جستجوی پرونده در سامانه انبار نجف‌آباد...
+                    </span>
+                  </div>
+                )}
 
                 {/* Matching Orders List Result with Staggered Cascade Animation */}
                 {phoneOrders && phoneOrders.length > 0 && (

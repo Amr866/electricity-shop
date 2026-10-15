@@ -66,7 +66,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-16 md:pb-0 transition-colors duration-200`}
+        className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-20 md:pb-0 transition-colors duration-200`}
         suppressHydrationWarning
       >
         <JsonLd data={storeSchema} />

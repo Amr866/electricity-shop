@@ -19,6 +19,9 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { LayeredCablePeel } from "@/components/interactive/LayeredCablePeel";
+import { RollingCounter } from "@/components/ui/RollingCounter";
 
 interface DevicePreset {
   id: string;
@@ -264,34 +267,20 @@ export function ElectricalCableCalculator() {
       {/* Form Controls */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
         {/* Input 1: Phase Type */}
+        {/* Input 1: Phase Type with Segmented Pill Switch */}
         <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-200/80 dark:border-slate-750 space-y-2">
           <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
             نوع برق ورودی:
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setPhaseType("single")}
-              className={`min-h-[44px] py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 flex items-center justify-center text-center ${
-                phaseType === "single"
-                  ? "bg-amber-500 text-amber-950 border-amber-400 shadow-md font-black scale-102"
-                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              ۲۲۰V تک‌فاز (خانگی)
-            </button>
-            <button
-              type="button"
-              onClick={() => setPhaseType("three")}
-              className={`min-h-[44px] py-2 px-3 rounded-xl text-xs font-bold transition-all duration-200 border active:scale-95 flex items-center justify-center text-center ${
-                phaseType === "three"
-                  ? "bg-amber-500 text-amber-950 border-amber-400 shadow-md font-black scale-102"
-                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              ۳۸۰V سه‌فاز (صنعتی)
-            </button>
-          </div>
+          <SegmentedControl
+            value={phaseType}
+            onChange={(val) => setPhaseType(val as "single" | "three")}
+            options={[
+              { value: "single", label: "۲۲۰V تک‌فاز (خانگی)" },
+              { value: "three", label: "۳۸۰V سه‌فاز (صنعتی)" },
+            ]}
+            className="w-full"
+          />
         </div>
 
         {/* Input 2: Load Power */}
@@ -299,7 +288,7 @@ export function ElectricalCableCalculator() {
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-700 dark:text-slate-300">توان مصرفی:</span>
             <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20 tabular-nums">
-              <bdi dir="ltr">{toPersianDigits(loadPowerWatts)} W</bdi> ({(loadPowerWatts / 1000).toFixed(1)} kW)
+              <bdi dir="ltr"><RollingCounter value={loadPowerWatts} /> W</bdi> ({(loadPowerWatts / 1000).toFixed(1)} kW)
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -348,7 +337,7 @@ export function ElectricalCableCalculator() {
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="text-slate-700 dark:text-slate-300">طول مسیر سیم‌کشی:</span>
             <span className="text-amber-600 dark:text-amber-400 font-mono font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20 tabular-nums">
-              <bdi dir="ltr">{toPersianDigits(distanceMeters)} m</bdi>
+              <bdi dir="ltr"><RollingCounter value={distanceMeters} /> m</bdi>
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -493,6 +482,11 @@ export function ElectricalCableCalculator() {
             )}
           </button>
         </div>
+      </div>
+
+      {/* 4. Interactive Layered Cable Peel Inspection Cutaway */}
+      <div className="pt-2">
+        <LayeredCablePeel currentGauge={recommendedGauge} />
       </div>
     </section>
   );

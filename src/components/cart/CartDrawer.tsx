@@ -324,6 +324,7 @@ export function CartDrawer() {
             )}
           </div>
 
+
           {/* Footer Actions and Financial Breakdown */}
           {items.length > 0 && (
             <div className="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/95 space-y-3 shadow-lg">

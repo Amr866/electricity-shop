@@ -10,6 +10,8 @@ import {
   ChevronLeft,
   ShieldCheck,
 } from "lucide-react";
+import { TactileButton } from "@/components/ui/TactileButton";
+import { RollingCounter } from "@/components/ui/RollingCounter";
 
 // 1. Static Showcase Data (Defined outside render function to eliminate GC memory allocation)
 const SHOWCASE_CATEGORIES = [
@@ -83,6 +85,18 @@ export function HeroBanner() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-amber-50/60 via-slate-50 to-slate-100/40 dark:from-slate-950 dark:via-slate-900/60 dark:to-slate-950 text-slate-900 dark:text-white py-6 sm:py-10 lg:py-14 border-b border-slate-200/80 dark:border-slate-800/40 transition-colors duration-300">
       
+      {/* Subtle Dot Matrix Substrate Grid */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.045] dark:opacity-[0.065] pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, #f59e0b 1.2px, transparent 1.2px)",
+          backgroundSize: "22px 22px",
+          maskImage: "radial-gradient(ellipse at center, black 40%, transparent 85%)",
+          WebkitMaskImage: "radial-gradient(ellipse at center, black 40%, transparent 85%)",
+        }}
+      />
+
       {/* Ambient Atmospheric Glows */}
       <div className="absolute top-0 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400/10 dark:bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-slate-400/10 dark:bg-slate-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -127,33 +141,33 @@ export function HeroBanner() {
               </div>
             </div>
 
-            {/* Action Buttons with Shimmer Light Sweep & Enhanced Contrast */}
+            {/* Tactile Action Buttons with Mechanical Physics */}
             <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center sm:gap-3 pt-1.5 sm:pt-2.5">
-              <Link
+              <TactileButton
+                variant="amber"
+                size="md"
                 href="/products"
-                prefetch={false}
-                className="relative overflow-hidden bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 sm:px-6 py-3 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all flex items-center justify-center gap-1.5 active:scale-95 text-center group"
+                leftIcon={<ArrowLeft className="w-4 h-4 shrink-0" />}
               >
-                {/* Subtle Shimmer Sweep Light */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-1000 ease-in-out pointer-events-none" />
-                <span>کاتالوگ محصولات</span>
-                <ArrowLeft className="w-3.5 h-3.5 shrink-0 group-hover:-translate-x-1 transition-transform" />
-              </Link>
+                کاتالوگ محصولات
+              </TactileButton>
 
-              <Link
+              <TactileButton
+                variant="outline"
+                size="md"
                 href="/repair-service"
-                prefetch={false}
-                className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center"
+                rightIcon={<Wrench className="w-4 h-4 text-amber-500 shrink-0" />}
               >
-                <Wrench className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                <span>پذیرش تعمیرات</span>
-              </Link>
+                پذیرش تعمیرات
+              </TactileButton>
             </div>
 
-            {/* Quick Trust Stat Micro-Metric */}
+            {/* Quick Trust Stat Micro-Metric with Rolling Number Counter */}
             <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-              <span className="font-semibold text-slate-700 dark:text-slate-300">+۵,۰۰۰ سفارش موفق، عیب‌یابی و توزیع در استان اصفهان</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
+                +<RollingCounter value={5420} /> سفارش موفق، عیب‌یابی و توزیع در استان اصفهان
+              </span>
             </div>
           </div>
 

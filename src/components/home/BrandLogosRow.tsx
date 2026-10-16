@@ -2,142 +2,67 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Award,
-  ExternalLink,
-  Fan,
-  Cpu,
-  Zap,
-  Flame,
-  Radio,
-  Lightbulb,
-  Sun,
-  Activity,
-  Layers,
-  ToggleRight,
-} from "lucide-react";
+import Image from "next/image";
+import { ShieldCheck, Award } from "lucide-react";
 
 interface BrandItem {
   name: string;
-  category: string;
-  tag: string;
   slug: string;
-  icon: React.ComponentType<{ className?: string }>;
-  iconBg: string;
-  iconColor: string;
-  borderColor: string;
+  logoUrl: string;
 }
 
 const OFFICIAL_BRANDS: BrandItem[] = [
-  {
-    name: "پارس خزر",
-    category: "پنکه و تهویه خانگی",
-    tag: "ضمانت ۲۴ ماهه",
-    slug: "pars-khazar",
-    icon: Fan,
-    iconBg: "bg-rose-500/15 dark:bg-rose-500/20",
-    iconColor: "text-rose-500",
-    borderColor: "border-rose-500/30 group-hover:border-rose-500",
-  },
-  {
-    name: "موتوژن تبریز",
-    category: "الکتروموتور کولر آبی",
-    tag: "سیم مس ۱۰۰٪",
-    slug: "motogen",
-    icon: Cpu,
-    iconBg: "bg-blue-500/15 dark:bg-blue-500/20",
-    iconColor: "text-blue-500",
-    borderColor: "border-blue-500/30 group-hover:border-blue-500",
-  },
-  {
-    name: "البرز الکتریک",
-    category: "سیم و کابل استاندارد",
-    tag: "تاییدیه توانیر",
-    slug: "alborz",
-    icon: Zap,
-    iconBg: "bg-emerald-500/15 dark:bg-emerald-500/20",
-    iconColor: "text-emerald-500",
-    borderColor: "border-emerald-500/30 group-hover:border-emerald-500",
-  },
-  {
-    name: "صنایع اخوان",
-    category: "بخاری برقی و هیتر",
-    tag: "گارانتی شرکتی",
-    slug: "akhavan",
-    icon: Flame,
-    iconBg: "bg-amber-500/15 dark:bg-amber-500/20",
-    iconColor: "text-amber-500",
-    borderColor: "border-amber-500/30 group-hover:border-amber-500",
-  },
-  {
-    name: "آنتن هانی",
-    category: "تقویت سیگنال و گیرنده",
-    tag: "کیفیت تصویر 4K",
-    slug: "hani",
-    icon: Radio,
-    iconBg: "bg-purple-500/15 dark:bg-purple-500/20",
-    iconColor: "text-purple-500",
-    borderColor: "border-purple-500/30 group-hover:border-purple-500",
-  },
-  {
-    name: "افراتاب",
-    category: "روشنایی و پروژکتور LED",
-    tag: "فوق‌کم‌مصرف A+",
-    slug: "afratab",
-    icon: Lightbulb,
-    iconBg: "bg-yellow-500/15 dark:bg-yellow-500/20",
-    iconColor: "text-yellow-500",
-    borderColor: "border-yellow-500/30 group-hover:border-yellow-500",
-  },
-  {
-    name: "پارس شهاب",
-    category: "لامپ و سیستم‌های نور",
-    tag: "طول عمر بالا",
-    slug: "pars-shahab",
-    icon: Sun,
-    iconBg: "bg-teal-500/15 dark:bg-teal-500/20",
-    iconColor: "text-teal-500",
-    borderColor: "border-teal-500/30 group-hover:border-teal-500",
-  },
-  {
-    name: "شیوا امواج",
-    category: "رله و کنترل صنعتی",
-    tag: "دقت مهندسی",
-    slug: "shiva-amvaj",
-    icon: Activity,
-    iconBg: "bg-indigo-500/15 dark:bg-indigo-500/20",
-    iconColor: "text-indigo-500",
-    borderColor: "border-indigo-500/30 group-hover:border-indigo-500",
-  },
-  {
-    name: "سیم و کابل اصفهان",
-    category: "هادی تمام مس",
-    tag: "خلوص ۹۹.۹٪",
-    slug: "isfahan-cable",
-    icon: Layers,
-    iconBg: "bg-cyan-500/15 dark:bg-cyan-500/20",
-    iconColor: "text-cyan-500",
-    borderColor: "border-cyan-500/30 group-hover:border-cyan-500",
-  },
-  {
-    name: "دلند الکتریک",
-    category: "کلید و پریز ساختمانی",
-    tag: "مقاوم و استاندارد",
-    slug: "deland",
-    icon: ToggleRight,
-    iconBg: "bg-orange-500/15 dark:bg-orange-500/20",
-    iconColor: "text-orange-500",
-    borderColor: "border-orange-500/30 group-hover:border-orange-500",
-  },
+  // روشنایی و نورپردازی
+  { name: "صنایع روشنایی گلنور", slug: "golnoor", logoUrl: "/images/brands/golnoor.svg" },
+  { name: "شیوا امواج اصفهان", slug: "shiva-amvaj", logoUrl: "/images/brands/shivaamvaj.svg" },
+  { name: "موتوژن تبریز", slug: "motogen", logoUrl: "/images/brands/motogen.svg" },
+  { name: "صنایع مازی‌نور", slug: "mazinoor", logoUrl: "/images/brands/mazinoor.svg" },
+  { name: "صنایع روشنایی افراتاب", slug: "afratab", logoUrl: "/images/brands/afratab.svg" },
+  { name: "لگراند (Legrand)", slug: "legrand", logoUrl: "/images/brands/legrand.svg" },
+  { name: "پارس شعاع توس", slug: "pars-shoa", logoUrl: "/images/brands/pars-shoa.png" },
+  { name: "لامپ پارس شهاب", slug: "pars-shahab", logoUrl: "/images/brands/pars-shahab.png" },
+  { name: "نمانور آسیا", slug: "namanoor", logoUrl: "/images/brands/namanoor.png" },
+  { name: "صبا ترانس", slug: "saba-trans", logoUrl: "/images/brands/saba-trans.png" },
+
+  // سیم و کابل ساختمانی و صنعتی
+  { name: "خراسان افشارنژاد", slug: "khorasan-cable", logoUrl: "/images/brands/khorasan-cable.png" },
+  { name: "سیم و کابل اصفهان", slug: "isfahan-cable", logoUrl: "/images/brands/isfahan-cable.png" },
+  { name: "صنایع کابل همدان", slug: "hamedan-cable", logoUrl: "/images/brands/hamedan-cable.png" },
+  { name: "البرز الکتریک نور (لینکو)", slug: "alborz", logoUrl: "/images/brands/alborz-electric.png" },
+  { name: "صنایع کابل کمان", slug: "kaman-cable", logoUrl: "/images/brands/kaman-cable.png" },
+  { name: "سیلیکون کابل یاقوت البرز", slug: "yaghout-cable", logoUrl: "/images/brands/yaghout-cable.png" },
+  { name: "سیم و کابل سیمیا", slug: "simia", logoUrl: "/images/brands/simia.png" },
+
+  // کلید، پریز و رابط‌های الکتریکی
+  { name: "دلند الکتریک", slug: "deland", logoUrl: "/images/brands/deland.png" },
+  { name: "پارت الکتریک", slug: "part-electric", logoUrl: "/images/brands/partelectric.png" },
+  { name: "ایران الکتریک", slug: "iran-electric", logoUrl: "/images/brands/iran-electric.png" },
+  { name: "خیام الکتریک", slug: "khayam-electric", logoUrl: "/images/brands/khayam-electric.png" },
+  { name: "ویرا الکتریک", slug: "viera-electric", logoUrl: "/images/brands/viera-electric.png" },
+
+  // الکتروموتور، تهویه و سرمایش
+  { name: "شرکت دمنده", slug: "damandeh", logoUrl: "/images/brands/damandeh.png" },
+  { name: "شرکت الکتروژن", slug: "electrogen", logoUrl: "/images/brands/electrogen.png" },
+  { name: "پارس خزر", slug: "pars-khazar", logoUrl: "/images/brands/pars-khazar.png" },
+
+  // آیفون، آنتن و سیستم‌های صوتی/تصویری
+  { name: "تابا الکترونیک", slug: "taba", logoUrl: "/images/brands/taba.png" },
+  { name: "الکتروپیک", slug: "electropeyk", logoUrl: "/images/brands/electropeyk.png" },
+  { name: "صنایع الکترونیک سیماران", slug: "simaran", logoUrl: "/images/brands/simaran.png" },
+  { name: "آنتن هانی", slug: "hani", logoUrl: "/images/brands/hani.png" },
+
+  // برق صنعتی، حرارتی و حفاظتی
+  { name: "صنایع اخوان", slug: "akhavan", logoUrl: "/images/brands/akhavan.png" },
+  { name: "پارس فانال", slug: "pars-fanal", logoUrl: "/images/brands/pars-fanal.png" },
+  { name: "میکرومکس الکترونیک", slug: "micromax", logoUrl: "/images/brands/micromax.png" },
 ];
 
 export function BrandLogosRow() {
-  // Duplicate array twice for smooth infinite loop
+  // Duplicate array for smooth infinite marquee looping
   const marqueeBrands = [...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS];
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-4 relative overflow-hidden transition-colors duration-200">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs dark:shadow-xl space-y-4 relative overflow-hidden transition-colors duration-200">
       
       {/* Header Bar */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -148,54 +73,41 @@ export function BrandLogosRow() {
 
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
           <Award className="w-3.5 h-3.5 text-amber-500" />
-          <span>ضمانت اصالت و عاملیت مجاز</span>
+          <span>تضمین ۱۰۰٪ اصالت کالا و گارانتی معتبر</span>
         </div>
       </div>
 
       {/* Infinite Auto-scrolling Marquee Container with Edge Fades */}
-      <div className="relative w-full overflow-hidden py-1">
+      <div className="relative w-full overflow-hidden py-3">
         
         {/* Right and Left Edge Gradient Masks for Smooth In/Out Fading */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none" />
 
-        {/* 60fps Scrolling Track */}
-        <div className="animate-marquee-rtl flex items-center gap-3.5 sm:gap-4 select-none cursor-pointer">
-          {marqueeBrands.map((b, idx) => {
-            const Icon = b.icon;
-            return (
-              <Link
-                key={`${b.slug}-${idx}`}
-                href={`/products?brand=${encodeURIComponent(b.slug)}`}
-                className={`group shrink-0 w-52 sm:w-60 bg-slate-50 dark:bg-slate-850/80 hover:bg-white dark:hover:bg-slate-800 p-3 sm:p-3.5 rounded-2xl border ${b.borderColor} transition-all duration-300 hover:-translate-y-1 shadow-2xs hover:shadow-lg hover:shadow-amber-500/10 flex items-center gap-3`}
-              >
-                {/* Brand Logo Emblem */}
-                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl ${b.iconBg} border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center ${b.iconColor} shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-inner`}>
-                  <Icon className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
-                </div>
-
-                {/* Brand Title & Tag */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1">
-                    <h4 className="font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-amber-500 transition-colors">
-                      {b.name}
-                    </h4>
-                    <ExternalLink className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                  </div>
-
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
-                    {b.category}
-                  </p>
-
-                  <div className="mt-1">
-                    <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                      {b.tag}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+        {/* 60fps Scrolling Track with Pure Floating Logos */}
+        <div 
+          className="animate-marquee-rtl flex items-center gap-8 sm:gap-12 select-none cursor-pointer hover:[animation-play-state:paused]"
+          style={{ animationDuration: "90s" }}
+        >
+          {marqueeBrands.map((b, idx) => (
+            <Link
+              key={`${b.slug}-${idx}`}
+              href={`/products?brand=${encodeURIComponent(b.slug)}`}
+              title={b.name}
+              className="group shrink-0 flex items-center justify-center p-2 transition-transform duration-300 hover:scale-110 focus:outline-hidden"
+            >
+              <div className="relative h-10 sm:h-12 w-28 sm:w-36 flex items-center justify-center">
+                <Image
+                  src={b.logoUrl}
+                  alt={b.name}
+                  width={140}
+                  height={56}
+                  className="max-h-full max-w-full w-auto h-auto object-contain transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:brightness-105 dark:brightness-110 drop-shadow-2xs"
+                  unoptimized={b.logoUrl.endsWith(".svg")}
+                />
+              </div>
+            </Link>
+          ))}
         </div>
 
       </div>

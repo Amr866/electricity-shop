@@ -221,7 +221,7 @@ input[type="range"]::-moz-range-thumb {
 .animate-marquee-rtl {
   display: flex;
   width: max-content;
-  animation: marquee-rtl 35s linear infinite;
+  animation: marquee-rtl var(--marquee-duration, 120s) linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;

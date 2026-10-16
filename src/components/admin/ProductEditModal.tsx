@@ -9,6 +9,8 @@ import {
   AlertCircle,
   Sparkles,
   UploadCloud,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal";
 import { uploadMediaFile } from "@/lib/utils/media";
@@ -44,6 +46,8 @@ export function ProductEditModal({
   const [isIsfahanFast, setIsIsfahanFast] = useState(true);
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [datasheetUrl, setDatasheetUrl] = useState("");
+  const [uploadingDatasheet, setUploadingDatasheet] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -70,6 +74,7 @@ export function ProductEditModal({
       setIsIsfahanFast(editingProduct.isIsfahanFast !== false);
       setImageUrl(editingProduct.images?.[0]?.url || "");
       setDescription(editingProduct.description || "");
+      setDatasheetUrl(editingProduct.datasheetUrl || "");
     } else {
       setName("");
       setSlug("");
@@ -86,6 +91,7 @@ export function ProductEditModal({
       setIsIsfahanFast(true);
       setImageUrl("");
       setDescription("");
+      setDatasheetUrl("");
     }
     setMessage("");
   }, [isOpen, editingProduct, categories]);
@@ -106,6 +112,24 @@ export function ProductEditModal({
       alert(err instanceof Error ? err.message : "خطای سرور در آپلود فایل.");
     } finally {
       setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+const handleDatasheetFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingDatasheet(true);
+    const file = files[0];
+
+    try {
+      const uploaded = await uploadMediaFile(file, "general");
+      setDatasheetUrl(uploaded.url);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "خطای سرور در آپلود فایل.");
+    } finally {
+      setUploadingDatasheet(false);
       e.target.value = "";
     }
   };
@@ -134,6 +158,7 @@ export function ProductEditModal({
       isIsfahanFast,
       imageUrl,
       description,
+      datasheetUrl: datasheetUrl.trim() || null,
     };
 
     if (isEdit) {
@@ -422,6 +447,59 @@ export function ProductEditModal({
                     />
                   </label>
                 </div>
+              </div>
+            </div>
+
+{/* Product Datasheet (PDF / Catalog) */}
+            <div className="sm:col-span-2 space-y-1.5 p-3.5 bg-slate-950/40 rounded-2xl border border-slate-800">
+              <div className="flex items-center justify-between">
+                <label className="text-slate-300 font-bold flex items-center gap-1.5 text-xs">
+                  <FileText className="w-4 h-4 text-rose-400" />
+                  <span>دیتاشیت یا کاتالوگ فنی محصول (PDF اختیاری)</span>
+                </label>
+                {datasheetUrl && (
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={datasheetUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>مشاهده فایل</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setDatasheetUrl("")}
+                      className="text-[11px] text-rose-400 hover:text-rose-300 font-bold cursor-pointer"
+                    >
+                      حذف لینک
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <input
+                  type="text"
+                  value={datasheetUrl}
+                  onChange={(e) => setDatasheetUrl(e.target.value)}
+                  placeholder="آدرس اینترنتی یا مسیر فایل PDF (مثلاً: /uploads/datasheet.pdf)..."
+                  className="flex-1 bg-slate-800 border border-slate-700 text-white font-mono text-xs rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  dir="ltr"
+                />
+
+                <label className="bg-slate-800 hover:bg-slate-700 text-rose-300 hover:text-white font-bold px-3 py-2 rounded-xl border border-slate-700 cursor-pointer flex items-center justify-center gap-1.5 text-xs shrink-0 transition-colors">
+                  <UploadCloud className="w-4 h-4 text-rose-400" />
+                  <span>{uploadingDatasheet ? "در حال آپلود..." : "آپلود PDF"}</span>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xlsx,.xls,.txt"
+                    disabled={uploadingDatasheet}
+                    onChange={handleDatasheetFileUpload}
+                    className="hidden"
+                  />
+                </label>
               </div>
             </div>
 

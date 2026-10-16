@@ -120,6 +120,8 @@ export default function BomUploadPage() {
   const [showPasteModal, setShowPasteModal] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [uploadedFileType, setUploadedFileType] = useState<string | null>(null);
 
   // Official Project Inquiry Submission States
   const [showInquiryModal, setShowInquiryModal] = useState(false);
@@ -248,6 +250,8 @@ export default function BomUploadPage() {
               status: it.matchConfidence !== "UNMATCHED" ? "matched" : "not_found",
             }));
             setItems(converted);
+            if (data.fileUrl) setUploadedFileUrl(data.fileUrl);
+            if (data.fileType) setUploadedFileType(data.fileType);
           } else {
             alert(data.error || "خطایی در تحلیل فایل اکسل رخ داد.");
           }
@@ -433,6 +437,8 @@ export default function BomUploadPage() {
           projectCity: inquiryCity.trim() || "نجف‌آباد",
           companyName: inquiryCompany.trim() || null,
           content: fullContent,
+          fileUrl: uploadedFileUrl || null,
+          fileType: uploadedFileType || null,
         }),
       });
 

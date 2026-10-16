@@ -20,6 +20,7 @@ import {
   Flame,
   CreditCard,
   Banknote,
+  Award,
 } from "lucide-react";
 
 export const metadata = {
@@ -391,6 +392,24 @@ export default function TermsPage() {
 
           <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-[13px]">
             در صورت بروز هرگونه ابهام یا اختلاف، طرفین در وهله نخست تلاش خواهند نمود از طریق مذاکره صلح‌آمیز و بخش پشتیبانی شیاسی موضوع را حل نمایند. در صورت عدم حصول توافق، مراجع قضایی و اتحادیه صنف الکتریک شهرستان نجف‌آباد صالح به رسیدگی خواهند بود.
+          </p>
+        </section>
+
+        {/* Section 10: Intellectual Property & Brand Trademarks */}
+        <section className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed transition-colors duration-200">
+          <div className="flex items-center gap-2.5 text-slate-950 dark:text-white font-black text-base border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <Award className="w-4 h-4" />
+            </div>
+            <h2>ماده ۱۰: مالکیت معنوی، نشان‌ها و علائم تجاری</h2>
+          </div>
+
+          <p>
+            کلیه تصاویر، نشان‌ها و نام‌های تجاری شرکت‌ها و کارخانجات تولیدی نمایش داده شده در وب‌سایت (از جمله گلنور، شیوا امواج، موتوژن، سیم و کابل خراسان، البرز الکتریک، سیماران، الکتروپیک، پارت الکتریک و سایر برندها) متعلق به مالکان و شرکت‌های سازنده مربوطه می‌باشد.
+          </p>
+
+          <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-[13px]">
+            استفاده از این علائم و تصاویر در وب‌سایت فروشگاه شیاسی صرفاً با هدف معرفی مشخصات فنی، عاملیت توزیع، تسهیل شناسایی اصالت کالا توسط مشتریان و راهنمایی خریداران در انتخاب محصولات اورجینال صورت گرفته است و بیانگر هیچ‌گونه ادعای مالکیت نسبت به علائم تجاری ثبت‌شده شرکت‌های مذکور نمی‌باشد.
           </p>
         </section>
 

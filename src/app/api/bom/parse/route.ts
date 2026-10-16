@@ -1,3 +1,6 @@
+import path from "path";
+import crypto from "crypto";
+import { writeFile, mkdir } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import { parseAndMatchContractorBom } from "@/lib/bomParser";
 import { logger } from "@/lib/logger";
@@ -57,9 +60,35 @@ export async function POST(req: NextRequest) {
 
     const quotation = await parseAndMatchContractorBom(fileBuffer);
 
+    // Persist uploaded BOM spreadsheet to /public/uploads/boms/ for admin access & audit
+    let fileUrl: string | null = null;
+    let fileType: string | null = null;
+    try {
+      const bomsDir = path.resolve(process.cwd(), "public", "uploads", "boms");
+      await mkdir(bomsDir, { recursive: true });
+
+      const ext = path.extname(fileName) || ".xlsx";
+      const cleanBase = path.basename(fileName, ext)
+        .replace(/[^a-zA-Z0-9_\-\u0600-\u06FF]/g, "_")
+        .slice(0, 35);
+      const uniqueSuffix = crypto.randomBytes(4).toString("hex");
+      const safeName = `bom_${Date.now()}_${uniqueSuffix}_${cleanBase}${ext}`;
+      const destPath = path.join(bomsDir, safeName);
+
+      await writeFile(destPath, fileBuffer);
+      fileUrl = `/uploads/boms/${safeName}`;
+      fileType = ext.toLowerCase().includes("xls")
+        ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        : "text/csv";
+    } catch (saveErr) {
+      logger.error("Could not persist uploaded BOM file to disk", saveErr);
+    }
+
     return NextResponse.json({
       success: true,
       fileName,
+      fileUrl,
+      fileType,
       ...quotation,
     });
   } catch (error: any) {

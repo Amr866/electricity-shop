@@ -26,6 +26,7 @@ import {
   Save,
   Loader2,
   MessageSquare,
+  FileText,
 } from "lucide-react";
 import { ProductExcelImportModal } from "@/components/admin/ProductExcelImportModal";
 import { ConfirmDeleteModal } from "@/components/admin/ConfirmDeleteModal";
@@ -67,6 +68,7 @@ export interface AdminProduct {
   categoryId: string;
   category?: CategoryItem;
   images?: ProductImageItem[];
+  datasheetUrl?: string | null;
   isArchived?: boolean;
 }
 
@@ -547,6 +549,21 @@ export function ProductsAdminClient({
                     <span>برند: {prod.brand || "متفرقه"}</span>
                     <span>•</span>
                     <span className="font-mono">کد: {prod.sku || prod.slug.slice(0, 10)}</span>
+                    {prod.datasheetUrl && (
+                      <>
+                        <span>•</span>
+                        <a
+                          href={prod.datasheetUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 font-bold"
+                          title="مشاهده / دانلود دیتاشیت PDF"
+                        >
+                          <FileText className="w-3 h-3" />
+                          <span>دیتاشیت</span>
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -677,6 +694,21 @@ export function ProductsAdminClient({
                           </span>
                           <span>•</span>
                           <span className="font-mono">کد: {prod.sku || prod.slug.slice(0, 10)}</span>
+                          {prod.datasheetUrl && (
+                            <>
+                              <span>•</span>
+                              <a
+                                href={prod.datasheetUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 font-bold bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-800/80"
+                                title="مشاهده / دانلود کاتالوگ یا دیتاشیت PDF"
+                              >
+                                <FileText className="w-3 h-3" />
+                                <span>دیتاشیت PDF</span>
+                              </a>
+                            </>
+                          )}
                         </div>
                       </div>
                     </td>

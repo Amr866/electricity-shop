@@ -16,9 +16,9 @@ export function KnowledgeBaseSection() {
             <div className="w-8 h-8 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Lightbulb className="w-4 h-4" />
             </div>
-            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
               دانستنی‌های روشنایی و تعمیرات لوازم برقی
-            </h3>
+            </h2>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
             مقاله‌های تخصصی درباره برق ساختمان، نگهداری لوازم خانگی، سیستم‌های سرمایشی و گرمایشی
@@ -62,9 +62,9 @@ export function KnowledgeBaseSection() {
                   {art.category}
                 </span>
 
-                <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 h-8 sm:h-10">
+                <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2 h-8 sm:h-10 block">
                   {art.title}
-                </h4>
+                </span>
               </div>
 
               {/* Metadata Row: Locked to Bottom with mt-auto */}

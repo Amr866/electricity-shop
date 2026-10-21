@@ -66,10 +66,10 @@ export function BrandLogosRow() {
       
       {/* Header Bar */}
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <h3 className="font-black text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
+        <h2 className="font-black text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-amber-500" />
           <span>عاملیت رسمی و برندهای همکار کارگاه شیاسی</span>
-        </h3>
+        </h2>
 
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
           <Award className="w-3.5 h-3.5 text-amber-500" />
@@ -93,13 +93,15 @@ export function BrandLogosRow() {
             <Link
               key={`${b.slug}-${idx}`}
               href={`/products?brand=${encodeURIComponent(b.slug)}`}
-              title={b.name}
+              rel="nofollow"
+              title={`مشاهده محصولات برند ${b.name}`}
+              aria-label={`مشاهده محصولات برند ${b.name}`}
               className="group shrink-0 flex items-center justify-center p-2 transition-transform duration-300 hover:scale-110 focus:outline-hidden"
             >
               <div className="relative h-10 sm:h-12 w-28 sm:w-36 flex items-center justify-center">
                 <Image
                   src={b.logoUrl}
-                  alt={b.name}
+                  alt={`لوگوی رسمی برند ${b.name} - عاملیت فروش کارگاه شیاسی`}
                   width={140}
                   height={56}
                   className="max-h-full max-w-full w-auto h-auto object-contain transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:brightness-105 dark:brightness-110 drop-shadow-2xs"

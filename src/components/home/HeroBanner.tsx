@@ -229,9 +229,9 @@ export function HeroBanner() {
 
                 {/* Bottom: Typography & Info */}
                 <div className="relative z-10 space-y-0.5">
-                  <h3 className={`font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm transition-colors line-clamp-1 ${item.accentText}`}>
+                  <span className={`font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm transition-colors line-clamp-1 block ${item.accentText}`}>
                     {item.title}
-                  </h3>
+                  </span>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 font-medium">
                     {item.subtitle}
                   </p>

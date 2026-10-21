@@ -154,9 +154,9 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
 
               {/* Bottom: Name & Subtitle */}
               <div className="relative z-10 space-y-1">
-                <h3 className={`font-extrabold text-sm sm:text-base text-white transition-colors ${theme.accentText}`}>
+                <span className={`font-extrabold text-sm sm:text-base text-white transition-colors block ${theme.accentText}`}>
                   {cat.name}
-                </h3>
+                </span>
                 <p className="text-[11px] text-slate-300 line-clamp-1 font-medium">
                   {cat.description || "تجهیزات تخصصی و قطعات اصلی"}
                 </p>

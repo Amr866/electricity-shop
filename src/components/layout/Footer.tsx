@@ -121,9 +121,9 @@ export function Footer() {
 
           {/* Col 2 (lg:col-span-2): Product Directory with Magnetic Smooth Hover */}
           <nav aria-label="دسته‌بندی‌های کالا" className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
+            <p className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
               دسته‌بندی کالاها
-            </h4>
+            </p>
             <ul className="space-y-1.5 text-xs text-slate-400 font-medium">
               <li>
                 <Link href="/products?category=home-appliances-cooling-heating" prefetch={false} className="group flex items-center justify-between py-1 hover:text-white transition-colors">
@@ -166,9 +166,9 @@ export function Footer() {
 
           {/* Col 3 (lg:col-span-2): Workshop Services with Magnetic Smooth Hover */}
           <nav aria-label="خدمات کارگاه" className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
+            <p className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
               خدمات کارگاه
-            </h4>
+            </p>
             <ul className="space-y-1.5 text-xs text-slate-400 font-medium">
               <li>
                 <Link href="/repair-service" prefetch={false} className="group flex items-center justify-between py-1 hover:text-white transition-colors">
@@ -205,9 +205,9 @@ export function Footer() {
 
           {/* Col 4 (lg:col-span-2): Customer Help with Magnetic Smooth Hover */}
           <nav aria-label="راهنمای مشتریان" className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
+            <p className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
               راهنمای مشتریان
-            </h4>
+            </p>
             <ul className="space-y-1.5 text-xs text-slate-400 font-medium">
               <li>
                 <Link href="/about" prefetch={false} className="group flex items-center justify-between py-1 hover:text-white transition-colors">
@@ -244,9 +244,9 @@ export function Footer() {
 
           {/* Col 5 (lg:col-span-2): Official Trust Seal & Enamad Column (Standard Iranian E-Commerce) */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
+            <p className="text-white font-black text-sm border-r-2 border-amber-400 pr-2">
               مجوز و اصالت
-            </h4>
+            </p>
             
             {/* Prestige Enamad Plaque */}
             <a

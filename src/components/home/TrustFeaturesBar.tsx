@@ -52,9 +52,9 @@ export function TrustFeaturesBar() {
                   <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:rotate-6" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="font-extrabold text-[11px] sm:text-xs text-slate-900 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  <span className="font-extrabold text-[11px] sm:text-xs text-slate-900 dark:text-white truncate block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                     {item.title}
-                  </h4>
+                  </span>
                   {item.id === "support-phone" ? (
                     <p className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-0.5 whitespace-nowrap">
                       <span>تلفن: </span>

@@ -28,9 +28,9 @@ export function BomCallToActionBanner() {
             <span>ویژه پیمانکاران، برق‌کاران و پروژه‌های ساختمانی</span>
           </div>
 
-          <h3 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-snug">
+          <h2 className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-snug">
             خرید عمده و بارگذاری لیست قطعات (BOM)
-          </h3>
+          </h2>
 
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
             لیست تجهیزات، سیم، کابل، کلید پریز یا قطعات مورد نیاز پروژه خود را به صورت اکسل، PDF یا عکس دست‌نویس ارسال کنید تا با تخفیف ویژه همکار و فاکتور رسمی در سریع‌ترین زمان پیش‌فاکتور برایتان صادر شود.

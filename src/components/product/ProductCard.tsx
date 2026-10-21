@@ -166,10 +166,16 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             {/* Product Title (Locked to consistent 2-line height) */}
-            <Link href={`/products/${product.slug}`} prefetch={false} className="block">
-              <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-8 sm:h-10">
+            <Link
+              href={`/products/${product.slug}`}
+              prefetch={false}
+              className="block"
+              title={`مشاهده مشخصات و خرید ${product.name}`}
+              aria-label={`مشاهده مشخصات و خرید ${product.name}`}
+            >
+              <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug group-hover:text-amber-500 transition-colors h-8 sm:h-10 block">
                 {product.name}
-              </h3>
+              </span>
             </Link>
           </div>
 

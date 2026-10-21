@@ -176,9 +176,9 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
         <div className="flex items-center gap-2.5 sm:gap-3 text-right">
           <div>
             <OfferCountdown />
-            <h3 className="font-black text-base sm:text-2xl text-white">
+            <h2 className="font-black text-base sm:text-2xl text-white">
               پیشنهادهای شگفت‌انگیز
-            </h3>
+            </h2>
             <p className="text-[10px] sm:text-[11px] text-white/90 dark:text-slate-300 font-medium line-clamp-1">
               تخفیف‌های محدود امروز با تحویل فوری در نجف‌آباد و اصفهان
             </p>

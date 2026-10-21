@@ -58,9 +58,9 @@ export function CustomerReviewsSection({ reviews = [] }: CustomerReviewsSectionP
                         {rev.authorName.slice(0, 1)}
                       </div>
                       <div>
-                        <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white block">
                           {rev.authorName}
-                        </h3>
+                        </span>
                         {rev.city && (
                           <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">
                             {rev.city}
@@ -127,9 +127,9 @@ export function CustomerReviewsSection({ reviews = [] }: CustomerReviewsSectionP
                 <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                   <Wrench className="w-5 h-5" />
                 </div>
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white block">
                   تست فنی در کارگاه نجف‌آباد
-                </h3>
+                </span>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
                   آزمایش سلامت الکتروموتورها، پمپ‌های آب، پنکه‌ها و بردهای الکترونیکی پیش از تحویل به مشتری در محل کارگاه.
                 </p>
@@ -145,9 +145,9 @@ export function CustomerReviewsSection({ reviews = [] }: CustomerReviewsSectionP
                 <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white block">
                   ضمانت ۱۰۰٪ مس و اصالت کالا
-                </h3>
+                </span>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
                   توزیع مستقیم سیم و کابل استاندارد تمام مس بدون آلیاژ آلومینیوم (CCA)، به همراه گارانتی رسمی شرکت‌های تولیدی.
                 </p>
@@ -163,9 +163,9 @@ export function CustomerReviewsSection({ reviews = [] }: CustomerReviewsSectionP
                 <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                   <RotateCcw className="w-5 h-5" />
                 </div>
-                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
+                <span className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white block">
                   مهلت تست و مشاوره فنی
-                </h3>
+                </span>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
                   امکان ارجاع کالا مطابق با شرایط بازگشت وجه، همراه با راهنمایی فنی متخصصان جهت انتخاب بهترین کابل و قطعه.
                 </p>

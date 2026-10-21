@@ -173,10 +173,10 @@ export function IsfahanBanner() {
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div className="bg-slate-50 dark:bg-slate-850 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-750 shadow-sm dark:shadow-xl space-y-3.5 h-full flex flex-col justify-between">
               <div>
-                <h3 className="font-extrabold text-xs sm:text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1.5 pb-2.5 border-b border-slate-200/80 dark:border-slate-750">
+                <p className="font-extrabold text-xs sm:text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1.5 pb-2.5 border-b border-slate-200/80 dark:border-slate-750">
                   <MapPin className="w-4 h-4 text-amber-500" />
                   <span>نشانی شعبه نجف‌آباد و ارتباط مستقیم</span>
-                </h3>
+                </p>
 
                 <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 mt-3">
                   {/* Address Pill with 1-Click Copy */}

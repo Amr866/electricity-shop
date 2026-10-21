@@ -149,9 +149,9 @@ export function RepairWorkshopSection() {
                   </span>
                 </div>
 
-                <h3 className={`font-extrabold text-sm text-slate-900 dark:text-white transition-colors ${item.accentText}`}>
+                <span className={`font-extrabold text-sm text-slate-900 dark:text-white transition-colors block ${item.accentText}`}>
                   {item.title}
-                </h3>
+                </span>
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5 font-medium line-clamp-3">
                   {item.desc}
                 </p>

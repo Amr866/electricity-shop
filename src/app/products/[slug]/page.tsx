@@ -59,12 +59,34 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       canonical: `${baseUrl}/products/${product.slug}`,
     },
     openGraph: {
-      title: product.name,
+      title: `${product.name} | فروشگاه شیاسی نجف‌آباد`,
       description: product.shortDesc || product.description.slice(0, 160),
       url: `${baseUrl}/products/${product.slug}`,
       siteName: "فروشگاه تخصصی شیاسی",
       locale: "fa_IR",
       type: "website",
+      images: product.images?.[0]?.url
+        ? [
+            {
+              url: product.images[0].url.startsWith("http")
+                ? product.images[0].url
+                : `${baseUrl}${product.images[0].url}`,
+              alt: product.name,
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} | فروشگاه شیاسی نجف‌آباد`,
+      description: product.shortDesc || product.description.slice(0, 160),
+      images: product.images?.[0]?.url
+        ? [
+            product.images[0].url.startsWith("http")
+              ? product.images[0].url
+              : `${baseUrl}${product.images[0].url}`,
+          ]
+        : [],
     },
   };
 }

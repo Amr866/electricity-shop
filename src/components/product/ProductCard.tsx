@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
@@ -54,6 +55,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [added, setAdded] = useState(false);
@@ -67,6 +69,14 @@ export function ProductCard({ product }: ProductCardProps) {
     : product.images?.find((img) => img.isPrimary)?.url ||
       product.images?.[0]?.url ||
       "/uploads/products/wal_172619-fans-7995865_1920.jpg";
+
+  const handleImageClick = (e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/products/${product.slug}`, "_blank");
+    } else {
+      router.push(`/products/${product.slug}`);
+    }
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -130,8 +140,12 @@ export function ProductCard({ product }: ProductCardProps) {
             <Heart className={`w-3.5 h-3.5 transition-all duration-300 ${isFavorited ? "fill-rose-500 text-rose-500 animate-in zoom-in-75" : ""}`} />
           </button>
 
-          {/* Product Image Link with Gentle Floating Upward Hover */}
-          <Link href={`/products/${product.slug}`} prefetch={false} className="relative w-full h-full block focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl">
+          {/* Product Image Frame: Clickable to product page, single canonical link via product title below */}
+          <div
+            onClick={handleImageClick}
+            role="presentation"
+            className="relative w-full h-full block cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 rounded-2xl"
+          >
             <Image
               src={primaryImage}
               alt={`تصویر کالا: ${product.name} - کالای برق و الکتریک شیاسی`}
@@ -141,7 +155,7 @@ export function ProductCard({ product }: ProductCardProps) {
               loading="lazy"
               onError={() => setImageError(true)}
             />
-          </Link>
+          </div>
 
           {isOutOfStock && (
             <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] flex items-center justify-center">

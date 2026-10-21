@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ShieldCheck, Award } from "lucide-react";
 
 interface BrandItem {
@@ -58,8 +59,11 @@ const OFFICIAL_BRANDS: BrandItem[] = [
 ];
 
 export function BrandLogosRow() {
-  // Duplicate array for smooth infinite marquee looping
-  const marqueeBrands = [...OFFICIAL_BRANDS, ...OFFICIAL_BRANDS];
+  const router = useRouter();
+
+  const handleCloneClick = (slug: string) => {
+    router.push(`/products?brand=${encodeURIComponent(slug)}`);
+  };
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs dark:shadow-xl space-y-4 relative overflow-hidden transition-colors duration-200">
@@ -86,12 +90,13 @@ export function BrandLogosRow() {
 
         {/* 60fps Scrolling Track with Pure Floating Logos */}
         <div 
-          className="animate-marquee-rtl flex items-center gap-8 sm:gap-12 select-none cursor-pointer hover:[animation-play-state:paused]"
+          className="animate-marquee-rtl flex items-center gap-8 sm:gap-12 select-none hover:[animation-play-state:paused]"
           style={{ animationDuration: "90s" }}
         >
-          {marqueeBrands.map((b, idx) => (
+          {/* Track 1: Canonical Crawlable & Accessible Links */}
+          {OFFICIAL_BRANDS.map((b) => (
             <Link
-              key={`${b.slug}-${idx}`}
+              key={`brand-${b.slug}`}
               href={`/products?brand=${encodeURIComponent(b.slug)}`}
               rel="nofollow"
               title={`مشاهده محصولات برند ${b.name}`}
@@ -109,6 +114,29 @@ export function BrandLogosRow() {
                 />
               </div>
             </Link>
+          ))}
+
+          {/* Track 2: Visual Clone strictly for infinite CSS marquee illusion (hidden from search crawlers & screen readers) */}
+          {OFFICIAL_BRANDS.map((b) => (
+            <div
+              key={`clone-${b.slug}`}
+              aria-hidden="true"
+              role="presentation"
+              tabIndex={-1}
+              onClick={() => handleCloneClick(b.slug)}
+              className="group shrink-0 flex items-center justify-center p-2 transition-transform duration-300 hover:scale-110 focus:outline-hidden cursor-pointer"
+            >
+              <div className="relative h-10 sm:h-12 w-28 sm:w-36 flex items-center justify-center">
+                <Image
+                  src={b.logoUrl}
+                  alt=""
+                  width={140}
+                  height={56}
+                  className="max-h-full max-w-full w-auto h-auto object-contain transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:brightness-105 dark:brightness-110 drop-shadow-2xs"
+                  unoptimized={b.logoUrl.endsWith(".svg")}
+                />
+              </div>
+            </div>
           ))}
         </div>
 

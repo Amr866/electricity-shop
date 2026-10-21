@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatToman, toPersianDigits } from "@/lib/utils";
@@ -105,7 +106,15 @@ interface AmazingOffersBannerProps {
 }
 
 export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
+  const router = useRouter();
   const { addToCart } = useCart();
+  const handleDealImageClick = (slug: string, e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/products/${slug}`, "_blank");
+    } else {
+      router.push(`/products/${slug}`);
+    }
+  };
   const { toggleWishlist, isInWishlist } = useWishlist();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [addedDealId, setAddedDealId] = useState<string | null>(null);
@@ -232,10 +241,10 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                 </div>
 
                 {/* Isolated Photo Frame: Seamless in both Light and Dark modes */}
-                <Link
-                  href={`/products/${deal.slug}`}
-                  prefetch={false}
-                  className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs focus-visible:ring-2 focus-visible:ring-amber-500"
+                <div
+                  onClick={(e) => handleDealImageClick(deal.slug, e)}
+                  role="presentation"
+                  className="relative aspect-square w-full rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-100 dark:border-slate-700/60 p-2 sm:p-3 flex items-center justify-center overflow-hidden block mb-1.5 shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500"
                 >
                   <Image
                     src={primaryImg}
@@ -245,7 +254,7 @@ export function AmazingOffersBanner({ products }: AmazingOffersBannerProps) {
                     className="object-contain p-2 group-hover:scale-108 transition-transform duration-500 ease-out"
                     loading="lazy"
                   />
-                </Link>
+                </div>
 
                 {/* Brand & Name */}
                 <div className="space-y-0.5 sm:space-y-1">

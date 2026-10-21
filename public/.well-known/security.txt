@@ -1,0 +1,6 @@
+Contact: mailto:info@shiasistore.ir
+Contact: tel:+983142626116
+Expires: 2027-12-31T23:59:59.000Z
+Canonical: https://shiasistore.ir/.well-known/security.txt
+Preferred-Languages: fa, en
+Policy: https://shiasistore.ir/privacy

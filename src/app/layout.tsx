@@ -10,7 +10,12 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { BrandProvider } from "@/context/BrandContext";
 import { AuthProvider } from "@/components/providers/AuthProvider";
-import { JsonLd, buildElectronicsStoreSchema } from "@/components/seo/JsonLd";
+import {
+  JsonLd,
+  buildElectronicsStoreSchema,
+  buildWebSiteSchema,
+  buildOrganizationSchema,
+} from "@/components/seo/JsonLd";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic", "latin"],
@@ -47,8 +52,24 @@ export const metadata: Metadata = {
     "آنتن تلویزیون هانی"
   ],
   authors: [{ name: "فروشگاه شیاسی (کالای برق و کارگاه فنی)" }],
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   alternates: {
     canonical: "/",
+    types: {
+      "text/plain": [{ url: "/llms.txt", title: "LLMs Information Manifest" }],
+    },
   },
   openGraph: {
     title: "فروشگاه شیاسی نجف‌آباد | کالای برق و کارگاه تعمیرات",
@@ -89,6 +110,8 @@ export default function RootLayout({
 }>) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
   const storeSchema = buildElectronicsStoreSchema(baseUrl);
+  const webSiteSchema = buildWebSiteSchema(baseUrl);
+  const orgSchema = buildOrganizationSchema(baseUrl);
 
   return (
     <html
@@ -97,11 +120,16 @@ export default function RootLayout({
       className={vazirmatn.variable}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs Context" />
+        <JsonLd data={webSiteSchema} />
+        <JsonLd data={orgSchema} />
+        <JsonLd data={storeSchema} />
+      </head>
       <body
         className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-20 md:pb-0 transition-colors duration-200`}
         suppressHydrationWarning
       >
-        <JsonLd data={storeSchema} />
         <AuthProvider>
           <BrandProvider>
             <WishlistProvider>

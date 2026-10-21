@@ -110,7 +110,7 @@ export function HeroBanner() {
             {/* Location & Authenticity Value Proposition Badge */}
             <div className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-              <span>تأمین مستقیم قطعات با ضمانت تست و اصالت</span>
+              <span>عرضه قطعات الکتریکی با مهلت تست و گارانتی اصالت</span>
             </div>
 
             {/* Main Headline: Perfectly Balanced Symmetrical Lines */}
@@ -123,7 +123,7 @@ export function HeroBanner() {
 
             {/* Sub-text: High Contrast & Concise (Clamped to 2 lines on mobile) */}
             <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl text-justify font-medium line-clamp-2 sm:line-clamp-none">
-              تأمین مستقیم انواع پنکه ریموت‌دار، موتور کولر آبی، بخاری برقی، سیم و کابل استاندارد تمام مس، به همراه کارگاه پذیرش و عیب‌یابی تخصصی در نجف‌آباد.
+              خرید مطمئن انواع پنکه، موتور کولر آبی، بخاری برقی و سیم و کابل استاندارد مس، به همراه کارگاه پذیرش و عیب‌یابی تخصصی در نجف‌آباد.
             </p>
 
             {/* Courier & Workshop Trust Line with Live Radar Dot */}
@@ -217,8 +217,7 @@ export function HeroBanner() {
                     alt={`تصویر کارت معرفی: ${item.title} - ${item.subtitle}`}
                     fill
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
-                    priority={index < 2}
-                    loading={index < 2 ? "eager" : "lazy"}
+                    priority={index === 0}
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}

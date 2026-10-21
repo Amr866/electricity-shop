@@ -95,12 +95,17 @@ export function CustomerReviewsSection({ reviews = [] }: CustomerReviewsSectionP
                   <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between font-medium relative z-10">
                     <Link
                       href={`/products/${rev.product.slug}`}
+                      title={`مشاهده مشخصات و خرید ${rev.product.name}`}
+                      aria-label={`مشاهده مشخصات و خرید ${rev.product.name}`}
                       className="flex items-center justify-between w-full group/link hover:text-amber-600 dark:hover:text-amber-400 transition-colors focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none rounded-lg"
                     >
-                      <span className="truncate max-w-[220px]">
-                        کالا: <strong className="font-bold text-slate-800 dark:text-slate-200 group-hover/link:text-amber-600 dark:group-hover/link:text-amber-400 transition-colors">{rev.product.name}</strong>
+                      <span className="truncate max-w-[200px]">
+                        محصول: <strong className="font-bold text-slate-800 dark:text-slate-200 group-hover/link:text-amber-600 dark:group-hover/link:text-amber-400 transition-colors">{rev.product.name}</strong>
                       </span>
-                      <ArrowLeft className="w-3 h-3 text-slate-400 group-hover/link:-translate-x-0.5 transition-transform" />
+                      <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 shrink-0">
+                        مشاهده کالا
+                        <ArrowLeft className="w-3 h-3 text-slate-400 group-hover/link:-translate-x-0.5 transition-transform" />
+                      </span>
                     </Link>
                   </div>
                 )}

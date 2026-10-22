@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProductDetailView, type ProductDetailData } from "@/components/product/ProductDetailView";
 import { ProductCard } from "@/components/product/ProductCard";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ChevronLeft, Zap } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -237,14 +238,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-6 sm:py-8 pb-32 sm:pb-12 transition-colors duration-200">
       {/* Inject JSON-LD Schema.org markup for Search Engines */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-6 sm:space-y-8">
         

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal";
 import { uploadMediaFile } from "@/lib/utils/media";
+import { isSafeAttachmentUrl } from "@/lib/utils/security";
 import type { AdminProduct, CategoryItem } from "@/app/admin/products/ProductsAdminClient";
 
 export interface ProductEditModalProps {
@@ -457,7 +458,7 @@ const handleDatasheetFileUpload = async (e: React.ChangeEvent<HTMLInputElement>)
                   <FileText className="w-4 h-4 text-rose-400" />
                   <span>دیتاشیت یا کاتالوگ فنی محصول (PDF اختیاری)</span>
                 </label>
-                {datasheetUrl && (
+                {datasheetUrl && isSafeAttachmentUrl(datasheetUrl) && (
                   <div className="flex items-center gap-2">
                     <a
                       href={datasheetUrl}

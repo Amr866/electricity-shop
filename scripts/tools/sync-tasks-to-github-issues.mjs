@@ -6,7 +6,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const TASKS_PATH = path.resolve(process.cwd(), 'specs/001-store-workshop-platform/tasks.md');
 const REPO = 'Amr866/electricity-shop';
@@ -74,10 +74,15 @@ async function main() {
   // Check gh CLI authentication
   let existingIssueTitles = [];
   try {
-    const existingJson = execSync(`gh issue list --repo ${REPO} --limit 500 --json number,title --state all`, {
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'ignore'],
-    });
+    const existingJson = execFileSync(
+      'gh',
+      ['issue', 'list', '--repo', REPO, '--limit', '500', '--json', 'number,title', '--state', 'all'],
+      {
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+        shell: process.platform === 'win32',
+      }
+    );
     existingIssueTitles = JSON.parse(existingJson).map((i) => i.title);
     console.log(`[TaskstoIssues] Found ${existingIssueTitles.length} existing issues on ${REPO}`);
   } catch (err) {
@@ -105,9 +110,15 @@ async function main() {
     const body = `### Task Information\n- **Task ID**: ${t.id}\n- **Milestone/Phase**: ${t.phase}\n- **Initial Status**: ${t.isCompleted ? 'Completed in main' : 'Pending'}\n\n### Description\n${t.description}\n\n---\n*Auto-generated from \`tasks.md\` via speckit-taskstoissues*`;
 
     try {
-      execSync(`gh issue create --repo ${REPO} --title "${t.title.replace(/"/g, '\\"')}" --body "${body.replace(/"/g, '\\"')}"`, {
-        encoding: 'utf8',
-      });
+      execFileSync(
+        'gh',
+        ['issue', 'create', '--repo', REPO, '--title', t.title, '--body-file', '-'],
+        {
+          input: body,
+          encoding: 'utf8',
+          shell: process.platform === 'win32',
+        }
+      );
       console.log(`[CREATED] ${t.title}`);
       createdCount++;
     } catch (err) {

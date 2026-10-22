@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useBrand } from "@/context/BrandContext";
-import { formatToman, toPersianDigits, toEnglishDigits } from "@/lib/utils";
+import { formatToman, toPersianDigits, toEnglishDigits, isSafeAttachmentUrl } from "@/lib/utils";
 import {
   Wrench,
   CheckCircle2,
@@ -1072,7 +1072,7 @@ export default function RepairServicePage() {
                       </div>
                     )}
 
-                    {attachedPhoto && (
+                    {attachedPhoto && isSafeAttachmentUrl(attachedPhoto) && (
                       <div className="flex items-center justify-between">
                         <span className="text-slate-500 dark:text-slate-400">عکس ضمیمه‌شده:</span>
                         <a

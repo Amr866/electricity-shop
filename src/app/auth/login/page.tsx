@@ -33,7 +33,15 @@ import { toPersianDigits, toAsciiDigits, normalizeIranianPhone } from "@/lib/uti
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/account";
+  const rawCallbackUrl = searchParams.get("callbackUrl");
+  // Defense-in-depth: Strict relative-path check to eliminate Open Redirect vulnerabilities
+  const callbackUrl =
+    rawCallbackUrl &&
+    rawCallbackUrl.startsWith("/") &&
+    !rawCallbackUrl.startsWith("//") &&
+    !rawCallbackUrl.includes("\\")
+      ? rawCallbackUrl
+      : "/account";
 
   // Unified auth steps: "phone" -> "password" or "otp"
   const [step, setStep] = useState<"phone" | "password" | "otp">("phone");

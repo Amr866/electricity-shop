@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
-import { toAsciiDigits } from "@/lib/utils";
+import { toAsciiDigits, normalizeIranianPhone } from "@/lib/utils";
 import { evaluateCostApprovalDecision } from "@/lib/repairLifecycle";
 
 export async function POST(req: NextRequest) {
@@ -35,6 +37,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "درخواست تعمیری با این کد رهگیری یافت نشد." },
         { status: 404 }
+      );
+    }
+
+    // Access Control Gate: Verify session ownership, admin authority, or matching customer phone
+    const session = await getServerSession(authOptions);
+    const isAdmin = session?.user?.role === "ADMIN";
+    const isOwner = Boolean(
+      session?.user && (
+        (existingRepair.userId && session.user.id === existingRepair.userId) ||
+        (existingRepair.customerPhone && session.user.phone === existingRepair.customerPhone)
+      )
+    );
+
+    const inputPhone = body.phone ? normalizeIranianPhone(String(body.phone)) : null;
+    const isPhoneMatched = Boolean(inputPhone && inputPhone === existingRepair.customerPhone);
+
+    if (!isAdmin && !isOwner && !isPhoneMatched) {
+      logger.warn("[Repair Approval] Unauthorized attempt to modify repair quote status", {
+        trackingCode: cleanCode,
+        ip: req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip"),
+      });
+      return NextResponse.json(
+        { error: "جهت تایید یا انصراف هزینه تعمیر، ورود به حساب کاربری یا درج شماره تماس ثبت‌شده الزامی است." },
+        { status: 403 }
       );
     }
 

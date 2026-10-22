@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { checkAdminSession } from "@/lib/adminAuth";
+import { isSafeAttachmentUrl } from "@/lib/utils/security";
 import { deleteGuardedProduct, deleteGuardedProductsBulk } from "@/lib/admin-product-guard";
 
 const LOCAL_FALLBACK_IMAGE = "/uploads/products/wal_172619-fans-7995865_1920.jpg";
@@ -37,6 +38,20 @@ export async function POST(req: NextRequest) {
     if (!name || !slug || !price || !categoryId) {
       return NextResponse.json(
         { message: "نام، نامک، قیمت و دسته‌بندی الزامی هستند." },
+        { status: 400 }
+      );
+    }
+
+    if (datasheetUrl && !isSafeAttachmentUrl(datasheetUrl)) {
+      return NextResponse.json(
+        { message: "آدرس فایل دیتاشیت نامعتبر یا غیرمجاز است." },
+        { status: 400 }
+      );
+    }
+
+    if (imageUrl && !isSafeAttachmentUrl(imageUrl)) {
+      return NextResponse.json(
+        { message: "آدرس تصویر محصول نامعتبر یا غیرمجاز است." },
         { status: 400 }
       );
     }
@@ -129,6 +144,13 @@ export async function PUT(req: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { message: "شناسه محصول الزامی است." },
+        { status: 400 }
+      );
+    }
+
+    if (datasheetUrl && !isSafeAttachmentUrl(datasheetUrl)) {
+      return NextResponse.json(
+        { message: "آدرس فایل دیتاشیت نامعتبر یا غیرمجاز است." },
         { status: 400 }
       );
     }

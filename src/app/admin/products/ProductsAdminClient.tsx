@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatToman, toPersianDigits } from "@/lib/utils";
+import { formatToman, toPersianDigits, isSafeAttachmentUrl } from "@/lib/utils";
 import {
   Plus,
   Trash2,
@@ -549,7 +549,7 @@ export function ProductsAdminClient({
                     <span>برند: {prod.brand || "متفرقه"}</span>
                     <span>•</span>
                     <span className="font-mono">کد: {prod.sku || prod.slug.slice(0, 10)}</span>
-                    {prod.datasheetUrl && (
+                    {prod.datasheetUrl && isSafeAttachmentUrl(prod.datasheetUrl) && (
                       <>
                         <span>•</span>
                         <a
@@ -694,7 +694,7 @@ export function ProductsAdminClient({
                           </span>
                           <span>•</span>
                           <span className="font-mono">کد: {prod.sku || prod.slug.slice(0, 10)}</span>
-                          {prod.datasheetUrl && (
+                          {prod.datasheetUrl && isSafeAttachmentUrl(prod.datasheetUrl) && (
                             <>
                               <span>•</span>
                               <a

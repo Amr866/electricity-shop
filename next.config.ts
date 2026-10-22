@@ -77,6 +77,8 @@ const nextConfig: NextConfig = {
               "frame-src 'self' https://maps.google.com https://www.google.com",
               "object-src 'none'",
               "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'self'",
             ].join("; "),
           },
         ],

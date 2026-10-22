@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { formatJalaliDate, toPersianDigits } from "@/lib/utils";
+import { formatJalaliDate, toPersianDigits, isSafeAttachmentUrl } from "@/lib/utils";
 import {
   FileSpreadsheet,
   Search,
@@ -308,7 +308,7 @@ export function BomAdminClient({ initialSubmissions }: { initialSubmissions: any
                       </td>
                       <td className="p-3.5 text-slate-300 font-medium">{sub.projectCity || "نامشخص"}</td>
                       <td className="p-3.5">
-                        {sub.fileUrl ? (
+                        {sub.fileUrl && isSafeAttachmentUrl(sub.fileUrl) ? (
                           <a
                             href={sub.fileUrl}
                             target="_blank"

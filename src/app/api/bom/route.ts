@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
+import { isSafeAttachmentUrl } from "@/lib/utils/security";
 import { logger } from "@/lib/logger";
 
 // GET: Retrieve BOM inquiries for admin or lookup by tracking code
@@ -64,7 +65,18 @@ export async function POST(req: NextRequest) {
 
     logger.info("Inbound POST BOM inquiry", { contractorName, projectCity });
 
-    if (!contractorName || !contractorPhone || (!content && !fileUrl)) {
+    let safeFileUrl: string | null = null;
+    if (fileUrl) {
+      if (typeof fileUrl !== "string" || !isSafeAttachmentUrl(fileUrl)) {
+        return NextResponse.json(
+          { error: "آدرس فایل ضمیمه نامعتبر یا غیرمجاز است." },
+          { status: 400 }
+        );
+      }
+      safeFileUrl = fileUrl.trim();
+    }
+
+    if (!contractorName || !contractorPhone || (!content && !safeFileUrl)) {
       return NextResponse.json(
         { error: "نام، شماره موبایل و لیست اقلام یا فایل ضمیمه الزامی است." },
         { status: 400 }
@@ -86,7 +98,7 @@ export async function POST(req: NextRequest) {
         projectCity: projectCity ? projectCity.trim() : "نجف‌آباد / اصفهان",
         companyName: companyName ? companyName.trim() : null,
         content: content ? content.trim() : null,
-        fileUrl: fileUrl || null,
+        fileUrl: safeFileUrl,
         fileType: fileType || null,
         status: "PENDING",
       },

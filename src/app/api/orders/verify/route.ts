@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logPaymentTransaction } from "@/lib/paymentLogger";
 import { logger } from "@/lib/logger";
@@ -11,6 +13,20 @@ export async function POST(req: NextRequest) {
       pathname: "/api/orders/verify",
       ip,
     });
+
+    // In production environments, direct client-side payment status assertions are strictly disallowed.
+    // Online gateway transactions must be verified via server-to-server webhook, or approved by an authenticated admin.
+    if (process.env.NODE_ENV === "production") {
+      const session = await getServerSession(authOptions);
+      const isAdmin = session?.user?.role === "ADMIN";
+      if (!isAdmin) {
+        logger.warn("[Payment Verify] Blocked unauthenticated client-side payment verification in production", { ip });
+        return NextResponse.json(
+          { message: "تایید مستقیم پرداخت تنها توسط درگاه امن بانکی یا مدیریت سیستم مجاز است." },
+          { status: 403 }
+        );
+      }
+    }
 
     const { orderNumber, status, refId } = await req.json();
 

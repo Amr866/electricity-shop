@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
@@ -42,8 +43,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate secure 5-digit OTP
-    const code = Math.floor(10000 + Math.random() * 90000).toString();
+    // Generate cryptographically secure 5-digit OTP using CSPRNG
+    const code = crypto.randomInt(10000, 100000).toString();
     const expiresAt = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes
 
     // Invalidate prior unused tokens for this phone
@@ -60,7 +61,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(`📱 [SMS Gateway] OTP code for ${cleanPhone}: ${code}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`📱 [SMS Gateway] OTP code for ${cleanPhone}: ${code}`);
+    }
 
     const isDev = process.env.NODE_ENV !== "production";
 

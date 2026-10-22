@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
+import { isSafeAttachmentUrl } from "@/lib/utils/security";
 import { logger } from "@/lib/logger";
 import {
   generateRepairTrackingCode,
@@ -104,11 +105,17 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id || null;
 
+    // Validate photoUrl if provided to prevent Stored XSS / javascript: URIs
+    if (photoUrl && (typeof photoUrl !== "string" || !isSafeAttachmentUrl(photoUrl))) {
+      return NextResponse.json({ error: "آدرس تصویر ضمیمه نامعتبر یا غیرمجاز است." }, { status: 400 });
+    }
+    const safePhoto = (typeof photoUrl === "string" && isSafeAttachmentUrl(photoUrl)) ? photoUrl.trim() : null;
+
     // Generate collision-safe repair tracking code: REP-YYMMDD-XXXX
     const trackingCode = generateRepairTrackingCode();
 
     // Format admin notes with photo attachment if present
-    const initialNotes = photoUrl ? `[تصویر ضمیمه]: ${photoUrl}` : null;
+    const initialNotes = safePhoto ? `[تصویر ضمیمه]: ${safePhoto}` : null;
 
     const repair = await prisma.repairRequest.create({
       data: {

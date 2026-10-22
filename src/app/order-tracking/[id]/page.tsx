@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
   formatToman,
@@ -62,6 +64,45 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
   if (!order) {
     notFound();
   }
+
+  // Customer Privacy Guard: Mask sensitive personal data (full name, phone, residential address)
+  // unless the current viewer is the order owner or an administrator
+  const session = await getServerSession(authOptions);
+  const isOwner = Boolean(
+    session?.user && (
+      (order.userId && session.user.id === order.userId) ||
+      (order.customerPhone && session.user.phone === order.customerPhone) ||
+      session.user.role === "ADMIN"
+    )
+  );
+
+  const displayCustomerName = isOwner
+    ? order.customerName
+    : order.customerName && order.customerName.length > 2
+      ? `${order.customerName.slice(0, 2)}***`
+      : order.customerName || "مشتری گرامی";
+
+  const displayCustomerPhone = isOwner
+    ? order.customerPhone
+    : order.customerPhone
+      ? order.customerPhone.replace(/(\d{4})\d{4}(\d{3})/, "$1****$2")
+      : "";
+
+  const displayAddress = isOwner
+    ? order.address
+    : `${order.province || "اصفهان"}، ${order.city || "نجف‌آباد"} (آدرس دقیق فقط پس از ورود به حساب خریدار نمایش داده می‌شود)`;
+
+  const displayNationalCode = isOwner
+    ? order.nationalCode
+    : order.nationalCode
+      ? "**********"
+      : null;
+
+  const displayEconomicCode = isOwner
+    ? order.economicCode
+    : order.economicCode
+      ? "**********"
+      : null;
 
   // Calculate timeline progress percentage strictly for RTL (Right to Left)
   let progressPercent = 15;
@@ -403,9 +444,9 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
             <div className="space-y-1">
               <span className="text-slate-400 dark:text-slate-500 font-medium block text-[10px]">تحویل‌گیرنده:</span>
               <p className="font-bold text-slate-900 dark:text-white text-[11px] sm:text-xs">
-                {order.customerName} <span className="font-mono font-normal text-slate-500 dark:text-slate-400">({toPersianDigits(order.customerPhone)})</span>
+                {displayCustomerName} <span className="font-mono font-normal text-slate-500 dark:text-slate-400">({toPersianDigits(displayCustomerPhone)})</span>
               </p>
-              <p className="text-slate-600 dark:text-slate-300 leading-snug text-[10px] sm:text-[11px]">{order.address}</p>
+              <p className="text-slate-600 dark:text-slate-300 leading-snug text-[10px] sm:text-[11px]">{displayAddress}</p>
             </div>
 
             <div className="space-y-1 sm:border-r sm:pr-3 border-slate-200 dark:border-slate-700 pt-2 sm:pt-0 border-t sm:border-t-0">
@@ -460,11 +501,11 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
           <div className="bg-slate-50 dark:bg-slate-800/80 print:bg-white print:border print:border-black p-2.5 sm:p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs grid grid-cols-1 sm:grid-cols-2 gap-2 print:text-black">
             <div>
               <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">خریدار: </span>
-              <strong className="text-slate-900 dark:text-white print:text-black text-[11px]">{order.customerName}</strong>
+              <strong className="text-slate-900 dark:text-white print:text-black text-[11px]">{displayCustomerName}</strong>
             </div>
             <div>
               <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">تماس: </span>
-              <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{toPersianDigits(order.customerPhone)}</strong>
+              <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">{toPersianDigits(displayCustomerPhone)}</strong>
             </div>
             {order.companyName && (
               <div>
@@ -472,25 +513,25 @@ export default async function OrderTrackingPage({ params, searchParams }: OrderT
                 <strong className="text-slate-900 dark:text-white print:text-black text-[11px]">{order.companyName}</strong>
               </div>
             )}
-            {order.nationalCode && (
+            {displayNationalCode && (
               <div>
                 <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">شناسه ملی: </span>
                 <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">
-                  <bdi dir="ltr">{order.nationalCode}</bdi>
+                  <bdi dir="ltr">{displayNationalCode}</bdi>
                 </strong>
               </div>
             )}
-            {order.economicCode && (
+            {displayEconomicCode && (
               <div>
                 <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">کد اقتصادی: </span>
                 <strong className="text-slate-900 dark:text-white print:text-black font-mono text-[11px]">
-                  <bdi dir="ltr">{order.economicCode}</bdi>
+                  <bdi dir="ltr">{displayEconomicCode}</bdi>
                 </strong>
               </div>
             )}
             <div className="sm:col-span-2">
               <span className="text-slate-500 dark:text-slate-400 print:text-black text-[11px]">نشانی: </span>
-              <span className="text-slate-800 dark:text-slate-200 print:text-black text-[11px] leading-snug">{order.address}</span>
+              <span className="text-slate-800 dark:text-slate-200 print:text-black text-[11px] leading-snug">{displayAddress}</span>
             </div>
           </div>
 

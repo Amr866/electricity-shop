@@ -39,6 +39,16 @@ export const logger = {
     console.error(JSON.stringify(payload));
   },
 
+  warn: (msg: string, meta?: LogMeta) => {
+    const payload = {
+      level: "warn",
+      timestamp: new Date().toISOString(),
+      msg,
+      ...meta,
+    };
+    console.warn(JSON.stringify(payload));
+  },
+
   debug: (msg: string, meta?: LogMeta) => {
     if (process.env.NODE_ENV !== "production" || process.env.DEBUG === "true") {
       const payload = {

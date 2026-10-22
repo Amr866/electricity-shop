@@ -40,11 +40,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Security Hardening: Cap upload size to 10MB to prevent memory exhaustion DoS
+    // Security Hardening 1: Extension allowlist check
+    const ALLOWED_BOM_EXTENSIONS = [".xlsx", ".xls", ".csv"];
+    const rawExt = path.extname(fileName).toLowerCase();
+    if (rawExt && !ALLOWED_BOM_EXTENSIONS.includes(rawExt)) {
+      return NextResponse.json(
+        { error: "فرمت فایل ارسالی مجاز نمی‌باشد. فقط فایل‌های اکسل (.xlsx, .xls, .csv) پشتیبانی می‌شوند." },
+        { status: 400 }
+      );
+    }
+
+    // Security Hardening 2: Cap upload size to 10MB to prevent memory exhaustion DoS
     const MAX_BOM_BYTES = 10 * 1024 * 1024;
     if (fileBuffer.length > MAX_BOM_BYTES) {
       return NextResponse.json(
         { error: "حجم فایل اکسل ارسالی بیش از حد مجاز است (حداکثر ۱۰ مگابایت)." },
+        { status: 400 }
+      );
+    }
+
+    // Security Hardening 3: Prevent HTML/SVG active content smuggling disguised as spreadsheet
+    const bufferPrefix = fileBuffer.subarray(0, 1024).toString("utf8").toLowerCase();
+    if (
+      bufferPrefix.includes("<script") ||
+      bufferPrefix.includes("<html") ||
+      bufferPrefix.includes("<!doctype html") ||
+      bufferPrefix.includes("<svg") ||
+      bufferPrefix.includes("javascript:")
+    ) {
+      const ipEarly = req.headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+      logger.warn("[BOM Parse] Rejected file containing HTML/script tags", { fileName, ip: ipEarly });
+      return NextResponse.json(
+        { error: "فایل ارسالی حاوی کدهای غیرمجاز است. لطفاً فایل استاندارد اکسل بارگذاری نمایید." },
         { status: 400 }
       );
     }
@@ -67,7 +94,7 @@ export async function POST(req: NextRequest) {
       const bomsDir = path.resolve(process.cwd(), "public", "uploads", "boms");
       await mkdir(bomsDir, { recursive: true });
 
-      const ext = path.extname(fileName) || ".xlsx";
+      const ext = ALLOWED_BOM_EXTENSIONS.includes(rawExt) ? rawExt : ".xlsx";
       const cleanBase = path.basename(fileName, ext)
         .replace(/[^a-zA-Z0-9_\-\u0600-\u06FF]/g, "_")
         .slice(0, 35);

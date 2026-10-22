@@ -37,18 +37,57 @@ export async function POST(req: NextRequest) {
     }
 
     if (Status === "OK") {
-      // In production: make server-to-server call to ZarinPal verification API
-      // const zarinRes = await fetch("https://api.zarinpal.com/pg/v4/payment/verify.json", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     merchant_id: process.env.ZARINPAL_MERCHANT_ID,
-      //     amount: order.totalAmount * 10, // Toman to Rial
-      //     authority: Authority,
-      //   })
-      // });
+      let refId: string | null = null;
+      const merchantId = process.env.ZARINPAL_MERCHANT_ID;
+      const isProduction = process.env.NODE_ENV === "production";
+      const isConfiguredMerchant = Boolean(
+        merchantId &&
+        merchantId !== "00000000-0000-0000-0000-000000000000" &&
+        merchantId.length >= 30
+      );
 
-      const refId = `ZP-${Math.floor(100000000000 + Math.random() * 900000000000)}`;
+      // In production or when live merchant credentials are set, enforce outbound ZarinPal verification
+      if (isProduction || isConfiguredMerchant) {
+        if (!isConfiguredMerchant) {
+          logger.error("[Payment Webhook] Missing valid ZARINPAL_MERCHANT_ID in production environment");
+          return NextResponse.json({ error: "Payment gateway configuration error" }, { status: 500 });
+        }
+
+        const zarinRes = await fetch("https://api.zarinpal.com/pg/v4/payment/verify.json", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            merchant_id: merchantId,
+            amount: order.totalAmount * 10, // Toman to Rial conversion
+            authority: Authority,
+          }),
+        });
+
+        const zarinData = await zarinRes.json();
+        // ZarinPal code 100 = Transaction verified, 101 = Transaction already verified
+        if (zarinData.data?.code !== 100 && zarinData.data?.code !== 101) {
+          logger.warn(`[Payment Webhook] Gateway verification failed for order ${orderNumber}`, zarinData);
+          await prisma.order.update({
+            where: { orderNumber },
+            data: { paymentStatus: "FAILED" },
+          });
+          return NextResponse.json({ error: "Payment verification failed with gateway" }, { status: 400 });
+        }
+
+        refId = String(zarinData.data.ref_id);
+      } else {
+        // Non-production local sandbox / mock fallback
+        // Require explicit mock authority prefix or shared mock gateway secret
+        const mockSecret = req.headers.get("x-mock-gateway-secret");
+        const isAllowedMock = Authority.startsWith("ZP-MOCK-") || (Boolean(process.env.NEXTAUTH_SECRET) && mockSecret === process.env.NEXTAUTH_SECRET);
+
+        if (!isAllowedMock) {
+          logger.warn(`[Payment Webhook] Blocked unauthenticated mock payment attempt for order ${orderNumber}`);
+          return NextResponse.json({ error: "Unauthorized simulated payment attempt" }, { status: 403 });
+        }
+
+        refId = `ZP-MOCK-${Date.now()}`;
+      }
 
       await prisma.order.update({
         where: { orderNumber },

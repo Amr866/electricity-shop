@@ -123,8 +123,24 @@ export class MediaService {
     }
 
     const fileExt = path.extname(file.name).toLowerCase();
-    if (!ALLOWED_MIME_TYPES.includes(file.type) && !ALLOWED_EXTENSIONS.includes(fileExt)) {
+    if (!ALLOWED_MIME_TYPES.includes(file.type) || !ALLOWED_EXTENSIONS.includes(fileExt)) {
       throw new Error("فرمت فایل مجاز نیست (فقط تصاویر JPG, PNG, WEBP, SVG و اسناد PDF, XLSX, DOCX مجاز است).");
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Defense-in-depth: prevent active scripting injection in SVG graphics
+    if (fileExt === ".svg" || file.type === "image/svg+xml") {
+      const text = buffer.toString("utf8").toLowerCase();
+      if (
+        text.includes("<script") ||
+        text.includes("javascript:") ||
+        text.includes("onload=") ||
+        text.includes("onerror=")
+      ) {
+        throw new Error("فایل SVG ارسالی حاوی کدهای اسکریپت غیرمجاز است.");
+      }
     }
 
     let targetSubfolder = "";
@@ -150,8 +166,6 @@ export class MediaService {
     const filename = `${base}_${Date.now()}${ext}`;
     const filePath = path.join(targetDir, filename);
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
     const publicUrl = targetSubfolder ? `/uploads/${targetSubfolder}/${filename}` : `/uploads/${filename}`;

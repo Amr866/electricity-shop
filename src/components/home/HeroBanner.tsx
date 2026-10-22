@@ -123,7 +123,7 @@ export function HeroBanner() {
 
             {/* Sub-text: High Contrast & Concise (Clamped to 2 lines on mobile) */}
             <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl text-justify font-medium line-clamp-2 sm:line-clamp-none">
-              خرید مطمئن انواع پنکه، موتور کولر آبی، بخاری برقی و سیم و کابل استاندارد مس، به همراه کارگاه پذیرش و عیب‌یابی تخصصی در نجف‌آباد.
+              انتخاب و خرید انواع پنکه، موتور کولر آبی، بخاری برقی و سیم و کابل استاندارد مس؛ همراه با تست سلامت در کارگاه تخصصی نجف‌آباد.
             </p>
 
             {/* Courier & Workshop Trust Line with Live Radar Dot */}
@@ -218,6 +218,7 @@ export function HeroBanner() {
                     fill
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 220px"
                     priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                     className="object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Quick Feature Tag pill */}

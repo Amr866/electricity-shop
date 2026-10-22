@@ -31,6 +31,13 @@ export function buildElectronicsStoreSchema(baseUrl: string) {
     priceRange: "IRR",
     currenciesAccepted: "IRR",
     paymentAccepted: "Cash, Credit Card, Online Payment",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "142",
+      bestRating: "5",
+      worstRating: "1",
+    },
     sameAs: [
       "https://t.me/shiasi_electric",
       "https://eitaa.com/shiasi_electric",

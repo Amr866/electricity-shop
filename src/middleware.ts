@@ -4,6 +4,14 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // 0. Canonical host normalization (301 redirect www to non-www domain)
+  const host = req.headers.get("host") || "";
+  if (host.startsWith("www.")) {
+    const nonWwwHost = host.replace(/^www\./, "");
+    const destinationUrl = new URL(pathname + req.nextUrl.search, `${req.nextUrl.protocol}//${nonWwwHost}`);
+    return NextResponse.redirect(destinationUrl, 301);
+  }
+
   // 1. Maintenance Mode Interception
   const isMaintenanceMode = process.env.MAINTENANCE_MODE === "true";
 

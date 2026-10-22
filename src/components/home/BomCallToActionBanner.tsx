@@ -33,7 +33,7 @@ export function BomCallToActionBanner() {
           </h2>
 
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            لیست تجهیزات، سیم، کابل، کلید پریز یا قطعات مورد نیاز پروژه خود را به صورت اکسل، PDF یا عکس دست‌نویس ارسال کنید تا با تخفیف ویژه همکار و فاکتور رسمی در سریع‌ترین زمان پیش‌فاکتور برایتان صادر شود.
+            فایل اکسل، PDF یا عکس لیست خرید پروژه خود را بارگذاری کنید تا کارشناسان شیاسی پیش‌فاکتور قیمت همکاری را برایتان آماده کنند.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-1 text-xs text-slate-700 dark:text-slate-300 font-medium">

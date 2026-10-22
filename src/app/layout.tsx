@@ -29,6 +29,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#090d16" },
+  ],
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://shiasi-electric.ir";
@@ -56,6 +60,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
     nocache: false,
+    "max-video-preview": -1,
+    "max-image-preview": "large",
+    "max-snippet": -1,
     googleBot: {
       index: true,
       follow: true,
@@ -130,6 +137,11 @@ export default function RootLayout({
         className={`${vazirmatn.className} antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans pb-20 md:pb-0 transition-colors duration-200`}
         suppressHydrationWarning
       >
+        <noscript>
+          <div className="bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-200 p-4 text-center text-sm font-bold border-b border-amber-300 dark:border-amber-800">
+            برای استفاده از تمام امکانات و ثبت سفارش در فروشگاه شیاسی نجف‌آباد، لطفاً جاوااسکریپت مرورگر خود را فعال کنید.
+          </div>
+        </noscript>
         <AuthProvider>
           <BrandProvider>
             <WishlistProvider>

@@ -17,7 +17,7 @@ export function KnowledgeBaseSection() {
               <Lightbulb className="w-4 h-4" />
             </div>
             <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
-              دانستنی‌های روشنایی و تعمیرات لوازم برقی
+              چگونه لوازم برقی و موتور کولر مناسب را انتخاب کنیم؟
             </h2>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">

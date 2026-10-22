@@ -307,7 +307,7 @@ export function LayeredCablePeel({ currentGauge = 2.5, className = "" }: Layered
               </span>
             </div>
             <p className="text-[10.5px] text-slate-800 dark:text-slate-200 mt-1 leading-relaxed font-medium">
-              تضمین اصالت برند و خلوص مس کارخانه؛ بدون ناخالصی آلومینیوم با مهلت تست و امکان مرجوعی کالا در صورت هرگونه عدم تطابق استاندارد.
+              سیم و کابل تولیدشده از هادی مس خالص البرز فاقد ناخالصی آلومینیوم؛ با امکان بررسی وزن و قطر رشته‌ها در کارگاه قبل از تحویل.
             </p>
           </IridescentFoil>
 

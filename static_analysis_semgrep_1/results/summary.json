@@ -1,0 +1,101 @@
+{
+  "sarifVersion": "2.1.0",
+  "schema": null,
+  "aggregatedRuns": 1,
+  "totalRawFilesProcessed": 11,
+  "totalRulesLoaded": 625,
+  "uniqueFindingsCount": 1,
+  "severityDistribution": {
+    "warning": 1
+  },
+  "rulesSummary": {
+    "typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml": 1
+  },
+  "rawScans": [
+    {
+      "file": "all-secrets.sarif",
+      "findings": 0,
+      "rulesLoaded": 52,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "all-security-audit.sarif",
+      "findings": 1,
+      "rulesLoaded": 225,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "all-trailofbits-semgrep-rules.sarif",
+      "findings": 0,
+      "rulesLoaded": 120,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "javascript-javascript.sarif",
+      "findings": 1,
+      "rulesLoaded": 74,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "javascript-nextjs.sarif",
+      "findings": 0,
+      "rulesLoaded": 0,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "javascript-nodejs.sarif",
+      "findings": 0,
+      "rulesLoaded": 36,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "javascript-react.sarif",
+      "findings": 1,
+      "rulesLoaded": 4,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "typescript-nextjs.sarif",
+      "findings": 0,
+      "rulesLoaded": 0,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "typescript-nodejs.sarif",
+      "findings": 0,
+      "rulesLoaded": 36,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "typescript-react.sarif",
+      "findings": 1,
+      "rulesLoaded": 4,
+      "driver": "Semgrep OSS"
+    },
+    {
+      "file": "typescript-typescript.sarif",
+      "findings": 1,
+      "rulesLoaded": 74,
+      "driver": "Semgrep OSS"
+    }
+  ],
+  "findings": [
+    {
+      "ruleId": "typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml",
+      "resolvedLevel": "warning",
+      "file": "D:\\projects\\antigravity\\electricity_shop\\src\\components\\seo\\JsonLd.tsx",
+      "line": 14,
+      "endLine": 14,
+      "message": "Detection of dangerouslySetInnerHTML from non-constant definition. This can inadvertently expose users to cross-site scripting (XSS) attacks if this comes from user-provided input. If you have to use dangerouslySetInnerHTML, consider using a sanitization library such as DOMPurify to sanitize your HTML.",
+      "fingerprint": "requires login",
+      "cwe": [
+        "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+      ],
+      "owasp": [
+        "OWASP-A03:2021 - Injection",
+        "OWASP-A05:2025 - Injection",
+        "OWASP-A07:2017 - Cross-Site Scripting (XSS)"
+      ]
+    }
+  ]
+}

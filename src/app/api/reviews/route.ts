@@ -5,7 +5,14 @@ export async function POST(req: NextRequest) {
   try {
     const { productId, authorName, city, rating, comment } = await req.json();
 
-    if (!productId || !authorName || !comment) {
+    if (
+      !productId ||
+      typeof productId !== "string" ||
+      !authorName ||
+      typeof authorName !== "string" ||
+      !comment ||
+      typeof comment !== "string"
+    ) {
       return NextResponse.json(
         { message: "لطفاً نام و متن دیدگاه را وارد نمایید." },
         { status: 400 }

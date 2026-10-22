@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       orderNumber,
     });
 
-    if (!orderNumber || !Authority) {
+    if (!orderNumber || typeof orderNumber !== "string" || !Authority || typeof Authority !== "string") {
       return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
     }
 

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     logger.info("Inbound repair cost approval request", { trackingCode, action });
 
-    if (!trackingCode || !action) {
+    if (!trackingCode || typeof trackingCode !== "string" || !action || typeof action !== "string") {
       return NextResponse.json(
         { error: "کد رهگیری و نوع عملیات تایید الزامی است." },
         { status: 400 }
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const cleanCode = toAsciiDigits(trackingCode).trim().toUpperCase();
 
-    if (!["APPROVE", "DECLINE"].includes(action)) {
+    if (action !== "APPROVE" && action !== "DECLINE") {
       return NextResponse.json(
         { error: "عملیات ارسالی نامعتبر است (APPROVE یا DECLINE)." },
         { status: 400 }

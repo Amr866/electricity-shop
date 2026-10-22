@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     const { orderNumber, status, refId } = await req.json();
 
-    if (!orderNumber) {
+    if (!orderNumber || typeof orderNumber !== "string") {
       return NextResponse.json({ message: "شماره سفارش نامعتبر است." }, { status: 400 });
     }
 

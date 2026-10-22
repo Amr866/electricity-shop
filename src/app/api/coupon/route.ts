@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const { code, subtotal } = await req.json();
 
-    if (!code) {
+    if (!code || typeof code !== "string") {
       return NextResponse.json(
         { message: "لطفاً کد تخفیف را وارد کنید." },
         { status: 400 }

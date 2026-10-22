@@ -8,7 +8,7 @@ export async function rollbackPaymentLogMigration() {
   console.log("=================================================\n");
 
   console.log("Step 1: Dropping check constraint if exists...");
-  await prisma.$executeRawUnsafe(`
+  await prisma.$executeRaw`
     DO $$
     BEGIN
       IF EXISTS (
@@ -20,12 +20,12 @@ export async function rollbackPaymentLogMigration() {
         RAISE NOTICE 'Dropped check_payment_log_amount_non_negative.';
       END IF;
     END $$;
-  `);
+  `;
 
   console.log("Step 2: Dropping PaymentTransactionLog table if exists...");
-  await prisma.$executeRawUnsafe(`
+  await prisma.$executeRaw`
     DROP TABLE IF EXISTS public."PaymentTransactionLog" CASCADE;
-  `);
+  `;
 
   console.log("\n=================================================");
   console.log("ROLLBACK COMPLETED: PaymentTransactionLog table removed.");

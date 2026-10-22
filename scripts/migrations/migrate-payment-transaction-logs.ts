@@ -9,7 +9,7 @@ export async function applyPaymentLogMigration() {
 
   // 1. Add idempotent PostgreSQL CHECK constraint (amount >= 0)
   console.log("Step 1: Applying CHECK (amount >= 0) constraint to PaymentTransactionLog...");
-  await prisma.$executeRawUnsafe(`
+  await prisma.$executeRaw`
     DO $$
     BEGIN
       IF NOT EXISTS (
@@ -24,15 +24,15 @@ export async function applyPaymentLogMigration() {
         RAISE NOTICE 'Constraint check_payment_log_amount_non_negative already exists.';
       END IF;
     END $$;
-  `);
+  `;
   console.log("✅ CHECK constraint check_payment_log_amount_non_negative verified/created.");
 
   // 2. Validate indexes on PaymentTransactionLog
   console.log("\nStep 2: Validating indexes on PaymentTransactionLog in pg_indexes...");
-  const indexes: Array<{ indexname: string }> = await prisma.$queryRawUnsafe(`
+  const indexes: Array<{ indexname: string }> = await prisma.$queryRaw<Array<{ indexname: string }>>`
     SELECT indexname FROM pg_indexes
     WHERE tablename = 'PaymentTransactionLog'
-  `);
+  `;
   const indexNames = indexes.map((i) => i.indexname);
   console.log("Found PaymentTransactionLog indexes:", indexNames);
 

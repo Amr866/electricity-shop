@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Applying PostgreSQL database constraints...");
 
-  await prisma.$executeRawUnsafe(`
+  await prisma.$executeRaw`
     DO $$
     BEGIN
       IF NOT EXISTS (
@@ -20,7 +20,7 @@ async function main() {
         RAISE NOTICE 'Constraint check_product_stock_non_negative already exists.';
       END IF;
     END $$;
-  `);
+  `;
 
   console.log("Database constraints verification complete.");
 }

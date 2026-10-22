@@ -10,9 +10,9 @@ async function runPaymentMigrationTests() {
 
   // Test 1: Verify Table Existence
   console.log("Test 1: Verifying PaymentTransactionLog table exists in public schema...");
-  const tables: Array<{ tablename: string }> = await prisma.$queryRawUnsafe(`
+  const tables: Array<{ tablename: string }> = await prisma.$queryRaw<Array<{ tablename: string }>>`
     SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = 'PaymentTransactionLog'
-  `);
+  `;
   if (tables.length === 0) {
     throw new Error("Test 1 FAILED: PaymentTransactionLog table not found!");
   }
@@ -20,9 +20,9 @@ async function runPaymentMigrationTests() {
 
   // Test 2: Verify All 6 Required Indexes
   console.log("\nTest 2: Verifying Foreign Key & Performance Indexes...");
-  const indexes: Array<{ indexname: string }> = await prisma.$queryRawUnsafe(`
+  const indexes: Array<{ indexname: string }> = await prisma.$queryRaw<Array<{ indexname: string }>>`
     SELECT indexname FROM pg_indexes WHERE tablename = 'PaymentTransactionLog'
-  `);
+  `;
   const indexNames = indexes.map((i) => i.indexname);
   const requiredIndexes = [
     "PaymentTransactionLog_orderId_idx",
@@ -45,13 +45,13 @@ async function runPaymentMigrationTests() {
   console.log("\nTest 3: Testing database CHECK constraint (amount >= 0)...");
   let constraintPassed = false;
   try {
-    await prisma.$executeRawUnsafe(`
+    await prisma.$executeRaw`
       INSERT INTO "PaymentTransactionLog" (
         "id", "orderId", "orderNumber", "gateway", "transactionType", "status", "amount", "createdAt"
       ) VALUES (
         'test-neg-id', 'non-existent', 'TEST-ORDER', 'zarinpal', 'INITIATE', 'PENDING', -5000, NOW()
       );
-    `);
+    `;
     console.error("❌ Test 3 FAILED: Database allowed negative amount!");
   } catch (err: any) {
     if (

@@ -12,9 +12,9 @@ async function runAudit() {
   console.log("Test 1: Testing DB check constraint (stock >= 0)...");
   let constraintPassed = false;
   try {
-    await prisma.$executeRawUnsafe(
+    await prisma.$executeRaw
       `UPDATE "Product" SET stock = -5 WHERE id = (SELECT id FROM "Product" LIMIT 1)`
-    );
+    ;
     console.error("❌ FAILED: Database allowed stock = -5!");
   } catch (err: any) {
     if (err.message.includes("check_product_stock_non_negative") || err.message.includes("23514")) {
@@ -32,10 +32,10 @@ async function runAudit() {
 
   // 2. Verify Index Existence
   console.log("\nTest 2: Verifying Foreign Key & Compound Indexes in pg_indexes...");
-  const indexes: Array<{ indexname: string }> = await prisma.$queryRawUnsafe(`
+  const indexes: Array<{ indexname: string }> = await prisma.$queryRaw<Array<{ indexname: string }>>`
     SELECT indexname FROM pg_indexes
     WHERE tablename IN ('OrderItem', 'Order', 'ProductImage', 'ProductSpec', 'RepairRequest')
-  `);
+  `;
   const indexNames = indexes.map((i) => i.indexname);
   console.log("Found indexes count:", indexNames.length);
 

@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
       take: isAdmin ? 50 : 5,
     });
 
-    // Mask phone number for non-admin viewers to protect customer privacy
+    // Mask phone number and customer name for non-admin viewers to protect customer privacy
     const sanitizedRepairs = isAdmin
       ? repairs
       : repairs.map((r) => ({
@@ -68,6 +68,10 @@ export async function GET(req: NextRequest) {
           customerPhone: r.customerPhone
             ? r.customerPhone.replace(/(\d{4})\d{4}(\d{3})/, "$1****$2")
             : "",
+          customerName:
+            r.customerName && r.customerName.length > 2
+              ? `${r.customerName.slice(0, 2)}***`
+              : r.customerName,
         }));
 
     return NextResponse.json({

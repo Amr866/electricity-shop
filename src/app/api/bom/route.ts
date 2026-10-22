@@ -6,24 +6,45 @@ import { normalizeIranianPhone, toAsciiDigits } from "@/lib/utils";
 import { isSafeAttachmentUrl } from "@/lib/utils/security";
 import { logger } from "@/lib/logger";
 
-// GET: Retrieve BOM inquiries for admin or lookup by tracking code
+// GET: Retrieve BOM inquiries for admin or lookup by tracking code / phone for contractors
 export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const isAdmin = session?.user?.role === "ADMIN";
+
     const { searchParams } = new URL(req.url);
     const code = searchParams.get("code") || "";
     const phone = searchParams.get("phone") || "";
     const q = searchParams.get("q") || "";
 
-    logger.info("Inbound GET BOM submissions", { code, phone, q });
+    logger.info("Inbound GET BOM submissions", { code, phone, q, isAdmin });
 
-    let where: any = {};
     const query = (code || phone || q).trim();
 
-    if (query) {
-      const clean = query.trim();
-      const asciiClean = toAsciiDigits(clean);
-      const normalizedPhone = normalizeIranianPhone(clean);
+    // Data Exposure Protection: Anonymous callers MUST supply an exact tracking code or phone
+    if (!query) {
+      if (!isAdmin) {
+        return NextResponse.json(
+          { error: "کد پیگیری یا شماره تماس جهت استعلام الزامی است." },
+          { status: 400 }
+        );
+      }
 
+      const submissions = await prisma.bOMSubmission.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      });
+      return NextResponse.json({ success: true, submissions });
+    }
+
+    const clean = query.trim();
+    const asciiClean = toAsciiDigits(clean);
+    const normalizedPhone = normalizeIranianPhone(clean);
+
+    let where: any;
+
+    if (isAdmin) {
+      // Admins can search across tracking code, phone, contractor name, or company name
       where = {
         OR: [
           { trackingCode: clean.toUpperCase() },
@@ -35,14 +56,40 @@ export async function GET(req: NextRequest) {
           { companyName: { contains: clean, mode: "insensitive" } },
         ],
       };
+    } else {
+      // Non-admins can strictly query by exact tracking code or exact phone (prevents contractor enumeration)
+      where = {
+        OR: [
+          { trackingCode: clean.toUpperCase() },
+          { trackingCode: asciiClean.toUpperCase() },
+          { contractorPhone: clean },
+          { contractorPhone: asciiClean },
+          { contractorPhone: normalizedPhone },
+        ],
+      };
     }
 
     const submissions = await prisma.bOMSubmission.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      take: isAdmin ? 50 : 10,
     });
 
-    return NextResponse.json({ success: true, submissions });
+    // Mask sensitive personal information for public viewers
+    const sanitizedSubmissions = isAdmin
+      ? submissions
+      : submissions.map((sub) => ({
+          ...sub,
+          contractorPhone: sub.contractorPhone
+            ? sub.contractorPhone.replace(/(\d{4})\d{4}(\d{3})/, "$1****$2")
+            : "",
+          contractorName:
+            sub.contractorName && sub.contractorName.length > 2
+              ? `${sub.contractorName.slice(0, 2)}***`
+              : sub.contractorName,
+        }));
+
+    return NextResponse.json({ success: true, submissions: sanitizedSubmissions });
   } catch (error) {
     logger.error("Error fetching BOM submissions", error);
     return NextResponse.json({ error: "Failed to fetch BOM inquiries" }, { status: 500 });

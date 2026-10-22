@@ -19,10 +19,10 @@ export async function releaseExpiredReservations(): Promise<ReleaseResult> {
   const now = new Date();
 
   // Find candidate expired orders using compound index: @@index([paymentMethod, orderStatus, reservedUntil])
-  // All unverified Card-to-Card orders past their 8-hour reservedUntil timestamp expire per spec line 13 & 178
+  // All unverified Card-to-Card (8 hours) and abandoned online gateway orders (30 mins) past reservedUntil expire
   const expiredOrders = await prisma.order.findMany({
     where: {
-      paymentMethod: "card_to_card",
+      paymentMethod: { in: ["card_to_card", "zarinpal", "online"] },
       paymentStatus: "PENDING",
       orderStatus: "PENDING",
       reservedUntil: { lt: now },

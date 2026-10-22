@@ -195,11 +195,16 @@ export function sortItemsForDeterministicLock<T extends { productId: string }>(i
 }
 
 /**
- * Computes 8-hour inventory reservation expiry for Card-to-Card payments.
+ * Computes inventory reservation expiry for unpaid orders.
+ * - Card-to-Card: 8-hour hold window to allow customer bank transfer and receipt upload.
+ * - Online Gateway (ZarinPal): 30-minute hold window for completing transaction.
  */
 export function calculateReservationExpiry(paymentMethod: string, fromDate = new Date()): Date | null {
   if (paymentMethod === "card_to_card") {
-    return new Date(fromDate.getTime() + 8 * 60 * 60 * 1000);
+    return new Date(fromDate.getTime() + 8 * 60 * 60 * 1000); // 8 hours
+  }
+  if (paymentMethod === "zarinpal" || paymentMethod === "online") {
+    return new Date(fromDate.getTime() + 30 * 60 * 1000); // 30 minutes
   }
   return null;
 }
